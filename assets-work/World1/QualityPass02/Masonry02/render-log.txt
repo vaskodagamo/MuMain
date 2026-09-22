@@ -1,0 +1,37 @@
+00:00.738  blend            | Read blend: "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry02/HouseEtc01/source.blend"
+00:00.755  blend            | Read blend: "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry02/HouseEtc01/source.blend"
+00:00.795  blend            | Read blend: "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry02/HouseEtc01/validation/reimported.blend"
+00:00.831  blend            | Read blend: "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry02/HouseEtc01/source.blend"
+00:00.850  blend            | Read blend: "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry02/HouseEtc01/source.blend"
+00:00.857  blend            | Read blend: "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry02/HouseEtc01/validation/reimported.blend"
+00:00.864  blend            | Read blend: "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry02/HouseEtc01/original/source.blend"
+00:04.004  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry02/HouseEtc01/review/original.png'
+00:06.935  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry02/HouseEtc01/review/original-reverse.png'
+00:07.235  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry02/HouseEtc01/review/original-small.png'
+00:09.887  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry02/HouseEtc01/review/original-front.png'
+00:10.168  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry02/HouseEtc01/review/original-front-small.png'
+00:12.768  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry02/HouseEtc01/review/original-clay-front.png'
+00:15.462  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry02/HouseEtc01/review/original-clay.png'
+00:15.463  blend            | Read blend: "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry02/HouseEtc01/baseline/source.blend"
+00:18.424  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry02/HouseEtc01/review/current.png'
+00:21.319  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry02/HouseEtc01/review/current-reverse.png'
+00:21.605  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry02/HouseEtc01/review/current-small.png'
+00:24.258  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry02/HouseEtc01/review/current-front.png'
+00:24.525  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry02/HouseEtc01/review/current-front-small.png'
+00:27.183  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry02/HouseEtc01/review/current-clay-front.png'
+00:29.961  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry02/HouseEtc01/review/current-clay.png'
+00:29.962  blend            | Read blend: "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry02/HouseEtc01/validation/reimported.blend"
+00:32.867  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry02/HouseEtc01/review/candidate.png'
+00:35.701  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry02/HouseEtc01/review/candidate-reverse.png'
+00:36.018  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry02/HouseEtc01/review/candidate-small.png'
+00:38.798  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry02/HouseEtc01/review/candidate-front.png'
+00:39.033  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry02/HouseEtc01/review/candidate-front-small.png'
+00:41.644  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry02/HouseEtc01/review/candidate-clay-front.png'
+00:44.365  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry02/HouseEtc01/review/candidate-clay.png'
+00:44.365  blend            | Read blend: "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry02/HouseEtc01/validation/reimported.blend"
+00:46.483  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry02/HouseEtc01/review/wireframe.png'
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:49:19)
+
+Blender quit
+/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry02/review.py:40: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
+  clay=bpy.data.materials.new('REVIEW_ONLY_CLAY');clay.use_nodes=True

@@ -1,0 +1,38 @@
+00:00.593  blend            | Read blend: "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry02/HouseEtc01/source.blend"
+skipping reference object 'HouseEtc01' (REF_ collection or mu_reference)
+
+Blender Source Tools: exporting HouseEtc01_mu_export
+- Baking...
+- /private/var/folders/5c/gyglnk2d6mx3v2m0frrgvl2w0000gn/T/mu_export_a163m0zx/HouseEtc01_mu_export.smd
+- Exported 1 bones
+- Exported 1 frames
+- Exported 734 polys
+- Exported 2 materials
+   c_wall04.jpg
+   c_wall06.jpg
+- SMD export took 0.020766019821166992 
+
+
+Blender Source Tools: exporting HouseEtc01_skeleton
+- Baking...
+- /private/var/folders/5c/gyglnk2d6mx3v2m0frrgvl2w0000gn/T/mu_export_a163m0zx/anims/HouseEtc01_a00.smd
+- Exported 1 bones
+- Exported 1 frames
+- SMD export took 0.0007741451263427734 
+
+2 files exported in 0.0 seconds
+Info: 2 files exported in 0.0 seconds
++ /Users/lukasmac/Documents/claude-test-mumain/MuMain/out/build/macos-arm64/tools/bmdconv/Release/bmdconv smd2bmd /var/folders/5c/gyglnk2d6mx3v2m0frrgvl2w0000gn/T/mu_export_a163m0zx/HouseEtc01_mu_export.smd /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry02/HouseEtc01/exports/HouseEtc01.bmd --anim /var/folders/5c/gyglnk2d6mx3v2m0frrgvl2w0000gn/T/mu_export_a163m0zx/anims/HouseEtc01_a00.smd --name HouseEtc01.smd
+wrote /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry02/HouseEtc01/exports/HouseEtc01.bmd (1 action(s))
++ /Users/lukasmac/Documents/claude-test-mumain/MuMain/out/build/macos-arm64/tools/bmdconv/Release/bmdconv info /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry02/HouseEtc01/exports/HouseEtc01.bmd
+model /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry02/HouseEtc01/exports/HouseEtc01.bmd
+  name field: HouseEtc01.smd  version: 12
+  meshes: 2  bones: 1  actions: 1  triangles: 734
+  bounds (bind pose): min -50.15 -92.81 0.00  max 49.73 49.80 137.02  size 99.88 142.61 137.02
+  mesh 0: triangles=24 vertices=16 normals=19 uvs=14 texture=c_wall04.jpg
+  mesh 1: triangles=710 vertices=358 normals=815 uvs=358 texture=c_wall06.jpg
+  bone 0: "Box01" parent=-1
+  action 0: keys=1 lock=0
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:49:19)
+
+Blender quit

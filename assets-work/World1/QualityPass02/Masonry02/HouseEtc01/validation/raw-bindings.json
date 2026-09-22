@@ -1,0 +1,15 @@
+{
+  "file": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry02/HouseEtc01/exports/HouseEtc01.bmd",
+  "mesh_bindings": [
+    {
+      "mesh": 0,
+      "material": "c_wall04.jpg",
+      "vertex_to_normal_node_mismatch_corner_counts": {}
+    },
+    {
+      "mesh": 1,
+      "material": "c_wall06.jpg",
+      "vertex_to_normal_node_mismatch_corner_counts": {}
+    }
+  ]
+}

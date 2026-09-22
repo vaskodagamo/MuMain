@@ -1,0 +1,16 @@
+{
+  "decision": "REJECT prototype1; no integration or propagation",
+  "reason": "Actual exported painted oblique view has severe striped UV stretching on steep contour ramps; clay confirms isolated plaque-like masses and deep rectangular bed; reduced front is darker and less readable than baseline.",
+  "technical": "Continuous band audit strengthened with pairwise no-interior-overlap and per-original-face coverage; this is separate from failed art gate.",
+  "revision": "Remove global14-unit recessed bed. Use connected broad forehead/nose/muzzle form and selective shallow4\u20136-unit eye/cheek valleys fading over15\u201325 model units. Preserve8-unitband and exact block/contact profiles. These are starting study values, not acceptance criteria.",
+  "evidence": {
+    "exports/HouseEtc01.bmd": "0c5305dd5328ce903308d2da1b85365c9e2ac206749e46bac1152f1e0ee61ded",
+    "review/current.png": "accc3818fa1c89d2fe1ea077f43ca4566675784e4d8458e156214f0460140910",
+    "review/candidate.png": "6f1ae75c38d3b26574738593fc0c20d761ceea90581e8edde42fb615eeedb386",
+    "review/candidate-clay.png": "362ee1c4a175d556ed23b07fc57cb7c55d607ceb7260bb9805f822ee577d20e1",
+    "review/candidate-front-small.png": "6f08113846eb732bc45569e8b20c66f94703966c747c12393dbf4967c8de3cb2",
+    "review/current-front-small.png": "4e2b4c7bd0253d53dde299c2b217b9e3f7cee6d506983d47c09e7995843313e8",
+    "validation/protected-border.json": "237720763906730a41e34405f6b7d4fda1865eed352ba2d0229744caefff57b2",
+    "validation/band-coverage.json": "3fb2507f3c17716277e92e581cac88f2b8e3707a45eb49b7f8f4bb8427e72a8a"
+  }
+}

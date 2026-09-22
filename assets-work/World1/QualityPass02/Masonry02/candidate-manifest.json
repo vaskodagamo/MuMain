@@ -1,0 +1,32 @@
+{
+  "status": "REJECTED_STUDY_ONLY",
+  "version": 2,
+  "triangles": 810,
+  "sha256": {
+    "HouseEtc01/source.blend": "c8d0bac980367ed77380724bf188c673df17f201195c91776d7b8a3174345b33",
+    "HouseEtc01/exports/HouseEtc01.bmd": "53a91b8162308384c3c7db8f6fbbb99cfe6bb40fd6bed0f9ed76c6c22b34a4ec",
+    "HouseEtc01/review/candidate-clay-front.png": "9629d3542113db257f3599329e1abf39c2a4641fe888d36e7c1002d0afa1bd83",
+    "HouseEtc01/review/candidate-clay.png": "503baacf6881b2ff1e9eb54ce3855f52814e208135902471cba5751720ce0580",
+    "HouseEtc01/review/candidate-front-small.png": "f8087a872e635954b761d40dab5f0ea8191ba9e3c41ebf1f5f4aa25ad5a80dd7",
+    "HouseEtc01/review/candidate-front.png": "341cf5fec0b6565caa2e1684b7096102f40bef8d13f32bb4c68e9d1e1faa6015",
+    "HouseEtc01/review/candidate-reverse.png": "cf1b325129bf74ebe2897f7ac63b2eb9ffac1bc6eb7940336a3356e497719f56",
+    "HouseEtc01/review/candidate-small.png": "b175580a2bdeaaeccbe51562dc21fe5f9c4aabe3a140b21dd2bab59d0a274f09",
+    "HouseEtc01/review/candidate.png": "e6b78d1ce0fdcafe1aef387d0034911f10182858bb71d34e890b273028156788",
+    "HouseEtc01/review/current-clay-front.png": "2ae12bf78b6b21b5688a2cd0719044fac57d8f2112e8f34762ccde17757c6d14",
+    "HouseEtc01/review/current-clay.png": "4954a17246932cf70ea1aeea9c14be6dad75955ad4d7075d3a1e195fb18fd16e",
+    "HouseEtc01/review/current-front-small.png": "9233845a8a330fa0d95dcda76fca5498fe1a351ac2be54027839fe7d751be236",
+    "HouseEtc01/review/current-front.png": "306a00a9452a510bbd67d33a6ea4ff9e6c9e226833d0a027320c48fdde51f8dc",
+    "HouseEtc01/review/current-reverse.png": "de8be925b3d176c1d79863b43c948b983ebabb44fd377e7635b54d397b4ba3cd",
+    "HouseEtc01/review/current-small.png": "35a876a585fc8cb39c44cd23b57a57a79c7947f3fb35742e42b291281dab533d",
+    "HouseEtc01/review/current.png": "1e3210e28b1e013f6662cce4aec56fd79206d7621afdd94d18e4cae0c60f4c71",
+    "HouseEtc01/review/original-clay-front.png": "1d70d6478f604882be6cd740828026c86312547d3c60881e5f29413a85e53469",
+    "HouseEtc01/review/original-clay.png": "3e45a6c39730dbc5aed88f6e9d5af4b20a117c6655b91df9ad6f9a23f11c54a4",
+    "HouseEtc01/review/original-front-small.png": "8bf3f07cdd8337074df0bde1ef52f3c91db3cda82fea88a2c2dbaf3f09fc1313",
+    "HouseEtc01/review/original-front.png": "22f8cbed638433204b76581689ad12116e6f38a0056122478a85001faabb4a83",
+    "HouseEtc01/review/original-reverse.png": "350c33fe83e4865722c8acac134e441ea846981d9ea929becafa41c78fbd765c",
+    "HouseEtc01/review/original-small.png": "bd3e575a1e968b2f0d52086bfc6af78eb55593e582ba2aed63b70af44e0b076c",
+    "HouseEtc01/review/original.png": "d81c50f218a80ead0aba7b1ee911f4dbc44a9815a4c67861c20e67773057c073",
+    "HouseEtc01/review/wireframe.png": "4ac9adbe9e68e1a3448aa971599f07b3ddeb8e3887a1d25f7bc78402d2d52b95"
+  },
+  "reason": "Projected painting restored, but reduced visible gain over baseline too small to warrant810tri. No game installation."
+}

@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "stages": {
+    "baseline": {
+      "triangles": 26,
+      "oriented_boundary": {
+        "((0.0005, 0.9995), (0.9995, 0.9995))": -1,
+        "((0.0005, 0.0005), (0.9995, 0.0005))": 1,
+        "((0.9995, 0.0005), (0.9995, 0.9995))": 1,
+        "((0.0005, 0.0005), (0.0005, 0.9995))": -1
+      }
+    },
+    "new": {
+      "triangles": 786,
+      "oriented_boundary": {
+        "((0.0005, 0.0005), (0.0005, 0.9995))": -1,
+        "((0.9995, 0.0005), (0.9995, 0.9995))": 1,
+        "((0.0005, 0.9995), (0.9995, 0.9995))": -1,
+        "((0.0005, 0.0005), (0.9995, 0.0005))": 1
+      }
+    }
+  },
+  "criterion": "Every front triangle has positive oriented UV area, all internal edges have exactly two opposite uses, and the same four oriented perimeter edges form the only boundary. Combined with band plane/coverage proof, this excludes missing or overlapping band patches."
+}

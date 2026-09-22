@@ -1,0 +1,33 @@
+{
+  "status": "PASS",
+  "bounds_before": [
+    [
+      -50.15,
+      -92.81,
+      0.0
+    ],
+    [
+      49.73,
+      49.8,
+      137.02
+    ]
+  ],
+  "bounds_after": [
+    [
+      -50.15,
+      -92.81,
+      0.0
+    ],
+    [
+      49.73,
+      49.8,
+      137.02
+    ]
+  ],
+  "skeleton_actions": "EQUIVALENT",
+  "mesh_order": [
+    "c_wall04.jpg",
+    "c_wall06.jpg"
+  ],
+  "client_verified": false
+}

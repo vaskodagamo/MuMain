@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "images": [
+    {
+      "texture": "c_wall04.jpg",
+      "size": [
+        512,
+        512
+      ],
+      "packed_payload_sha256": "2b6dbe7bb9cfc32f95cdf023545b1269bd07f7806a364cfd5e574c8986d892a9"
+    },
+    {
+      "texture": "c_wall06.jpg",
+      "size": [
+        512,
+        512
+      ],
+      "packed_payload_sha256": "e1fe8565a905bea0d1182e12b9d090839a2e60bebe0c2a6165a96c73d0782b9e"
+    }
+  ],
+  "reference_collection": "REF_ORIGINAL hidden and retained"
+}

@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "border_units": 8.0,
+  "frozen_block_triangles": 24,
+  "original_perimeter_edges": "EXACT",
+  "border_triangles_checked": 16,
+  "baseline_band_uv_area": 0.2577415633377881,
+  "candidate_band_uv_area": 0.25774156333778814,
+  "coverage_area_error": 5.551115123125783e-17,
+  "maximum_baseline_plane_position_error": 6.73563411887346e-05,
+  "maximum_uv_edge_distance": 3.641376574630468e-07,
+  "position_tolerance": 0.0003,
+  "uv_tolerance": 1e-06,
+  "criterion": "Frozen block triangles match one-to-one in material/vertex bone/positions/UV/cyclic winding. Every perimeter-band triangle lies on one unchanged original front surface with the same UV registration; total band area and original four perimeter edges are preserved."
+}

@@ -1,0 +1,166 @@
+{
+  "status": "PASS",
+  "band_units": 8.0,
+  "measurement": "8 model-axis units from the x/z perimeter, using registered UV-to-axis scales; not geodesic distance",
+  "candidate_band_fragments": 26,
+  "maximum_pairwise_interior_overlap_area": 3.2526065174565133e-19,
+  "overlap_tolerance": 1e-10,
+  "per_baseline_triangle": [
+    {
+      "baseline_front_triangle": 0,
+      "expected_area": 0,
+      "covered_area": 0,
+      "error": 0
+    },
+    {
+      "baseline_front_triangle": 1,
+      "expected_area": 0,
+      "covered_area": 0,
+      "error": 0
+    },
+    {
+      "baseline_front_triangle": 2,
+      "expected_area": 0.04856495888428332,
+      "covered_area": 0.04856495888428334,
+      "error": 2.0816681711721685e-17
+    },
+    {
+      "baseline_front_triangle": 3,
+      "expected_area": 0.0026444572254703536,
+      "covered_area": 0.0026444572254703536,
+      "error": 0.0
+    },
+    {
+      "baseline_front_triangle": 4,
+      "expected_area": 0.048800101043555054,
+      "covered_area": 0.04880010104355505,
+      "error": 6.938893903907228e-18
+    },
+    {
+      "baseline_front_triangle": 5,
+      "expected_area": 0.006538315737101264,
+      "covered_area": 0.006538315737101264,
+      "error": 0.0
+    },
+    {
+      "baseline_front_triangle": 6,
+      "expected_area": 0.07154033524413453,
+      "covered_area": 0.07154033524413458,
+      "error": 5.551115123125783e-17
+    },
+    {
+      "baseline_front_triangle": 7,
+      "expected_area": 0.0040565299795545726,
+      "covered_area": 0.0040565299795545726,
+      "error": 0.0
+    },
+    {
+      "baseline_front_triangle": 8,
+      "expected_area": 0.061670999800416355,
+      "covered_area": 0.061670999800416355,
+      "error": 0.0
+    },
+    {
+      "baseline_front_triangle": 9,
+      "expected_area": 0.013925865423272715,
+      "covered_area": 0.013925865423272704,
+      "error": 1.0408340855860843e-17
+    },
+    {
+      "baseline_front_triangle": 10,
+      "expected_area": 0,
+      "covered_area": 0,
+      "error": 0
+    },
+    {
+      "baseline_front_triangle": 11,
+      "expected_area": 0,
+      "covered_area": 0,
+      "error": 0
+    },
+    {
+      "baseline_front_triangle": 12,
+      "expected_area": 0,
+      "covered_area": 0,
+      "error": 0
+    },
+    {
+      "baseline_front_triangle": 13,
+      "expected_area": 0,
+      "covered_area": 0,
+      "error": 0
+    },
+    {
+      "baseline_front_triangle": 14,
+      "expected_area": 0,
+      "covered_area": 0,
+      "error": 0
+    },
+    {
+      "baseline_front_triangle": 15,
+      "expected_area": 0,
+      "covered_area": 0,
+      "error": 0
+    },
+    {
+      "baseline_front_triangle": 16,
+      "expected_area": 0,
+      "covered_area": 0,
+      "error": 0
+    },
+    {
+      "baseline_front_triangle": 17,
+      "expected_area": 0,
+      "covered_area": 0,
+      "error": 0
+    },
+    {
+      "baseline_front_triangle": 18,
+      "expected_area": 0,
+      "covered_area": 0,
+      "error": 0
+    },
+    {
+      "baseline_front_triangle": 19,
+      "expected_area": 0,
+      "covered_area": 0,
+      "error": 0
+    },
+    {
+      "baseline_front_triangle": 20,
+      "expected_area": 0,
+      "covered_area": 0,
+      "error": 0
+    },
+    {
+      "baseline_front_triangle": 21,
+      "expected_area": 0,
+      "covered_area": 0,
+      "error": 0
+    },
+    {
+      "baseline_front_triangle": 22,
+      "expected_area": 0,
+      "covered_area": 0,
+      "error": 0
+    },
+    {
+      "baseline_front_triangle": 23,
+      "expected_area": 0,
+      "covered_area": 0,
+      "error": 0
+    },
+    {
+      "baseline_front_triangle": 24,
+      "expected_area": 0,
+      "covered_area": 0,
+      "error": 0
+    },
+    {
+      "baseline_front_triangle": 25,
+      "expected_area": 0,
+      "covered_area": 0,
+      "error": 0
+    }
+  ]
+}
