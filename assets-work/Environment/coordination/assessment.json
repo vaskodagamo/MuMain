@@ -1404,15 +1404,18 @@
       ]
     },
     "treatment": "texture-only treatment",
-    "remaining_problem": "Tall tuft shells cinch like tied brooms above solid flared polygonal bases; shrubs retain angular conical outlines. This group covers 530 placements.",
+    "remaining_problem": "Offline artistic and technical acceptance complete; new client alpha/depth/performance observation pending.",
     "priority": 1,
     "owner": "architecture / scrub",
     "branch": "codex/lorencia-q02-architecture",
     "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture",
-    "status": "in progress",
+    "status": "accepted",
     "baseline": "594b6db2 (scrub inputs unchanged from7b808473)",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
-    "commits": [],
+    "commits": [
+      "51679ab1",
+      "4b0ccd02"
+    ],
     "placement_count": 119,
     "placement_records": "../../World1/coordination/dependency-map.json#/models/Grass03/placements",
     "first_placement": {
@@ -1434,8 +1437,8 @@
     },
     "intended_improvement": "Rebuild selected silhouette curves and alpha-card arrangement using existing textures and each original bone; preserve clump footprints and overall bounds.",
     "assessment": "production",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Grass03/final-offline.png",
-    "artistic_gate_resolved": false
+    "evidence": "assets-work/World1/QualityPass02/Scrub01/Grass03/review/",
+    "artistic_gate_resolved": true
   },
   {
     "model": "Grass04",
@@ -1450,15 +1453,18 @@
       ]
     },
     "treatment": "texture-only treatment",
-    "remaining_problem": "Tall tuft shells cinch like tied brooms above solid flared polygonal bases; shrubs retain angular conical outlines. This group covers 530 placements.",
+    "remaining_problem": "Offline artistic and technical acceptance complete; new client alpha/depth/performance observation pending.",
     "priority": 1,
     "owner": "architecture / scrub",
     "branch": "codex/lorencia-q02-architecture",
     "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture",
-    "status": "in progress",
+    "status": "accepted",
     "baseline": "594b6db2 (scrub inputs unchanged from7b808473)",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
-    "commits": [],
+    "commits": [
+      "51679ab1",
+      "4b0ccd02"
+    ],
     "placement_count": 119,
     "placement_records": "../../World1/coordination/dependency-map.json#/models/Grass04/placements",
     "first_placement": {
@@ -1480,8 +1486,8 @@
     },
     "intended_improvement": "Rebuild selected silhouette curves and alpha-card arrangement using existing textures and each original bone; preserve clump footprints and overall bounds.",
     "assessment": "production",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Grass04/final-offline.png",
-    "artistic_gate_resolved": false
+    "evidence": "assets-work/World1/QualityPass02/Scrub01/Grass04/review/",
+    "artistic_gate_resolved": true
   },
   {
     "model": "Grass05",
@@ -1493,12 +1499,12 @@
       ]
     },
     "treatment": "texture-only treatment",
-    "remaining_problem": "Broad leaf tips and folded planes visibly form abrupt straight triangular bends, repeated across 399 placements.",
+    "remaining_problem": "Revised exported candidate under final independent technical and placement review; no game integration yet.",
     "priority": 2,
     "owner": "furniture / broadleaf",
     "branch": "codex/lorencia-q02-furniture",
     "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture",
-    "status": "in progress",
+    "status": "review",
     "baseline": "7b808473",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
     "commits": [],
@@ -1523,7 +1529,7 @@
     },
     "intended_improvement": "Replace abrupt creases with deliberate leaf arcs and tapered tips under same bounds/rig/UV material contract; compare reduced scale.",
     "assessment": "production",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Grass05/final-offline.png",
+    "evidence": "assets-work/World1/QualityPass02/Broadleaf01/Grass05/review/",
     "artistic_gate_resolved": false
   },
   {
@@ -1536,12 +1542,12 @@
       ]
     },
     "treatment": "texture-only treatment",
-    "remaining_problem": "Broad leaf tips and folded planes visibly form abrupt straight triangular bends, repeated across 399 placements.",
+    "remaining_problem": "Revised exported candidate under final independent technical and placement review; no game integration yet.",
     "priority": 2,
     "owner": "furniture / broadleaf",
     "branch": "codex/lorencia-q02-furniture",
     "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture",
-    "status": "in progress",
+    "status": "review",
     "baseline": "7b808473",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
     "commits": [],
@@ -1566,7 +1572,7 @@
     },
     "intended_improvement": "Replace abrupt creases with deliberate leaf arcs and tapered tips under same bounds/rig/UV material contract; compare reduced scale.",
     "assessment": "production",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Grass06/final-offline.png",
+    "evidence": "assets-work/World1/QualityPass02/Broadleaf01/Grass06/review/",
     "artistic_gate_resolved": false
   },
   {
@@ -1719,10 +1725,10 @@
     "treatment": "partial geometry/art treatment",
     "remaining_problem": "Large-screen buildings retain block parapets, razor-straight awning profiles and faceted shingle dome despite strong repainting.",
     "priority": 2,
-    "owner": "unclaimed",
-    "branch": null,
-    "worktree": null,
-    "status": "unclaimed",
+    "owner": "architecture",
+    "branch": "codex/lorencia-q02-architecture",
+    "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture",
+    "status": "in progress",
     "baseline": "7b808473",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
     "commits": [],
@@ -1820,10 +1826,10 @@
     "treatment": "partial geometry/art treatment",
     "remaining_problem": "Large-screen buildings retain block parapets, razor-straight awning profiles and faceted shingle dome despite strong repainting.",
     "priority": 2,
-    "owner": "unclaimed",
-    "branch": null,
-    "worktree": null,
-    "status": "unclaimed",
+    "owner": "architecture",
+    "branch": "codex/lorencia-q02-architecture",
+    "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture",
+    "status": "in progress",
     "baseline": "7b808473",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
     "commits": [],
@@ -1887,10 +1893,10 @@
     "treatment": "partial geometry/art treatment",
     "remaining_problem": "Large-screen buildings retain block parapets, razor-straight awning profiles and faceted shingle dome despite strong repainting.",
     "priority": 2,
-    "owner": "unclaimed",
-    "branch": null,
-    "worktree": null,
-    "status": "unclaimed",
+    "owner": "architecture",
+    "branch": "codex/lorencia-q02-architecture",
+    "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture",
+    "status": "in progress",
     "baseline": "7b808473",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
     "commits": [],
@@ -4441,15 +4447,18 @@
       ]
     },
     "treatment": "texture-only treatment",
-    "remaining_problem": "Tall tuft shells cinch like tied brooms above solid flared polygonal bases; shrubs retain angular conical outlines. This group covers 530 placements.",
+    "remaining_problem": "Offline artistic and technical acceptance complete; new client alpha/depth/performance observation pending.",
     "priority": 1,
     "owner": "architecture / scrub",
     "branch": "codex/lorencia-q02-architecture",
     "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture",
-    "status": "in progress",
+    "status": "accepted",
     "baseline": "594b6db2 (scrub inputs unchanged from7b808473)",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
-    "commits": [],
+    "commits": [
+      "51679ab1",
+      "4b0ccd02"
+    ],
     "placement_count": 42,
     "placement_records": "../../World1/coordination/dependency-map.json#/models/Tree09/placements",
     "first_placement": {
@@ -4471,8 +4480,8 @@
     },
     "intended_improvement": "Rebuild selected silhouette curves and alpha-card arrangement using existing textures and each original bone; preserve clump footprints and overall bounds.",
     "assessment": "production",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree09/final-offline.png",
-    "artistic_gate_resolved": false
+    "evidence": "assets-work/World1/QualityPass02/Scrub01/Tree09/review/",
+    "artistic_gate_resolved": true
   },
   {
     "model": "Tree10",
@@ -4484,15 +4493,18 @@
       ]
     },
     "treatment": "texture-only treatment",
-    "remaining_problem": "Tall tuft shells cinch like tied brooms above solid flared polygonal bases; shrubs retain angular conical outlines. This group covers 530 placements.",
+    "remaining_problem": "Offline artistic and technical acceptance complete; new client alpha/depth/performance observation pending.",
     "priority": 1,
     "owner": "architecture / scrub",
     "branch": "codex/lorencia-q02-architecture",
     "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture",
-    "status": "in progress",
+    "status": "accepted",
     "baseline": "594b6db2 (scrub inputs unchanged from7b808473)",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
-    "commits": [],
+    "commits": [
+      "51679ab1",
+      "4b0ccd02"
+    ],
     "placement_count": 250,
     "placement_records": "../../World1/coordination/dependency-map.json#/models/Tree10/placements",
     "first_placement": {
@@ -4514,8 +4526,8 @@
     },
     "intended_improvement": "Rebuild selected silhouette curves and alpha-card arrangement using existing textures and each original bone; preserve clump footprints and overall bounds.",
     "assessment": "production",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree10/final-offline.png",
-    "artistic_gate_resolved": false
+    "evidence": "assets-work/World1/QualityPass02/Scrub01/Tree10/review/",
+    "artistic_gate_resolved": true
   },
   {
     "model": "Tree11",

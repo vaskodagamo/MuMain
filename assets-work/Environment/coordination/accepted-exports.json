@@ -2,5 +2,9 @@
   "src/bin/Data/Object1/HouseWall01.bmd": "assets-work/World1/QualityPass02/Architecture01/HouseWall01/exports/HouseWall01.bmd",
   "src/bin/Data/Object1/HouseWall04.bmd": "assets-work/World1/QualityPass02/Architecture01/HouseWall04/exports/HouseWall04.bmd",
   "src/bin/Data/Object1/HouseWall05.bmd": "assets-work/World1/QualityPass02/Architecture01/HouseWall05/exports/HouseWall05.bmd",
-  "src/bin/Data/Object1/HouseWall06.bmd": "assets-work/World1/QualityPass02/Architecture01/HouseWall06/exports/HouseWall06.bmd"
+  "src/bin/Data/Object1/HouseWall06.bmd": "assets-work/World1/QualityPass02/Architecture01/HouseWall06/exports/HouseWall06.bmd",
+  "src/bin/Data/Object1/Tree09.bmd": "assets-work/World1/QualityPass02/Scrub01/Tree09/exports/Tree09.bmd",
+  "src/bin/Data/Object1/Tree10.bmd": "assets-work/World1/QualityPass02/Scrub01/Tree10/exports/Tree10.bmd",
+  "src/bin/Data/Object1/Grass03.bmd": "assets-work/World1/QualityPass02/Scrub01/Grass03/exports/Grass03.bmd",
+  "src/bin/Data/Object1/Grass04.bmd": "assets-work/World1/QualityPass02/Scrub01/Grass04/exports/Grass04.bmd"
 }

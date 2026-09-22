@@ -35,3 +35,7 @@ checkout uncommitted work. Owner fork git@github.com:vaskodagamo/MuMain.git is v
 focused pushes/draft PRs authorized; never upstream/force push or merge main. [Draft PR #12](https://github.com/vaskodagamo/MuMain/pull/12) published through da7f9bb3; no main merge. Baseline client success is user-reported; no personal client evidence.
 
 Scrub first experiment rejected: Tree10 has cross-tuft vertex-binding corruption from coincident local vertices; Tree09 too sparse, Grass03/04 show angular exposed cards. Artist revising shapes and checking full authored triangle correspondence before renders. No vegetation candidate installed.
+
+## Latest checkpoint: Scrub01
+
+Four scrub assets accepted/integrated at4b0ccd02 (worker51679ab1); final reviewer hashes verified against installed exports. Combined validation8changedBMDs/115modelsresolved. Architecture artist now owns House01/03/04 and QualityPass02/Houses01, alltextures frozen; follow next-houses-brief.md. Broadleaf Grass05/06 v2 has smooth long leaf arcs; final independent review after both actual placement clusters pending. Remaining production count17, plus5companion reviews and retained/whole-environment coherence gate.

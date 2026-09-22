@@ -487,3 +487,7 @@ User-reported baseline working in game remains distinct from this offline eviden
 masonry studies returned for revision because assembly gains did not justify added geometry.
 No later-map, engine, shared runtime, placement/collision or terrain changes. Current restart:
 assets-work/Environment/coordination/handoff.md.
+
+### 2026-09-22 — ASTRA scrub quality checkpoint
+
+2026-09-22: Scrub01 accepted offline and integrated4b0ccd02 from worker51679ab1. Tree09/10 continuous growth replaces pinched broom waists; Grass03/04 rounded connected crowns replace angular layered shells. Exactly8 game BMDs now differ from baseline; all115Object1 models resolve, frozen textures/protected paths unchanged. 530 scrub placements unchanged. Houses01 assigned to architecture (House01/03/04 only); Broadleaf01 final review pending. No new client verification or later-map work.
