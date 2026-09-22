@@ -16,13 +16,13 @@ All21 replacements independently accepted offline with packed sources, official 
 ## Active ownership and next actions
 Architecture worktree MuMain-q02-architecture / codex/lorencia-q02-architecture: owns ONLY Waterspout01 BMD and QualityPass02/Fountain02. Frozen textures. Edit actual dragon geometry in slot1; additional34 basin triangles there are protected. Preserve other3meshes, all21frames and water/particle interface. Follow next-statues-brief.md/evidence fountain section.
 
-Furniture worktree MuMain-q02-furniture / codex/lorencia-q02-furniture: owns ONLY HouseEtc01 and StoneMuWall02/03/04 BMDs plus QualityPass02/Masonry02. All textures frozen. First HouseEtc01 face-only prototype;8-unit continuous outer border, cap/side/contact surface proof and actual stack seams required. Follow next-masonry-brief.md including coordinator clarification. Expand only after prototype gains clear visual acceptance.
+Furniture worktree MuMain-q02-furniture / codex/lorencia-q02-furniture: rejected masonry studies are committed and published as fb734c0c, with no game-file changes. Read-only Dungeon readiness is complete; production waits for Lorencia acceptance.
 
-Reviewer: masonry prototype and fountain gates. Root alone maintains coordination and integrates accepted owned commits.
+Reviewer: fountain technical and visual gate. Root alone maintains coordination and integrates accepted owned commits.
 
-Five production assets remain: HouseEtc01, StoneMuWall02/03/04; Waterspout01. Four companion baselines retained by explicit rationale in companion-review.json. Additional76 retained baselines now have individualized acceptance in retention-gate.json. Coherence01 sampled five mixed neighborhoods; final remaining production gate still required. No later maps started.
+Only Waterspout01 remains unresolved. Twenty-one replacements and84 individually justified retained assets resolve105/106 Lorencia assets. Retention evidence is in companion-review.json, retention-gate.json and masonry-retention-review.json. Rejected masonry candidates are not counted as remakes. Coherence01 samples five mixed neighborhoods; fountain and final integrated acceptance remain pending. No later-map production has started.
 
-Masonry01 rejected study-only commit d6e85282 stays worker branch, NOT integrated. HouseEtc actual stacked seam failed; others lacked meaningful gain. Preserve exact connections, continue new interior-profile directions.
+Fountain normal diagnosis isolates three corners sharing a protected water normal. Preserving original connectivity fixes the rock normals; a read-only test with sharp water boundaries reduces the water error below the existing tolerance. The full export still needs to reproduce that result. Provisional art renders do not constitute acceptance.
 
 ## Operations
 Root executes stable worker bpy scripts using toolchain.json because inherited worker context Blender execution fails. Full access/approval never: do not pass sandbox_permissions. Set BLENDER and MU_BLENDER, MU_BMDCONV, BLENDER_USER_SCRIPTS and BLENDER_USER_CONFIG explicitly. Pure assembly processes use --factory-startup; do not mix final_evidence and library append in one process. Never interrupt user GUI Blender/client or alter shared runtime. Primary MuMain checkout unrelated edits untouched.
