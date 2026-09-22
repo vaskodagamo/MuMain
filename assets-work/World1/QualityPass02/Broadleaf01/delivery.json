@@ -1,0 +1,512 @@
+{
+  "Grass05": {
+    "status": "ACCEPTED_OFFLINE_INSTALLED_IN_ISOLATED_CHECKOUT",
+    "placements": 317,
+    "triangles": 640,
+    "original_triangles": 112,
+    "hashes": {
+      "source.blend": "38cebc18443e485f50bc3559483b0b312d8cce9d36f98c4604912bd910d767a8",
+      "exports/Grass05.bmd": "1f13a8c297a31afc6ffe1ab61f84b991e6c3cb8fa8096a967119995044d674e4",
+      "exports/tree_09.OZT": "cb9cf4565ffda802131cde6b53e64a66550c2949efbf3b123f2f73a00aa65349"
+    },
+    "source_contract": {
+      "per_root_bounds": {
+        "Box01": {
+          "before": [
+            [
+              -82.68360137939453,
+              -83.3582992553711,
+              0.2977980077266693
+            ],
+            [
+              69.78459930419922,
+              95.76709747314453,
+              86.22689819335938
+            ]
+          ],
+          "after": [
+            [
+              -82.68360137939453,
+              -83.3582992553711,
+              0.2977980077266693
+            ],
+            [
+              69.78459930419922,
+              95.76709747314453,
+              86.22689819335938
+            ]
+          ]
+        },
+        "Box02": {
+          "before": [
+            [
+              -167.84140014648438,
+              -135.8939971923828,
+              0.6552960276603699
+            ],
+            [
+              -41.1974983215332,
+              16.059616088867188,
+              76.03160095214844
+            ]
+          ],
+          "after": [
+            [
+              -167.84140014648438,
+              -135.8939971923828,
+              0.6552960276603699
+            ],
+            [
+              -41.1974983215332,
+              16.059616088867188,
+              76.03160095214844
+            ]
+          ]
+        },
+        "Box03": {
+          "before": [
+            [
+              36.336021423339844,
+              -67.1117172241211,
+              0.08516299724578857
+            ],
+            [
+              154.57281494140625,
+              61.6607666015625,
+              76.12860107421875
+            ]
+          ],
+          "after": [
+            [
+              36.336021423339844,
+              -67.1117172241211,
+              0.08516299724578857
+            ],
+            [
+              154.57281494140625,
+              61.6607666015625,
+              76.12860107421875
+            ]
+          ]
+        },
+        "Box04": {
+          "before": [
+            [
+              -136.8743896484375,
+              6.368893146514893,
+              -1.077510952949524
+            ],
+            [
+              14.356391906738281,
+              138.66891479492188,
+              47.05431365966797
+            ]
+          ],
+          "after": [
+            [
+              -136.8743896484375,
+              6.368893146514893,
+              -1.077510952949524
+            ],
+            [
+              14.356391906738281,
+              138.66891479492188,
+              47.05431365966797
+            ]
+          ]
+        }
+      },
+      "retained_root_tip_vertices": 64,
+      "max_control_vertex_distance": 0.0,
+      "control_contract": "Root and tip edge controls exact; directional extrema preserved, intermediary controls redesigned",
+      "triangles": 640,
+      "bounds_before": [
+        [
+          -167.84140014648438,
+          -135.8939971923828,
+          -1.077510952949524
+        ],
+        [
+          154.57281494140625,
+          138.66891479492188,
+          86.22689819335938
+        ]
+      ],
+      "bounds_after": [
+        [
+          -167.84140014648438,
+          -135.8939971923828,
+          -1.077510952949524
+        ],
+        [
+          154.57281494140625,
+          138.66891479492188,
+          86.22689819335938
+        ]
+      ],
+      "bone_order": [
+        "Box01",
+        "Box02",
+        "Box03",
+        "Box04"
+      ],
+      "actions": {
+        "Grass05_a00": {
+          "index": 0,
+          "lock": false
+        }
+      },
+      "leaves": [
+        {
+          "bone": "Box01",
+          "original_sections": 5,
+          "new_sections": 11
+        },
+        {
+          "bone": "Box01",
+          "original_sections": 4,
+          "new_sections": 11
+        },
+        {
+          "bone": "Box01",
+          "original_sections": 5,
+          "new_sections": 11
+        },
+        {
+          "bone": "Box01",
+          "original_sections": 4,
+          "new_sections": 11
+        },
+        {
+          "bone": "Box02",
+          "original_sections": 5,
+          "new_sections": 11
+        },
+        {
+          "bone": "Box02",
+          "original_sections": 4,
+          "new_sections": 11
+        },
+        {
+          "bone": "Box02",
+          "original_sections": 5,
+          "new_sections": 11
+        },
+        {
+          "bone": "Box02",
+          "original_sections": 4,
+          "new_sections": 11
+        },
+        {
+          "bone": "Box03",
+          "original_sections": 5,
+          "new_sections": 11
+        },
+        {
+          "bone": "Box03",
+          "original_sections": 4,
+          "new_sections": 11
+        },
+        {
+          "bone": "Box03",
+          "original_sections": 5,
+          "new_sections": 11
+        },
+        {
+          "bone": "Box03",
+          "original_sections": 4,
+          "new_sections": 11
+        },
+        {
+          "bone": "Box04",
+          "original_sections": 5,
+          "new_sections": 11
+        },
+        {
+          "bone": "Box04",
+          "original_sections": 4,
+          "new_sections": 11
+        },
+        {
+          "bone": "Box04",
+          "original_sections": 5,
+          "new_sections": 11
+        },
+        {
+          "bone": "Box04",
+          "original_sections": 4,
+          "new_sections": 11
+        }
+      ],
+      "texture": "tree_09.OZT frozen,256x512 RGBA",
+      "client_verified": false
+    },
+    "authored_export": {
+      "status": "PASS",
+      "maximum_position_error": 0.00014150418846886755,
+      "maximum_uv_error": 5.066394805908203e-07,
+      "triangles": 640,
+      "maximum_position_or_uv_error": 0.00014150418846886755,
+      "criteria": "Every triangle has same material, winding, bone ownership, positions and UV corners",
+      "position_tolerance": 0.0003,
+      "uv_tolerance": 1e-06,
+      "precision": "Six-decimal SMD Euler roundtrip and float32 coordinates: measured matrix delta 4.733e-7 over a 320-unit asset; bounded 0.0003 world-unit budget"
+    },
+    "client_verified": false
+  },
+  "Grass06": {
+    "status": "ACCEPTED_OFFLINE_INSTALLED_IN_ISOLATED_CHECKOUT",
+    "placements": 82,
+    "triangles": 640,
+    "original_triangles": 112,
+    "hashes": {
+      "source.blend": "461b9c185a71d3a504b2789003dcb6e6a10534314a38e62ba1d22559056b050e",
+      "exports/Grass06.bmd": "fc115c8c1ccaa3bf8410921513efedd98213f7e81c968ebe80379976839000d3",
+      "exports/tree_09.OZT": "cb9cf4565ffda802131cde6b53e64a66550c2949efbf3b123f2f73a00aa65349"
+    },
+    "source_contract": {
+      "per_root_bounds": {
+        "Box01": {
+          "before": [
+            [
+              -48.3036003112793,
+              -51.36349868774414,
+              1.0659029483795166
+            ],
+            [
+              75.40869903564453,
+              56.67649841308594,
+              60.738800048828125
+            ]
+          ],
+          "after": [
+            [
+              -48.3036003112793,
+              -51.36349868774414,
+              1.0659029483795166
+            ],
+            [
+              75.40869903564453,
+              56.67649841308594,
+              60.738800048828125
+            ]
+          ]
+        },
+        "Box02": {
+          "before": [
+            [
+              -161.83990478515625,
+              -37.23771667480469,
+              1.3140870332717896
+            ],
+            [
+              -60.349998474121094,
+              47.034507751464844,
+              53.65880584716797
+            ]
+          ],
+          "after": [
+            [
+              -161.83990478515625,
+              -37.23771667480469,
+              1.3140870332717896
+            ],
+            [
+              -60.349998474121094,
+              47.034507751464844,
+              53.65880584716797
+            ]
+          ]
+        },
+        "Box03": {
+          "before": [
+            [
+              20.481279373168945,
+              -41.212921142578125,
+              0.9181749820709229
+            ],
+            [
+              102.59017944335938,
+              48.21244430541992,
+              53.72610092163086
+            ]
+          ],
+          "after": [
+            [
+              20.481279373168945,
+              -41.212921142578125,
+              0.9181749820709229
+            ],
+            [
+              102.59017944335938,
+              48.21244430541992,
+              53.72610092163086
+            ]
+          ]
+        },
+        "Box04": {
+          "before": [
+            [
+              -112.97549438476562,
+              -33.57460403442383,
+              0.11079400032758713
+            ],
+            [
+              -7.954113006591797,
+              58.30040740966797,
+              33.53571319580078
+            ]
+          ],
+          "after": [
+            [
+              -112.97549438476562,
+              -33.57460403442383,
+              0.11079400032758713
+            ],
+            [
+              -7.954113006591797,
+              58.30040740966797,
+              33.53571319580078
+            ]
+          ]
+        }
+      },
+      "retained_root_tip_vertices": 64,
+      "max_control_vertex_distance": 0.0,
+      "control_contract": "Root and tip edge controls exact; directional extrema preserved, intermediary controls redesigned",
+      "triangles": 640,
+      "bounds_before": [
+        [
+          -161.83990478515625,
+          -51.36349868774414,
+          0.11079400032758713
+        ],
+        [
+          102.59017944335938,
+          58.30040740966797,
+          60.738800048828125
+        ]
+      ],
+      "bounds_after": [
+        [
+          -161.83990478515625,
+          -51.36349868774414,
+          0.11079400032758713
+        ],
+        [
+          102.59017944335938,
+          58.30040740966797,
+          60.738800048828125
+        ]
+      ],
+      "bone_order": [
+        "Box01",
+        "Box02",
+        "Box03",
+        "Box04"
+      ],
+      "actions": {
+        "Grass06_a00": {
+          "index": 0,
+          "lock": false
+        }
+      },
+      "leaves": [
+        {
+          "bone": "Box01",
+          "original_sections": 5,
+          "new_sections": 11
+        },
+        {
+          "bone": "Box01",
+          "original_sections": 4,
+          "new_sections": 11
+        },
+        {
+          "bone": "Box01",
+          "original_sections": 5,
+          "new_sections": 11
+        },
+        {
+          "bone": "Box01",
+          "original_sections": 4,
+          "new_sections": 11
+        },
+        {
+          "bone": "Box02",
+          "original_sections": 5,
+          "new_sections": 11
+        },
+        {
+          "bone": "Box02",
+          "original_sections": 4,
+          "new_sections": 11
+        },
+        {
+          "bone": "Box02",
+          "original_sections": 5,
+          "new_sections": 11
+        },
+        {
+          "bone": "Box02",
+          "original_sections": 4,
+          "new_sections": 11
+        },
+        {
+          "bone": "Box03",
+          "original_sections": 5,
+          "new_sections": 11
+        },
+        {
+          "bone": "Box03",
+          "original_sections": 4,
+          "new_sections": 11
+        },
+        {
+          "bone": "Box03",
+          "original_sections": 5,
+          "new_sections": 11
+        },
+        {
+          "bone": "Box03",
+          "original_sections": 4,
+          "new_sections": 11
+        },
+        {
+          "bone": "Box04",
+          "original_sections": 5,
+          "new_sections": 11
+        },
+        {
+          "bone": "Box04",
+          "original_sections": 4,
+          "new_sections": 11
+        },
+        {
+          "bone": "Box04",
+          "original_sections": 5,
+          "new_sections": 11
+        },
+        {
+          "bone": "Box04",
+          "original_sections": 4,
+          "new_sections": 11
+        }
+      ],
+      "texture": "tree_09.OZT frozen,256x512 RGBA",
+      "client_verified": false
+    },
+    "authored_export": {
+      "status": "PASS",
+      "maximum_position_error": 0.00010264300573023765,
+      "maximum_uv_error": 5.066394805908203e-07,
+      "triangles": 640,
+      "maximum_position_or_uv_error": 0.00010264300573023765,
+      "criteria": "Every triangle has same material, winding, bone ownership, positions and UV corners",
+      "position_tolerance": 0.0003,
+      "uv_tolerance": 1e-06,
+      "precision": "Six-decimal SMD Euler roundtrip and float32 coordinates: measured matrix delta 4.733e-7 over a 320-unit asset; bounded 0.0003 world-unit budget"
+    },
+    "client_verified": false
+  }
+}

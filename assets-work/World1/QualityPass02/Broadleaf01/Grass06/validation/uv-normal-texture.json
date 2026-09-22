@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "triangles": 640,
+  "minimum_area": 0.012646242938658701,
+  "minimum_uv_area": 1.2462499999998627e-05,
+  "minimum_corner_normal_dot_face": 0.716505489731747,
+  "texture_sha256": "cb9cf4565ffda802131cde6b53e64a66550c2949efbf3b123f2f73a00aa65349",
+  "export_sha256": "fc115c8c1ccaa3bf8410921513efedd98213f7e81c968ebe80379976839000d3"
+}
