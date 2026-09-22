@@ -27,3 +27,6 @@ Accept only clear visual gains and complete official export/source, rig/action, 
 Draft PR12: https://github.com/vaskodagamo/MuMain/pull/12, ownerfork git@github.com:vaskodagamo/MuMain.git verified. Pushdraft updates authorized; nevermerge/force/upstream. Preserve protected Beer01/terrain and Grass02/Tree12/Tree13 originals.
 
 Latest production: House01/03 secondcandidate technicalPASS and directionprovisionallyapproved; actualneighbor/effect assemblies running. House04 firstcandidate stoppedby40frame localmotion Eulercheck, investigationongoing. Wells01/03/04 mouth/throat candidates directionprovisionallyapproved; innerUVstreaks beingrefined,02rimroofinprogress. InheritedWell01/04normalaliases independentlymeasuredzero worlddirectionerror (safe). Scrub baseline reproductionfix1259e4f8 validatedprepareafterinstallation.
+
+## 2026-09-23 house checkpoint
+Houses01 integrated7be0eaa3; all3accepted, total13BMDreplacements,115modeltexturesresolve. Architecture now owns ONLY StoneStatue01/03+SteelStatue01 and QualityPass02/Statues02, alltextures frozeninitially, next-statues-brief.md. Wells02 all4candidates atfinalreview aftercanonicalpotlips and physicalroofboards; allactualplacements rendered, protectedroofundersides exact. Remaining13production afterhouses (4masonry,3statues,4wells,1fountain,1bonfire); retained/coherencegate stillpending.

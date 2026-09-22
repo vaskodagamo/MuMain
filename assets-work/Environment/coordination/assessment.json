@@ -1729,15 +1729,18 @@
       ]
     },
     "treatment": "partial geometry/art treatment",
-    "remaining_problem": "Large-screen buildings retain block parapets, razor-straight awning profiles and faceted shingle dome despite strong repainting.",
+    "remaining_problem": "Independently accepted structural/coursed-roof refinement; client observation pending.",
     "priority": 2,
     "owner": "architecture",
     "branch": "codex/lorencia-q02-architecture",
     "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture",
-    "status": "in progress",
+    "status": "accepted",
     "baseline": "7b808473",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
-    "commits": [],
+    "commits": [
+      "32a1a24b",
+      "7be0eaa3"
+    ],
     "placement_count": 2,
     "placement_records": "../../World1/coordination/dependency-map.json#/models/House01/placements",
     "first_placement": {
@@ -1760,7 +1763,7 @@
     "intended_improvement": "Refine cornices and awning board thickness; improve roof course profile and curvature without changing openings or effect slots. Freeze broad shared texture groups.",
     "assessment": "production",
     "evidence": "../../../assets-work/World1/coordination/final-inspection/House01/final-offline.png",
-    "artistic_gate_resolved": false
+    "artistic_gate_resolved": true
   },
   {
     "model": "House02",
@@ -1830,15 +1833,18 @@
       ]
     },
     "treatment": "partial geometry/art treatment",
-    "remaining_problem": "Large-screen buildings retain block parapets, razor-straight awning profiles and faceted shingle dome despite strong repainting.",
+    "remaining_problem": "Independently accepted structural/coursed-roof refinement; client observation pending.",
     "priority": 2,
     "owner": "architecture",
     "branch": "codex/lorencia-q02-architecture",
     "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture",
-    "status": "in progress",
+    "status": "accepted",
     "baseline": "7b808473",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
-    "commits": [],
+    "commits": [
+      "32a1a24b",
+      "7be0eaa3"
+    ],
     "placement_count": 1,
     "placement_records": "../../World1/coordination/dependency-map.json#/models/House03/placements",
     "first_placement": {
@@ -1861,7 +1867,7 @@
     "intended_improvement": "Refine cornices and awning board thickness; improve roof course profile and curvature without changing openings or effect slots. Freeze broad shared texture groups.",
     "assessment": "production",
     "evidence": "../../../assets-work/World1/coordination/final-inspection/House03/final-offline.png",
-    "artistic_gate_resolved": false
+    "artistic_gate_resolved": true
   },
   {
     "model": "House04",
@@ -1897,15 +1903,18 @@
       ]
     },
     "treatment": "partial geometry/art treatment",
-    "remaining_problem": "Large-screen buildings retain block parapets, razor-straight awning profiles and faceted shingle dome despite strong repainting.",
+    "remaining_problem": "Independently accepted structural/coursed-roof refinement; client observation pending.",
     "priority": 2,
     "owner": "architecture",
     "branch": "codex/lorencia-q02-architecture",
     "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture",
-    "status": "in progress",
+    "status": "accepted",
     "baseline": "7b808473",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
-    "commits": [],
+    "commits": [
+      "32a1a24b",
+      "7be0eaa3"
+    ],
     "placement_count": 1,
     "placement_records": "../../World1/coordination/dependency-map.json#/models/House04/placements",
     "first_placement": {
@@ -1928,7 +1937,7 @@
     "intended_improvement": "Refine cornices and awning board thickness; improve roof course profile and curvature without changing openings or effect slots. Freeze broad shared texture groups.",
     "assessment": "production",
     "evidence": "../../../assets-work/World1/coordination/final-inspection/House04/final-offline.png",
-    "artistic_gate_resolved": false
+    "artistic_gate_resolved": true
   },
   {
     "model": "House05",
@@ -2698,10 +2707,10 @@
     "treatment": "partial geometry/art treatment",
     "remaining_problem": "Pillar and memorial silhouettes remain hard slab profiles; angel wings/body have severe angular transitions beneath ornate painting.",
     "priority": 2,
-    "owner": "unclaimed",
-    "branch": null,
-    "worktree": null,
-    "status": "unclaimed",
+    "owner": "architecture",
+    "branch": "codex/lorencia-q02-architecture",
+    "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture",
+    "status": "in progress",
     "baseline": "7b808473",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
     "commits": [],
@@ -3299,10 +3308,10 @@
     "treatment": "partial geometry/art treatment",
     "remaining_problem": "Pillar and memorial silhouettes remain hard slab profiles; angel wings/body have severe angular transitions beneath ornate painting.",
     "priority": 2,
-    "owner": "unclaimed",
-    "branch": null,
-    "worktree": null,
-    "status": "unclaimed",
+    "owner": "architecture",
+    "branch": "codex/lorencia-q02-architecture",
+    "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture",
+    "status": "in progress",
     "baseline": "7b808473",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
     "commits": [],
@@ -3388,10 +3397,10 @@
     "treatment": "texture-only treatment / essentially original geometry",
     "remaining_problem": "Pillar and memorial silhouettes remain hard slab profiles; angel wings/body have severe angular transitions beneath ornate painting.",
     "priority": 2,
-    "owner": "unclaimed",
-    "branch": null,
-    "worktree": null,
-    "status": "unclaimed",
+    "owner": "architecture",
+    "branch": "codex/lorencia-q02-architecture",
+    "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture",
+    "status": "in progress",
     "baseline": "7b808473",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
     "commits": [],
