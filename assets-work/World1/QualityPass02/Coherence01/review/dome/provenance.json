@@ -1,0 +1,609 @@
+{
+  "records": [
+    {
+      "name": "Fence03",
+      "index": 5,
+      "position": [
+        11800.0,
+        11600.0,
+        165.00001525878906
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        2340.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        118.0,
+        116.0
+      ]
+    },
+    {
+      "name": "Fence03",
+      "index": 6,
+      "position": [
+        11600.0,
+        11600.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        2340.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        116.0,
+        116.0
+      ]
+    },
+    {
+      "name": "Fence03",
+      "index": 7,
+      "position": [
+        11400.0,
+        11600.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        2340.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        114.0,
+        116.0
+      ]
+    },
+    {
+      "name": "Fence04",
+      "index": 1,
+      "position": [
+        11950.0,
+        11600.0,
+        165.0000457763672
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        180.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        119.5,
+        116.0
+      ]
+    },
+    {
+      "name": "Fence04",
+      "index": 2,
+      "position": [
+        12050.0,
+        11600.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1260.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        120.5,
+        116.0
+      ]
+    },
+    {
+      "name": "FireLight02",
+      "index": 3,
+      "position": [
+        11283.06640625,
+        11884.4453125,
+        279.9998474121094
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        450.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        112.8306640625,
+        118.844453125
+      ]
+    },
+    {
+      "name": "Grass04",
+      "index": 61,
+      "position": [
+        11850.0,
+        11050.0,
+        164.99998474121094
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1080.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        118.5,
+        110.5
+      ]
+    },
+    {
+      "name": "Grass04",
+      "index": 62,
+      "position": [
+        11900.0,
+        11450.0,
+        165.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1080.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        119.0,
+        114.5
+      ]
+    },
+    {
+      "name": "House04",
+      "index": 0,
+      "position": [
+        11550.0,
+        11300.0,
+        165.00003051757812
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        2160.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        115.5,
+        113.0
+      ]
+    },
+    {
+      "name": "HouseEtc03",
+      "index": 4,
+      "position": [
+        11700.0,
+        11000.0,
+        164.99998474121094
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1890.0
+      ],
+      "scale": 0.5600004196166992,
+      "tile": [
+        117.0,
+        110.0
+      ]
+    },
+    {
+      "name": "HouseEtc03",
+      "index": 5,
+      "position": [
+        11850.0,
+        10900.0,
+        165.00003051757812
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        2280.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        118.5,
+        109.0
+      ]
+    },
+    {
+      "name": "Sign01",
+      "index": 0,
+      "position": [
+        11647.5810546875,
+        11376.6376953125,
+        315.0000305175781
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1260.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        116.475810546875,
+        113.766376953125
+      ]
+    },
+    {
+      "name": "SteelWall02",
+      "index": 1,
+      "position": [
+        12000.0,
+        11600.0,
+        165.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        900.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        120.0,
+        116.0
+      ]
+    },
+    {
+      "name": "SteelWall02",
+      "index": 2,
+      "position": [
+        11600.0,
+        11600.0,
+        165.00003051757812
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        900.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        116.0,
+        116.0
+      ]
+    },
+    {
+      "name": "SteelWall03",
+      "index": 1,
+      "position": [
+        11350.0,
+        11600.0,
+        165.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1080.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        113.5,
+        116.0
+      ]
+    },
+    {
+      "name": "StoneMuWall02",
+      "index": 3,
+      "position": [
+        11250.0,
+        11050.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1350.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        112.5,
+        110.5
+      ]
+    },
+    {
+      "name": "StoneMuWall02",
+      "index": 6,
+      "position": [
+        11250.0,
+        11750.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1350.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        112.5,
+        117.5
+      ]
+    },
+    {
+      "name": "StoneMuWall03",
+      "index": 3,
+      "position": [
+        11250.0,
+        10850.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1350.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        112.5,
+        108.5
+      ]
+    },
+    {
+      "name": "StoneMuWall03",
+      "index": 6,
+      "position": [
+        11250.0,
+        11550.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1350.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        112.5,
+        115.5
+      ]
+    },
+    {
+      "name": "StoneMuWall03",
+      "index": 7,
+      "position": [
+        11250.0,
+        11250.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1350.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        112.5,
+        112.5
+      ]
+    },
+    {
+      "name": "Tree12",
+      "index": 0,
+      "position": [
+        11600.0,
+        10850.0,
+        165.00003051757812
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1500.0
+      ],
+      "scale": 0.6000003814697266,
+      "tile": [
+        116.0,
+        108.5
+      ]
+    },
+    {
+      "name": "Tree13",
+      "index": 0,
+      "position": [
+        11450.0,
+        10850.0,
+        164.99998474121094
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1470.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        114.5,
+        108.5
+      ]
+    }
+  ],
+  "sources": {
+    "Fence03": {
+      "baseline_blend": "assets-work/World1/coordination/final-inspection/Fence03/import.blend",
+      "integrated_blend": "assets-work/World1/coordination/final-inspection/Fence03/import.blend",
+      "baseline_blend_sha256": "f856839376c194c045941426ad333696036aa2163be3397ec57b10894d062eb5",
+      "integrated_blend_sha256": "f856839376c194c045941426ad333696036aa2163be3397ec57b10894d062eb5",
+      "baseline_game_files": {
+        "src/bin/Data/Object1/Fence03.bmd": "3c4507f510bda323fda43775559499ec028a8c58f797761459fa84896216a07c",
+        "src/bin/Data/Object1/joint.OZJ": "ab1b30fc23a5d937dd33434f4014d0c036d56e6c4f74583e0c4c7b795631fb15"
+      },
+      "integrated_bmd_sha256": "3c4507f510bda323fda43775559499ec028a8c58f797761459fa84896216a07c"
+    },
+    "Fence04": {
+      "baseline_blend": "assets-work/World1/coordination/final-inspection/Fence04/import.blend",
+      "integrated_blend": "assets-work/World1/coordination/final-inspection/Fence04/import.blend",
+      "baseline_blend_sha256": "ea85dbec65bdf18718f4f7abe7524bf36a3649a28cc36d8d57d48bad09995902",
+      "integrated_blend_sha256": "ea85dbec65bdf18718f4f7abe7524bf36a3649a28cc36d8d57d48bad09995902",
+      "baseline_game_files": {
+        "src/bin/Data/Object1/Fence04.bmd": "45717fae749fb663b25a6431bd25fc81379200419c5c4cc08a409736da31ce9f",
+        "src/bin/Data/Object1/joint.OZJ": "ab1b30fc23a5d937dd33434f4014d0c036d56e6c4f74583e0c4c7b795631fb15"
+      },
+      "integrated_bmd_sha256": "45717fae749fb663b25a6431bd25fc81379200419c5c4cc08a409736da31ce9f"
+    },
+    "FireLight02": {
+      "baseline_blend": "assets-work/World1/coordination/final-inspection/FireLight02/import.blend",
+      "integrated_blend": "assets-work/World1/coordination/final-inspection/FireLight02/import.blend",
+      "baseline_blend_sha256": "4671d39bed51b5a67ac799f913fa1b60b9e27fe5a7ce1b2cdcaca1904fde9bfb",
+      "integrated_blend_sha256": "4671d39bed51b5a67ac799f913fa1b60b9e27fe5a7ce1b2cdcaca1904fde9bfb",
+      "baseline_game_files": {
+        "src/bin/Data/Object1/FireLight02.bmd": "ec0536c70b842499803e762b0420a7dd07af693ab0a58f9d050d71a7617011c2",
+        "src/bin/Data/Object1/tile_02.OZJ": "428d88339fd1c04b6d153e33a1ed5a4a03d753130271e11fbf62f68564dfadcf",
+        "src/bin/Data/Object1/fire_light_01.OZT": "c0830981259f80dadfd79269ddec829742bdfda21874ab867b6b646242ba6ecb",
+        "src/bin/Data/Object1/copra_gate.OZJ": "786ddb0a32e0eab0f1d05953e51db11715f0a6ed1399d475a2ddbac5a2ed66e3"
+      },
+      "integrated_bmd_sha256": "ec0536c70b842499803e762b0420a7dd07af693ab0a58f9d050d71a7617011c2"
+    },
+    "Grass04": {
+      "baseline_blend": "assets-work/World1/coordination/final-inspection/Grass04/import.blend",
+      "integrated_blend": "assets-work/World1/QualityPass02/Scrub01/Grass04/validation/reimported.blend",
+      "baseline_blend_sha256": "578e011f362fdcc4d1401e28e2e74d08ba5bd46ace6b0c6a4c9ad56eeaa02b38",
+      "integrated_blend_sha256": "f29d2fba27731b6344a25484f8860b4b3a3b5609e0d853d0df2623492c5e7045",
+      "baseline_game_files": {
+        "src/bin/Data/Object1/Grass04.bmd": "48cbd9087f3197a701bb5e8c42698d2b9bb48bb1d68d7ddcc04e1335eb2c9c5b",
+        "src/bin/Data/Object1/tree_01.OZT": "8cf7925f6ded30b83a2ecf6856617b5c823e5abb7aaccea7acb73fc7403ea0d6",
+        "src/bin/Data/Object1/tree_02.OZT": "472a7d0305c6af309c431cd62c8adc8301a16ef8d97499ef058dd87282b7a4be"
+      },
+      "integrated_bmd_sha256": "c4f68a1ff5bb6a5ac7228eb5d13232b9fd1db737f5428210600860b04dd86fe8"
+    },
+    "House04": {
+      "baseline_blend": "assets-work/World1/coordination/final-inspection/House04/import.blend",
+      "integrated_blend": "assets-work/World1/QualityPass02/Houses01/House04/validation/reimported.blend",
+      "baseline_blend_sha256": "655858ca0c8da78ceb214d7f710b97bcc2b4601fe7b5c26e3da6d6bef75870a6",
+      "integrated_blend_sha256": "0523bff76ffd107371604e92b7d1b9840386c82517388effefdb977ee6037757",
+      "baseline_game_files": {
+        "src/bin/Data/Object1/House04.bmd": "a1c4950b46c6a4c466a680d0be3d8ade35a4982b0665b1ce53b68e41e62219fa",
+        "src/bin/Data/Object1/tile_02.OZJ": "428d88339fd1c04b6d153e33a1ed5a4a03d753130271e11fbf62f68564dfadcf",
+        "src/bin/Data/Object1/tile_wood01.OZJ": "51537840533e1c755569d3b57d9bea468353208c669daa2baeb2a421c41bf192",
+        "src/bin/Data/Object1/tile_house01.OZJ": "c06449901b08eafba82b4d035972740cc3e454d730343065417644f3fa8a1a03",
+        "src/bin/Data/Object1/tile_ston04.OZJ": "a1a75b6fbf236d8747cb2e27555d871253cff7d2e48304226f0b68dbc83fa2f9",
+        "src/bin/Data/Object1/tile_wood03.OZJ": "080c832a287c14bc571e5f6bee02a3e1f5e668cd36ec2fe45622c682f12d245b",
+        "src/bin/Data/Object1/tile_wood02.OZJ": "1e829e6bc9af60739335ec85fc307d2c17806700e6d95f8845b7da78c4532eda",
+        "src/bin/Data/Object1/tile_windows01.OZJ": "ac20b7b25abeda1fb515b55c9d8d9e2bb0064f6bc1652f6862a7ac1466969367",
+        "src/bin/Data/Object1/bridge_01.OZJ": "0447ac5d335b4fd530ac58fb7fce35a3123055f7107d0813c749d36385c5b1bc",
+        "src/bin/Data/Object1/tile_space01.OZJ": "3ec6d88e703a4ade939bbb96ae538d5ac71bb00ff5aeac0b3e9d11bcc26a6e82"
+      },
+      "integrated_bmd_sha256": "6c040330a352cac50818f05a3da434c8c6623b8ab7b75cfbc9b722d2d411dcc5"
+    },
+    "HouseEtc03": {
+      "baseline_blend": "assets-work/World1/coordination/final-inspection/HouseEtc03/import.blend",
+      "integrated_blend": "assets-work/World1/coordination/final-inspection/HouseEtc03/import.blend",
+      "baseline_blend_sha256": "a0b61e5772bf9cd3ba449d70f72bd02088b2c78de316f7cc691146e3cb98f564",
+      "integrated_blend_sha256": "a0b61e5772bf9cd3ba449d70f72bd02088b2c78de316f7cc691146e3cb98f564",
+      "baseline_game_files": {
+        "src/bin/Data/Object1/HouseEtc03.bmd": "78e0ddb7630d6eb077c6b3b79287fc87cff5be4f5754c571c407a1d06b7d1f53",
+        "src/bin/Data/Object1/steel_barred_a.OZT": "6a362e7e813e3656e6598b9239cd6094381a48bf2f4a62f706c8f9b2151997a3",
+        "src/bin/Data/Object1/steel_barred_door.OZT": "36f41caa9871ef74ddd8cbe51798ba258ab77cd1db87d90da23d4cf876bdf741"
+      },
+      "integrated_bmd_sha256": "78e0ddb7630d6eb077c6b3b79287fc87cff5be4f5754c571c407a1d06b7d1f53"
+    },
+    "Sign01": {
+      "baseline_blend": "assets-work/World1/coordination/final-inspection/Sign01/import.blend",
+      "integrated_blend": "assets-work/World1/coordination/final-inspection/Sign01/import.blend",
+      "baseline_blend_sha256": "7af91549e33053c16fa5e878008e29558a0ae465dad6ca74dbf4c24458e10ff2",
+      "integrated_blend_sha256": "7af91549e33053c16fa5e878008e29558a0ae465dad6ca74dbf4c24458e10ff2",
+      "baseline_game_files": {
+        "src/bin/Data/Object1/Sign01.bmd": "e319480ee29feebf6a64862407dece3eae3ea0cc24a951b8f57695bef2034f70",
+        "src/bin/Data/Object1/notice.OZJ": "85e028c06cee35c5ba6334b9613a5a839df9ffff20d58a4ab567bf793290416f",
+        "src/bin/Data/Object1/signboard.OZT": "c62e1b18d97e75000ee4f5a071aff9858c8449187404dfabff927947a8883fa9",
+        "src/bin/Data/Object1/doorknob.OZT": "1f0413df12aa7ef21fdea28fda3c322abed0f28d4837b40ead3ba67a246afb84"
+      },
+      "integrated_bmd_sha256": "e319480ee29feebf6a64862407dece3eae3ea0cc24a951b8f57695bef2034f70"
+    },
+    "SteelWall02": {
+      "baseline_blend": "assets-work/World1/coordination/final-inspection/SteelWall02/import.blend",
+      "integrated_blend": "assets-work/World1/coordination/final-inspection/SteelWall02/import.blend",
+      "baseline_blend_sha256": "614013e9153b137174c9f645a018f4a5b8df9ba7a40951ab9cf7762129c32ea4",
+      "integrated_blend_sha256": "614013e9153b137174c9f645a018f4a5b8df9ba7a40951ab9cf7762129c32ea4",
+      "baseline_game_files": {
+        "src/bin/Data/Object1/SteelWall02.bmd": "5425434423f7025a2be0e0eb7cbc4400ccb008595333721dd8f7b751e965d968",
+        "src/bin/Data/Object1/steel_barred_b.OZJ": "18fb54247b0dc08f4dfe2daab5f9f4edfde880513d0ed597e449e58efafd8087",
+        "src/bin/Data/Object1/steel_barred_a.OZT": "6a362e7e813e3656e6598b9239cd6094381a48bf2f4a62f706c8f9b2151997a3"
+      },
+      "integrated_bmd_sha256": "5425434423f7025a2be0e0eb7cbc4400ccb008595333721dd8f7b751e965d968"
+    },
+    "SteelWall03": {
+      "baseline_blend": "assets-work/World1/coordination/final-inspection/SteelWall03/import.blend",
+      "integrated_blend": "assets-work/World1/coordination/final-inspection/SteelWall03/import.blend",
+      "baseline_blend_sha256": "c9ac6b3b5b78cbf3cfec73de71d7e9544e2588e7c3475eca58c2f7016336e681",
+      "integrated_blend_sha256": "c9ac6b3b5b78cbf3cfec73de71d7e9544e2588e7c3475eca58c2f7016336e681",
+      "baseline_game_files": {
+        "src/bin/Data/Object1/SteelWall03.bmd": "0ba89db4e0d966a7f4115825fd1c81ed11d020886b7f127dc7850efe3828bd23",
+        "src/bin/Data/Object1/steel_barred_b.OZJ": "18fb54247b0dc08f4dfe2daab5f9f4edfde880513d0ed597e449e58efafd8087",
+        "src/bin/Data/Object1/steel_barred_a.OZT": "6a362e7e813e3656e6598b9239cd6094381a48bf2f4a62f706c8f9b2151997a3"
+      },
+      "integrated_bmd_sha256": "0ba89db4e0d966a7f4115825fd1c81ed11d020886b7f127dc7850efe3828bd23"
+    },
+    "StoneMuWall02": {
+      "baseline_blend": "assets-work/World1/coordination/final-inspection/StoneMuWall02/import.blend",
+      "integrated_blend": "assets-work/World1/coordination/final-inspection/StoneMuWall02/import.blend",
+      "baseline_blend_sha256": "f99967b62254879eff89c6033fcadf23ae1e0fd4b665129be648e34217d18ce8",
+      "integrated_blend_sha256": "f99967b62254879eff89c6033fcadf23ae1e0fd4b665129be648e34217d18ce8",
+      "baseline_game_files": {
+        "src/bin/Data/Object1/StoneMuWall02.bmd": "71871c76baa85db5b0e8d4017ee0a5c797eeb4897bf14dfa2129da19264ea4cd",
+        "src/bin/Data/Object1/c_wall06.OZJ": "81c037340624b795b295c58071bc26f66f785c20be11cddfd304e585b10c77f4",
+        "src/bin/Data/Object1/c_wall05.OZJ": "e2890842d739f4fa2010e2a90d4af1e368a97bf2028d26c4e15dac0030e05083",
+        "src/bin/Data/Object1/c_wall04.OZJ": "c7ba893ef3542cb9bb265ef7735c1d7d2c2bf58f7284d8cff8f0940860828ed3"
+      },
+      "integrated_bmd_sha256": "71871c76baa85db5b0e8d4017ee0a5c797eeb4897bf14dfa2129da19264ea4cd"
+    },
+    "StoneMuWall03": {
+      "baseline_blend": "assets-work/World1/coordination/final-inspection/StoneMuWall03/import.blend",
+      "integrated_blend": "assets-work/World1/coordination/final-inspection/StoneMuWall03/import.blend",
+      "baseline_blend_sha256": "bf062ed60c5394887bb68e8bf50524a279da2ece9496adbbd26975a65b688289",
+      "integrated_blend_sha256": "bf062ed60c5394887bb68e8bf50524a279da2ece9496adbbd26975a65b688289",
+      "baseline_game_files": {
+        "src/bin/Data/Object1/StoneMuWall03.bmd": "da3246175a2f50993de1f8b17aa9483165b389021f871145cec7ef37f7ee608a",
+        "src/bin/Data/Object1/c_wall04.OZJ": "c7ba893ef3542cb9bb265ef7735c1d7d2c2bf58f7284d8cff8f0940860828ed3",
+        "src/bin/Data/Object1/c_wall06.OZJ": "81c037340624b795b295c58071bc26f66f785c20be11cddfd304e585b10c77f4"
+      },
+      "integrated_bmd_sha256": "da3246175a2f50993de1f8b17aa9483165b389021f871145cec7ef37f7ee608a"
+    },
+    "Tree12": {
+      "baseline_blend": "assets-work/World1/coordination/final-inspection/Tree12/import.blend",
+      "integrated_blend": "assets-work/World1/coordination/final-inspection/Tree12/import.blend",
+      "baseline_blend_sha256": "6c30b1008404a4e9acafea8456738cf40b580f173d079d0f05ad7baebd024e18",
+      "integrated_blend_sha256": "6c30b1008404a4e9acafea8456738cf40b580f173d079d0f05ad7baebd024e18",
+      "baseline_game_files": {
+        "src/bin/Data/Object1/Tree12.bmd": "f2c6dbc600ebb76c5af82198699ffe83bfb532ba5db0a6f805efb4425545f502",
+        "src/bin/Data/Object1/tree_01.OZJ": "87aecaa23b8ba3975b8b80eb19dc391f716a6123653a578eb38babff3a82cf8a",
+        "src/bin/Data/Object1/tree_04.OZT": "78ab37edb53ab4a99eb3c3d609b33233a2314f154f1c847fa23d9ea563a1b819"
+      },
+      "integrated_bmd_sha256": "f2c6dbc600ebb76c5af82198699ffe83bfb532ba5db0a6f805efb4425545f502"
+    },
+    "Tree13": {
+      "baseline_blend": "assets-work/World1/coordination/final-inspection/Tree13/import.blend",
+      "integrated_blend": "assets-work/World1/coordination/final-inspection/Tree13/import.blend",
+      "baseline_blend_sha256": "412f856bf15c012d03338861a40b3e37f9b65e9a1df67516ea03b260440a23a8",
+      "integrated_blend_sha256": "412f856bf15c012d03338861a40b3e37f9b65e9a1df67516ea03b260440a23a8",
+      "baseline_game_files": {
+        "src/bin/Data/Object1/Tree13.bmd": "54fa5331f342977f13dba3e586db8e320c15d4476f30d8ba19369ad3372cf4bf",
+        "src/bin/Data/Object1/tree_05.OZT": "0f850800c8a18408bc9dd75879f9f6eca46e7dfbf2c716bd5da6973f34aad108",
+        "src/bin/Data/Object1/tree_01.OZJ": "87aecaa23b8ba3975b8b80eb19dc391f716a6123653a578eb38babff3a82cf8a"
+      },
+      "integrated_bmd_sha256": "54fa5331f342977f13dba3e586db8e320c15d4476f30d8ba19369ad3372cf4bf"
+    }
+  },
+  "camera_bounds": [
+    [
+      -447.3951110839844,
+      -703.9644775390625,
+      -174.1735382080078
+    ],
+    [
+      649.6842041015625,
+      603.7740478515625,
+      472.2844543457031
+    ]
+  ],
+  "limits": "Diffuse bind-pose only; no terrain or engine effect simulation. Not client evidence.",
+  "image_hashes": {
+    "baseline-reverse.png": "11c9c8df7d64e3db3bf6003caf131d35bb923be5b2af867b354665f6cb952f1a",
+    "baseline-small.png": "62ca7e89ee466ce38cf8231a8414ba1b175e369a22db2560266086718c2cef9d",
+    "baseline.png": "ea74a99ec83ab4300df61a408b3c9cd16f6eae25f0238c7b4825453c5552f9fd",
+    "integrated-reverse.png": "9f41fdc8bc8b63ac1c9948268cf081240efcb332fd25f3ca80f0943acc421e42",
+    "integrated-small.png": "7c3a7615b388c650f5d481d9e5e677fb0077afcbd60b2dc562266f32edb0151d",
+    "integrated.png": "d33d1f8fe14837f85a1b0703895cf138d889476189ff9dcc262469924227ae10"
+  }
+}

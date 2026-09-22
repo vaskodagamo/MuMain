@@ -1,0 +1,579 @@
+{
+  "records": [
+    {
+      "name": "Carriage02",
+      "index": 3,
+      "position": [
+        14666.75,
+        14661.8076171875,
+        165.00001525878906
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        2160.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        146.6675,
+        146.618076171875
+      ]
+    },
+    {
+      "name": "Fence02",
+      "index": 24,
+      "position": [
+        15050.0,
+        14250.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1620.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        150.5,
+        142.5
+      ]
+    },
+    {
+      "name": "Fence02",
+      "index": 26,
+      "position": [
+        14550.0,
+        14250.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1530.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        145.5,
+        142.5
+      ]
+    },
+    {
+      "name": "Fence02",
+      "index": 27,
+      "position": [
+        14550.0,
+        14150.0,
+        164.99998474121094
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        720.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        145.5,
+        141.5
+      ]
+    },
+    {
+      "name": "Fence03",
+      "index": 17,
+      "position": [
+        14300.0,
+        14300.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1980.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        143.0,
+        143.0
+      ]
+    },
+    {
+      "name": "Fence04",
+      "index": 13,
+      "position": [
+        14450.0,
+        14300.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1620.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        144.5,
+        143.0
+      ]
+    },
+    {
+      "name": "Fence04",
+      "index": 14,
+      "position": [
+        15150.0,
+        14300.0,
+        164.99998474121094
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -180.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        151.5,
+        143.0
+      ]
+    },
+    {
+      "name": "Grass01",
+      "index": 67,
+      "position": [
+        15315.2060546875,
+        14623.69140625,
+        440.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        153.152060546875,
+        146.2369140625
+      ]
+    },
+    {
+      "name": "Grass04",
+      "index": 91,
+      "position": [
+        14409.912109375,
+        14183.48046875,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        144.09912109375,
+        141.8348046875
+      ]
+    },
+    {
+      "name": "House01",
+      "index": 0,
+      "position": [
+        14300.0,
+        14700.0,
+        165.00001525878906
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        2070.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        143.0,
+        147.0
+      ]
+    },
+    {
+      "name": "House01",
+      "index": 1,
+      "position": [
+        15231.8671875,
+        14697.2021484375,
+        165.0000457763672
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        2070.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        152.318671875,
+        146.972021484375
+      ]
+    },
+    {
+      "name": "Sign01",
+      "index": 2,
+      "position": [
+        14099.103515625,
+        14466.4345703125,
+        330.0000305175781
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        810.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        140.99103515625,
+        144.664345703125
+      ]
+    },
+    {
+      "name": "Stair01",
+      "index": 1,
+      "position": [
+        14431.8681640625,
+        14461.7275390625,
+        164.99998474121094
+      ],
+      "rotation": [
+        10.0,
+        0.0,
+        1980.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        144.318681640625,
+        144.617275390625
+      ]
+    },
+    {
+      "name": "SteelDoor01",
+      "index": 7,
+      "position": [
+        14600.0,
+        14100.0,
+        164.99998474121094
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        810.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        146.0,
+        141.0
+      ]
+    },
+    {
+      "name": "StoneMuWall02",
+      "index": 29,
+      "position": [
+        14450.0,
+        14950.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1260.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        144.5,
+        149.5
+      ]
+    },
+    {
+      "name": "StoneMuWall02",
+      "index": 30,
+      "position": [
+        15150.0,
+        14950.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1260.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        151.5,
+        149.5
+      ]
+    },
+    {
+      "name": "StoneMuWall03",
+      "index": 21,
+      "position": [
+        14250.0,
+        14950.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1260.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        142.5,
+        149.5
+      ]
+    },
+    {
+      "name": "StoneMuWall03",
+      "index": 35,
+      "position": [
+        14950.0,
+        14950.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1260.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        149.5,
+        149.5
+      ]
+    },
+    {
+      "name": "StoneMuWall03",
+      "index": 36,
+      "position": [
+        14650.0,
+        14950.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1260.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        146.5,
+        149.5
+      ]
+    },
+    {
+      "name": "Straw01",
+      "index": 2,
+      "position": [
+        14850.0,
+        14700.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        900.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        148.5,
+        147.0
+      ]
+    },
+    {
+      "name": "Straw01",
+      "index": 3,
+      "position": [
+        14913.1962890625,
+        14675.0048828125,
+        305.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        900.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        149.131962890625,
+        146.750048828125
+      ]
+    }
+  ],
+  "sources": {
+    "Carriage02": {
+      "baseline_blend": "assets-work/World1/coordination/final-inspection/Carriage02/import.blend",
+      "integrated_blend": "assets-work/World1/coordination/final-inspection/Carriage02/import.blend",
+      "baseline_blend_sha256": "2994d7124198133ba2eefa4a91cf2f5b93f98bdc229de0ce05f9426300e4b36e",
+      "integrated_blend_sha256": "2994d7124198133ba2eefa4a91cf2f5b93f98bdc229de0ce05f9426300e4b36e",
+      "baseline_game_files": {
+        "src/bin/Data/Object1/Carriage02.bmd": "ade2d91f489060d0b792504a92325b6557966cd39411e46bbc346e1240b8d85e",
+        "src/bin/Data/Object1/horse_drawn_01.OZJ": "fb570a0b0c9c00e0face1e27f81fbc01d8edd6aeb6bc54280573a49d4dd7ad0e"
+      },
+      "integrated_bmd_sha256": "ade2d91f489060d0b792504a92325b6557966cd39411e46bbc346e1240b8d85e"
+    },
+    "Fence02": {
+      "baseline_blend": "assets-work/World1/coordination/final-inspection/Fence02/import.blend",
+      "integrated_blend": "assets-work/World1/coordination/final-inspection/Fence02/import.blend",
+      "baseline_blend_sha256": "47309a740219d2f34ff973300aa30d18a44e2012933bbd95dbacddda334cd04d",
+      "integrated_blend_sha256": "47309a740219d2f34ff973300aa30d18a44e2012933bbd95dbacddda334cd04d",
+      "baseline_game_files": {
+        "src/bin/Data/Object1/Fence02.bmd": "89dcccfeaa86da94174b6edc14dd7de4ca72f15c59bffb132e7c826422f8d677",
+        "src/bin/Data/Object1/joint.OZJ": "ab1b30fc23a5d937dd33434f4014d0c036d56e6c4f74583e0c4c7b795631fb15"
+      },
+      "integrated_bmd_sha256": "89dcccfeaa86da94174b6edc14dd7de4ca72f15c59bffb132e7c826422f8d677"
+    },
+    "Fence03": {
+      "baseline_blend": "assets-work/World1/coordination/final-inspection/Fence03/import.blend",
+      "integrated_blend": "assets-work/World1/coordination/final-inspection/Fence03/import.blend",
+      "baseline_blend_sha256": "f856839376c194c045941426ad333696036aa2163be3397ec57b10894d062eb5",
+      "integrated_blend_sha256": "f856839376c194c045941426ad333696036aa2163be3397ec57b10894d062eb5",
+      "baseline_game_files": {
+        "src/bin/Data/Object1/Fence03.bmd": "3c4507f510bda323fda43775559499ec028a8c58f797761459fa84896216a07c",
+        "src/bin/Data/Object1/joint.OZJ": "ab1b30fc23a5d937dd33434f4014d0c036d56e6c4f74583e0c4c7b795631fb15"
+      },
+      "integrated_bmd_sha256": "3c4507f510bda323fda43775559499ec028a8c58f797761459fa84896216a07c"
+    },
+    "Fence04": {
+      "baseline_blend": "assets-work/World1/coordination/final-inspection/Fence04/import.blend",
+      "integrated_blend": "assets-work/World1/coordination/final-inspection/Fence04/import.blend",
+      "baseline_blend_sha256": "ea85dbec65bdf18718f4f7abe7524bf36a3649a28cc36d8d57d48bad09995902",
+      "integrated_blend_sha256": "ea85dbec65bdf18718f4f7abe7524bf36a3649a28cc36d8d57d48bad09995902",
+      "baseline_game_files": {
+        "src/bin/Data/Object1/Fence04.bmd": "45717fae749fb663b25a6431bd25fc81379200419c5c4cc08a409736da31ce9f",
+        "src/bin/Data/Object1/joint.OZJ": "ab1b30fc23a5d937dd33434f4014d0c036d56e6c4f74583e0c4c7b795631fb15"
+      },
+      "integrated_bmd_sha256": "45717fae749fb663b25a6431bd25fc81379200419c5c4cc08a409736da31ce9f"
+    },
+    "Grass01": {
+      "baseline_blend": "assets-work/World1/coordination/final-inspection/Grass01/import.blend",
+      "integrated_blend": "assets-work/World1/coordination/final-inspection/Grass01/import.blend",
+      "baseline_blend_sha256": "be87d2c6e347b56c089e2eebadbf1c10e2695eb12ab502c3c4326a78124f2767",
+      "integrated_blend_sha256": "be87d2c6e347b56c089e2eebadbf1c10e2695eb12ab502c3c4326a78124f2767",
+      "baseline_game_files": {
+        "src/bin/Data/Object1/Grass01.bmd": "d77daca6778078e17097831edf0a704d4e197db59892cbc4f1387c6f99eb7f32",
+        "src/bin/Data/Object1/tree_08.OZT": "a1d60fa0bb30b7ceddbd52a7c74771929f3902052c460d6b015dbfdf34b47d78"
+      },
+      "integrated_bmd_sha256": "d77daca6778078e17097831edf0a704d4e197db59892cbc4f1387c6f99eb7f32"
+    },
+    "Grass04": {
+      "baseline_blend": "assets-work/World1/coordination/final-inspection/Grass04/import.blend",
+      "integrated_blend": "assets-work/World1/QualityPass02/Scrub01/Grass04/validation/reimported.blend",
+      "baseline_blend_sha256": "578e011f362fdcc4d1401e28e2e74d08ba5bd46ace6b0c6a4c9ad56eeaa02b38",
+      "integrated_blend_sha256": "f29d2fba27731b6344a25484f8860b4b3a3b5609e0d853d0df2623492c5e7045",
+      "baseline_game_files": {
+        "src/bin/Data/Object1/Grass04.bmd": "48cbd9087f3197a701bb5e8c42698d2b9bb48bb1d68d7ddcc04e1335eb2c9c5b",
+        "src/bin/Data/Object1/tree_01.OZT": "8cf7925f6ded30b83a2ecf6856617b5c823e5abb7aaccea7acb73fc7403ea0d6",
+        "src/bin/Data/Object1/tree_02.OZT": "472a7d0305c6af309c431cd62c8adc8301a16ef8d97499ef058dd87282b7a4be"
+      },
+      "integrated_bmd_sha256": "c4f68a1ff5bb6a5ac7228eb5d13232b9fd1db737f5428210600860b04dd86fe8"
+    },
+    "House01": {
+      "baseline_blend": "assets-work/World1/coordination/final-inspection/House01/import.blend",
+      "integrated_blend": "assets-work/World1/QualityPass02/Houses01/House01/validation/reimported.blend",
+      "baseline_blend_sha256": "c624331e790807b8266bf5dde29e40b1457ec565325cd1e5be0b43024199520b",
+      "integrated_blend_sha256": "f5b5677263a42c10a781cfd07dacf12336a0b79dbd799df6827beecdab1ec7ad",
+      "baseline_game_files": {
+        "src/bin/Data/Object1/House01.bmd": "498f0224e6c7f0f32d228b8a7ffbeb051e9796f7749ffb1e340149a632da737e",
+        "src/bin/Data/Object1/tile_ston05.OZJ": "738fb32a62ece9f970cc822477361fb1105cbdde32dd4d475edda77a7d1fbc76",
+        "src/bin/Data/Object1/tile_ston04.OZJ": "a1a75b6fbf236d8747cb2e27555d871253cff7d2e48304226f0b68dbc83fa2f9",
+        "src/bin/Data/Object1/tile_house01.OZJ": "c06449901b08eafba82b4d035972740cc3e454d730343065417644f3fa8a1a03",
+        "src/bin/Data/Object1/tile_ston06.OZJ": "c0eb1cde0172be5b4f1a1e7a19e274c6891d1e97d91479cdb11424a464847a3b"
+      },
+      "integrated_bmd_sha256": "ebae8d2a2bda5483e42f2c9c41066354e9fcee00df82549a63bca0bc367932b4"
+    },
+    "Sign01": {
+      "baseline_blend": "assets-work/World1/coordination/final-inspection/Sign01/import.blend",
+      "integrated_blend": "assets-work/World1/coordination/final-inspection/Sign01/import.blend",
+      "baseline_blend_sha256": "7af91549e33053c16fa5e878008e29558a0ae465dad6ca74dbf4c24458e10ff2",
+      "integrated_blend_sha256": "7af91549e33053c16fa5e878008e29558a0ae465dad6ca74dbf4c24458e10ff2",
+      "baseline_game_files": {
+        "src/bin/Data/Object1/Sign01.bmd": "e319480ee29feebf6a64862407dece3eae3ea0cc24a951b8f57695bef2034f70",
+        "src/bin/Data/Object1/notice.OZJ": "85e028c06cee35c5ba6334b9613a5a839df9ffff20d58a4ab567bf793290416f",
+        "src/bin/Data/Object1/signboard.OZT": "c62e1b18d97e75000ee4f5a071aff9858c8449187404dfabff927947a8883fa9",
+        "src/bin/Data/Object1/doorknob.OZT": "1f0413df12aa7ef21fdea28fda3c322abed0f28d4837b40ead3ba67a246afb84"
+      },
+      "integrated_bmd_sha256": "e319480ee29feebf6a64862407dece3eae3ea0cc24a951b8f57695bef2034f70"
+    },
+    "Stair01": {
+      "baseline_blend": "assets-work/World1/coordination/final-inspection/Stair01/import.blend",
+      "integrated_blend": "assets-work/World1/coordination/final-inspection/Stair01/import.blend",
+      "baseline_blend_sha256": "c75bb79a5cf33c199200999ea9ae3d10298cbcd5ef1f774737deea4774b609c4",
+      "integrated_blend_sha256": "c75bb79a5cf33c199200999ea9ae3d10298cbcd5ef1f774737deea4774b609c4",
+      "baseline_game_files": {
+        "src/bin/Data/Object1/Stair01.bmd": "a8762396fc2b3db1704905701e98613804f449541ab085e58c73c15665bb11b0",
+        "src/bin/Data/Object1/tile_wood01.OZJ": "51537840533e1c755569d3b57d9bea468353208c669daa2baeb2a421c41bf192"
+      },
+      "integrated_bmd_sha256": "a8762396fc2b3db1704905701e98613804f449541ab085e58c73c15665bb11b0"
+    },
+    "SteelDoor01": {
+      "baseline_blend": "assets-work/World1/coordination/final-inspection/SteelDoor01/import.blend",
+      "integrated_blend": "assets-work/World1/coordination/final-inspection/SteelDoor01/import.blend",
+      "baseline_blend_sha256": "a6cba96380b1986cd0b5e629d7f8249fd3f88c2c5b8bf701aceaf379a2c6e044",
+      "integrated_blend_sha256": "a6cba96380b1986cd0b5e629d7f8249fd3f88c2c5b8bf701aceaf379a2c6e044",
+      "baseline_game_files": {
+        "src/bin/Data/Object1/SteelDoor01.bmd": "86822c7626b45ff15e1fcd554e55e0baa7443c55f8584faf29e81e96b8b104e6",
+        "src/bin/Data/Object1/steel_barred_b.OZJ": "18fb54247b0dc08f4dfe2daab5f9f4edfde880513d0ed597e449e58efafd8087",
+        "src/bin/Data/Object1/steel_barred_door.OZT": "36f41caa9871ef74ddd8cbe51798ba258ab77cd1db87d90da23d4cf876bdf741"
+      },
+      "integrated_bmd_sha256": "86822c7626b45ff15e1fcd554e55e0baa7443c55f8584faf29e81e96b8b104e6"
+    },
+    "StoneMuWall02": {
+      "baseline_blend": "assets-work/World1/coordination/final-inspection/StoneMuWall02/import.blend",
+      "integrated_blend": "assets-work/World1/coordination/final-inspection/StoneMuWall02/import.blend",
+      "baseline_blend_sha256": "f99967b62254879eff89c6033fcadf23ae1e0fd4b665129be648e34217d18ce8",
+      "integrated_blend_sha256": "f99967b62254879eff89c6033fcadf23ae1e0fd4b665129be648e34217d18ce8",
+      "baseline_game_files": {
+        "src/bin/Data/Object1/StoneMuWall02.bmd": "71871c76baa85db5b0e8d4017ee0a5c797eeb4897bf14dfa2129da19264ea4cd",
+        "src/bin/Data/Object1/c_wall06.OZJ": "81c037340624b795b295c58071bc26f66f785c20be11cddfd304e585b10c77f4",
+        "src/bin/Data/Object1/c_wall05.OZJ": "e2890842d739f4fa2010e2a90d4af1e368a97bf2028d26c4e15dac0030e05083",
+        "src/bin/Data/Object1/c_wall04.OZJ": "c7ba893ef3542cb9bb265ef7735c1d7d2c2bf58f7284d8cff8f0940860828ed3"
+      },
+      "integrated_bmd_sha256": "71871c76baa85db5b0e8d4017ee0a5c797eeb4897bf14dfa2129da19264ea4cd"
+    },
+    "StoneMuWall03": {
+      "baseline_blend": "assets-work/World1/coordination/final-inspection/StoneMuWall03/import.blend",
+      "integrated_blend": "assets-work/World1/coordination/final-inspection/StoneMuWall03/import.blend",
+      "baseline_blend_sha256": "bf062ed60c5394887bb68e8bf50524a279da2ece9496adbbd26975a65b688289",
+      "integrated_blend_sha256": "bf062ed60c5394887bb68e8bf50524a279da2ece9496adbbd26975a65b688289",
+      "baseline_game_files": {
+        "src/bin/Data/Object1/StoneMuWall03.bmd": "da3246175a2f50993de1f8b17aa9483165b389021f871145cec7ef37f7ee608a",
+        "src/bin/Data/Object1/c_wall04.OZJ": "c7ba893ef3542cb9bb265ef7735c1d7d2c2bf58f7284d8cff8f0940860828ed3",
+        "src/bin/Data/Object1/c_wall06.OZJ": "81c037340624b795b295c58071bc26f66f785c20be11cddfd304e585b10c77f4"
+      },
+      "integrated_bmd_sha256": "da3246175a2f50993de1f8b17aa9483165b389021f871145cec7ef37f7ee608a"
+    },
+    "Straw01": {
+      "baseline_blend": "assets-work/World1/coordination/final-inspection/Straw01/import.blend",
+      "integrated_blend": "assets-work/World1/coordination/final-inspection/Straw01/import.blend",
+      "baseline_blend_sha256": "d4aa63c7392e45e30b8e0df70403283d1ea6ea14905e7814ba3308bdf4028a39",
+      "integrated_blend_sha256": "d4aa63c7392e45e30b8e0df70403283d1ea6ea14905e7814ba3308bdf4028a39",
+      "baseline_game_files": {
+        "src/bin/Data/Object1/Straw01.bmd": "485d0ae5e304335823ebebb01c97e595a54819aadff04af236fa1dd03c0d0e03",
+        "src/bin/Data/Object1/grass_01.OZT": "1572db097eb23dd42e282fc526e91d15415ed0919489e264a466b532e99e5e15"
+      },
+      "integrated_bmd_sha256": "485d0ae5e304335823ebebb01c97e595a54819aadff04af236fa1dd03c0d0e03"
+    }
+  },
+  "camera_bounds": [
+    [
+      -701.182861328125,
+      -606.0136108398438,
+      -174.1735382080078
+    ],
+    [
+      862.8798828125,
+      397.3951110839844,
+      356.4764709472656
+    ]
+  ],
+  "limits": "Diffuse bind-pose only; no terrain or engine effect simulation. Not client evidence.",
+  "image_hashes": {
+    "baseline-reverse.png": "2650a1f5269884535c232d978a1fa9a55a750999d234356555f70152b3ac49f7",
+    "baseline-small.png": "8f4f0c1ba38ee0a3db820f09195fe1dcd2dd313c004d8d4467aa8921aa1e27c8",
+    "baseline.png": "06ce9cba2c88648c7b88b28ceeb04503e94216405ac0196f61f55d40b37c6d30",
+    "integrated-reverse.png": "4fbc3b1c838b90b3d11651444f305e74b76704e57a5a09b00d9903daf429d892",
+    "integrated-small.png": "d008097ce97941a81801c9d728ac310650de0910d51ab1f5f920e1636125af4c",
+    "integrated.png": "7798f598fb15bf6e76676e05c649918d6143f069d56cd0ca6c2e9f5b739f6848"
+  }
+}
