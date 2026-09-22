@@ -29,3 +29,5 @@ Experiment01 was rejected: sparse tall forks, exposed grass cap edges and one cr
 Alpha overdraw and final client appearance remain a practical client check for the new overlapping boughs. No engine, threshold, texture, placement, terrain, collision or runtime changes are part of this batch.
 
 The final evidence run completed successfully. Blender SourceTools emitted stale scene-property callback warnings during factory resets in assembly rendering; the actual loaded models, saved transforms, bounds, rendered images and final exit were verified. These warnings do not alter exports or validation.
+
+Baseline preparation reads the recorded7b808473 Git blobs, so rerunning after candidate installation preserves the original merged baseline. Coordinator verified the prepare stage successfully in the integration worktree with all four new BMDs installed.

@@ -14,6 +14,7 @@ NAMES=tuple(os.environ.get('SCRUB_NAMES','Tree09,Tree10,Grass03,Grass04').split(
 BLENDER=os.environ['BLENDER']
 CONVERTER=os.environ['MU_BMDCONV']
 ENV={**os.environ,'PYTHONDONTWRITEBYTECODE':'1'}
+BASELINE_REVISION='7b808473'
 
 
 def blender(arguments,log):
@@ -29,6 +30,19 @@ def converter(*arguments,check=True):
     return result.stdout
 
 
+def retain_reference(stage,path,target):
+    """Use the recorded baseline even after the candidate has been installed."""
+    if stage=='baseline':
+        relative=path.relative_to(REPO).as_posix()
+        reference=subprocess.check_output(['git','show',f'{BASELINE_REVISION}:{relative}'],cwd=REPO)
+    else:
+        reference=path.read_bytes()
+    if target.exists():
+        assert target.read_bytes()==reference, f'Reference drift: {target}'
+        return
+    target.write_bytes(reference)
+
+
 def prepare(name):
     import hashlib
     folder=ROOT/name
@@ -37,8 +51,7 @@ def prepare(name):
     old=REPO/'assets-work/World1/Scrub01'/name
     for stage,path in [('original',old/'original'/f'{name}.bmd'),('baseline',REPO/'src/bin/Data/Object1'/f'{name}.bmd')]:
         target=folder/stage/path.name
-        if target.exists(): assert target.read_bytes()==path.read_bytes()
-        else: shutil.copy2(path,target)
+        retain_reference(stage,path,target)
         (folder/stage/'info.txt').write_text(converter('info',target))
         converter('bmd2smd',target,folder/stage/'smd')
         if (folder/stage/'source.blend').exists(): continue
