@@ -1,0 +1,2 @@
+OK /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Architecture01/HouseWall05/exports/tile_wood03.OZJ
+OK /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Architecture01/HouseWall05/exports/tile_wood02.OZJ

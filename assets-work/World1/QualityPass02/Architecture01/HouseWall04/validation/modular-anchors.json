@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "every_baseline_corner_retained": true,
+  "maximum_position_delta": 0,
+  "tolerance": 0.002,
+  "uv_spans": {
+    "tile_wood01.jpg": [
+      3.9725,
+      1.0151999999999999
+    ],
+    "tile_wood02.jpg": [
+      6.2103,
+      4.6577
+    ],
+    "tile_ston04.jpg": [
+      4.2472,
+      1.8982
+    ]
+  },
+  "collapsed_material_uvs": false,
+  "degenerate_triangles": 0
+}

@@ -1,0 +1,9 @@
+model /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Architecture01/HouseWall04/exports/HouseWall04.bmd
+  name field: HouseWall04.smd  version: 12
+  meshes: 3  bones: 1  actions: 1  triangles: 872
+  bounds (bind pose): min -54.81 -50.90 0.28  max 246.23 249.87 264.48  size 301.04 300.77 264.20
+  mesh 0: triangles=44 vertices=28 normals=39 uvs=38 texture=tile_wood01.jpg
+  mesh 1: triangles=816 vertices=473 normals=255 uvs=106 texture=tile_wood02.jpg
+  mesh 2: triangles=12 vertices=11 normals=6 uvs=20 texture=tile_ston04.jpg
+  bone 0: "joint_01" parent=-1
+  action 0: keys=1 lock=0

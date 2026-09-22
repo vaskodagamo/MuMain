@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "every_baseline_corner_retained": true,
+  "maximum_position_delta": 0,
+  "tolerance": 0.002,
+  "uv_spans": {
+    "tile_wood03.jpg": [
+      5.0068,
+      0.8516
+    ],
+    "tile_wood02.jpg": [
+      4.802099999999999,
+      3.3687
+    ]
+  },
+  "collapsed_material_uvs": false,
+  "degenerate_triangles": 0,
+  "roof_perimeter_vertices_checked": 118,
+  "maximum_perimeter_plane_error": 7.372727295996076e-06
+}
