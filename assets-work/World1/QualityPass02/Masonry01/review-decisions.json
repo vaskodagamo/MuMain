@@ -1,0 +1,25 @@
+{
+  "reviewer": "Independent /root/reviewer",
+  "client_verified": false,
+  "models": {
+    "HouseEtc01": {
+      "status": "rejected by coordinator: strict modular edge contract",
+      "game_installed": false,
+      "artistic_gate_resolved": false,
+      "reason": "Independent reviewer accepted only an incremental cap change. Coordinator rejected the shallow V-shaped side-edge notch at the actual stacked seam because original modular wall-edge preservation is required. Baseline restored; no runtime or client operation."
+    },
+    "StoneMuWall02": {
+      "status": "rejected candidate",
+      "game_installed": false,
+      "artistic_gate_resolved": false,
+      "reason": "Reduced/assembly views lack sufficient useful gain."
+    },
+    "StoneMuWall03": {
+      "status": "rejected candidate",
+      "game_installed": false,
+      "artistic_gate_resolved": false,
+      "reason": "Reduced/assembly views lack sufficient useful gain."
+    }
+  },
+  "coordinator_final": "Reject all3 for game integration; retain study only."
+}

@@ -1,0 +1,47 @@
+{
+  "original": {
+    "file": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/StoneMuWall03/original/StoneMuWall03.bmd",
+    "mesh_bindings": [
+      {
+        "mesh": 0,
+        "material": "c_wall04.jpg",
+        "vertex_to_normal_node_mismatch_corner_counts": {}
+      },
+      {
+        "mesh": 1,
+        "material": "c_wall06.jpg",
+        "vertex_to_normal_node_mismatch_corner_counts": {}
+      }
+    ]
+  },
+  "baseline": {
+    "file": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/StoneMuWall03/baseline/StoneMuWall03.bmd",
+    "mesh_bindings": [
+      {
+        "mesh": 0,
+        "material": "c_wall04.jpg",
+        "vertex_to_normal_node_mismatch_corner_counts": {}
+      },
+      {
+        "mesh": 1,
+        "material": "c_wall06.jpg",
+        "vertex_to_normal_node_mismatch_corner_counts": {}
+      }
+    ]
+  },
+  "exports": {
+    "file": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/StoneMuWall03/exports/StoneMuWall03.bmd",
+    "mesh_bindings": [
+      {
+        "mesh": 0,
+        "material": "c_wall04.jpg",
+        "vertex_to_normal_node_mismatch_corner_counts": {}
+      },
+      {
+        "mesh": 1,
+        "material": "c_wall06.jpg",
+        "vertex_to_normal_node_mismatch_corner_counts": {}
+      }
+    ]
+  }
+}

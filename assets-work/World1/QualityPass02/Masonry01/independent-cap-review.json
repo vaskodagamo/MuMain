@@ -1,0 +1,121 @@
+{
+  "reviewer": "independent reviewer",
+  "scope": "Final coarse cap study; supersedes no earlier rejected-study decision",
+  "assets": [
+    {
+      "asset": "HouseEtc01",
+      "sha256": "06a1f935e2f2fa38024e55d32ad4208e5d052a86ccba1eeee917289c2e164356",
+      "verdict": "NOT_ACCEPTED_CONNECTION_PROFILE_CHANGE",
+      "rationale": "Isolated dressed cap profile is a visible low-cost improvement, but actual stacked placement exposes a new V-shaped side seam notch from5u perimeter clipping. User requires preserved modular connection profiles; therefore reject integration, retain baseline. Shallow dragon relief/plain block mass still require artistic work.",
+      "independent_converter_validation": [
+        {
+          "file": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/HouseEtc01/validation/new/skeleton.smd",
+          "exit": 0
+        },
+        {
+          "file": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/HouseEtc01/validation/new/HouseEtc01.smd",
+          "exit": 0
+        },
+        {
+          "file": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/HouseEtc01/validation/new/HouseEtc01_a00.smd",
+          "exit": 0
+        }
+      ],
+      "triangles": 54,
+      "image_sha256": {
+        "HouseEtc01/review/candidate-small.png": "e6ebc9980e24193a2cc2a172edb51489bf7202e44cb05241699539e9d8a990e7",
+        "HouseEtc01/review/candidate-reverse.png": "65055f4773487d740975bdb2cd89182e7785d27c4159d069334a97ae7d340328",
+        "HouseEtc01/review/original.png": "76e5089bac9e5c0653a1892baea83fa3f152cdf38f745b47791f744fbd524b96",
+        "HouseEtc01/review/wireframe.png": "703997d6db04ac7d9d141d8c0d820c628f3ba59d737f456f2429d996ae0eebef",
+        "HouseEtc01/review/current-small.png": "6411d95e2ece02002241b2db618b65a40871ecb007153d13ce5a8cbb4fc5db82",
+        "HouseEtc01/review/original-reverse.png": "a3ab661dcae12f30014f34165ab0fe6c2d4799e11f627c6c40d2c2b329d6107d",
+        "HouseEtc01/review/candidate.png": "e18c141a210d12540d38d64ce091c26dab0d81fd087b5b29b3b5946f60b297b0",
+        "HouseEtc01/review/current-reverse.png": "9effcbb2927d25f4e0499403a69cdc1b8064ae2efed5c852f67d394b4df68b92",
+        "HouseEtc01/review/original-small.png": "565c8e2dc0b092f34c03e637ae69c20a1b121a36ee8a1a6071f0ce95900d7217",
+        "HouseEtc01/review/current.png": "a249a59f8d32b034159b3442b8d192eeeddd16ed14886d7d5a3bb2e1faab0143"
+      }
+    },
+    {
+      "asset": "StoneMuWall02",
+      "sha256": "821e400b8834e0a7fab2ee7f93d865290ab8dd90c6508c99b5441c3871dec2fe",
+      "verdict": "NOT_ACCEPTED_INSUFFICIENT_VISUAL_GAIN",
+      "rationale": "Cap chamfers are barely legible in reduced images and both actual gate assemblies. Technical correctness does not make this sufficient artistic refinement. Preserve baseline game asset.",
+      "independent_converter_validation": [
+        {
+          "file": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/StoneMuWall02/validation/new/StoneMuWall02_a00.smd",
+          "exit": 0
+        },
+        {
+          "file": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/StoneMuWall02/validation/new/skeleton.smd",
+          "exit": 0
+        },
+        {
+          "file": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/StoneMuWall02/validation/new/StoneMuWall02.smd",
+          "exit": 0
+        }
+      ],
+      "triangles": 132,
+      "image_sha256": {
+        "StoneMuWall02/review/candidate-small.png": "d030af61ddb569e2a1f72cb882ed640005d94126308ab2b0b595c01ae6e51330",
+        "StoneMuWall02/review/candidate-reverse.png": "ad166a3b9a7c29c0396e5d8baec3242205e0a2aa9af813cc012a0c2daf53900f",
+        "StoneMuWall02/review/original.png": "afb11549d2ca67e8087447b8b4d1f4ac614b9dd154e6b160361557239b5f21d0",
+        "StoneMuWall02/review/wireframe.png": "ed798556efed7141c499b6eba45b83e026f9bff66103b2ae8aac03cbc2a74446",
+        "StoneMuWall02/review/current-small.png": "032f05da6bb8e937e0376b4506ef976d96dffb3dd19f55af3dc557b940dbeab2",
+        "StoneMuWall02/review/original-reverse.png": "e90843f42bf8d14726994499844d2fa4bd8f31ca0da307d52787f1098340023a",
+        "StoneMuWall02/review/candidate.png": "ad4dbd8c05feb163a153a710cccda4e5c78a3d6560a2bf6bb07ef35dcbcaf809",
+        "StoneMuWall02/review/current-reverse.png": "2c1ccdf8176b549511eda019cc07a870fc534761907030ad80941d66ba1f757e",
+        "StoneMuWall02/review/original-small.png": "31217373fadbe39d59ff84ab2f4549077e8cd51ab944ff2a17ff4736ed04b3b1",
+        "StoneMuWall02/review/current.png": "7d94058724560392c006c6e9b843244f5b720ac7e62956f0efeebf6b80419c60"
+      }
+    },
+    {
+      "asset": "StoneMuWall03",
+      "sha256": "550a7b11f215ec448acc0d0d3bb9c285e085963631c17d397df8e9812a0e7168",
+      "verdict": "NOT_ACCEPTED_INSUFFICIENT_VISUAL_GAIN",
+      "rationale": "Cap chamfers are barely legible in reduced images and both actual gate assemblies. Technical correctness does not make this sufficient artistic refinement. Preserve baseline game asset.",
+      "independent_converter_validation": [
+        {
+          "file": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/StoneMuWall03/validation/new/skeleton.smd",
+          "exit": 0
+        },
+        {
+          "file": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/StoneMuWall03/validation/new/StoneMuWall03_a00.smd",
+          "exit": 0
+        },
+        {
+          "file": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/StoneMuWall03/validation/new/StoneMuWall03.smd",
+          "exit": 0
+        }
+      ],
+      "triangles": 194,
+      "image_sha256": {
+        "StoneMuWall03/review/candidate-small.png": "3a24c32ba66f94c4739372f4056fe0e619b8e9b45f3fad32ffcba7a0ffa44b4f",
+        "StoneMuWall03/review/candidate-reverse.png": "015d634d359838884f60c6e972e07e9c7b8319f11d68448a2e55ec2451f7ca5e",
+        "StoneMuWall03/review/original.png": "05ba7002c0f638f277e351bd1bb0b2b5e22006e3ee646e58e26337d0784038a2",
+        "StoneMuWall03/review/wireframe.png": "f8cb46f063d78e52b17eea87e833606e2091502b68b5ae28220264ea2a01fabb",
+        "StoneMuWall03/review/current-small.png": "bf041f791c2a6e63b343e77311066a68c57505a2803d90e41daf59f4c972ef1e",
+        "StoneMuWall03/review/original-reverse.png": "f71a465be64756a13d32fcb31c2255894d5d89bb3eddd2e99a9f15ba760263ee",
+        "StoneMuWall03/review/candidate.png": "87b97ed5ffc465000968d54c8b0187c53d3147863556d96ee3d18fc63511a4c0",
+        "StoneMuWall03/review/current-reverse.png": "2c1968f8eaee1f15782f9221964ee94cb45c1dd87df26b4254548d8882eb963f",
+        "StoneMuWall03/review/original-small.png": "221a3499124a1dad8cbd390e27852134c314ec07b1a928cae9200824a9518bac",
+        "StoneMuWall03/review/current.png": "a8d7df5bf0c0ff9075228a885761efcd446483f8c06ffa5111c41be3ea913e97"
+      }
+    }
+  ],
+  "technical": "Summary and winding/UV/frozen texture reports inspected; independently checked candidate hashes and converter model/action validation. Rig/actions/material order/global bounds retained. HouseEtc01 modifies3 upper c_wall04 edges. Actual World1 stack30/31 and adjacent32/38 before/after views reviewed: broad central stack contact/front-face alignment remain; no open separation. Outer5u cap chamfer intentionally changes stack side seam to shallow V-shaped recess/notch, aesthetically plausible but rejected under the stricter user requirement to preserve modular connection profiles. Original perimeter seam is NOT unchanged.",
+  "limitations": [
+    "Offline Blender diffuse actual export/reimport comparisons only; no client verification.",
+    "StoneMuWall02 inherited two original c_wall05 corner-normal anomalies remain; not repaired, no new anomalies reported.",
+    "HouseEtc01 remains unaccepted for integration and unresolved for artistic gate.",
+    "Initial contact views clip stack top/bottom; inspected middle contact seam unobscured. Wider rerender planned, BMD unchanged."
+  ],
+  "evidence": "Comparison sheet, each reverse, reduced preview row, south-gate before/after and siege-wall before/after.",
+  "contact_review": "FAIL_STRICT_CONNECTION_PROFILE_PRESERVATION",
+  "contact_image_sha256": {
+    "house-adjacent-before.png": "82f4c07981a2e972142c26e76e39bd077c4b4641d2f9c81018d4039d5cdaebb5",
+    "house-stack-before.png": "440e1abc895dd34e077c2221dd32b4249486580da85577abce75ddf77b689e7a",
+    "house-adjacent-after.png": "12934572b5979da929fbadc837b3a40d09b753f2f672ddc222a20392f7f820a3",
+    "house-stack-after.png": "673b60cdf2c8558e87982a1bad4a4353d24ab27b598351b125e90bd447e8d7b0"
+  },
+  "decision_note": "Coordinator correctly applied strict modular profile requirement after reviewer initially allowed aesthetically plausible dressed joint. Final integration verdict rejects all3 masonry candidates. No game data changed by reviewer."
+}

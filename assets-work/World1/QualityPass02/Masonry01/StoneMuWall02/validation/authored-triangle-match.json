@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "triangles": 132,
+  "maximum_position_or_uv_error": 6.435162687805052e-07,
+  "criteria": "Every triangle has same material, winding, bone ownership, positions and UV corners",
+  "tolerance": 0.0001
+}

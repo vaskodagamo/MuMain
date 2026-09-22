@@ -1,0 +1,25 @@
+wrote /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/StoneMuWall02/validation/original/StoneMuWall02.smd
+wrote /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/StoneMuWall02/validation/original/StoneMuWall02_a00.smd
+wrote /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/StoneMuWall02/validation/original/StoneMuWall02.actions.txt
+
+/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/StoneMuWall02/validation/original/StoneMuWall02.smd: bones=1 frames=1 triangles=44 materials=3
+OK
+
+/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/StoneMuWall02/validation/original/StoneMuWall02_a00.smd: bones=1 frames=1 triangles=0 materials=0
+OK
+
+wrote /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/StoneMuWall02/validation/original/skeleton.bmd (1 action(s))
+warning: skeleton.smd: triangles block is empty: this describes a skeleton-only model (animations without a mesh)
+
+wrote /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/StoneMuWall02/validation/new/StoneMuWall02.smd
+wrote /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/StoneMuWall02/validation/new/StoneMuWall02_a00.smd
+wrote /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/StoneMuWall02/validation/new/StoneMuWall02.actions.txt
+
+/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/StoneMuWall02/validation/new/StoneMuWall02.smd: bones=1 frames=1 triangles=132 materials=3
+OK
+
+/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/StoneMuWall02/validation/new/StoneMuWall02_a00.smd: bones=1 frames=1 triangles=0 materials=0
+OK
+
+wrote /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/StoneMuWall02/validation/new/skeleton.bmd (1 action(s))
+warning: skeleton.smd: triangles block is empty: this describes a skeleton-only model (animations without a mesh)

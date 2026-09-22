@@ -1,0 +1,1 @@
+Initial profile-only candidate was rejected: cap read as a tray and improvement vanished at reduced scale. Images in this folder were cached during the subsequent carving render, so per-image revision provenance is uncertain. Do not use as acceptance evidence. First rejection is recorded in review messages. Never installed into source Data.

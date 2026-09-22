@@ -1,0 +1,9 @@
+model /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/StoneMuWall02/exports/StoneMuWall02.bmd
+  name field: StoneMuWall02.smd  version: 12
+  meshes: 3  bones: 1  actions: 1  triangles: 132
+  bounds (bind pose): min -50.01 -147.40 -174.17  max 49.99 49.92 334.09  size 100.00 197.32 508.27
+  mesh 0: triangles=45 vertices=53 normals=53 uvs=63 texture=c_wall06.jpg
+  mesh 1: triangles=38 vertices=33 normals=43 uvs=40 texture=c_wall05.jpg
+  mesh 2: triangles=49 vertices=47 normals=23 uvs=41 texture=c_wall04.jpg
+  bone 0: "Box01" parent=-1
+  action 0: keys=1 lock=0

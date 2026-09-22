@@ -1,0 +1,105 @@
+{
+  "reviewer": "independent reviewer",
+  "baseline": "7b808473",
+  "assets": [
+    {
+      "asset": "HouseEtc01",
+      "verdict": "REQUEST REVISION \u2014 artistic gain insufficient",
+      "candidate_sha256": "a5b2d044a9a251ec928e62317981d7f5727e48830352cada6eac6fc21b8d0b0b",
+      "independent_converter_validations": [
+        {
+          "file": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/HouseEtc01/validation/new/HouseEtc01.smd",
+          "exit_code": 0,
+          "output": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/HouseEtc01/validation/new/HouseEtc01.smd: bones=1 frames=1 triangles=762 materials=2\nOK\n"
+        },
+        {
+          "file": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/HouseEtc01/validation/new/HouseEtc01_a00.smd",
+          "exit_code": 2,
+          "output": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/HouseEtc01/validation/new/HouseEtc01_a00.smd: bones=1 frames=1 triangles=0 materials=0\nREJECTED\nerror: reference file has no triangles block\n"
+        }
+      ],
+      "triangle_audit": {
+        "status": "PASS",
+        "triangles": 762,
+        "maximum_position_or_uv_error": 1.9073486328125e-06,
+        "criteria": "Every triangle has same material, winding, bone ownership, positions and UV corners",
+        "tolerance": 0.0001
+      },
+      "reason": "Side stepped dressing is visible, but coarse external silhouette remains; additional motif relief largely follows already-painted shadow and disappears at reduced/assembly scale. Does not sufficiently address identified visual weakness.",
+      "next": "Broad inward shaping/chamfer of exposed non-joining edges and cap profile, retaining actual gameplay/modular contacts and bounds. Preserve this study; do not install as completed."
+    },
+    {
+      "asset": "StoneMuWall02",
+      "verdict": "REQUEST REVISION \u2014 artistic gain insufficient",
+      "candidate_sha256": "1a0768c8c4e0288528f51b1928cec3a077719c37b7d44ad3b81cf9547ad35925",
+      "independent_converter_validations": [
+        {
+          "file": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/StoneMuWall02/validation/new/StoneMuWall02.smd",
+          "exit_code": 0,
+          "output": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/StoneMuWall02/validation/new/StoneMuWall02.smd: bones=1 frames=1 triangles=476 materials=3\nOK\n"
+        },
+        {
+          "file": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/StoneMuWall02/validation/new/StoneMuWall02_a00.smd",
+          "exit_code": 2,
+          "output": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/StoneMuWall02/validation/new/StoneMuWall02_a00.smd: bones=1 frames=1 triangles=0 materials=0\nREJECTED\nerror: reference file has no triangles block\n"
+        }
+      ],
+      "triangle_audit": {
+        "status": "PASS",
+        "triangles": 476,
+        "maximum_position_or_uv_error": 9.5367431640625e-07,
+        "criteria": "Every triangle has same material, winding, bone ownership, positions and UV corners",
+        "tolerance": 0.0001
+      },
+      "reason": "Side stepped dressing is visible, but coarse external silhouette remains; additional motif relief largely follows already-painted shadow and disappears at reduced/assembly scale. Does not sufficiently address identified visual weakness.",
+      "next": "Broad inward shaping/chamfer of exposed non-joining edges and cap profile, retaining actual gameplay/modular contacts and bounds. Preserve this study; do not install as completed."
+    },
+    {
+      "asset": "StoneMuWall03",
+      "verdict": "REQUEST REVISION \u2014 artistic gain insufficient",
+      "candidate_sha256": "ed13e1609c4a0fc5fe7d618b3ea63a8dd883b9378b85c0f5cbfdf2cbfd6ced21",
+      "independent_converter_validations": [
+        {
+          "file": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/StoneMuWall03/validation/new/StoneMuWall03.smd",
+          "exit_code": 0,
+          "output": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/StoneMuWall03/validation/new/StoneMuWall03.smd: bones=1 frames=1 triangles=580 materials=2\nOK\n"
+        },
+        {
+          "file": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/StoneMuWall03/validation/new/StoneMuWall03_a00.smd",
+          "exit_code": 2,
+          "output": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/StoneMuWall03/validation/new/StoneMuWall03_a00.smd: bones=1 frames=1 triangles=0 materials=0\nREJECTED\nerror: reference file has no triangles block\n"
+        }
+      ],
+      "triangle_audit": {
+        "status": "PASS",
+        "triangles": 580,
+        "maximum_position_or_uv_error": 9.5367431640625e-07,
+        "criteria": "Every triangle has same material, winding, bone ownership, positions and UV corners",
+        "tolerance": 0.0001
+      },
+      "reason": "Side stepped dressing is visible, but coarse external silhouette remains; additional motif relief largely follows already-painted shadow and disappears at reduced/assembly scale. Does not sufficiently address identified visual weakness.",
+      "next": "Broad inward shaping/chamfer of exposed non-joining edges and cap profile, retaining actual gameplay/modular contacts and bounds. Preserve this study; do not install as completed."
+    }
+  ],
+  "images_inspected": "Each current/candidate full view, reduced view, candidate reverse, south-gate and siege-wall before/after actual-transform assemblies. Known prior slit corrected.",
+  "legacy_normal_finding": "Independently found exactly two StoneMuWall02 c_wall05 original cap triangles with corner normals opposing winding. Same vertices and incidence inherited; new triangles clean. Do not describe as repaired.",
+  "client_evidence": "None personally observed. Offline renders only.",
+  "correct_animation_validation": [
+    {
+      "file": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/StoneMuWall03/validation/new/StoneMuWall03_a00.smd",
+      "exit": 0,
+      "output": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/StoneMuWall03/validation/new/StoneMuWall03_a00.smd: bones=1 frames=1 triangles=0 materials=0\nOK\n"
+    },
+    {
+      "file": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/StoneMuWall02/validation/new/StoneMuWall02_a00.smd",
+      "exit": 0,
+      "output": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/StoneMuWall02/validation/new/StoneMuWall02_a00.smd: bones=1 frames=1 triangles=0 materials=0\nOK\n"
+    },
+    {
+      "file": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/HouseEtc01/validation/new/HouseEtc01_a00.smd",
+      "exit": 0,
+      "output": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/HouseEtc01/validation/new/HouseEtc01_a00.smd: bones=1 frames=1 triangles=0 materials=0\nOK\n"
+    }
+  ],
+  "animation_validation_note": "Prior raw action validation omitted --animation; exit2 was validator mode misuse, not an asset defect. Correct runs attached."
+}

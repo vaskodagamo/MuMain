@@ -1,0 +1,1 @@
+Validated motif-carving and stepped-panel study rejected by independent reviewer/coordinator: external silhouettes remain virtually unchanged at normal camera and assembly scale; triangle increase has poor visible return. No game installation. Source Data remains merged baseline.
