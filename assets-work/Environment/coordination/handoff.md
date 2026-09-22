@@ -7,18 +7,19 @@ Lorencia is not artistically complete. Historical 106/106 means first-pass cover
 - Scrub01: Tree09/10, Grass03/04, `4b0ccd02`. Continuous growth and rounded crowns. Reproduction baseline fix `1259e4f8`.
 - Broadleaf01: Grass05/06, `072f77f6`. Smooth drooping leaf arcs.
 - Houses01: House01/03/04, `7be0eaa3` from `32a1a24b`. Stone surrounds, structural awning supports and domed shingle laps. House04 protected rig/motion exact all40frames; authored source normals corrected to final preserved protected normals.
+- Bonfire02: Bonfire01, `38292593` from `79ed83a5`. Quarter-split wood profiles, curved bark faces and longitudinal grain with unchanged effect shell.
 - Wells02: Well01–04, `5a0ad5b5` from `c1296be9`. Open curved pottery mouths, thick roof boards; all actual-placement groups accepted.
 
-All17 replacements independently accepted offline with packed sources, official exports, matching images and technical evidence. Ledger accepted-exports.json; latest wells-integration-validation.json passes exact17 game paths and115model texture resolution. All textures unchanged. Existing client success is user-reported only for baseline7b808473; new changes client pending.
+All18 replacements independently accepted offline with packed sources, official exports, matching images and technical evidence. Ledger accepted-exports.json; latest bonfire-integration-validation.json passes exact18 game paths and115model texture resolution. All textures unchanged. Existing client success is user-reported only for baseline7b808473; new changes client pending.
 
 ## Active ownership and next actions
-Architecture worktree MuMain-q02-architecture / codex/lorencia-q02-architecture: owns ONLY StoneStatue01/03, SteelStatue01 BMDs and QualityPass02/Statues02. Frozen textures. First angel experiment running. Follow next-statues-brief.md/evidence.
+Architecture worktree MuMain-q02-architecture / codex/lorencia-q02-architecture: owns ONLY StoneStatue01/03, SteelStatue01 BMDs and QualityPass02/Statues02. Frozen textures. All3 final candidates at consolidated independent review; all technical/contact/normal gates pass. Follow next-statues-brief.md/evidence.
 
-Furniture worktree MuMain-q02-furniture / codex/lorencia-q02-furniture: owns ONLY Bonfire01 BMD and QualityPass02/Bonfire02. Opaque fire_01 wood geometry only; freeze all textures and exact fire_02 additive mesh/UV/rig. Follow next-bonfire-brief.md. Official imports running.
+Furniture worktree MuMain-q02-furniture / codex/lorencia-q02-furniture: owns ONLY HouseEtc01 and StoneMuWall02/03/04 BMDs plus QualityPass02/Masonry02. All textures frozen. First HouseEtc01 face-only prototype;8-unit continuous outer border, cap/side/contact surface proof and actual stack seams required. Follow next-masonry-brief.md including coordinator clarification. Expand only after prototype gains clear visual acceptance.
 
-Reviewer: remaining masonry visual direction, then independent statue/bonfire gates. Root alone maintains coordination and integrates accepted owned commits.
+Reviewer: final statue review, then masonry prototype gate. Root alone maintains coordination and integrates accepted owned commits.
 
-Nine production assets remain: HouseEtc01, StoneMuWall02/03/04; StoneStatue01/03, SteelStatue01; Waterspout01; Bonfire01. Four companion baselines retained by explicit rationale in companion-review.json. Broader retained-asset/coherence gate still required. No later maps started.
+Eight production assets remain: HouseEtc01, StoneMuWall02/03/04; StoneStatue01/03, SteelStatue01; Waterspout01. Four companion baselines retained by explicit rationale in companion-review.json. Additional76 retained baselines now have individualized acceptance in retention-gate.json. Coherence01 sampled five mixed neighborhoods; final remaining production gate still required. No later maps started.
 
 Masonry01 rejected study-only commit d6e85282 stays worker branch, NOT integrated. HouseEtc actual stacked seam failed; others lacked meaningful gain. Preserve exact connections, continue new interior-profile directions.
 
