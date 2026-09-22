@@ -15,5 +15,6 @@
   "src/bin/Data/Object1/Well01.bmd": "assets-work/World1/QualityPass02/Wells02/Well01/exports/Well01.bmd",
   "src/bin/Data/Object1/Well02.bmd": "assets-work/World1/QualityPass02/Wells02/Well02/exports/Well02.bmd",
   "src/bin/Data/Object1/Well03.bmd": "assets-work/World1/QualityPass02/Wells02/Well03/exports/Well03.bmd",
-  "src/bin/Data/Object1/Well04.bmd": "assets-work/World1/QualityPass02/Wells02/Well04/exports/Well04.bmd"
+  "src/bin/Data/Object1/Well04.bmd": "assets-work/World1/QualityPass02/Wells02/Well04/exports/Well04.bmd",
+  "src/bin/Data/Object1/Bonfire01.bmd": "assets-work/World1/QualityPass02/Bonfire02/Bonfire01/exports/Bonfire01.bmd"
 }

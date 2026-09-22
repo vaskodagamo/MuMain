@@ -40,3 +40,6 @@ Root: /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-w
 StoneMuWall04 baseline: /Users/lukasmac/Documents/claude-test-mumain/MuMain/assets-work/World1/coordination/final-inspection/StoneMuWall04/final-offline.png
 Earlier rejection: /tmp/astra-masonry-cap-review.json
 Companion retention rationale: /tmp/astra-companion-review.json
+
+## Coordinator border clarification, 2026-09-23
+Original eight broad front trapezoids cross the painted sockets and cheeks. Their entire triangulation is not an immutable border: interior subdivision is permitted to expose purposeful face carving. Preserve a documented continuous outer border band as an identical baseline surface, including position, UV interpolation, binding and winding; retain original perimeter edges and all block/cap/side/contact surfaces. Prove the new border surface equals the original planes/UV fields, rather than only sampling outer corners. Exact stacked seam and reduced visual gates remain mandatory.
