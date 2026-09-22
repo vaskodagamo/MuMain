@@ -1,0 +1,19 @@
+{
+  "kind": "OFFLINE BLENDER DIFFUSE; NOT CLIENT",
+  "bounds": [
+    [
+      -200.20449829101562,
+      -259.681884765625,
+      -45.472999572753906
+    ],
+    [
+      200.19558715820312,
+      200.28770446777344,
+      44.57040023803711
+    ]
+  ],
+  "camera": "Identical orthographic camera per model",
+  "current": "7b808473 merged BMD",
+  "candidate": "Actual exported and reimported BMD",
+  "reduced_preview": "300x255 pixels"
+}

@@ -1,0 +1,12 @@
+wrote /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Architecture01/HouseWall06/validation/new/HouseWall06.smd
+wrote /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Architecture01/HouseWall06/validation/new/HouseWall06_a00.smd
+wrote /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Architecture01/HouseWall06/validation/new/HouseWall06.actions.txt
+
+/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Architecture01/HouseWall06/validation/new/HouseWall06.smd: bones=1 frames=1 triangles=262 materials=2
+OK
+
+/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Architecture01/HouseWall06/validation/new/HouseWall06_a00.smd: bones=1 frames=1 triangles=0 materials=0
+OK
+
+wrote /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Architecture01/HouseWall06/validation/new/skeleton.bmd (1 action(s))
+warning: skeleton.smd: triangles block is empty: this describes a skeleton-only model (animations without a mesh)

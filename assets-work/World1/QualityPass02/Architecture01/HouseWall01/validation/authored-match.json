@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "triangles": 444,
+  "every_corner_bone": 0,
+  "position_tolerance": 0.002,
+  "uv_tolerance": 1e-05,
+  "maximum_position_delta": 8.123535153004013e-06,
+  "packed_images": true
+}
