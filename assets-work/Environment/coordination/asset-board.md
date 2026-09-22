@@ -35,3 +35,19 @@ Effect-preview follow-up: reviewer retains FireLight01/02 and DoungeonGate01 aft
 inspecting existing effect approximations and source renderer. Bonfire01 enters P2 queue:
 rectangular logs need shaped split-log sections; mesh1 fire shell/UVs must remain exact.
 Updated tally: 25 production, 76 defensible retain, five companion consistency checks.
+
+## Accepted checkpoint: modular architecture
+
+HouseWall01/04/05/06 accepted independently and integrated at `9abdf7e8` from worker
+`594b6db2`. Structural timber bays and modeled shingle laps improve reduced-scale reading.
+Counts 444/872/478/262. Exact bounds, original corners, roof boundary planes, material order,
+rig/actions and all texture bytes preserved. Zero-area roof faces removed before final acceptance.
+[Independent review](../../World1/QualityPass02/Architecture01/independent-review.json),
+[assembly comparison](../../World1/QualityPass02/Architecture01/review/town-comparison.jpg),
+[combined resolution/scope check](architecture-integration-validation.json).
+All115 Object1 models resolve; exactly4 BMDs changed; no texture/protected-file changes.
+New client checks pending. Lorencia gate remains incomplete:21 production candidates and
+five companion consistency reviews remain beyond these four accepted replacements.
+
+Next dispatched: Tree09/10 + Grass03/04, architecture artist in same worker branch/worktree,
+owned new batch QualityPass02/Scrub01 only; all three alpha texture containers frozen.

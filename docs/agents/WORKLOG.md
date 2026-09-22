@@ -469,3 +469,21 @@ user-reported only; no runtime write or client observation by this task. No new 
 
 **Open:** Production and independent export/visual review; full current artistic assessment.
 See assets-work/Environment/coordination/handoff.md for ownership and exact restart work.
+
+## 2026-09-22 — Accept first Lorencia quality-pass architecture batch (ASTRA / Codex)
+
+**Done:** Integrated worker594b6db2 as9abdf7e8: HouseWall01/04 structural timber bays,
+HouseWall05/06 modeled shingle courses, 23 placements. Retained packed Blender sources,
+original/current files, reproduction, matching exported diffuse comparisons and assemblies.
+Independent reviewer accepted all final hashes after roof-degenerate cleanup.
+
+**Verified:** Converter/model/action checks, exact rig and bounds, one UV layer and full
+source/export triangle material/position/UV correspondence, raw normal ownership, frozen
+textures, roof modular perimeters, no degenerate triangles. Integrated hash evidence matches;
+all115 Object1 models resolve; only the four BMDs changed. Client review pending for new work.
+User-reported baseline working in game remains distinct from this offline evidence.
+
+**Open:** Lorencia remains artistically incomplete. Next scrub4 batch covers530 placements;
+masonry studies returned for revision because assembly gains did not justify added geometry.
+No later-map, engine, shared runtime, placement/collision or terrain changes. Current restart:
+assets-work/Environment/coordination/handoff.md.

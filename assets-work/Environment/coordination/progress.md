@@ -18,3 +18,5 @@ side dressing improves, but assembly/reduced-scale silhouette gain insufficient 
 geometry. Baseline BMDs retained; artist revising exposed edge/cap geometry and reducing
 low-payoff tessellation. Architecture revised exports pass converter/rig/raw-normal/UV/bounds
 checks; individual review ready, assembly render script repair pending. No accepted game changes.
+
+Accepted first checkpoint: four modular assets integrated9abdf7e8; final reviewer BMD/image hashes match. Combined check115/115 resolve and exact4-path game scope. Dispatched530-placement scrub family next; masonry revision remains unaccepted. No runtime/client or other-map work.

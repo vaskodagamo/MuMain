@@ -1375,11 +1375,11 @@
     "treatment": "texture-only treatment",
     "remaining_problem": "Tall tuft shells cinch like tied brooms above solid flared polygonal bases; shrubs retain angular conical outlines. This group covers 530 placements.",
     "priority": 1,
-    "owner": "unclaimed",
-    "branch": null,
-    "worktree": null,
-    "status": "unclaimed",
-    "baseline": "7b808473",
+    "owner": "architecture / scrub",
+    "branch": "codex/lorencia-q02-architecture",
+    "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture",
+    "status": "in progress",
+    "baseline": "594b6db2 (scrub inputs unchanged from7b808473)",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
     "commits": [],
     "placement_count": 119,
@@ -1420,11 +1420,11 @@
     "treatment": "texture-only treatment",
     "remaining_problem": "Tall tuft shells cinch like tied brooms above solid flared polygonal bases; shrubs retain angular conical outlines. This group covers 530 placements.",
     "priority": 1,
-    "owner": "unclaimed",
-    "branch": null,
-    "worktree": null,
-    "status": "unclaimed",
-    "baseline": "7b808473",
+    "owner": "architecture / scrub",
+    "branch": "codex/lorencia-q02-architecture",
+    "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture",
+    "status": "in progress",
+    "baseline": "594b6db2 (scrub inputs unchanged from7b808473)",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
     "commits": [],
     "placement_count": 119,
@@ -2092,16 +2092,19 @@
         "src/bin/Data/Object1/tile_ston04.OZJ"
       ]
     },
-    "treatment": "partial geometry/art treatment",
-    "remaining_problem": "Thin panel refinements leave block timber beams and perfectly planar roof courses.",
+    "treatment": "finished to current quality standard",
+    "remaining_problem": "No unresolved offline defect in independently accepted export. Integrated client review pending.",
     "priority": 1,
     "owner": "architecture",
     "branch": "codex/lorencia-q02-architecture",
     "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture",
-    "status": "in progress",
+    "status": "accepted",
     "baseline": "7b808473",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
-    "commits": [],
+    "commits": [
+      "594b6db2",
+      "9abdf7e8"
+    ],
     "placement_count": 3,
     "placement_records": "../../World1/coordination/dependency-map.json#/models/HouseWall01/placements",
     "first_placement": {
@@ -2123,7 +2126,7 @@
     },
     "intended_improvement": "Profile beam edges and shallow stepped eaves; preserve contacts, bounds and HeroTile roof fade. Active architecture owner.",
     "assessment": "production",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/HouseWall01/final-offline.png"
+    "evidence": "../../World1/QualityPass02/Architecture01/HouseWall01/review/comparison.jpg"
   },
   {
     "model": "HouseWall02",
@@ -2236,16 +2239,19 @@
         "src/bin/Data/Object1/tile_ston04.OZJ"
       ]
     },
-    "treatment": "partial geometry/art treatment",
-    "remaining_problem": "Thin panel refinements leave block timber beams and perfectly planar roof courses.",
+    "treatment": "finished to current quality standard",
+    "remaining_problem": "No unresolved offline defect in independently accepted export. Integrated client review pending.",
     "priority": 1,
     "owner": "architecture",
     "branch": "codex/lorencia-q02-architecture",
     "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture",
-    "status": "in progress",
+    "status": "accepted",
     "baseline": "7b808473",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
-    "commits": [],
+    "commits": [
+      "594b6db2",
+      "9abdf7e8"
+    ],
     "placement_count": 8,
     "placement_records": "../../World1/coordination/dependency-map.json#/models/HouseWall04/placements",
     "first_placement": {
@@ -2267,7 +2273,7 @@
     },
     "intended_improvement": "Profile beam edges and shallow stepped eaves; preserve contacts, bounds and HeroTile roof fade. Active architecture owner.",
     "assessment": "production",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/HouseWall04/final-offline.png"
+    "evidence": "../../World1/QualityPass02/Architecture01/HouseWall04/review/comparison.jpg"
   },
   {
     "model": "HouseWall05",
@@ -2281,16 +2287,19 @@
         "src/bin/Data/Object1/tile_wood03.OZJ"
       ]
     },
-    "treatment": "partial geometry/art treatment",
-    "remaining_problem": "Thin panel refinements leave block timber beams and perfectly planar roof courses.",
+    "treatment": "finished to current quality standard",
+    "remaining_problem": "No unresolved offline defect in independently accepted export. Integrated client review pending.",
     "priority": 1,
     "owner": "architecture",
     "branch": "codex/lorencia-q02-architecture",
     "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture",
-    "status": "in progress",
+    "status": "accepted",
     "baseline": "7b808473",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
-    "commits": [],
+    "commits": [
+      "594b6db2",
+      "9abdf7e8"
+    ],
     "placement_count": 8,
     "placement_records": "../../World1/coordination/dependency-map.json#/models/HouseWall05/placements",
     "first_placement": {
@@ -2312,7 +2321,7 @@
     },
     "intended_improvement": "Profile beam edges and shallow stepped eaves; preserve contacts, bounds and HeroTile roof fade. Active architecture owner.",
     "assessment": "production",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/HouseWall05/final-offline.png"
+    "evidence": "../../World1/QualityPass02/Architecture01/HouseWall05/review/comparison.jpg"
   },
   {
     "model": "HouseWall06",
@@ -2326,16 +2335,19 @@
         "src/bin/Data/Object1/tile_wood03.OZJ"
       ]
     },
-    "treatment": "partial geometry/art treatment",
-    "remaining_problem": "Thin panel refinements leave block timber beams and perfectly planar roof courses.",
+    "treatment": "finished to current quality standard",
+    "remaining_problem": "No unresolved offline defect in independently accepted export. Integrated client review pending.",
     "priority": 1,
     "owner": "architecture",
     "branch": "codex/lorencia-q02-architecture",
     "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture",
-    "status": "in progress",
+    "status": "accepted",
     "baseline": "7b808473",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
-    "commits": [],
+    "commits": [
+      "594b6db2",
+      "9abdf7e8"
+    ],
     "placement_count": 4,
     "placement_records": "../../World1/coordination/dependency-map.json#/models/HouseWall06/placements",
     "first_placement": {
@@ -2357,7 +2369,7 @@
     },
     "intended_improvement": "Profile beam edges and shallow stepped eaves; preserve contacts, bounds and HeroTile roof fade. Active architecture owner.",
     "assessment": "production",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/HouseWall06/final-offline.png"
+    "evidence": "../../World1/QualityPass02/Architecture01/HouseWall06/review/comparison.jpg"
   },
   {
     "model": "Ship01",
@@ -4335,11 +4347,11 @@
     "treatment": "texture-only treatment",
     "remaining_problem": "Tall tuft shells cinch like tied brooms above solid flared polygonal bases; shrubs retain angular conical outlines. This group covers 530 placements.",
     "priority": 1,
-    "owner": "unclaimed",
-    "branch": null,
-    "worktree": null,
-    "status": "unclaimed",
-    "baseline": "7b808473",
+    "owner": "architecture / scrub",
+    "branch": "codex/lorencia-q02-architecture",
+    "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture",
+    "status": "in progress",
+    "baseline": "594b6db2 (scrub inputs unchanged from7b808473)",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
     "commits": [],
     "placement_count": 42,
@@ -4377,11 +4389,11 @@
     "treatment": "texture-only treatment",
     "remaining_problem": "Tall tuft shells cinch like tied brooms above solid flared polygonal bases; shrubs retain angular conical outlines. This group covers 530 placements.",
     "priority": 1,
-    "owner": "unclaimed",
-    "branch": null,
-    "worktree": null,
-    "status": "unclaimed",
-    "baseline": "7b808473",
+    "owner": "architecture / scrub",
+    "branch": "codex/lorencia-q02-architecture",
+    "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture",
+    "status": "in progress",
+    "baseline": "594b6db2 (scrub inputs unchanged from7b808473)",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
     "commits": [],
     "placement_count": 250,
