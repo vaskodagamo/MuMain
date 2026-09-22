@@ -30,7 +30,11 @@ Quick references:
 
 ## Branch and PR conventions
 
-- Target branch for PRs is `main`.
+- **All work happens in the fork `vaskodagamo/MuMain` only.** Never push branches to, or
+  open pull requests against, the upstream repository `sven-n/MuMain`. `gh` defaults to
+  the parent repository on a fork, so always pass `--repo vaskodagamo/MuMain` (or run
+  `gh repo set-default vaskodagamo/MuMain` once per checkout).
+- Target branch for PRs is `main` of that fork.
 - Keep changes focused — one concern per commit (see rule 10 in the coding
   rules). Smaller diffs review faster.
 - Match the style of existing commit messages in `git log`.
