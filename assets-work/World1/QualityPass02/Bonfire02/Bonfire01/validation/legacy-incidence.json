@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "incidence": {
+    "baseline": {
+      "zero_uv": 0,
+      "nonpositive_corner_normals": 0
+    },
+    "candidate": {
+      "zero_uv": 0,
+      "nonpositive_corner_normals": 0
+    }
+  },
+  "criterion": "Every candidate zero-UV and nonpositive corner-normal face corresponds to the same baseline bone/position/UV/winding triangle, and has the same baseline defect; no added exceptions"
+}

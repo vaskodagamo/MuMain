@@ -1,0 +1,35 @@
++ /Users/lukasmac/Documents/claude-test-mumain/MuMain/out/build/macos-arm64/tools/bmdconv/Release/bmdconv bmd2smd /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Bonfire02/Bonfire01/baseline/Bonfire01.bmd /var/folders/5c/gyglnk2d6mx3v2m0frrgvl2w0000gn/T/mu_import_0tt7_kd9
+wrote /var/folders/5c/gyglnk2d6mx3v2m0frrgvl2w0000gn/T/mu_import_0tt7_kd9/Bonfire01.smd
+wrote /var/folders/5c/gyglnk2d6mx3v2m0frrgvl2w0000gn/T/mu_import_0tt7_kd9/Bonfire01_a00.smd
+wrote /var/folders/5c/gyglnk2d6mx3v2m0frrgvl2w0000gn/T/mu_import_0tt7_kd9/Bonfire01.actions.txt
+
+SMD IMPORTER: now working on Bonfire01
+- This is a mesh
+- Imported 4 new bones
+- Imported 1 frames of animation
+- New material: fire_01.jpg
+- New material: fire_02.jpg
+- Imported 110 polys
+SMD Bonfire01 imported in under 1 second 
+
+Imported 1 files in 0.0 seconds
+Info: Imported 1 files in 0.0 seconds
+
+SMD IMPORTER: now working on Bonfire01_a00
+- This is a skeltal animation or pose
+- Appending bones from animations is destructive; switching Bone Append Mode to "Validate"
+- Validated 4 bones against armature "Bonfire01_skeleton"
+- Imported 1 frames of animation
+SMD Bonfire01_a00 imported in under 1 second 
+
+Imported 1 files in 0.0 seconds
+Info: Imported 1 files in 0.0 seconds
+imported 1 of 1 actions
+Info: Packed 2 file(s)
+Info: Saved as "source.blend"
+saved /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Bonfire02/Bonfire01/baseline/source.blend: 1 mesh object(s), 4 bones, 1 animation clips, 2 materials (0 without texture)
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:49:19)
+
+Blender quit
+/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/tools/blender/mu_bmd_import.py:98: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
+  material.use_nodes = True

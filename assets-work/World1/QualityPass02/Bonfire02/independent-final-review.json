@@ -1,0 +1,293 @@
+{
+  "decision": "ACCEPT",
+  "manifest": {
+    "asset": "Bonfire01",
+    "triangles": 518,
+    "protected_effect_triangles": 38,
+    "bmd_sha256": "5c0cba3c0d56711b96c03cc216ef2bc7c73c1fe1e138caf6c3a460046dcb0d35",
+    "source_sha256": "880817b14975a1147dfea5cc27b729c7d6d6afcbe77a1a60298f736122e23fb9",
+    "textures": {
+      "fire_01.OZJ": "1b5f30547a9edd7877005a40c09946294c5772ac2b5953d3ffa92161c9a98294",
+      "fire_02.OZJ": "e84366780b0047b3ad4232b114703835b4bff3728aa5ff9872cfd8fa170c9086"
+    }
+  },
+  "rationale": "Quarter-split lower wood sections have broad curved bark faces, crisp split planes and longitudinal grain; actual scaled/tilted and adjacent pair views retain gain. Exact hot-end corners preserve glow-shell interface, with no newly visible shell opening in compared main/reverse/placement images.",
+  "limits": [
+    "Square hot ends deliberately retained for fixed additive shell.",
+    "Offline additive approximation; no particle, flicker, engine sorting or client proof.",
+    "Bounded wood geometry/UV change with frozen textures/effect shell."
+  ],
+  "proof": {
+    "summary.json": {
+      "sha256": "8998a59d6ba15b1435e79e874b7b06ba21be7c04d6345c0f2adf64505a159323",
+      "data": {
+        "status": "PASS",
+        "bounds_before": [
+          [
+            -57.61,
+            -54.83,
+            -6.95
+          ],
+          [
+            62.04,
+            55.02,
+            55.95
+          ]
+        ],
+        "bounds_after": [
+          [
+            -57.61,
+            -54.83,
+            -6.95
+          ],
+          [
+            62.04,
+            55.02,
+            55.95
+          ]
+        ],
+        "skeleton_actions": "EQUIVALENT",
+        "mesh_order": [
+          "fire_01.jpg",
+          "fire_02.jpg"
+        ],
+        "client_verified": false
+      }
+    },
+    "packed-textures.json": {
+      "sha256": "9192b786c7af67a12265f50c5ac9a80b242292397840ea64c5f1b24ca6380d8f",
+      "data": {
+        "status": "PASS",
+        "images": [
+          {
+            "texture": "fire_01.jpg",
+            "size": [
+              512,
+              512
+            ],
+            "packed_payload_sha256": "4a6a6398e34c446430236eee99884bf29e5b09bd8ad00515893cc3a0f13801be"
+          },
+          {
+            "texture": "fire_02.jpg",
+            "size": [
+              32,
+              32
+            ],
+            "packed_payload_sha256": "cdfb5a556ae13437ac111992046f757e7833c876e7c8b540b8a981043caac27e"
+          }
+        ],
+        "reference_collection": "REF_ORIGINAL hidden and retained"
+      }
+    },
+    "source.json": {
+      "sha256": "0aa1409eaf72944a898250d18e9c51cbea293e8947f01f67870e21e19eab71f5",
+      "data": {
+        "bounds_before": [
+          [
+            -57.606201171875,
+            -54.8291015625,
+            -6.945098876953125
+          ],
+          [
+            62.04010009765625,
+            55.015899658203125,
+            55.954498291015625
+          ]
+        ],
+        "bounds_after": [
+          [
+            -57.606201171875,
+            -54.8291015625,
+            -6.945098876953125
+          ],
+          [
+            62.04010009765625,
+            55.015899658203125,
+            55.954498291015625
+          ]
+        ],
+        "triangles": 518,
+        "protected_effect_triangles": 38,
+        "wood_log_lowest_contacts": [
+          [
+            -49.68880081176758,
+            -26.466400146484375,
+            -2.5759010314941406
+          ],
+          [
+            -35.01169967651367,
+            31.636600494384766,
+            -4.717299938201904
+          ],
+          [
+            7.230899810791016,
+            43.431495666503906,
+            -6.165501117706299
+          ],
+          [
+            49.47050094604492,
+            12.18850040435791,
+            -4.717299938201904
+          ],
+          [
+            47.11370086669922,
+            -32.88090515136719,
+            -1.9682010412216187
+          ],
+          [
+            -9.50510025024414,
+            -43.71649932861328,
+            -4.717299938201904
+          ]
+        ],
+        "ground_contact_error": 0,
+        "bone_order": [
+          "Bone01",
+          "Bone_fire",
+          "Cylinder03",
+          "Cylinder04"
+        ],
+        "actions": {
+          "Bonfire01_a00": {
+            "index": 0,
+            "lock": false
+          }
+        },
+        "textures": "Frozen",
+        "client_verified": false
+      }
+    },
+    "raw-bindings.json": {
+      "sha256": "59e8c03012d058ec58c219e31bb18bdfa1996d26f20ef6b67991e6dcaa58f786",
+      "data": {
+        "file": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Bonfire02/Bonfire01/exports/Bonfire01.bmd",
+        "mesh_bindings": [
+          {
+            "mesh": 0,
+            "material": "fire_01.jpg",
+            "vertex_to_normal_node_mismatch_corner_counts": {}
+          },
+          {
+            "mesh": 1,
+            "material": "fire_02.jpg",
+            "vertex_to_normal_node_mismatch_corner_counts": {}
+          }
+        ]
+      }
+    },
+    "legacy-incidence.json": {
+      "sha256": "5161de8b38eaaa9c24801f7c2fb1075a6ea22589bdf67f4c00e0e7f8a86ead66",
+      "data": {
+        "status": "PASS",
+        "incidence": {
+          "baseline": {
+            "zero_uv": 0,
+            "nonpositive_corner_normals": 0
+          },
+          "candidate": {
+            "zero_uv": 0,
+            "nonpositive_corner_normals": 0
+          }
+        },
+        "criterion": "Every candidate zero-UV and nonpositive corner-normal face corresponds to the same baseline bone/position/UV/winding triangle, and has the same baseline defect; no added exceptions"
+      }
+    },
+    "uv-winding.json": {
+      "sha256": "6e4746f12a2526ecd3a8793094db867b5888b0ddf5cea4251cd0a5a4d2702366",
+      "data": {
+        "status": "PASS",
+        "triangles": 518,
+        "minimum_area": 4.734312084545362,
+        "unchanged_legacy_faces": []
+      }
+    },
+    "authored-raw-normal.json": {
+      "sha256": "7dc855adf36763714d13fcfd899c32971c9ea4ae57ada0de8d2d8264ded9b715",
+      "data": {
+        "status": "PASS",
+        "triangles": 518,
+        "maximum_world_normal_vector_distance": 0.00011167947026385248,
+        "tolerance": 0.001,
+        "criterion": "Every authored triangle corner normal compared with actual raw normal Node rotation, after exact material/bone/position/UV/cyclic-winding match"
+      }
+    },
+    "protected-shell.json": {
+      "sha256": "3db312a88637d1a3d1a0a43dfb6d000406a172990237f0a31b501bd417870ff3",
+      "data": {
+        "status": "PASS",
+        "triangles": 38,
+        "maximum_raw_local_position_error": 9.5367431640625e-07,
+        "maximum_raw_local_normal_error": 0.00015951439367381236,
+        "maximum_uv_error": 0,
+        "vertex_and_normal_nodes": "EXACT",
+        "material_and_cyclic_winding": "EXACT"
+      }
+    },
+    "local-motion.json": {
+      "sha256": "2802ee925b3a3d08b51e276b5308879e6830453f89bec9e53e18c495eca575a5",
+      "data": [
+        {
+          "file": "Bonfire01.smd",
+          "position": 1.000000000139778e-06,
+          "rotation_matrix": 4.693277920742034e-07
+        },
+        {
+          "file": "Bonfire01_a00.smd",
+          "position": 1.000000000139778e-06,
+          "rotation_matrix": 4.693277920742034e-07
+        }
+      ]
+    },
+    "authored-triangle-match.json": {
+      "sha256": "a26a5c142d0987db81e68dbfad3409c421104d3a3574f2994af3726aa1fe1ebd",
+      "data": {
+        "status": "PASS",
+        "maximum_position_error": 4.074098465594068e-06,
+        "maximum_uv_error": 6.336060650786549e-07,
+        "triangles": 518,
+        "maximum_position_or_uv_error": 4.074098465594068e-06,
+        "criteria": "Every triangle has same material, winding, bone ownership, positions and UV corners",
+        "position_tolerance": 0.0003,
+        "uv_tolerance": 1e-06,
+        "precision": "Six-decimal SMD Euler roundtrip and float32 coordinates: measured matrix delta 4.733e-7 over a 320-unit asset; bounded 0.0003 world-unit budget"
+      }
+    },
+    "authored-export.json": {
+      "sha256": "1480ceb870df99c2f4dd45a1309d099bb825616249f1fafe06197a806d555e39",
+      "data": {
+        "result": "PASS",
+        "max_distances": [
+          4.074098342243815e-06,
+          4.074098342243815e-06
+        ],
+        "space": "bone-matched bind/world coordinates"
+      }
+    },
+    "raw-world-new.json": {
+      "sha256": "e5d5b94849da5475ec05451a17515b5cebbee1d9af4880665adf9d4515cf8d4f",
+      "data": {
+        "stage": "new",
+        "keys": 1,
+        "normal_aliases": {},
+        "criterion": "Normal world direction differs by less than1e-5 at every action key",
+        "status": "PASS"
+      }
+    }
+  },
+  "images": {
+    "Bonfire01/review/comparison-reverse.jpg": "334c8543f4e0f1d56bc23f5e12fd6303c1f292b1185caa2899561ec43b3266e7",
+    "Bonfire01/review/comparison-wood-small.jpg": "388296c39de0687f9a6861e8d7f2268ad28e4be623e853678873ce51ab966355",
+    "Bonfire01/review/comparison-wood.jpg": "88e3b28d2673b0f934f0c92298a21abc0b9aabf9860e225e5b15e627f5e043d8",
+    "Bonfire01/review/comparison.jpg": "9960561d1adb9c8a1131f94e2a09eca4b6cc63baad20c5c0645388f2c4d30676",
+    "Bonfire01/review/comparison-small.jpg": "c2e407004c0b2269b1e824fd00e5b1e3951878341f8d6e361480aef1686e7e81",
+    "review-assemblies/adjacent-tilted-pair/comparison-reverse.jpg": "978decd76d45d2eefe9dbb6ed8ebf3af94084bb41311384e3255fd7fb201338d",
+    "review-assemblies/adjacent-tilted-pair/comparison.jpg": "41ca81729e429c2ef31585973cd839c74bc1d108a96f51b78f0164e1374a1855",
+    "review-assemblies/adjacent-tilted-pair/comparison-small.jpg": "7f6a1104b8f005cee7e9624c6c90974e12d724b87152b5a0f9fe2492c6999aee",
+    "review-assemblies/medium-scale/comparison-reverse.jpg": "e42750028577f90af1ca95e844aaf4bff9276a65bc516b8e533a3eaadd0827d5",
+    "review-assemblies/medium-scale/comparison.jpg": "0b8124a580a26f86f15fe1067b4b9b93c4e42e820642ab924e152e5fde1202fa",
+    "review-assemblies/medium-scale/comparison-small.jpg": "536811f4c2e9c8941834263b9251a96d5d96f0ebedc695702cf97a399a12c57c",
+    "review-assemblies/small-tilted/comparison-reverse.jpg": "baea55b0b5efdcb103fc15fe9184e35550bf09aa701bfec9f379ccec0bd09064",
+    "review-assemblies/small-tilted/comparison.jpg": "d4c8c8b7caaeaf877176857af0c7161939771a7ca95c3619329e877bd6a98a11",
+    "review-assemblies/small-tilted/comparison-small.jpg": "0b0d60fe3b0da515f7d0471d0f1ff0282a1a58b31c9abc2abee7e6615359c75e"
+  }
+}

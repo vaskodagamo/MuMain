@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "triangles": 38,
+  "maximum_raw_local_position_error": 9.5367431640625e-07,
+  "maximum_raw_local_normal_error": 0.00015951439367381236,
+  "maximum_uv_error": 0,
+  "vertex_and_normal_nodes": "EXACT",
+  "material_and_cyclic_winding": "EXACT"
+}
