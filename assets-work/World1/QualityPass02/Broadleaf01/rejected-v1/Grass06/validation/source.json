@@ -1,0 +1,126 @@
+{
+  "original_control_vertices": 144,
+  "max_control_vertex_distance": 0.0,
+  "control_contract": "Every original edge control, including roots, tips and ground contacts retained",
+  "triangles": 448,
+  "bounds_before": [
+    [
+      -161.83990478515625,
+      -51.36349868774414,
+      0.11079400032758713
+    ],
+    [
+      102.59017944335938,
+      58.30040740966797,
+      60.738800048828125
+    ]
+  ],
+  "bounds_after": [
+    [
+      -161.83990478515625,
+      -51.36349868774414,
+      0.11079400032758713
+    ],
+    [
+      102.59017944335938,
+      58.30040740966797,
+      60.738800048828125
+    ]
+  ],
+  "bone_order": [
+    "Box01",
+    "Box02",
+    "Box03",
+    "Box04"
+  ],
+  "actions": {
+    "Grass06_a00": {
+      "index": 0,
+      "lock": false
+    }
+  },
+  "leaves": [
+    {
+      "bone": "Box01",
+      "original_sections": 5,
+      "new_sections": 9
+    },
+    {
+      "bone": "Box01",
+      "original_sections": 4,
+      "new_sections": 7
+    },
+    {
+      "bone": "Box01",
+      "original_sections": 5,
+      "new_sections": 9
+    },
+    {
+      "bone": "Box01",
+      "original_sections": 4,
+      "new_sections": 7
+    },
+    {
+      "bone": "Box02",
+      "original_sections": 5,
+      "new_sections": 9
+    },
+    {
+      "bone": "Box02",
+      "original_sections": 4,
+      "new_sections": 7
+    },
+    {
+      "bone": "Box02",
+      "original_sections": 5,
+      "new_sections": 9
+    },
+    {
+      "bone": "Box02",
+      "original_sections": 4,
+      "new_sections": 7
+    },
+    {
+      "bone": "Box03",
+      "original_sections": 5,
+      "new_sections": 9
+    },
+    {
+      "bone": "Box03",
+      "original_sections": 4,
+      "new_sections": 7
+    },
+    {
+      "bone": "Box03",
+      "original_sections": 5,
+      "new_sections": 9
+    },
+    {
+      "bone": "Box03",
+      "original_sections": 4,
+      "new_sections": 7
+    },
+    {
+      "bone": "Box04",
+      "original_sections": 5,
+      "new_sections": 9
+    },
+    {
+      "bone": "Box04",
+      "original_sections": 4,
+      "new_sections": 7
+    },
+    {
+      "bone": "Box04",
+      "original_sections": 5,
+      "new_sections": 9
+    },
+    {
+      "bone": "Box04",
+      "original_sections": 4,
+      "new_sections": 7
+    }
+  ],
+  "texture": "tree_09.OZT frozen,256x512 RGBA",
+  "client_verified": false
+}

@@ -1,0 +1,32 @@
+{
+  "status": "PASS",
+  "bounds_before": [
+    [
+      -167.84,
+      -135.89,
+      -1.08
+    ],
+    [
+      154.57,
+      138.67,
+      86.23
+    ]
+  ],
+  "bounds_after": [
+    [
+      -167.84,
+      -135.89,
+      -1.08
+    ],
+    [
+      154.57,
+      138.67,
+      86.23
+    ]
+  ],
+  "skeleton_actions": "EQUIVALENT",
+  "mesh_order": [
+    "tree_09.tga"
+  ],
+  "client_verified": false
+}

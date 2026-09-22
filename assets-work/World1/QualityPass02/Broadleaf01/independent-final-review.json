@@ -1,0 +1,133 @@
+{
+  "assets": [
+    {
+      "asset": "Grass05",
+      "verdict": "ACCEPT_OFFLINE_CANDIDATE",
+      "export_sha256": "1f13a8c297a31afc6ffe1ab61f84b991e6c3cb8fa8096a967119995044d674e4",
+      "triangles": 640,
+      "rationale": "Long drooping leaf arcs and rolled midrib sections replace angular elbows/origami folds; visibly stronger leaf silhouette at reduced scale and actual six-placement cluster. Painted veins remain aligned; alpha silhouette clean on light/dark backgrounds.",
+      "root_tip_controls_exact": 64,
+      "per_root_source_bounds_exact": true,
+      "strict_uv_winding_audit": {
+        "status": "PASS",
+        "triangles": 640,
+        "minimum_area": 0.02491490011682711,
+        "minimum_uv_area": 1.2462499999998627e-05,
+        "minimum_corner_normal_dot_face": 0.7504645921678533,
+        "texture_sha256": "cb9cf4565ffda802131cde6b53e64a66550c2949efbf3b123f2f73a00aa65349",
+        "export_sha256": "1f13a8c297a31afc6ffe1ab61f84b991e6c3cb8fa8096a967119995044d674e4"
+      },
+      "authored_match": {
+        "status": "PASS",
+        "maximum_position_error": 0.00014150418846886755,
+        "maximum_uv_error": 5.066394805908203e-07,
+        "triangles": 640,
+        "maximum_position_or_uv_error": 0.00014150418846886755,
+        "criteria": "Every triangle has same material, winding, bone ownership, positions and UV corners",
+        "position_tolerance": 0.0003,
+        "uv_tolerance": 1e-06,
+        "precision": "Six-decimal SMD Euler roundtrip and float32 coordinates: measured matrix delta 4.733e-7 over a 320-unit asset; bounded 0.0003 world-unit budget"
+      },
+      "independent_converter_validation": [
+        {
+          "path": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Broadleaf01/Grass05/validation/new/Grass05.smd",
+          "exit": 0
+        },
+        {
+          "path": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Broadleaf01/Grass05/validation/new/Grass05_a00.smd",
+          "exit": 0
+        },
+        {
+          "path": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Broadleaf01/Grass05/validation/new/skeleton.smd",
+          "exit": 0
+        }
+      ],
+      "image_sha256": {
+        "candidate-small.png": "9a9d16eaf0a6ca7c9c607d6a2566bee6c790bddc6862e1a428c4f054d58aaac0",
+        "candidate-reverse.png": "0e415bc353a5c273c09e088b36d26e2b2319f90edc2feb8b32e648a564ab8bae",
+        "original.png": "a11b20595494734f3ef1083dafe271d28893756c53c584182ea3907664a70156",
+        "wireframe.png": "7ba535f3454bea051656ca91573d2c02df64d181e1213391433ac2ccfdff1561",
+        "current-small.png": "d46848152142538eb74f8b8fb3a5404fbab86fbaa390874cdbfde3c7620518e4",
+        "original-reverse.png": "88ec9a0b58c4ec3443e4d89155c718b20010f961356772df9e9bde0c1d62b76a",
+        "candidate.png": "3f9ecfd2784d549b63f40659239632866338ca4d73b29b44779ce1f84c23cc2b",
+        "current-reverse.png": "6606ebf0f02550a779e37408401c8492b15d4fadfde1eee94eeb667d997a6bb9",
+        "original-small.png": "7175af53f35f884cf67a92a258d75f49709615f77c349cc6e91cf9e73f389502",
+        "current.png": "3bd3b66943b48d11144260b97de8e78367bbd4708819ea198be3d6b4f43600ea"
+      }
+    },
+    {
+      "asset": "Grass06",
+      "verdict": "ACCEPT_OFFLINE_CANDIDATE",
+      "export_sha256": "fc115c8c1ccaa3bf8410921513efedd98213f7e81c968ebe80379976839000d3",
+      "triangles": 640,
+      "rationale": "Long drooping leaf arcs and rolled midrib sections replace angular elbows/origami folds; visibly stronger leaf silhouette at reduced scale and actual six-placement cluster. Painted veins remain aligned; alpha silhouette clean on light/dark backgrounds.",
+      "root_tip_controls_exact": 64,
+      "per_root_source_bounds_exact": true,
+      "strict_uv_winding_audit": {
+        "status": "PASS",
+        "triangles": 640,
+        "minimum_area": 0.012646242938658701,
+        "minimum_uv_area": 1.2462499999998627e-05,
+        "minimum_corner_normal_dot_face": 0.716505489731747,
+        "texture_sha256": "cb9cf4565ffda802131cde6b53e64a66550c2949efbf3b123f2f73a00aa65349",
+        "export_sha256": "fc115c8c1ccaa3bf8410921513efedd98213f7e81c968ebe80379976839000d3"
+      },
+      "authored_match": {
+        "status": "PASS",
+        "maximum_position_error": 0.00010264300573023765,
+        "maximum_uv_error": 5.066394805908203e-07,
+        "triangles": 640,
+        "maximum_position_or_uv_error": 0.00010264300573023765,
+        "criteria": "Every triangle has same material, winding, bone ownership, positions and UV corners",
+        "position_tolerance": 0.0003,
+        "uv_tolerance": 1e-06,
+        "precision": "Six-decimal SMD Euler roundtrip and float32 coordinates: measured matrix delta 4.733e-7 over a 320-unit asset; bounded 0.0003 world-unit budget"
+      },
+      "independent_converter_validation": [
+        {
+          "path": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Broadleaf01/Grass06/validation/new/Grass06.smd",
+          "exit": 0
+        },
+        {
+          "path": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Broadleaf01/Grass06/validation/new/Grass06_a00.smd",
+          "exit": 0
+        },
+        {
+          "path": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Broadleaf01/Grass06/validation/new/skeleton.smd",
+          "exit": 0
+        }
+      ],
+      "image_sha256": {
+        "candidate-small.png": "3612c1146bb7b26a0d1ed3855c1b79f9fccd820913cc74a8f2f1330321419964",
+        "candidate-reverse.png": "c5ad1b62a459ecf771f00fcebb9b7d23a20af0401df23b0d24aed648af0674ae",
+        "original.png": "9302a07284005b55254e126aab70518a8b4c75ec44733bfbaf3d250b3d3ae86d",
+        "wireframe.png": "24fee2f75e5d63646de8f60aec366d95fdc59bae61a7cd2570cccf7de5c949a5",
+        "current-small.png": "657043cbcafc4ff8a47f60d171148cf177f522fbb55844bf5a89e17bf113fafd",
+        "original-reverse.png": "34c15b9facd784c154e9115b750f039553c64bc29677b08e581c31b0af594971",
+        "candidate.png": "c9a013260ab582a4fed2b81af61cc1e951bdec039999243f261ffaaa91eb76eb",
+        "current-reverse.png": "d44799245e631a8a9a0dd0408c5074ccacd7fedcdef5860bb0f7254ea92c1804",
+        "original-small.png": "2d71cca89e5daf70c34ad2a45eaaa5f9b56fb56bdd97ec0b10f2ba6e09c52570",
+        "current.png": "d41c697e60c203f49439ef9882a7e7334cbbcf0b39067118148b29eb2f90b7c0"
+      }
+    }
+  ],
+  "scope": "Geometry only; exact tree_09.OZT bytes independently compared to current game.",
+  "visual_evidence": "Both front/reverse/reduced comparisons, light alpha comparison and dark/background views, actual six-placement clusters per model and reduced cluster comparisons.",
+  "technical": "Inspected source exact root/tip and per-root bounds, skeleton/actions equivalent, raw-normal zero mismatch, full one-to-one cyclic triangle/material/bone/UV match, finite positive triangle/UV areas and positive corner normal orientation. Independently reran converter model/action validation and final hashes.",
+  "precision": "Position budget.0003 justified separately in /tmp/astra-broadleaf-precision-review.json, UV tolerance1e-6 retained. Measured errors.000141504/.000102643 position and5.0664e-7UV.",
+  "limitations": [
+    "Offline Blender review; new client verification and performance benchmark pending.",
+    "Inherited cut-tip shapes preserved where endpoints constrained; overall arcs and silhouette nevertheless materially improved.",
+    "Original intermediate elbow vertices intentionally reshaped; only root/tip/extremum contracts preserved, not every old edge vertex."
+  ],
+  "assembly_image_sha256": {
+    "review-assemblies/candidate-small.png": "b6a0b30922b4183fb9a5d4a80edbd97271ab019e08e5a2c20dfd176277fa8808",
+    "review-assemblies/current-small.png": "16b6698787e08c7baf2b9bb3b85687eb06006825def20d00a8d208630a106d3a",
+    "review-assemblies/candidate.png": "12af0a941e0414678632b3439af41fe521850e9f41fbea837563ac53288eaff6",
+    "review-assemblies/current.png": "1447f56eae68aa42632df9715f8957ca49dd894c3704d1c58fdb5b778aec88cb",
+    "review-assemblies/Grass05/candidate-small.png": "9cdb3f794f12fdae4f7dbacefbadf8c84d36df5e324f8d50e61fa1d4a85851a8",
+    "review-assemblies/Grass05/current-small.png": "4a62bd13a4fd896876c57e5ee6b2ae8f103100d9842b4bbb9136d1f43ea48ca2",
+    "review-assemblies/Grass05/candidate.png": "a036acf20cdaaad0f56ed9b10f91ec2ac26f404b34b308eb8b1c1bdebcdc35c1",
+    "review-assemblies/Grass05/current.png": "ea36fa57a166dff6c8c58674d1c2ae1fb68cea9be54742fe4e0a3aa50a922350"
+  }
+}

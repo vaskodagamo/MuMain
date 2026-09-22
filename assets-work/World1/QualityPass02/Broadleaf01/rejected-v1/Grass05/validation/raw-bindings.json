@@ -1,0 +1,10 @@
+{
+  "file": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Broadleaf01/Grass05/exports/Grass05.bmd",
+  "mesh_bindings": [
+    {
+      "mesh": 0,
+      "material": "tree_09.tga",
+      "vertex_to_normal_node_mismatch_corner_counts": {}
+    }
+  ]
+}
