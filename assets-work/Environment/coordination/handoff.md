@@ -1,41 +1,27 @@
-# Environment restart handoff
+# Environment production handoff
 
-Goal remains active and incomplete. Read the user objective attachment and current board.
-Integration: /Users/lukasmac/Documents/claude-test-mumain/MuMain-environment-remake,
-branch codex/environment-remake-continuation, baseline 7b808473.
+Goal active and incomplete. Integration worktree `/Users/lukasmac/Documents/claude-test-mumain/MuMain-environment-remake`, branch `codex/environment-remake-continuation`, baseline `7b808473`. Primary checkout has unrelated edits; preserve it.
 
-## Active work
+## Accepted replacements
 
-- architecture owns HouseWall01/04/05/06 and QualityPass02/Architecture01 in
-  MuMain-q02-architecture on codex/lorencia-q02-architecture. Accepted source/exports pass
-  converter, rig, bounds, raw normals, UV triangle correspondence, modular anchors and
-  packed-source checks. Independent review complete; commit594b6db2 integrated9abdf7e8. Artist now owns Tree09/10/Grass03/04 under QualityPass02/Scrub01, same branch/worktree, textures frozen.
-- furniture (redirected masonry artist) owns HouseEtc01/StoneMuWall02/03 and
-  QualityPass02/Masonry01 in MuMain-q02-furniture on codex/lorencia-q02-furniture.
-  All studies rejected for integration: motif relief had weak visual payoff; cap House changed a stacked seam profile,02/03 had weak gain. All merged BMDs retained. Study-only checkpoint d6e85282 has no game changes; worker now owns Grass05/06 + QualityPass02/Broadleaf01, tree_09.OZT frozen,399 placements.
-- reviewer independently checks actual exported files and matching images. Architecture01 accepted/integrated at9abdf7e8; exactly four owned BMDs differ from baseline. Masonry still unaccepted.
+- Architecture01: HouseWall01/04/05/06, integrated `9abdf7e8`, worker `594b6db2`. Structural timber bays and roof-course depth.
+- Scrub01: Tree09/10 and Grass03/04, integrated `4b0ccd02`, worker `51679ab1`. Continuous tall growth and rounded connected crowns,530placements.
+- Broadleaf01: Grass05/06, integrated `072f77f6`, worker `0f78f88d`. Smooth long leaf arcs,399placements.
 
-## Execution and next actions
+All10BMDs passed independent artistic/technical review, reviewed export hashes and combined texture resolution (115Object1 models). Alltextures unchanged. Detailed reports/sources/comparisons under QualityPass02; ledger `accepted-exports.json`. These are offline accepted, client pending. Prior client success was user-reported for baseline only.
 
-Blender 5.2.2 and SourceTools3.4.3 installed workspace-locally; exact toolchain/env in
-[toolchain.json](toolchain.json). User enabled full access on coordinator, approval never.
-Existing worker contexts retained sandbox restrictions: coordinator executes their stable
-Python pipeline scripts, workers author/inspect them. Never pass sandbox_permissions from
-coordinator. Do not interrupt existing GUI Blender or operate shared client/runtime.
+## Active owners
 
-Accept only clear visual gains with complete technical evidence; inspect ownership before
-sequential cherry-picks. Revalidate combined dependency resolution/export hashes afterward.
-Scrub Tree09/10 + Grass03/04 is dispatched using [ready brief](next-scrub-brief.md).
-Continue [25 production / five companion consistency candidates](baseline-art-review.json).
-Retained baseline decisions do not establish whole-scene or new-client acceptance.
-No later-map production until Lorencia artistic/offline gate is actually met.
+- architecture: isolated MuMain-q02-architecture, branch codex/lorencia-q02-architecture. Owns ONLY House01/03/04 BMDs + QualityPass02/Houses01.13textures frozen, neighbors read-only. Prepare imports complete. Start01/03 static work;04static roof later with all40frame rig/effect protection. Follow `next-houses-brief.md`/evidence.
+- furniture: isolated MuMain-q02-furniture, branch codex/lorencia-q02-furniture. Owns ONLY Well01–04 BMDs + QualityPass02/Wells02. All4sharedtextures frozen. Start03/04pot rims/curves then composite01; preserve Cannons01barrels. Follow `next-wells-brief.md`.
+- reviewer: preparing next statues/fountain brief and available for independent production gates. No production/shareddocwrites.
 
-All textures frozen. Beer01/terrain and Grass02/Tree12/Tree13 BMDs protected. Preserve primary
-checkout uncommitted work. Owner fork git@github.com:vaskodagamo/MuMain.git is verified;
-focused pushes/draft PRs authorized; never upstream/force push or merge main. [Draft PR #12](https://github.com/vaskodagamo/MuMain/pull/12) published through da7f9bb3; no main merge. Baseline client success is user-reported; no personal client evidence.
+Masonry HouseEtc01/StoneMuWall02/03 remain unresolved; baseline retained. Study-only commit `d6e85282` pushed on furniture branch; NOT integrated. Cap changed actual stacked seam; otherstudies weakgain. New solution must preserve connectionprofile. No approvalexception requested.
 
-Scrub first experiment rejected: Tree10 has cross-tuft vertex-binding corruption from coincident local vertices; Tree09 too sparse, Grass03/04 show angular exposed cards. Artist revising shapes and checking full authored triangle correspondence before renders. No vegetation candidate installed.
+## Next actions and toolchain
 
-## Latest checkpoint: Scrub01
+Coordinator runs stable worker Blender scripts because existing worker contexts retained old sandbox. Full access/approvalnever active here; NEVER pass sandbox_permissions. Tool paths/env in toolchain.json. Blender5.2.2, SourceTools3.4.3; modeling via bpy. For pure library assembly renders use --factory-startup to avoid irrelevant SourceTools callback warnings. Do not interrupt existing GUI Blender/client or modify sharedruntime.
 
-Four scrub assets accepted/integrated at4b0ccd02 (worker51679ab1); final reviewer hashes verified against installed exports. Combined validation8changedBMDs/115modelsresolved. Architecture artist now owns House01/03/04 and QualityPass02/Houses01, alltextures frozen; follow next-houses-brief.md. Broadleaf Grass05/06 v2 has smooth long leaf arcs; final independent review after both actual placement clusters pending. Remaining production count17, plus5companion reviews and retained/whole-environment coherence gate.
+Accept only clear visual gains and complete official export/source, rig/action, UV, rawnormal, perroot/contact and one-to-one triangle matching proofs. Integrate focused ownedcommits sequentially; update ledger then validate_quality_pass.py.15productioncandidates remain (3masonry,3houses,3statues,4wells,1fountain,1bonfire),5companions plus retained/coherence finalgate. No latermapproduction until Lorencia gate met.
+
+Draft PR12: https://github.com/vaskodagamo/MuMain/pull/12, ownerfork git@github.com:vaskodagamo/MuMain.git verified. Pushdraft updates authorized; nevermerge/force/upstream. Preserve protected Beer01/terrain and Grass02/Tree12/Tree13 originals.

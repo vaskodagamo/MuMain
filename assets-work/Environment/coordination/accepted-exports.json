@@ -6,5 +6,7 @@
   "src/bin/Data/Object1/Tree09.bmd": "assets-work/World1/QualityPass02/Scrub01/Tree09/exports/Tree09.bmd",
   "src/bin/Data/Object1/Tree10.bmd": "assets-work/World1/QualityPass02/Scrub01/Tree10/exports/Tree10.bmd",
   "src/bin/Data/Object1/Grass03.bmd": "assets-work/World1/QualityPass02/Scrub01/Grass03/exports/Grass03.bmd",
-  "src/bin/Data/Object1/Grass04.bmd": "assets-work/World1/QualityPass02/Scrub01/Grass04/exports/Grass04.bmd"
+  "src/bin/Data/Object1/Grass04.bmd": "assets-work/World1/QualityPass02/Scrub01/Grass04/exports/Grass04.bmd",
+  "src/bin/Data/Object1/Grass05.bmd": "assets-work/World1/QualityPass02/Broadleaf01/Grass05/exports/Grass05.bmd",
+  "src/bin/Data/Object1/Grass06.bmd": "assets-work/World1/QualityPass02/Broadleaf01/Grass06/exports/Grass06.bmd"
 }
