@@ -1,0 +1,50 @@
+00:00.636  blend            | Read blend: "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Scrub01/Tree09/source.blend"
+skipping reference object 'Tree09.001' (REF_ collection or mu_reference)
+skipping reference object 'Tree09.002' (REF_ collection or mu_reference)
+
+Blender Source Tools: exporting REF_BASELINE
+ ERROR: Nothing in Group "REF_BASELINE" is enabled for export
+
+Blender Source Tools: exporting REF_ORIGINAL
+ ERROR: Nothing in Group "REF_ORIGINAL" is enabled for export
+
+Blender Source Tools: exporting Tree09_mu_export
+- Baking...
+- /private/var/folders/5c/gyglnk2d6mx3v2m0frrgvl2w0000gn/T/mu_export_u6ai2hwg/Tree09_mu_export.smd
+- Exported 5 bones
+- Exported 1 frames
+- Exported 480 polys
+- Exported 1 materials
+   tree_07.tga
+- SMD export took 0.01777791976928711 
+
+
+Blender Source Tools: exporting Tree09_skeleton
+- Baking...
+- /private/var/folders/5c/gyglnk2d6mx3v2m0frrgvl2w0000gn/T/mu_export_u6ai2hwg/anims/Tree09_a00.smd
+- Exported 5 bones
+- Exported 1 frames
+- SMD export took 0.0007359981536865234 
+
+2 Errors and 0 Warnings
+Error: Nothing in Group "REF_BASELINE" is enabled for export
+Error: Nothing in Group "REF_ORIGINAL" is enabled for export
+2 files exported in 0.0 seconds with 2 Errors and 0 Warnings
+Info: 2 files exported in 0.0 seconds with 2 Errors and 0 Warnings
++ /Users/lukasmac/Documents/claude-test-mumain/MuMain/out/build/macos-arm64/tools/bmdconv/Release/bmdconv smd2bmd /var/folders/5c/gyglnk2d6mx3v2m0frrgvl2w0000gn/T/mu_export_u6ai2hwg/Tree09_mu_export.smd /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Scrub01/Tree09/exports/Tree09.bmd --anim /var/folders/5c/gyglnk2d6mx3v2m0frrgvl2w0000gn/T/mu_export_u6ai2hwg/anims/Tree09_a00.smd --name Tree09.smd
+wrote /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Scrub01/Tree09/exports/Tree09.bmd (1 action(s))
++ /Users/lukasmac/Documents/claude-test-mumain/MuMain/out/build/macos-arm64/tools/bmdconv/Release/bmdconv info /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Scrub01/Tree09/exports/Tree09.bmd
+model /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Scrub01/Tree09/exports/Tree09.bmd
+  name field: Tree09.smd  version: 12
+  meshes: 1  bones: 5  actions: 1  triangles: 480
+  bounds (bind pose): min -123.82 -129.51 0.56  max 156.32 111.42 192.24  size 280.14 240.93 191.68
+  mesh 0: triangles=480 vertices=600 normals=480 uvs=10 texture=tree_07.tga
+  bone 0: "Cylinder04" parent=-1
+  bone 1: "Cylinder05" parent=-1
+  bone 2: "Cylinder06" parent=-1
+  bone 3: "Cylinder07" parent=-1
+  bone 4: "Cylinder08" parent=-1
+  action 0: keys=1 lock=0
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:49:19)
+
+Blender quit

@@ -1,0 +1,51 @@
+00:00.594  blend            | Read blend: "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Scrub01/Grass03/source.blend"
+skipping reference object 'Grass03.001' (REF_ collection or mu_reference)
+skipping reference object 'Grass03.002' (REF_ collection or mu_reference)
+
+Blender Source Tools: exporting REF_BASELINE
+ ERROR: Nothing in Group "REF_BASELINE" is enabled for export
+
+Blender Source Tools: exporting REF_ORIGINAL
+ ERROR: Nothing in Group "REF_ORIGINAL" is enabled for export
+
+Blender Source Tools: exporting Grass03_mu_export
+- Baking...
+- /private/var/folders/5c/gyglnk2d6mx3v2m0frrgvl2w0000gn/T/mu_export_065a4rdp/Grass03_mu_export.smd
+- Exported 4 bones
+- Exported 1 frames
+- Exported 800 polys
+- Exported 2 materials
+   tree_01.tga
+   tree_02.tga
+- SMD export took 0.02903604507446289 
+
+
+Blender Source Tools: exporting Grass03_skeleton
+- Baking...
+- /private/var/folders/5c/gyglnk2d6mx3v2m0frrgvl2w0000gn/T/mu_export_065a4rdp/anims/Grass03_a00.smd
+- Exported 4 bones
+- Exported 1 frames
+- SMD export took 0.0009000301361083984 
+
+2 Errors and 0 Warnings
+Error: Nothing in Group "REF_BASELINE" is enabled for export
+Error: Nothing in Group "REF_ORIGINAL" is enabled for export
+2 files exported in 0.0 seconds with 2 Errors and 0 Warnings
+Info: 2 files exported in 0.0 seconds with 2 Errors and 0 Warnings
++ /Users/lukasmac/Documents/claude-test-mumain/MuMain/out/build/macos-arm64/tools/bmdconv/Release/bmdconv smd2bmd /var/folders/5c/gyglnk2d6mx3v2m0frrgvl2w0000gn/T/mu_export_065a4rdp/Grass03_mu_export.smd /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Scrub01/Grass03/exports/Grass03.bmd --anim /var/folders/5c/gyglnk2d6mx3v2m0frrgvl2w0000gn/T/mu_export_065a4rdp/anims/Grass03_a00.smd --name Grass03.smd
+wrote /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Scrub01/Grass03/exports/Grass03.bmd (1 action(s))
++ /Users/lukasmac/Documents/claude-test-mumain/MuMain/out/build/macos-arm64/tools/bmdconv/Release/bmdconv info /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Scrub01/Grass03/exports/Grass03.bmd
+model /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Scrub01/Grass03/exports/Grass03.bmd
+  name field: Grass03.smd  version: 12
+  meshes: 2  bones: 4  actions: 1  triangles: 800
+  bounds (bind pose): min -178.46 -159.31 -3.08  max 136.39 122.73 131.26  size 314.86 282.04 134.34
+  mesh 0: triangles=672 vertices=492 normals=635 uvs=37 texture=tree_01.tga
+  mesh 1: triangles=128 vertices=160 normals=128 uvs=10 texture=tree_02.tga
+  bone 0: "Sphere04" parent=-1
+  bone 1: "Sphere05" parent=-1
+  bone 2: "Sphere06" parent=-1
+  bone 3: "Sphere07" parent=-1
+  action 0: keys=1 lock=0
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:49:19)
+
+Blender quit
