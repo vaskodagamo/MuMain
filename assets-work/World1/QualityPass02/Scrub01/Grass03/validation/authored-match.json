@@ -1,0 +1,156 @@
+{
+  "status": "PASS",
+  "triangles": 800,
+  "one_to_one_triangle_match": true,
+  "area_metrics": {
+    "minimum_geometry_area": 91.20766438331384,
+    "minimum_uv_area": 0.03118752461147345,
+    "zero_geometry": 0,
+    "zero_uv": 0
+  },
+  "baseline_area_metrics": {
+    "minimum_geometry_area": 432.5209487339891,
+    "minimum_uv_area": 0.12475011332917241,
+    "zero_geometry": 0,
+    "zero_uv": 0
+  },
+  "every_authored_triangle_matches_material_bone_position_uv": true,
+  "maximum_position_delta": 0.00010691796875050841,
+  "position_tolerance": 0.002,
+  "uv_tolerance": 1e-05,
+  "uv_layers": [
+    "Float2"
+  ],
+  "packed_images": {
+    "tree_01.tga": [
+      512,
+      512
+    ],
+    "tree_01.tga.001": [
+      512,
+      512
+    ],
+    "tree_02.tga": [
+      512,
+      512
+    ],
+    "tree_02.tga.001": [
+      512,
+      512
+    ]
+  },
+  "per_root_contract": {
+    "0": {
+      "bounds_before": [
+        [
+          -65.071297,
+          -61.491203,
+          -3.079201
+        ],
+        [
+          56.498299,
+          48.6847,
+          131.263306
+        ]
+      ],
+      "bounds_after": [
+        [
+          -65.071297,
+          -61.491203,
+          -3.079201
+        ],
+        [
+          56.498299,
+          48.6847,
+          131.263306
+        ]
+      ],
+      "ground_contacts": 8,
+      "maximum_contact_delta": 0.0
+    },
+    "1": {
+      "bounds_before": [
+        [
+          -80.377289,
+          -159.308731,
+          -2.903301
+        ],
+        [
+          21.465893,
+          -77.292923,
+          97.712402
+        ]
+      ],
+      "bounds_after": [
+        [
+          -80.377289,
+          -159.308762,
+          -2.903301
+        ],
+        [
+          21.465885,
+          -77.292953,
+          97.712402
+        ]
+      ],
+      "ground_contacts": 8,
+      "maximum_contact_delta": 5.699999999819738e-05
+    },
+    "2": {
+      "bounds_before": [
+        [
+          30.382782,
+          37.498318,
+          -0.701096
+        ],
+        [
+          136.39209,
+          122.726532,
+          105.533005
+        ]
+      ],
+      "bounds_after": [
+        [
+          30.382774,
+          37.498341,
+          -0.701096
+        ],
+        [
+          136.39209,
+          122.726562,
+          105.533005
+        ]
+      ],
+      "ground_contacts": 6,
+      "maximum_contact_delta": 3.8000000003535206e-05
+    },
+    "3": {
+      "bounds_before": [
+        [
+          -178.463409,
+          32.781017,
+          -1.594198
+        ],
+        [
+          -94.858093,
+          108.597534,
+          97.016197
+        ]
+      ],
+      "bounds_after": [
+        [
+          -178.463425,
+          32.781033,
+          -1.5942
+        ],
+        [
+          -94.858093,
+          108.597565,
+          97.016197
+        ]
+      ],
+      "ground_contacts": 8,
+      "maximum_contact_delta": 3.100000000699765e-05
+    }
+  }
+}

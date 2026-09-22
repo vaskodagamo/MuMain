@@ -1,0 +1,176 @@
+{
+  "status": "PASS",
+  "triangles": 480,
+  "one_to_one_triangle_match": true,
+  "area_metrics": {
+    "minimum_geometry_area": 9.62502608357648,
+    "minimum_uv_area": 0.10999999940395355,
+    "zero_geometry": 0,
+    "zero_uv": 0
+  },
+  "baseline_area_metrics": {
+    "minimum_geometry_area": 170.11036510429918,
+    "minimum_uv_area": 0.09192925768851268,
+    "zero_geometry": 0,
+    "zero_uv": 0
+  },
+  "every_authored_triangle_matches_material_bone_position_uv": true,
+  "maximum_position_delta": 0.0002344937744140907,
+  "position_tolerance": 0.002,
+  "uv_tolerance": 1e-05,
+  "uv_layers": [
+    "Float2"
+  ],
+  "packed_images": {
+    "tree_07.tga": [
+      512,
+      512
+    ],
+    "tree_07.tga.001": [
+      512,
+      512
+    ]
+  },
+  "per_root_contract": {
+    "0": {
+      "bounds_before": [
+        [
+          -104.056236,
+          -43.263477,
+          0.7932
+        ],
+        [
+          -1.223089,
+          38.290722,
+          192.241302
+        ]
+      ],
+      "bounds_after": [
+        [
+          -104.056274,
+          -43.263451,
+          0.7932
+        ],
+        [
+          -1.223076,
+          38.290741,
+          192.241302
+        ]
+      ],
+      "ground_contacts": 7,
+      "maximum_contact_delta": 2.199999999996649e-05
+    },
+    "1": {
+      "bounds_before": [
+        [
+          92.979019,
+          -98.034973,
+          0.5619
+        ],
+        [
+          156.321915,
+          -40.570213,
+          128.306702
+        ]
+      ],
+      "bounds_after": [
+        [
+          92.979034,
+          -98.034943,
+          0.5619
+        ],
+        [
+          156.32193,
+          -40.570229,
+          128.306702
+        ]
+      ],
+      "ground_contacts": 7,
+      "maximum_contact_delta": 1.6000000002236447e-05
+    },
+    "2": {
+      "bounds_before": [
+        [
+          69.855103,
+          16.695862,
+          0.5679
+        ],
+        [
+          137.019043,
+          75.99263,
+          137.850998
+        ]
+      ],
+      "bounds_after": [
+        [
+          69.854996,
+          16.695927,
+          0.5679
+        ],
+        [
+          137.019089,
+          75.992661,
+          137.850998
+        ]
+      ],
+      "ground_contacts": 7,
+      "maximum_contact_delta": 7.700000000454565e-05
+    },
+    "3": {
+      "bounds_before": [
+        [
+          -93.805679,
+          -129.512115,
+          0.6944
+        ],
+        [
+          -15.720184,
+          -61.184639,
+          159.078293
+        ]
+      ],
+      "bounds_after": [
+        [
+          -93.805748,
+          -129.512238,
+          0.6944
+        ],
+        [
+          -15.720268,
+          -61.184578,
+          159.078293
+        ]
+      ],
+      "ground_contacts": 7,
+      "maximum_contact_delta": 7.600000000707041e-05
+    },
+    "4": {
+      "bounds_before": [
+        [
+          -123.817307,
+          50.0079,
+          0.5775
+        ],
+        [
+          -63.527302,
+          111.420807,
+          139.323593
+        ]
+      ],
+      "bounds_after": [
+        [
+          -123.817307,
+          50.0079,
+          0.5775
+        ],
+        [
+          -63.527302,
+          111.420807,
+          139.323593
+        ]
+      ],
+      "ground_contacts": 7,
+      "maximum_contact_delta": 0.0
+    }
+  }
+}

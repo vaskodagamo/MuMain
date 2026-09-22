@@ -1,0 +1,11 @@
+model /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Scrub01/Grass03/exports/Grass03.bmd
+  name field: Grass03.smd  version: 12
+  meshes: 2  bones: 4  actions: 1  triangles: 800
+  bounds (bind pose): min -178.46 -159.31 -3.08  max 136.39 122.73 131.26  size 314.86 282.04 134.34
+  mesh 0: triangles=672 vertices=492 normals=635 uvs=37 texture=tree_01.tga
+  mesh 1: triangles=128 vertices=160 normals=128 uvs=10 texture=tree_02.tga
+  bone 0: "Sphere04" parent=-1
+  bone 1: "Sphere05" parent=-1
+  bone 2: "Sphere06" parent=-1
+  bone 3: "Sphere07" parent=-1
+  action 0: keys=1 lock=0

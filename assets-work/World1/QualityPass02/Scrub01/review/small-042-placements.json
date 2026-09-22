@@ -1,0 +1,42 @@
+{
+  "kind": "OFFLINE ACTUAL WORLD1 TRANSFORMS, NOT CLIENT",
+  "anchor": [
+    8000.0,
+    14650.0,
+    165.00001525878906
+  ],
+  "placements": [
+    {
+      "name": "Grass03",
+      "index": 69,
+      "position": [
+        8000.0,
+        14650.0,
+        165.00001525878906
+      ],
+      "rotation": [
+        360.0,
+        0.0,
+        2970.0
+      ],
+      "scale": 0.42000043392181396,
+      "tile": [
+        80.0,
+        146.5
+      ]
+    }
+  ],
+  "bounds": [
+    [
+      -51.54512405395508,
+      -74.95465087890625,
+      -1.2932687997817993
+    ],
+    [
+      66.90972900390625,
+      57.284786224365234,
+      55.130638122558594
+    ]
+  ],
+  "omitted": "Terrain, collision, baked lighting and unrelated objects"
+}

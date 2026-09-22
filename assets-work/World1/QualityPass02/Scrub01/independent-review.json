@@ -1,0 +1,162 @@
+{
+  "assets": [
+    {
+      "asset": "Tree09",
+      "verdict": "ACCEPT_OFFLINE_CANDIDATE",
+      "sha256": "5b6b83949c4b4ba7c5f4c4cbd2c7b8f76ca16ccca43300300d86ae81c07c7b38",
+      "triangles": 480,
+      "rationale": "Continuous curved tuft growth removes pinched waist and flared broom skirt; sufficient foliage mass retained. Clear silhouette change in mixed placement scenes.",
+      "authored_match_position_max": 0.0002344937744140907,
+      "max_ground_contact_delta": 7.700000000454565e-05,
+      "independent_converter_validation": [
+        {
+          "path": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Scrub01/Tree09/validation/new/Tree09.smd",
+          "exit": 0
+        },
+        {
+          "path": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Scrub01/Tree09/validation/new/Tree09_a00.smd",
+          "exit": 0
+        },
+        {
+          "path": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Scrub01/Tree09/validation/new/skeleton.smd",
+          "exit": 0
+        }
+      ],
+      "image_sha256": {
+        "Tree09/review/candidate-light.png": "74c66ea9b3fc540daa3f1bd76e4d2b891ce9c72f6100f88aab68b288d78cd178",
+        "Tree09/review/baseline-reverse.png": "17b966738afd7583df3b59288e1cc85c337701d2cfdf4f50a1fcf96259216edd",
+        "Tree09/review/baseline.png": "a9c37e45b3fcd6425465953ba451cf0ff69a7b2538220198407b6cb3f7438ac1",
+        "Tree09/review/candidate-small.png": "6a0dc1bd2470b75eaa87648288ad7965d23c9adbdb2f51ceb2a555ab161a4f1b",
+        "Tree09/review/candidate-reverse.png": "e0e9c31185d1e95e347240009114b50710db91c7315ef408db25d664fd20d8e6",
+        "Tree09/review/original.png": "4790a9d6284eb7352d0241e1bd94fe944c13d30869cdd42557bfcbe786c08d0c",
+        "Tree09/review/wireframe.png": "9f6c1b0dc9302bfc440a27e11bdc42bd00da9a1173ba32c45f097bc966d2cc7b",
+        "Tree09/review/candidate.png": "4b5133979d464f8a5f4993fc6d662ca25ebc3369a25031b13df3a50530a9f2c1",
+        "Tree09/review/baseline-small.png": "3fc27eff720d8c49dcf4fc3f8f50946cc4aca9c92ae02795cee1fba00586ddb4",
+        "Tree09/review/baseline-light.png": "2111f76d53b1a75b9988712ff758a46a51d83920e4ef33ae92c3d89a31666d05"
+      }
+    },
+    {
+      "asset": "Tree10",
+      "verdict": "ACCEPT_OFFLINE_CANDIDATE",
+      "sha256": "471f2226cf526d3f1f4b81964ab9c97cb355eb37aa2822ed225f8761ed6b8679",
+      "triangles": 960,
+      "rationale": "Continuous curved tuft growth removes pinched waist and flared broom skirt; sufficient foliage mass retained. Clear silhouette change in mixed placement scenes.",
+      "authored_match_position_max": 0.0002139697265590712,
+      "max_ground_contact_delta": 8.400000000108321e-05,
+      "independent_converter_validation": [
+        {
+          "path": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Scrub01/Tree10/validation/new/Tree10.smd",
+          "exit": 0
+        },
+        {
+          "path": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Scrub01/Tree10/validation/new/Tree10_a00.smd",
+          "exit": 0
+        },
+        {
+          "path": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Scrub01/Tree10/validation/new/skeleton.smd",
+          "exit": 0
+        }
+      ],
+      "image_sha256": {
+        "Tree10/review/candidate-light.png": "a38c1382661744032e221850bbc168f41af408f92135a513d2d5c47e308b486f",
+        "Tree10/review/baseline-reverse.png": "ddcd91caffe04a8c9ffb18f4d756f1b6a30e45c52192d0aaf22824c02b646e5c",
+        "Tree10/review/baseline.png": "f41b7afb412be42f96fc343d3e73165ae36e7a56b328f246907369b30420de21",
+        "Tree10/review/candidate-small.png": "fa6be2c8b37d46647c8fc3fd40b659a8e1f2b0ebf006a16656c48963cba4c415",
+        "Tree10/review/candidate-reverse.png": "a4dbbd31974734096866525fdf8706b806fd3500f9001e52e09b4ac23a4e12f7",
+        "Tree10/review/original.png": "b24a1e7401ba161af7aea5f7a824bce0575acb8077afe2eeeb150a057735770f",
+        "Tree10/review/wireframe.png": "6b5ee7332f677ff473fb55817f3837d559eb1ac01c4e5bb11996225be62473b8",
+        "Tree10/review/candidate.png": "25a590c1c63af155953c2e4bd5cda44f21abb9c19aec1ef9b31409a0b77d781f",
+        "Tree10/review/baseline-small.png": "3a1d2d3fc13996743d9e74323d6ef4a0da39ef244bc3c834ca1e820433a0a77a",
+        "Tree10/review/baseline-light.png": "b8fd9f0896d1ea06df0f5c9051a5ba544077d337098e43bd37acfe35120dc617"
+      }
+    },
+    {
+      "asset": "Grass03",
+      "verdict": "ACCEPT_OFFLINE_CANDIDATE",
+      "sha256": "ba0e8c4d85ecaf6fa17288d53dd4f74d1f7d1ef77062ae2189fac31b554560ec",
+      "triangles": 800,
+      "rationale": "Rounded leafy crowns with continuous overlapping interior close artificial shell gaps; less pyramidal silhouettes, readable at large placement and mixed scene. Gain inherently smaller at .42scale.",
+      "authored_match_position_max": 0.00010691796875050841,
+      "max_ground_contact_delta": 5.699999999819738e-05,
+      "independent_converter_validation": [
+        {
+          "path": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Scrub01/Grass03/validation/new/Grass03.smd",
+          "exit": 0
+        },
+        {
+          "path": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Scrub01/Grass03/validation/new/Grass03_a00.smd",
+          "exit": 0
+        },
+        {
+          "path": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Scrub01/Grass03/validation/new/skeleton.smd",
+          "exit": 0
+        }
+      ],
+      "image_sha256": {
+        "Grass03/review/candidate-light.png": "f33eb188ff647f993e610da3392dc961f7091c8c33e8763d9b381c3a43dbe25f",
+        "Grass03/review/baseline-reverse.png": "972d8c661f6abf54fa34957a0d12aa6c446b47e3386523af4a08e039204e9c6f",
+        "Grass03/review/baseline.png": "89b66f447f5c5a9b8aff6f4e621d00f3c53ec51670832e9ed6abdc860f7b1252",
+        "Grass03/review/candidate-small.png": "5c4d23c6b0a988c055b4a279c4614ef940936371a2a13e98d61b785b8ac5568a",
+        "Grass03/review/candidate-reverse.png": "9759cfb5e76a84856300f79ba62977a3d824295b2cc1cf44a8a5835c45f07c23",
+        "Grass03/review/original.png": "060b5ba27f133ce3e573b1809a34d3ce0ebc8f36cb852f3c89e404e637b66eaf",
+        "Grass03/review/wireframe.png": "386c4f2ba0623d3bf037b86382522c662733508ab0726556ea6843f838888174",
+        "Grass03/review/candidate.png": "b37760874f7d31473661ec5292b79b0edc8b0fa497bd37f4ba03fd065ed3455b",
+        "Grass03/review/baseline-small.png": "49cc8c7651052fcf28250aefbdb5c46c46b350c2908a33906e57c52765508804",
+        "Grass03/review/baseline-light.png": "ef6bb2bd4d012a24072734f503592b6255301ce8286b465e2c5bb90fe396b91d"
+      }
+    },
+    {
+      "asset": "Grass04",
+      "verdict": "ACCEPT_OFFLINE_CANDIDATE",
+      "sha256": "c4f68a1ff5bb6a5ac7228eb5d13232b9fd1db737f5428210600860b04dd86fe8",
+      "triangles": 800,
+      "rationale": "Rounded leafy crowns with continuous overlapping interior close artificial shell gaps; less pyramidal silhouettes, readable at large placement and mixed scene. Gain inherently smaller at .42scale.",
+      "authored_match_position_max": 0.0002895136718734648,
+      "max_ground_contact_delta": 0.0001469999999983429,
+      "independent_converter_validation": [
+        {
+          "path": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Scrub01/Grass04/validation/new/Grass04.smd",
+          "exit": 0
+        },
+        {
+          "path": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Scrub01/Grass04/validation/new/Grass04_a00.smd",
+          "exit": 0
+        },
+        {
+          "path": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Scrub01/Grass04/validation/new/skeleton.smd",
+          "exit": 0
+        }
+      ],
+      "image_sha256": {
+        "Grass04/review/candidate-light.png": "82b9a03aee3ad265592abdf200c9d87b716437035b370ab5141a6eb3761ff95f",
+        "Grass04/review/baseline-reverse.png": "7bd902a3c7fcc9e8ebdde837bd50cab4a84b1c9ec93b9a93e9362a6d209852d4",
+        "Grass04/review/baseline.png": "590d726553aba4ea4a9f0ba1df6ef9357891013d78b7322bbec867c825249755",
+        "Grass04/review/candidate-small.png": "176f8cdad4f75a08232b9d486a9dbadb6204e3a2181048ab51aa11095ccbf1a4",
+        "Grass04/review/candidate-reverse.png": "9c079b8e4917e36cc71aae10ac282f5eae560462f933b31c4a2eb87941ffbb76",
+        "Grass04/review/original.png": "830f89559c9bea1734cfdfbf61217826caf81af9c9a39c4836f1a97506ffac2b",
+        "Grass04/review/wireframe.png": "e2531571aa2237cd8cd86bbb013212e06991355b0f0c48ac03d09a648a26d554",
+        "Grass04/review/candidate.png": "99847da111660a6e280234f8c1794b9c3bd236352de241e0a3be85eda1cf06e2",
+        "Grass04/review/baseline-small.png": "20e23f6284df9a1eb75fb89c6afc46ad1a76aa805d6ff7b0a15e8dda669d5531",
+        "Grass04/review/baseline-light.png": "55cc3d0f150abdaf856bb729c0358d831970357d7e4a7b26c4a8e1d12f4841cb"
+      }
+    }
+  ],
+  "evidence": "Individually inspected baseline/current candidates at front, reverse/light and reduced; final mixed-tall/mixed-scrub and .42/1.4scale baseline/candidate placement assemblies reviewed.",
+  "technical": "Inspected summary, strict one-to-one authored triangle/material/bone/position/UV audit with area metrics and per-root bounds/ground contact records; independently validated final converter SMD model/actions and hashes. No zero geometry/UV in reports. Skeleton/actions equivalent, material order and textures frozen. Tree10 former mixed-root triangle defect resolved by explicit triangle bone proof.",
+  "limitations": [
+    "Offline diffuse/alpha preview, not new client verification.",
+    "Frozen texture alpha remains soft and some tall tips show inherited clipping/straight fringes at close range.",
+    "No terrain/unrelated background assets in these placement assemblies; runtime alpha/depth sorting needs client observation.",
+    "Higher triangles represent intentional leaf/card construction; no performance benchmark completed."
+  ],
+  "assembly_image_sha256": {
+    "mixed-scrub-candidate.png": "a776cf64eec367dc62b4ad5433afcaac68c1701247a3c9ccc765908925ee61b6",
+    "mixed-scrub-baseline.png": "8b32f1daae45e277113a9ef7e25aa64d1824e2598845bcee0154f337144977a0",
+    "mixed-tall-baseline.png": "27d6ec25db8c00a00b19dabcbd5db0325a1a06efbf6f1801d652f9bbf376404d",
+    "large-140-candidate.png": "737e1528b3eaa5e891347a10c2c387e4cc26ee4614b0d1a4df66d35e3b6b64e5",
+    "mixed-tall-candidate.png": "4ec9a098bff1798d0f99d010dfffdafa801778c4138ce96009ed7487c87b4be2",
+    "large-140-baseline.png": "ff71ee50ed3a5144fe743fbf30dac02285f06d33339a53e75892c548960628ea",
+    "small-042-candidate.png": "5f1419a757594340e5aa28e765b36770d4623b221ee599852ead93e5f2b5cda9",
+    "small-042-baseline.png": "8fb37093c466546af159c8ee351f80a72456091247430dd4aea66293961712e8"
+  }
+}
