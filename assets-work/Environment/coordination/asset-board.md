@@ -18,3 +18,15 @@ are protected. Only ASTRA edits this board and shared handoffs.
 
 Furniture03/04/05 already have substantial rebuilds; reassessment places them behind these
 architecture groups. No candidate is accepted yet. Commits/review evidence follow actual review.
+
+## Baseline individual visual triage
+
+[Independent 106-asset assessment](baseline-art-review.json): 73 defensible retain decisions,
+24 production candidates, five companion consistency checks, four effect-preview checks.
+These are baseline decisions; integrated coherence and new-export acceptance remain separate.
+Retain entries stay in review until coordinator confirms their rationale.
+
+Next independent groups: scrub Tree09/10 + Grass03/04; broad leaves Grass05/06;
+large buildings House01/03/04; monuments StoneStatue01/03 + SteelStatue01;
+Well01–04 pottery/rims; Waterspout01 dragon shape. Protected original Tree12/13 bindings
+remain untouched. Resolve companion/effect reviews before final Lorencia gate.
