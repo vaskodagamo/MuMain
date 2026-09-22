@@ -2003,10 +2003,10 @@
         ]
       },
       "treatment": "partial geometry/art treatment",
-      "decision": "retain with effect-preview review",
+      "decision": "retain defensible",
       "priority": 3,
-      "reason": "Brazier silhouettes and serpent entrance are recognizable. Black/additive cards in neutral images are documented preview limitations.",
-      "next_action": "Retain provisionally; inspect existing effect approximations before final artistic gate, preserve actual effect slots and fire anchors.",
+      "reason": "Rounded shaft, open crown/feet and coherent iron read clearly in effect approximation.",
+      "next_action": "Retain; preserve engine effect slots/fire anchors. Client verification remains user-reported baseline only.",
       "evidence": "../../../assets-work/World1/coordination/final-inspection/FireLight01/final-offline.png"
     },
     {
@@ -2025,10 +2025,10 @@
         ]
       },
       "treatment": "texture-only treatment / essentially original geometry",
-      "decision": "retain with effect-preview review",
+      "decision": "retain defensible",
       "priority": 3,
-      "reason": "Brazier silhouettes and serpent entrance are recognizable. Black/additive cards in neutral images are documented preview limitations.",
-      "next_action": "Retain provisionally; inspect existing effect approximations before final artistic gate, preserve actual effect slots and fire anchors.",
+      "reason": "Small wall bracket has clear open basket and improved shared timber paint.",
+      "next_action": "Retain; preserve engine effect slots/fire anchors. Client verification remains user-reported baseline only.",
       "evidence": "../../../assets-work/World1/coordination/final-inspection/FireLight02/final-offline.png"
     },
     {
@@ -2044,10 +2044,10 @@
         ]
       },
       "treatment": "texture-only treatment / essentially original geometry",
-      "decision": "retain with effect-preview review",
-      "priority": 3,
-      "reason": "Brazier silhouettes and serpent entrance are recognizable. Black/additive cards in neutral images are documented preview limitations.",
-      "next_action": "Retain provisionally; inspect existing effect approximations before final artistic gate, preserve actual effect slots and fire anchors.",
+      "decision": "production",
+      "priority": 2,
+      "reason": "Effect approximation reveals rigid rectangular log extrusions and square ends; soften/taper split-log cross-sections within bounds. Preserve fire_02 mesh1 effect shell and UVs exactly.",
+      "next_action": "Effect approximation reveals rigid rectangular log extrusions and square ends; soften/taper split-log cross-sections within bounds. Preserve fire_02 mesh1 effect shell and UVs exactly.",
       "evidence": "../../../assets-work/World1/coordination/final-inspection/Bonfire01/final-offline.png"
     },
     {
@@ -2060,10 +2060,10 @@
         ]
       },
       "treatment": "texture-only treatment / essentially original geometry",
-      "decision": "retain with effect-preview review",
+      "decision": "retain defensible",
       "priority": 3,
-      "reason": "Brazier silhouettes and serpent entrance are recognizable. Black/additive cards in neutral images are documented preview limitations.",
-      "next_action": "Retain provisionally; inspect existing effect approximations before final artistic gate, preserve actual effect slots and fire anchors.",
+      "reason": "Distinctive cobra mouth/fangs, sculpted stone and legible entrance/flanking plinths preserve map identity.",
+      "next_action": "Retain; preserve engine effect slots/fire anchors. Client verification remains user-reported baseline only.",
       "evidence": "../../../assets-work/World1/coordination/final-inspection/DoungeonGate01/final-offline.png"
     }
   ]

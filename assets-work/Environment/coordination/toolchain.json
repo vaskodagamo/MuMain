@@ -10,5 +10,5 @@
     "BLENDER_USER_SCRIPTS": "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts",
     "BLENDER_USER_CONFIG": "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/config"
   },
-  "execution": "Headless Blender Python API; sandbox Metal startup fails before Python, escalated invocation succeeds."
+  "execution": "Headless Blender Python API. Full access active on coordinator after user resumed; existing subagents retained earlier sandbox context, so coordinator launches their reproducible Blender pipelines without approval prompts."
 }

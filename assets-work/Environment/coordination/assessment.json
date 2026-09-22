@@ -153,8 +153,8 @@
       ]
     },
     "treatment": "texture-only treatment / essentially original geometry",
-    "remaining_problem": "Brazier silhouettes and serpent entrance are recognizable. Black/additive cards in neutral images are documented preview limitations.",
-    "priority": 3,
+    "remaining_problem": "Effect approximation reveals rigid rectangular log extrusions and square ends; soften/taper split-log cross-sections within bounds. Preserve fire_02 mesh1 effect shell and UVs exactly.",
+    "priority": 2,
     "owner": "unclaimed",
     "branch": null,
     "worktree": null,
@@ -181,8 +181,8 @@
         51.5
       ]
     },
-    "intended_improvement": "Retain provisionally; inspect existing effect approximations before final artistic gate, preserve actual effect slots and fire anchors.",
-    "assessment": "retain with effect-preview review",
+    "intended_improvement": "Effect approximation reveals rigid rectangular log extrusions and square ends; soften/taper split-log cross-sections within bounds. Preserve fire_02 mesh1 effect shell and UVs exactly.",
+    "assessment": "production",
     "evidence": "../../../assets-work/World1/coordination/final-inspection/Bonfire01/final-offline.png"
   },
   {
@@ -671,12 +671,12 @@
       ]
     },
     "treatment": "texture-only treatment / essentially original geometry",
-    "remaining_problem": "Brazier silhouettes and serpent entrance are recognizable. Black/additive cards in neutral images are documented preview limitations.",
+    "remaining_problem": "Distinctive cobra mouth/fangs, sculpted stone and legible entrance/flanking plinths preserve map identity.",
     "priority": 3,
     "owner": "unclaimed",
     "branch": null,
     "worktree": null,
-    "status": "unclaimed",
+    "status": "review",
     "baseline": "7b808473",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
     "commits": [],
@@ -700,7 +700,7 @@
       ]
     },
     "intended_improvement": "Retain provisionally; inspect existing effect approximations before final artistic gate, preserve actual effect slots and fire anchors.",
-    "assessment": "retain with effect-preview review",
+    "assessment": "retain defensible",
     "evidence": "../../../assets-work/World1/coordination/final-inspection/DoungeonGate01/final-offline.png"
   },
   {
@@ -887,12 +887,12 @@
       ]
     },
     "treatment": "partial geometry/art treatment",
-    "remaining_problem": "Brazier silhouettes and serpent entrance are recognizable. Black/additive cards in neutral images are documented preview limitations.",
+    "remaining_problem": "Rounded shaft, open crown/feet and coherent iron read clearly in effect approximation.",
     "priority": 3,
     "owner": "unclaimed",
     "branch": null,
     "worktree": null,
-    "status": "unclaimed",
+    "status": "review",
     "baseline": "7b808473",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
     "commits": [],
@@ -916,7 +916,7 @@
       ]
     },
     "intended_improvement": "Retain provisionally; inspect existing effect approximations before final artistic gate, preserve actual effect slots and fire anchors.",
-    "assessment": "retain with effect-preview review",
+    "assessment": "retain defensible",
     "evidence": "../../../assets-work/World1/coordination/final-inspection/FireLight01/final-offline.png"
   },
   {
@@ -935,12 +935,12 @@
       ]
     },
     "treatment": "texture-only treatment / essentially original geometry",
-    "remaining_problem": "Brazier silhouettes and serpent entrance are recognizable. Black/additive cards in neutral images are documented preview limitations.",
+    "remaining_problem": "Small wall bracket has clear open basket and improved shared timber paint.",
     "priority": 3,
     "owner": "unclaimed",
     "branch": null,
     "worktree": null,
-    "status": "unclaimed",
+    "status": "review",
     "baseline": "7b808473",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
     "commits": [],
@@ -964,7 +964,7 @@
       ]
     },
     "intended_improvement": "Retain provisionally; inspect existing effect approximations before final artistic gate, preserve actual effect slots and fire anchors.",
-    "assessment": "retain with effect-preview review",
+    "assessment": "retain defensible",
     "evidence": "../../../assets-work/World1/coordination/final-inspection/FireLight02/final-offline.png"
   },
   {

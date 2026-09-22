@@ -30,3 +30,8 @@ Next independent groups: scrub Tree09/10 + Grass03/04; broad leaves Grass05/06;
 large buildings House01/03/04; monuments StoneStatue01/03 + SteelStatue01;
 Well01–04 pottery/rims; Waterspout01 dragon shape. Protected original Tree12/13 bindings
 remain untouched. Resolve companion/effect reviews before final Lorencia gate.
+
+Effect-preview follow-up: reviewer retains FireLight01/02 and DoungeonGate01 after
+inspecting existing effect approximations and source renderer. Bonfire01 enters P2 queue:
+rectangular logs need shaped split-log sections; mesh1 fire shell/UVs must remain exact.
+Updated tally: 25 production, 76 defensible retain, five companion consistency checks.

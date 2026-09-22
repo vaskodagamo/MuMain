@@ -27,6 +27,7 @@ def git(*args):
 
 def check_scope(ledger):
     changed = set(git('diff', '--name-only', BASELINE, '--', DATA_PREFIX).splitlines())
+    changed.update(git('ls-files', '--others', '--exclude-standard', '--', DATA_PREFIX).splitlines())
     expected = set(ledger)
     if changed != expected:
         raise ValueError(f'Unexpected/missing game paths: {sorted(changed ^ expected)}')
