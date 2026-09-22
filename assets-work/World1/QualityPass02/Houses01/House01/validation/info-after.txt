@@ -1,0 +1,11 @@
+model /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Houses01/House01/exports/House01.bmd
+  name field: House01.smd  version: 12
+  meshes: 4  bones: 2  actions: 1  triangles: 1544
+  bounds (bind pose): min -222.34 -301.18 -0.62  max 213.05 302.26 314.60  size 435.39 603.45 315.22
+  mesh 0: triangles=10 vertices=8 normals=9 uvs=8 texture=tile_ston05.jpg
+  mesh 1: triangles=1209 vertices=694 normals=144 uvs=241 texture=tile_ston04.jpg
+  mesh 2: triangles=5 vertices=7 normals=2 uvs=7 texture=tile_house01.jpg
+  mesh 3: triangles=320 vertices=208 normals=66 uvs=70 texture=tile_ston06.jpg
+  bone 0: "Box28" parent=-1
+  bone 1: "Bone01" parent=-1
+  action 0: keys=1 lock=0

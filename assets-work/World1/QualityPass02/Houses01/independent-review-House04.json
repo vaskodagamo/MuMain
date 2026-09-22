@@ -1,0 +1,93 @@
+{
+  "decision": "ACCEPT",
+  "asset": "House04",
+  "export_sha256": "6c040330a352cac50818f05a3da434c8c6623b8ab7b75cfbc9b722d2d411dcc5",
+  "visual": "Raised shingle courses give distinct lap shadows and readable construction at main, reverse, reduced and actual placement. Frozen painted roof identity, dormer edges and outer ring preserved. Context shows no new masonry/fence/sign contact intrusion. Action20 and39 effect views show intended ornament motion with stable roof attachments.",
+  "technical": {
+    "raw_motion": "Baseline/final motion tail byte-identical SHA2200e80c81a1a1f571f175b9905a1976491779e6e934d567a8d2a8ffd3ecac0c;2160 raw float components delta0;40 hierarchy matrices/posed bounds delta0",
+    "editable_source": "327 protected original triangle custom corner normals restored in source; final preserved BMD normals unchanged. Fresh official reexport produces identical accepted BMD.",
+    "authored_raw_normals": "4482 corners through all40 hierarchical keys; max vector delta .0002905200; new roof max8.78e-7.",
+    "posed_authored": "All4482 authored corners match final through all40 keys; max position delta .0000615101."
+  },
+  "limitations": [
+    "Offline Blender actual placements and effect approximations, not client render/collision verification.",
+    "Animated nonroof parts and effect geometry remain baseline.",
+    "Baseline dark material style and coarse main body retained deliberately; gain concentrated on dome roof."
+  ],
+  "audits": {
+    "summary.json": {
+      "sha256": "ba5a6579801e3f44e1fd3a103241aba6f5c4541c98677297e2e9c38386749d54",
+      "status": "PASS"
+    },
+    "frozen-textures.json": {
+      "sha256": "320f976de8990f6cb4bb9ca8e8ba7ce77e87c762a00e711c629ceaaf0f4e2a6c",
+      "status": null
+    },
+    "matrices-and-posed-bounds.json": {
+      "sha256": "7946b7171f5c393c68b322c50d5daf23f3dc206c0d62217ddb2b228a97f35c6a",
+      "status": "PASS"
+    },
+    "authored-match.json": {
+      "sha256": "68a865cfdd44b6bd26dac042b20674bba1587accc62f6970286e74659ba95bf1",
+      "status": "PASS"
+    },
+    "raw-normal-bindings.json": {
+      "sha256": "d67a6a893545c0eba1379455f5499b95c7eca99dc1f2fda3102d31b4e990b8f2",
+      "status": "PASS"
+    },
+    "contract-preservation.json": {
+      "sha256": "7ba6f5f03d702a3036c017e40aa5e0c409df5d9b4ed428258a462a1537ade274",
+      "status": null
+    },
+    "posed-authored-match.json": {
+      "sha256": "a3dfefdcf19858e4c9ace9424dec92a5efe1a0f9b4b07e6b308a5e77d0723cff",
+      "status": "PASS"
+    },
+    "official-motion-diagnostic.json": {
+      "sha256": "e40b20735abf8e4b6355e769ca7b4558c3e4d76a12d1f3ea1ddaaa56c2b51432",
+      "status": "DIAGNOSTIC_NOT_ACCEPTANCE"
+    },
+    "local-motion.json": {
+      "sha256": "359ebdf3d9df3cfeba53f66909be1284b9bb2c1fe3a86a0b641e71798d3f0344",
+      "status": "PASS"
+    },
+    "authored.json": {
+      "sha256": "3af8c61236e22563eb725a2ba1583dee194822283da7bc7f6be953e1d984dc0d",
+      "status": null
+    },
+    "raw-motion-equivalence.json": {
+      "sha256": "ebb70f304e588bc9f0a686724fc36c1fa6577933766855fc6e1a1c3919bbd56f",
+      "status": "PASS"
+    },
+    "authored-raw-normals.json": {
+      "sha256": "f6b81faddc4e742e197c3b380ce5f74dab2057ab2e898889043b74a0205cc46b",
+      "status": "PASS"
+    }
+  },
+  "images": {
+    "House04/review/baseline-action-39.png": "f22a687fe4f621d14579ff726af123cee225903d1bbc462e1c346e19147605dd",
+    "House04/review/baseline-action-10.png": "503991a0732f085f790a775878d8ec418f6f5ac6a1f43e7af34e16a27ec26724",
+    "House04/review/candidate-light.png": "989afb223a6d68b731ff97ee02c1b3008e1be54f480b0d47af2194c19c9e8e8d",
+    "House04/review/baseline-reverse.png": "ee3d3f2dd7f560042ef0f9c801bf0f14d1ded99ebb5341490047593c1726c07f",
+    "House04/review/baseline.png": "e33af5987153fb60c3a8c983a7f3cad5fc48f6bec128ba80cbb3eab048c53fd7",
+    "House04/review/candidate-action-0.png": "61128c96d71d3d002e56e2bdb224e631ab7914f8e0ab53e2fa061f8c3adfd50b",
+    "House04/review/candidate-small.png": "0a8b30cb5a1de4f766310177362ef3d2cfe351ddf95847dc5575026f18f4407e",
+    "House04/review/candidate-reverse.png": "cada98b58bcfca7db0e2aacbcbbb08384fc6376965783b7715d74a25d8703140",
+    "House04/review/original.png": "c0e0c63ac440804cedbaf23350057afc179eb49715b35616ac3ef3c541bca08b",
+    "House04/review/wireframe.png": "ea53b6e08d93044dbe601486d248833a77966edf805d641fee2e1e750e62ea07",
+    "House04/review/candidate-action-20.png": "b9e83fcd3c12a242f2efc0219b4aec76dc361c51eb8c8012dad01dafcf3d2c1b",
+    "House04/review/candidate-action-30.png": "33acc41823df9288e21797da51134d3c06934c94f37257a0ec9341a066b992f0",
+    "House04/review/candidate.png": "00d7c8e962ec61a290bb6ee30e2b8709df879bf3f3d20d45a57176bbbbe0e9d0",
+    "House04/review/baseline-small.png": "08e5f3f6d677055a371fe0fb8ca675ce9f9776d5eb15d566048ea65ff270c3b1",
+    "House04/review/candidate-action-39.png": "14649765cf068b8c9506999ee92ae09c59123bd934fb40fb31291dbade4db9b5",
+    "House04/review/candidate-action-10.png": "6fdbad5a90ec518cecfd4e82689f43a854749f511f57f8918c3097a9cc6565f3",
+    "House04/review/baseline-action-0.png": "f81b179f507f7223c36f6c950974e457249ae107176cf6a5c6268cb8c95d6810",
+    "House04/review/baseline-action-30.png": "1ad450a3812c0b30fc0f6b3e854706b53bac7977eaef5243d7d1fc7a245cd02c",
+    "House04/review/baseline-light.png": "14f8b3102c2c3cb04e588dd07109695b278220f2b70969e09080bd785db978e7",
+    "House04/review/baseline-action-20.png": "972704195a45dc315ed90cd5a1d1dd68f773048c2ff997d2ffa3d98626c3ee0f",
+    "review/House04-0-baseline.png": "5cf31ef9641651f8655955ebec9f443921a18e0307db2c22137f5be8731b6f03",
+    "review/House04-0-candidate.png": "921427a9513bc93ef6343811a10fb62784e4a0e506946bb55b276742303af6fc",
+    "review/House04-0-baseline-reverse.png": "d2bf03e9668ac8bde36707c7e565cabde294a40c180fcd9c2bea1c3784797d64",
+    "review/House04-0-candidate-reverse.png": "819f296198ace772df437f12d23a702f12ec97aca3c81e51625447130b8376a6"
+  }
+}

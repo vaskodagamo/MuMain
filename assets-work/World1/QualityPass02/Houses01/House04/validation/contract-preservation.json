@@ -1,0 +1,12 @@
+{
+  "reason": "Official Blender SourceTools Euler quantization near gimbal configuration; preserve exact baseline engine contract without relaxing validators",
+  "source": "Official authored Blender export retained under validation/official-export",
+  "exact_baseline_smd_bind_actions": true,
+  "restored_nonroof_triangles": 327,
+  "roof_anchor_restoration": {
+    "original_panel_boundary_corners": 123,
+    "maximum_boundary_correction": 1.6000000016447302e-05
+  },
+  "official_sha256": "9e1eea9fd726e4daa918a9a549dc0712998d392421077c21ce7a073740bfbb62",
+  "final_sha256": "6c040330a352cac50818f05a3da434c8c6623b8ab7b75cfbc9b722d2d411dcc5"
+}

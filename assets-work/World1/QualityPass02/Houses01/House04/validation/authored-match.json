@@ -1,0 +1,219 @@
+{
+  "status": "PASS",
+  "triangles": 1494,
+  "one_to_one_triangle_match": true,
+  "area_metrics": {
+    "minimum_geometry_area": 0.011481498618365974,
+    "minimum_uv_area": 8.639598298998408e-07,
+    "zero_geometry": 0,
+    "zero_uv": 0
+  },
+  "baseline_area_metrics": {
+    "minimum_geometry_area": 39.67152964143797,
+    "minimum_uv_area": 1.908016912466337e-05,
+    "zero_geometry": 0,
+    "zero_uv": 0
+  },
+  "protected_contract": {
+    "protected_original_points": 271,
+    "maximum_position_delta": 1.6000000016447302e-05,
+    "controlled_light_triangles": 327,
+    "awning_boundary_edges": 0,
+    "policy": "Every original non-awning vertex and every awning perimeter endpoint retained; exact controlled light triangles preserved"
+  },
+  "every_authored_triangle_matches_material_bone_position_uv": true,
+  "maximum_position_delta": 3.0998046867125595e-05,
+  "position_tolerance": 0.002,
+  "uv_tolerance": 1e-05,
+  "uv_layers": [
+    "Float2"
+  ],
+  "packed_images": {
+    "bridge_01.jpg": [
+      1024,
+      512
+    ],
+    "bridge_01.jpg.001": [
+      1024,
+      512
+    ],
+    "tile_02.jpg": [
+      512,
+      512
+    ],
+    "tile_02.jpg.001": [
+      512,
+      512
+    ],
+    "tile_house01.jpg": [
+      512,
+      512
+    ],
+    "tile_house01.jpg.001": [
+      512,
+      512
+    ],
+    "tile_space01.jpg": [
+      256,
+      256
+    ],
+    "tile_space01.jpg.001": [
+      256,
+      256
+    ],
+    "tile_ston04.jpg": [
+      512,
+      512
+    ],
+    "tile_ston04.jpg.001": [
+      512,
+      512
+    ],
+    "tile_windows01.jpg": [
+      512,
+      512
+    ],
+    "tile_windows01.jpg.001": [
+      512,
+      512
+    ],
+    "tile_wood01.jpg": [
+      512,
+      512
+    ],
+    "tile_wood01.jpg.001": [
+      512,
+      512
+    ],
+    "tile_wood02.jpg": [
+      512,
+      512
+    ],
+    "tile_wood02.jpg.001": [
+      512,
+      512
+    ],
+    "tile_wood03.jpg": [
+      512,
+      512
+    ],
+    "tile_wood03.jpg.001": [
+      512,
+      512
+    ]
+  },
+  "per_root_contract": {
+    "0": {
+      "bounds_before": [
+        [
+          -247.516693,
+          -197.922913,
+          0.027893
+        ],
+        [
+          252.666306,
+          199.92038,
+          256.716187
+        ]
+      ],
+      "bounds_after": [
+        [
+          -247.516693,
+          -197.922913,
+          0.027893
+        ],
+        [
+          252.666306,
+          199.92038,
+          256.716187
+        ]
+      ],
+      "ground_contacts": 14,
+      "maximum_contact_delta": 0.0
+    },
+    "5": {
+      "bounds_before": [
+        [
+          -83.708504,
+          -81.184525,
+          275.555603
+        ],
+        [
+          111.9599,
+          31.5436,
+          348.194794
+        ]
+      ],
+      "bounds_after": [
+        [
+          -83.708504,
+          -81.18454,
+          275.555603
+        ],
+        [
+          111.959915,
+          31.5436,
+          348.194794
+        ]
+      ],
+      "ground_contacts": 3,
+      "maximum_contact_delta": 1.6000000000016e-05
+    },
+    "1": {
+      "bounds_before": [
+        [
+          -99.276901,
+          -240.250793,
+          -0.814
+        ],
+        [
+          -14.9552,
+          -189.522507,
+          236.147766
+        ]
+      ],
+      "bounds_after": [
+        [
+          -99.276901,
+          -240.250793,
+          -0.814
+        ],
+        [
+          -14.9552,
+          -189.522507,
+          236.147751
+        ]
+      ],
+      "ground_contacts": 8,
+      "maximum_contact_delta": 0.0
+    },
+    "2": {
+      "bounds_before": [
+        [
+          -250.010895,
+          -219.65332,
+          259.532196
+        ],
+        [
+          132.751205,
+          184.9431,
+          413.934906
+        ]
+      ],
+      "bounds_after": [
+        [
+          -250.010895,
+          -219.65332,
+          259.532196
+        ],
+        [
+          132.751205,
+          184.9431,
+          413.934906
+        ]
+      ],
+      "ground_contacts": 12,
+      "maximum_contact_delta": 1.6000000016447302e-05
+    }
+  }
+}

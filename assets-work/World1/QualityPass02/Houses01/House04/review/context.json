@@ -1,0 +1,19 @@
+{
+  "kind": "OFFLINE DIFFUSE/ALPHA, NOT CLIENT",
+  "baseline": "Actual merged BMD",
+  "candidate": "Official exported/reimported candidate",
+  "bounds": [
+    [
+      -250.01089477539062,
+      -240.25079345703125,
+      -0.8140000104904175
+    ],
+    [
+      252.6663055419922,
+      199.92037963867188,
+      413.9349060058594
+    ]
+  ],
+  "backgrounds": "Dark and light, reverse view",
+  "reduced": "300x255"
+}

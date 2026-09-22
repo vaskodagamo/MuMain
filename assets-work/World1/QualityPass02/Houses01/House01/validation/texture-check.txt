@@ -1,0 +1,4 @@
+OK /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Houses01/House01/exports/tile_ston06.OZJ
+OK /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Houses01/House01/exports/tile_house01.OZJ
+OK /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Houses01/House01/exports/tile_ston05.OZJ
+OK /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Houses01/House01/exports/tile_ston04.OZJ

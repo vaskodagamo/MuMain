@@ -1,0 +1,11 @@
+{
+  "kind": "OFFLINE APPROXIMATION ONLY",
+  "geometry": "Actual exported/reimported candidate versus baseline",
+  "engine_mesh": "House03 mesh4 and House04 mesh8 unchanged",
+  "flicker": [
+    0.4,
+    0.7
+  ],
+  "frames": null,
+  "scroll": "Illustrative V offsets coupled to sample index; actual engine uses WorldTime"
+}

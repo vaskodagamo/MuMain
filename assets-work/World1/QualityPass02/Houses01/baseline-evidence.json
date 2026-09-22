@@ -1,0 +1,127 @@
+{
+  "House01": {
+    "bmd_sha256": "498f0224e6c7f0f32d228b8a7ffbeb051e9796f7749ffb1e340149a632da737e",
+    "source_blend": "/Users/lukasmac/Documents/claude-test-mumain/MuMain/assets-work/World1/Architecture03/House01/source.blend",
+    "source_blend_sha256": "7d0d466a057e13b8980959b8cd03d6826272e9a166212784156bbc4e8c3495b1",
+    "image": "/Users/lukasmac/Documents/claude-test-mumain/MuMain/assets-work/World1/coordination/final-inspection/House01/final-offline.png",
+    "image_sha256": "0b406de32f3ff56e75e780a23b2b773215735be67ac5a217123f7ba0cc42b3a0",
+    "provenance_dependencies_match_current": {
+      "src/bin/Data/Object1/House01.bmd": true,
+      "src/bin/Data/Object1/tile_ston05.OZJ": true,
+      "src/bin/Data/Object1/tile_ston04.OZJ": true,
+      "src/bin/Data/Object1/tile_house01.OZJ": true,
+      "src/bin/Data/Object1/tile_ston06.OZJ": true
+    },
+    "placements": [
+      {
+        "position": [
+          14300.0,
+          14700.0,
+          165.00001525878906
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          2070.0
+        ],
+        "scale": 1.0,
+        "tile": [
+          143.0,
+          147.0
+        ]
+      },
+      {
+        "position": [
+          15231.8671875,
+          14697.2021484375,
+          165.0000457763672
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          2070.0
+        ],
+        "scale": 1.0,
+        "tile": [
+          152.318671875,
+          146.972021484375
+        ]
+      }
+    ],
+    "current_info": "model /Users/webproduktion3/Documents/claude-test-mumain/MuMain-lorencia-architecture-final/assets-work/World1/Architecture03/House01/exports/House01.bmd\n  name field: House01.smd  version: 12\n  meshes: 4  bones: 2  actions: 1  triangles: 208\n  bounds (bind pose): min -222.34 -301.18 -0.62  max 213.05 302.26 314.60  size 435.39 603.45 315.22\n  mesh 0: triangles=10 vertices=8 normals=10 uvs=8 texture=tile_ston05.jpg\n  mesh 1: triangles=89 vertices=54 normals=43 uvs=65 texture=tile_ston04.jpg\n  mesh 2: triangles=5 vertices=7 normals=1 uvs=7 texture=tile_house01.jpg\n  mesh 3: triangles=104 vertices=80 normals=18 uvs=46 texture=tile_ston06.jpg\n  bone 0: \"Box28\" parent=-1\n  bone 1: \"Bone01\" parent=-1\n  action 0: keys=1 lock=0\n"
+  },
+  "House03": {
+    "bmd_sha256": "a8015a4a6155d5dc2cef379bebb6c054ec6a31c428329163a1a696424ea1b7f7",
+    "source_blend": "/Users/lukasmac/Documents/claude-test-mumain/MuMain/assets-work/World1/Architecture03/House03/source.blend",
+    "source_blend_sha256": "2fc5102655d76e06882373c450d84e59eb57e138d01be42c18bb3864804d786b",
+    "image": "/Users/lukasmac/Documents/claude-test-mumain/MuMain/assets-work/World1/coordination/final-inspection/House03/final-offline.png",
+    "image_sha256": "b41f76e2ddca63ae02c8d72deb8b662a8a77af0616d1f0ef460d049d6b28f33f",
+    "provenance_dependencies_match_current": {
+      "src/bin/Data/Object1/House03.bmd": true,
+      "src/bin/Data/Object1/tile_ston05.OZJ": true,
+      "src/bin/Data/Object1/tile_ston04.OZJ": true,
+      "src/bin/Data/Object1/tile_ston06.OZJ": true,
+      "src/bin/Data/Object1/tile_ston07.OZT": true,
+      "src/bin/Data/Object1/light_02.OZJ": true
+    },
+    "placements": [
+      {
+        "position": [
+          11750.0,
+          14500.0,
+          164.99996948242188
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          2070.0
+        ],
+        "scale": 0.8600001335144043,
+        "tile": [
+          117.5,
+          145.0
+        ]
+      }
+    ],
+    "current_info": "model /Users/webproduktion3/Documents/claude-test-mumain/MuMain-lorencia-architecture-final/assets-work/World1/Architecture03/House03/exports/House03.bmd\n  name field: House03.smd  version: 12\n  meshes: 5  bones: 7  actions: 1  triangles: 313\n  bounds (bind pose): min -330.60 -463.45 -1.37  max 302.32 450.87 381.38  size 632.92 914.32 382.76\n  mesh 0: triangles=10 vertices=8 normals=9 uvs=8 texture=tile_ston05.jpg\n  mesh 1: triangles=93 vertices=57 normals=37 uvs=80 texture=tile_ston04.jpg\n  mesh 2: triangles=192 vertices=144 normals=21 uvs=58 texture=tile_ston06.jpg\n  mesh 3: triangles=12 vertices=15 normals=15 uvs=9 texture=tile_ston07.tga\n  mesh 4: triangles=6 vertices=12 normals=3 uvs=4 texture=light_02.jpg\n  bone 0: \"Box08\" parent=-1\n  bone 1: \"Box29\" parent=-1\n  bone 2: \"Mesh01\" parent=-1\n  bone 3: \"Mesh02\" parent=-1\n  bone 4: \"Bone01\" parent=-1\n  bone 5: \"Bone02\" parent=-1\n  bone 6: \"Bone03\" parent=-1\n  action 0: keys=1 lock=0\n"
+  },
+  "House04": {
+    "bmd_sha256": "a1c4950b46c6a4c466a680d0be3d8ade35a4982b0665b1ce53b68e41e62219fa",
+    "source_blend": "/Users/lukasmac/Documents/claude-test-mumain/MuMain/assets-work/World1/Architecture03/House04/source.blend",
+    "source_blend_sha256": "31511669f4fdd2c42dc3d1b73c3394bddea4d6b4d1c212caa0d81f1747e32097",
+    "image": "/Users/lukasmac/Documents/claude-test-mumain/MuMain/assets-work/World1/coordination/final-inspection/House04/final-offline.png",
+    "image_sha256": "b48df3b96aeafac5a7d256828fb88fbd7e440bd8bf258d99b95042fc306cbbfc",
+    "provenance_dependencies_match_current": {
+      "src/bin/Data/Object1/House04.bmd": true,
+      "src/bin/Data/Object1/tile_02.OZJ": true,
+      "src/bin/Data/Object1/tile_wood01.OZJ": true,
+      "src/bin/Data/Object1/tile_house01.OZJ": true,
+      "src/bin/Data/Object1/tile_ston04.OZJ": true,
+      "src/bin/Data/Object1/tile_wood03.OZJ": true,
+      "src/bin/Data/Object1/tile_wood02.OZJ": true,
+      "src/bin/Data/Object1/tile_windows01.OZJ": true,
+      "src/bin/Data/Object1/bridge_01.OZJ": true,
+      "src/bin/Data/Object1/tile_space01.OZJ": true
+    },
+    "placements": [
+      {
+        "position": [
+          11550.0,
+          11300.0,
+          165.00003051757812
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          2160.0
+        ],
+        "scale": 1.0,
+        "tile": [
+          115.5,
+          113.0
+        ]
+      }
+    ],
+    "current_info": "model /Users/webproduktion3/Documents/claude-test-mumain/MuMain-lorencia-architecture-final/assets-work/World1/Architecture03/House04/exports/House04.bmd\n  name field: House04.smd  version: 12\n  meshes: 9  bones: 9  actions: 1  triangles: 358\n  bounds (bind pose): min -250.01 -240.25 -0.81  max 252.67 199.92 413.93  size 502.68 440.17 414.75\n  mesh 0: triangles=100 vertices=68 normals=93 uvs=56 texture=tile_02.jpg\n  mesh 1: triangles=117 vertices=117 normals=71 uvs=77 texture=tile_wood01.jpg\n  mesh 2: triangles=2 vertices=4 normals=1 uvs=4 texture=tile_house01.jpg\n  mesh 3: triangles=48 vertices=35 normals=25 uvs=46 texture=tile_ston04.jpg\n  mesh 4: triangles=31 vertices=27 normals=28 uvs=47 texture=tile_wood03.jpg\n  mesh 5: triangles=16 vertices=16 normals=14 uvs=27 texture=tile_wood02.jpg\n  mesh 6: triangles=20 vertices=16 normals=24 uvs=16 texture=tile_windows01.jpg\n  mesh 7: triangles=12 vertices=13 normals=13 uvs=13 texture=bridge_01.jpg\n  mesh 8: triangles=12 vertices=13 normals=13 uvs=13 texture=tile_space01.jpg\n  bone 0: \"Mesh02\" parent=-1\n  bone 1: \"Box02\" parent=-1\n  bone 2: \"boness_01\" parent=-1\n  bone 3: \"boness_02\" parent=2\n  bone 4: \"Object02\" parent=2\n  bone 5: \"boness_03\" parent=-1\n  bone 6: \"boness_04\" parent=5\n  bone 7: \"Object01\" parent=5\n  bone 8: \"Object03\" parent=5\n  action 0: keys=40 lock=0\n"
+  }
+}

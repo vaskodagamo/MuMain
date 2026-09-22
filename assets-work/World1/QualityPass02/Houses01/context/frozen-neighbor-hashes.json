@@ -1,0 +1,64 @@
+{
+  "Fence03": {
+    "src/bin/Data/Object1/Fence03.bmd": "3c4507f510bda323fda43775559499ec028a8c58f797761459fa84896216a07c",
+    "src/bin/Data/Object1/joint.OZJ": "ab1b30fc23a5d937dd33434f4014d0c036d56e6c4f74583e0c4c7b795631fb15"
+  },
+  "Grass01": {
+    "src/bin/Data/Object1/Grass01.bmd": "d77daca6778078e17097831edf0a704d4e197db59892cbc4f1387c6f99eb7f32",
+    "src/bin/Data/Object1/tree_08.OZT": "a1d60fa0bb30b7ceddbd52a7c74771929f3902052c460d6b015dbfdf34b47d78"
+  },
+  "House02": {
+    "src/bin/Data/Object1/House02.bmd": "f5f28ce013478d5369a1815ac8388c0b4e4597e3410c8832e2b2a5b57c8e1916",
+    "src/bin/Data/Object1/drum.OZJ": "1d48c6672bd96e3d689bf1b874eb40e9ec0de198c19439f335e41cbedb5f488f",
+    "src/bin/Data/Object1/steel.OZJ": "c407f13d8694533d676479eff5ce197dfd951f452c1dceaab227f5a66283994b"
+  },
+  "HouseEtc01": {
+    "src/bin/Data/Object1/HouseEtc01.bmd": "646273f66d753761d78bfc04c33ad9ba73adf4b87e69a2c376a8c530e8fff22c",
+    "src/bin/Data/Object1/c_wall04.OZJ": "c7ba893ef3542cb9bb265ef7735c1d7d2c2bf58f7284d8cff8f0940860828ed3",
+    "src/bin/Data/Object1/c_wall06.OZJ": "81c037340624b795b295c58071bc26f66f785c20be11cddfd304e585b10c77f4"
+  },
+  "HouseEtc03": {
+    "src/bin/Data/Object1/HouseEtc03.bmd": "78e0ddb7630d6eb077c6b3b79287fc87cff5be4f5754c571c407a1d06b7d1f53",
+    "src/bin/Data/Object1/steel_barred_a.OZT": "6a362e7e813e3656e6598b9239cd6094381a48bf2f4a62f706c8f9b2151997a3",
+    "src/bin/Data/Object1/steel_barred_door.OZT": "36f41caa9871ef74ddd8cbe51798ba258ab77cd1db87d90da23d4cf876bdf741"
+  },
+  "Sign01": {
+    "src/bin/Data/Object1/Sign01.bmd": "e319480ee29feebf6a64862407dece3eae3ea0cc24a951b8f57695bef2034f70",
+    "src/bin/Data/Object1/notice.OZJ": "85e028c06cee35c5ba6334b9613a5a839df9ffff20d58a4ab567bf793290416f",
+    "src/bin/Data/Object1/signboard.OZT": "c62e1b18d97e75000ee4f5a071aff9858c8449187404dfabff927947a8883fa9",
+    "src/bin/Data/Object1/doorknob.OZT": "1f0413df12aa7ef21fdea28fda3c322abed0f28d4837b40ead3ba67a246afb84"
+  },
+  "Stair01": {
+    "src/bin/Data/Object1/Stair01.bmd": "a8762396fc2b3db1704905701e98613804f449541ab085e58c73c15665bb11b0",
+    "src/bin/Data/Object1/tile_wood01.OZJ": "51537840533e1c755569d3b57d9bea468353208c669daa2baeb2a421c41bf192"
+  },
+  "SteelWall02": {
+    "src/bin/Data/Object1/SteelWall02.bmd": "5425434423f7025a2be0e0eb7cbc4400ccb008595333721dd8f7b751e965d968",
+    "src/bin/Data/Object1/steel_barred_b.OZJ": "18fb54247b0dc08f4dfe2daab5f9f4edfde880513d0ed597e449e58efafd8087",
+    "src/bin/Data/Object1/steel_barred_a.OZT": "6a362e7e813e3656e6598b9239cd6094381a48bf2f4a62f706c8f9b2151997a3"
+  },
+  "SteelWall03": {
+    "src/bin/Data/Object1/SteelWall03.bmd": "0ba89db4e0d966a7f4115825fd1c81ed11d020886b7f127dc7850efe3828bd23",
+    "src/bin/Data/Object1/steel_barred_b.OZJ": "18fb54247b0dc08f4dfe2daab5f9f4edfde880513d0ed597e449e58efafd8087",
+    "src/bin/Data/Object1/steel_barred_a.OZT": "6a362e7e813e3656e6598b9239cd6094381a48bf2f4a62f706c8f9b2151997a3"
+  },
+  "StoneMuWall02": {
+    "src/bin/Data/Object1/StoneMuWall02.bmd": "71871c76baa85db5b0e8d4017ee0a5c797eeb4897bf14dfa2129da19264ea4cd",
+    "src/bin/Data/Object1/c_wall06.OZJ": "81c037340624b795b295c58071bc26f66f785c20be11cddfd304e585b10c77f4",
+    "src/bin/Data/Object1/c_wall05.OZJ": "e2890842d739f4fa2010e2a90d4af1e368a97bf2028d26c4e15dac0030e05083",
+    "src/bin/Data/Object1/c_wall04.OZJ": "c7ba893ef3542cb9bb265ef7735c1d7d2c2bf58f7284d8cff8f0940860828ed3"
+  },
+  "StoneMuWall03": {
+    "src/bin/Data/Object1/StoneMuWall03.bmd": "da3246175a2f50993de1f8b17aa9483165b389021f871145cec7ef37f7ee608a",
+    "src/bin/Data/Object1/c_wall04.OZJ": "c7ba893ef3542cb9bb265ef7735c1d7d2c2bf58f7284d8cff8f0940860828ed3",
+    "src/bin/Data/Object1/c_wall06.OZJ": "81c037340624b795b295c58071bc26f66f785c20be11cddfd304e585b10c77f4"
+  },
+  "Straw01": {
+    "src/bin/Data/Object1/Straw01.bmd": "485d0ae5e304335823ebebb01c97e595a54819aadff04af236fa1dd03c0d0e03",
+    "src/bin/Data/Object1/grass_01.OZT": "1572db097eb23dd42e282fc526e91d15415ed0919489e264a466b532e99e5e15"
+  },
+  "TreasureDrum01": {
+    "src/bin/Data/Object1/TreasureDrum01.bmd": "445adb6a928a667d36857af9cb1b459f2012b67e876540da1f962d3fd865c4c0",
+    "src/bin/Data/Object1/drum.OZJ": "1d48c6672bd96e3d689bf1b874eb40e9ec0de198c19439f335e41cbedb5f488f"
+  }
+}

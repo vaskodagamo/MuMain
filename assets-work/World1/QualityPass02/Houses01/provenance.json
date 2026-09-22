@@ -1,0 +1,20 @@
+{
+  "House01": {
+    "House01/source.blend": "ac42ffe5f6657965aa3feb6b79ebee8184b2d4304fd48fb45c695a0aa059bc0c",
+    "House01/exports/House01.bmd": "ebae8d2a2bda5483e42f2c9c41066354e9fcee00df82549a63bca0bc367932b4",
+    "House01/baseline/House01.bmd": "498f0224e6c7f0f32d228b8a7ffbeb051e9796f7749ffb1e340149a632da737e",
+    "House01/original/House01.bmd": "498f0224e6c7f0f32d228b8a7ffbeb051e9796f7749ffb1e340149a632da737e"
+  },
+  "House03": {
+    "House03/source.blend": "10a891112cf5ea4107962c2d0d344bafaf00ad0c53be36cc21a82d3a34fb8abf",
+    "House03/exports/House03.bmd": "0fdb5c6fd61ae8239c780f2622b7764dee3ab3decec2708520722c4af2944d0c",
+    "House03/baseline/House03.bmd": "a8015a4a6155d5dc2cef379bebb6c054ec6a31c428329163a1a696424ea1b7f7",
+    "House03/original/House03.bmd": "a8015a4a6155d5dc2cef379bebb6c054ec6a31c428329163a1a696424ea1b7f7"
+  },
+  "House04": {
+    "House04/source.blend": "37f42fe87acc7c142c02da58813905906ce6bbae715075db9b46cd4a4f4c57f8",
+    "House04/exports/House04.bmd": "6c040330a352cac50818f05a3da434c8c6623b8ab7b75cfbc9b722d2d411dcc5",
+    "House04/baseline/House04.bmd": "a1c4950b46c6a4c466a680d0be3d8ade35a4982b0665b1ce53b68e41e62219fa",
+    "House04/original/House04.bmd": "a1c4950b46c6a4c466a680d0be3d8ade35a4982b0665b1ce53b68e41e62219fa"
+  }
+}
