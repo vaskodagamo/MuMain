@@ -2825,7 +2825,7 @@
     "assessment": "production",
     "evidence": "../../../assets-work/World1/coordination/final-inspection/SteelStatue01/final-offline.png",
     "artistic_gate_resolved": true,
-    "acceptance_evidence": "assets-work/World1/QualityPass02/Statues02/independent-final-review.json"
+    "acceptance_evidence": "assets-work/World1/QualityPass02/Statues02/independent-review.json"
   },
   {
     "model": "SteelWall01",
@@ -3446,7 +3446,7 @@
     "assessment": "production",
     "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneStatue01/final-offline.png",
     "artistic_gate_resolved": true,
-    "acceptance_evidence": "assets-work/World1/QualityPass02/Statues02/independent-final-review.json"
+    "acceptance_evidence": "assets-work/World1/QualityPass02/Statues02/independent-review.json"
   },
   {
     "model": "StoneStatue02",
@@ -3541,7 +3541,7 @@
     "assessment": "production",
     "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneStatue03/final-offline.png",
     "artistic_gate_resolved": true,
-    "acceptance_evidence": "assets-work/World1/QualityPass02/Statues02/independent-final-review.json"
+    "acceptance_evidence": "assets-work/World1/QualityPass02/Statues02/independent-review.json"
   },
   {
     "model": "StoneWall01",
