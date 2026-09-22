@@ -2790,15 +2790,18 @@
       ]
     },
     "treatment": "partial geometry/art treatment",
-    "remaining_problem": "Pillar and memorial silhouettes remain hard slab profiles; angel wings/body have severe angular transitions beneath ornate painting.",
+    "remaining_problem": "Independently accepted niche, broad feather wings or memorial profiles; frozen textures/contact anchors. Client pending.",
     "priority": 2,
     "owner": "architecture",
     "branch": "codex/lorencia-q02-architecture",
     "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture",
-    "status": "in progress",
+    "status": "accepted",
     "baseline": "7b808473",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
-    "commits": [],
+    "commits": [
+      "10d1e765",
+      "cc43c901"
+    ],
     "placement_count": 4,
     "placement_records": "../../World1/coordination/dependency-map.json#/models/SteelStatue01/placements",
     "first_placement": {
@@ -2821,7 +2824,8 @@
     "intended_improvement": "Shaped caps and restrained bevels; purposeful angel wing/body silhouette refinement. Freeze shared basin/plinth textures unless full consumers reviewed.",
     "assessment": "production",
     "evidence": "../../../assets-work/World1/coordination/final-inspection/SteelStatue01/final-offline.png",
-    "artistic_gate_resolved": false
+    "artistic_gate_resolved": true,
+    "acceptance_evidence": "assets-work/World1/QualityPass02/Statues02/independent-final-review.json"
   },
   {
     "model": "SteelWall01",
@@ -3407,15 +3411,18 @@
       ]
     },
     "treatment": "partial geometry/art treatment",
-    "remaining_problem": "Pillar and memorial silhouettes remain hard slab profiles; angel wings/body have severe angular transitions beneath ornate painting.",
+    "remaining_problem": "Independently accepted niche, broad feather wings or memorial profiles; frozen textures/contact anchors. Client pending.",
     "priority": 2,
     "owner": "architecture",
     "branch": "codex/lorencia-q02-architecture",
     "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture",
-    "status": "in progress",
+    "status": "accepted",
     "baseline": "7b808473",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
-    "commits": [],
+    "commits": [
+      "10d1e765",
+      "cc43c901"
+    ],
     "placement_count": 7,
     "placement_records": "../../World1/coordination/dependency-map.json#/models/StoneStatue01/placements",
     "first_placement": {
@@ -3438,7 +3445,8 @@
     "intended_improvement": "Shaped caps and restrained bevels; purposeful angel wing/body silhouette refinement. Freeze shared basin/plinth textures unless full consumers reviewed.",
     "assessment": "production",
     "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneStatue01/final-offline.png",
-    "artistic_gate_resolved": false
+    "artistic_gate_resolved": true,
+    "acceptance_evidence": "assets-work/World1/QualityPass02/Statues02/independent-final-review.json"
   },
   {
     "model": "StoneStatue02",
@@ -3498,15 +3506,18 @@
       ]
     },
     "treatment": "texture-only treatment / essentially original geometry",
-    "remaining_problem": "Pillar and memorial silhouettes remain hard slab profiles; angel wings/body have severe angular transitions beneath ornate painting.",
+    "remaining_problem": "Independently accepted niche, broad feather wings or memorial profiles; frozen textures/contact anchors. Client pending.",
     "priority": 2,
     "owner": "architecture",
     "branch": "codex/lorencia-q02-architecture",
     "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture",
-    "status": "in progress",
+    "status": "accepted",
     "baseline": "7b808473",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
-    "commits": [],
+    "commits": [
+      "10d1e765",
+      "cc43c901"
+    ],
     "placement_count": 4,
     "placement_records": "../../World1/coordination/dependency-map.json#/models/StoneStatue03/placements",
     "first_placement": {
@@ -3529,7 +3540,8 @@
     "intended_improvement": "Shaped caps and restrained bevels; purposeful angel wing/body silhouette refinement. Freeze shared basin/plinth textures unless full consumers reviewed.",
     "assessment": "production",
     "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneStatue03/final-offline.png",
-    "artistic_gate_resolved": false
+    "artistic_gate_resolved": true,
+    "acceptance_evidence": "assets-work/World1/QualityPass02/Statues02/independent-final-review.json"
   },
   {
     "model": "StoneWall01",
@@ -4858,10 +4870,10 @@
     "treatment": "texture-only treatment",
     "remaining_problem": "Basin and rock base are coherent, but central dragon wings remain severe angular slabs and body loses material definition as near-black mass.",
     "priority": 2,
-    "owner": "unclaimed",
-    "branch": null,
-    "worktree": null,
-    "status": "unclaimed",
+    "owner": "architecture",
+    "branch": "codex/lorencia-q02-architecture",
+    "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture",
+    "status": "in progress",
     "baseline": "7b808473",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
     "commits": [],

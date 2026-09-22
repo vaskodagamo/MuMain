@@ -7,19 +7,20 @@ Lorencia is not artistically complete. Historical 106/106 means first-pass cover
 - Scrub01: Tree09/10, Grass03/04, `4b0ccd02`. Continuous growth and rounded crowns. Reproduction baseline fix `1259e4f8`.
 - Broadleaf01: Grass05/06, `072f77f6`. Smooth drooping leaf arcs.
 - Houses01: House01/03/04, `7be0eaa3` from `32a1a24b`. Stone surrounds, structural awning supports and domed shingle laps. House04 protected rig/motion exact all40frames; authored source normals corrected to final preserved protected normals.
+- Statues02: StoneStatue01/03 and SteelStatue01, `cc43c901` from `10d1e765`. Carved niche, layered feather wings and memorial profiles.
 - Bonfire02: Bonfire01, `38292593` from `79ed83a5`. Quarter-split wood profiles, curved bark faces and longitudinal grain with unchanged effect shell.
 - Wells02: Well01–04, `5a0ad5b5` from `c1296be9`. Open curved pottery mouths, thick roof boards; all actual-placement groups accepted.
 
-All18 replacements independently accepted offline with packed sources, official exports, matching images and technical evidence. Ledger accepted-exports.json; latest bonfire-integration-validation.json passes exact18 game paths and115model texture resolution. All textures unchanged. Existing client success is user-reported only for baseline7b808473; new changes client pending.
+All21 replacements independently accepted offline with packed sources, official exports, matching images and technical evidence. Ledger accepted-exports.json; latest statues-integration-validation.json passes exact21 game paths and115model texture resolution. All textures unchanged. Existing client success is user-reported only for baseline7b808473; new changes client pending.
 
 ## Active ownership and next actions
-Architecture worktree MuMain-q02-architecture / codex/lorencia-q02-architecture: owns ONLY StoneStatue01/03, SteelStatue01 BMDs and QualityPass02/Statues02. Frozen textures. All3 final candidates at consolidated independent review; all technical/contact/normal gates pass. Follow next-statues-brief.md/evidence.
+Architecture worktree MuMain-q02-architecture / codex/lorencia-q02-architecture: owns ONLY Waterspout01 BMD and QualityPass02/Fountain02. Frozen textures. Edit actual dragon geometry in slot1; additional34 basin triangles there are protected. Preserve other3meshes, all21frames and water/particle interface. Follow next-statues-brief.md/evidence fountain section.
 
 Furniture worktree MuMain-q02-furniture / codex/lorencia-q02-furniture: owns ONLY HouseEtc01 and StoneMuWall02/03/04 BMDs plus QualityPass02/Masonry02. All textures frozen. First HouseEtc01 face-only prototype;8-unit continuous outer border, cap/side/contact surface proof and actual stack seams required. Follow next-masonry-brief.md including coordinator clarification. Expand only after prototype gains clear visual acceptance.
 
-Reviewer: final statue review, then masonry prototype gate. Root alone maintains coordination and integrates accepted owned commits.
+Reviewer: masonry prototype and fountain gates. Root alone maintains coordination and integrates accepted owned commits.
 
-Eight production assets remain: HouseEtc01, StoneMuWall02/03/04; StoneStatue01/03, SteelStatue01; Waterspout01. Four companion baselines retained by explicit rationale in companion-review.json. Additional76 retained baselines now have individualized acceptance in retention-gate.json. Coherence01 sampled five mixed neighborhoods; final remaining production gate still required. No later maps started.
+Five production assets remain: HouseEtc01, StoneMuWall02/03/04; Waterspout01. Four companion baselines retained by explicit rationale in companion-review.json. Additional76 retained baselines now have individualized acceptance in retention-gate.json. Coherence01 sampled five mixed neighborhoods; final remaining production gate still required. No later maps started.
 
 Masonry01 rejected study-only commit d6e85282 stays worker branch, NOT integrated. HouseEtc actual stacked seam failed; others lacked meaningful gain. Preserve exact connections, continue new interior-profile directions.
 
@@ -32,3 +33,8 @@ Draft PR12: https://github.com/vaskodagamo/MuMain/pull/12. Verified owner origin
 Bonfire01 accepted/integrated `38292593` from `79ed83a5`: quarter-split wood with curved bark faces and longitudinal grain;38 effect triangles and exact hot-end interface protected. Offline additive approximation/actual tilted placements accepted; client pending. Total18 new replacements. Independent individualized retention decision for76 baselines in retention-gate.json plus earlier4companions yields80 defensible retained assets; not80new remakes and not client verification. Root rechecked all217retention dependencyreferences/76imagehashes.
 
 Coherence01 `ec35b6f4` contains5actual neighborhood regions,121instances,30matching images with complete source/placement/hash provenance; sampled material coherence accepted by reviewer with no-terrain/effect limits. Remaining8production:3statues atfinalreview,4masonry nowownedbyfurniture(Masonry02 firstHouseEtcfaceprototype),1fountain unclaimed. OverallLorencia incomplete; latermaps notstarted.
+
+## 2026-09-23 statues checkpoint
+Statues02 accepted/integrated `cc43c901` from `10d1e765`: StoneStatue01 carved niche around figure(212tris), StoneStatue03 layered curved feather wings and continuous robe/arm forms(1353), SteelStatue01 stepped capital and raised plaque(274). Root independently verified3BMD/source hashes and62reviewed evidence hashes. Full authored triangle/UV/bone/normal and exactcontact proofs pass; all frozen materials match integration. Corrected context omits engine-hidden PoseBox01 and frames entire pillar.
+
+Total21 accepted new replacements +80 individually defensible retained assets; remaining5production: HouseEtc01/StoneMuWall02/03/04 owned furniture(Masonry02), Waterspout01 owned architecture(Fountain02). Fountain only actualdragon geometry; protect additional34 basin/floor triangles inside slot1 as well as entireother3meshes, all21motionframes/particles/waterinterface. Masonry onefaceprototype must earn gain before expansion; exact8unitborder surface and fullcoverage/nonoverlap proofs mandatory. Lorencia incomplete, latermaps notstarted, allnewclientchecks pending.
