@@ -2056,12 +2056,12 @@
       ]
     },
     "treatment": "partial geometry/art treatment",
-    "remaining_problem": "These companion modules share architecture or masonry language now being improved. Current images are coherent but may fall below adjacent new detail.",
+    "remaining_problem": "Complete distinct small guardhouse silhouette, sloped shingle eaves, doorway/window identity and projecting rear timber platform remain legible. Shared painted roof/stone palette exactly matches accepted architecture. New roof laps on separate modules do not create material mismatch; no clear new defect requiring gratuitous geometry change.",
     "priority": 2,
-    "owner": "unclaimed",
+    "owner": "coordinator / independent reviewer",
     "branch": null,
     "worktree": null,
-    "status": "unclaimed",
+    "status": "accepted",
     "baseline": "7b808473",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
     "commits": [],
@@ -2085,9 +2085,9 @@
       ]
     },
     "intended_improvement": "Compare actual assemblies after first batches and propagate appropriate geometry treatment; preserve effect cards and gate/opening geometry.",
-    "assessment": "follow-up consistency",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/HouseEtc02/final-offline.png",
-    "artistic_gate_resolved": false
+    "assessment": "retain defensible",
+    "evidence": "assets-work/Environment/coordination/companion-review.json",
+    "artistic_gate_resolved": true
   },
   {
     "model": "HouseEtc03",
@@ -2209,12 +2209,12 @@
       ]
     },
     "treatment": "partial geometry/art treatment",
-    "remaining_problem": "These companion modules share architecture or masonry language now being improved. Current images are coherent but may fall below adjacent new detail.",
+    "remaining_problem": "Special crest/light-panel variant has strong center ornament and coherent ashlar/wood foundation. Added plain-wall framing is not necessary around this occupied motif. Black projected cards are indexed additive light, as preserved effect comparison demonstrates; not dark geometry defect.",
     "priority": 2,
-    "owner": "unclaimed",
+    "owner": "coordinator / independent reviewer",
     "branch": null,
     "worktree": null,
-    "status": "unclaimed",
+    "status": "accepted",
     "baseline": "7b808473",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
     "commits": [],
@@ -2238,9 +2238,9 @@
       ]
     },
     "intended_improvement": "Compare actual assemblies after first batches and propagate appropriate geometry treatment; preserve effect cards and gate/opening geometry.",
-    "assessment": "follow-up consistency",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/HouseWall02/final-offline.png",
-    "artistic_gate_resolved": false
+    "assessment": "retain defensible",
+    "evidence": "assets-work/Environment/coordination/companion-review.json",
+    "artistic_gate_resolved": true
   },
   {
     "model": "HouseWall03",
@@ -2252,12 +2252,12 @@
       ]
     },
     "treatment": "partial geometry/art treatment",
-    "remaining_problem": "These companion modules share architecture or masonry language now being improved. Current images are coherent but may fall below adjacent new detail.",
+    "remaining_problem": "Intentional two-beam opening module. Timber grain, beam thickness and matching end profiles supply required visual role; filling or ornamenting opening to imitate closed wall bays would alter function. Accepted bay framing does not require remodeling these beams.",
     "priority": 2,
-    "owner": "unclaimed",
+    "owner": "coordinator / independent reviewer",
     "branch": null,
     "worktree": null,
-    "status": "unclaimed",
+    "status": "accepted",
     "baseline": "7b808473",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
     "commits": [],
@@ -2281,9 +2281,9 @@
       ]
     },
     "intended_improvement": "Compare actual assemblies after first batches and propagate appropriate geometry treatment; preserve effect cards and gate/opening geometry.",
-    "assessment": "follow-up consistency",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/HouseWall03/final-offline.png",
-    "artistic_gate_resolved": false
+    "assessment": "retain defensible",
+    "evidence": "assets-work/Environment/coordination/companion-review.json",
+    "artistic_gate_resolved": true
   },
   {
     "model": "HouseWall04",
@@ -3110,12 +3110,12 @@
       ]
     },
     "treatment": "partial geometry/art treatment",
-    "remaining_problem": "These companion modules share architecture or masonry language now being improved. Current images are coherent but may fall below adjacent new detail.",
+    "remaining_problem": "Clear iron gate silhouette, spaced bars/spikes, beast caps and stepped masonry piers already read as complete structure. Frozen painted masonry and iron palette coherent with retained wall family; no requirement to add detail to working gate or change connection profiles.",
     "priority": 2,
-    "owner": "unclaimed",
+    "owner": "coordinator / independent reviewer",
     "branch": null,
     "worktree": null,
-    "status": "unclaimed",
+    "status": "accepted",
     "baseline": "7b808473",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
     "commits": [],
@@ -3139,9 +3139,9 @@
       ]
     },
     "intended_improvement": "Compare actual assemblies after first batches and propagate appropriate geometry treatment; preserve effect cards and gate/opening geometry.",
-    "assessment": "follow-up consistency",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneMuWall01/final-offline.png",
-    "artistic_gate_resolved": false
+    "assessment": "retain defensible",
+    "evidence": "assets-work/Environment/coordination/companion-review.json",
+    "artistic_gate_resolved": true
   },
   {
     "model": "StoneMuWall02",
@@ -3254,7 +3254,7 @@
       ]
     },
     "treatment": "partial geometry/art treatment",
-    "remaining_problem": "These companion modules share architecture or masonry language now being improved. Current images are coherent but may fall below adjacent new detail.",
+    "remaining_problem": "Cannon/rear timber platform and ladder defensibly retain their prior rebuild/material work. Front dragon stone panel remains the same shallow angular relief/block mass identified in02/03. Needs coordinated artistic pass with that family eventually; no immediate geometry change solely to match accepted architecture. Rejected Masonry01 candidates are not integration targets.",
     "priority": 2,
     "owner": "unclaimed",
     "branch": null,
@@ -3283,8 +3283,8 @@
       ]
     },
     "intended_improvement": "Compare actual assemblies after first batches and propagate appropriate geometry treatment; preserve effect cards and gate/opening geometry.",
-    "assessment": "follow-up consistency",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneMuWall04/final-offline.png",
+    "assessment": "production",
+    "evidence": "assets-work/Environment/coordination/companion-review.json",
     "artistic_gate_resolved": false
   },
   {
