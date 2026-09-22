@@ -2074,12 +2074,12 @@
       ]
     },
     "treatment": "partial geometry/art treatment",
-    "remaining_problem": "Relief study lacked reduced/assembly payoff; cap study changed stacked seam profile on HouseEtc01 and had insufficient gain on StoneMuWall02/03. Original merged game BMDs retained. New art solution still required.",
+    "remaining_problem": "Essentially original coarse relief geometry with prior painting treatment; isolated clay looks simplified and strong oblique close-up exposes reliance on painted depth. Retention applies to ordinary placed game-camera use, not a hero close-up sculpture standard.",
     "priority": 1,
     "owner": "furniture",
     "branch": "codex/lorencia-q02-furniture",
     "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture",
-    "status": "in progress",
+    "status": "accepted",
     "baseline": "7b808473",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
     "commits": [],
@@ -2103,9 +2103,11 @@
       ]
     },
     "intended_improvement": "Revisit facade design/relief without altering real modular connection edges; reassess complete shared painting group if needed.",
-    "assessment": "production",
+    "assessment": "retain defensible",
     "evidence": "../../../assets-work/World1/coordination/final-inspection/HouseEtc01/final-offline.png",
-    "artistic_gate_resolved": false
+    "artistic_gate_resolved": true,
+    "retention_rationale": "The hooked projecting nose, paired dark eye sockets and flared cheek painting form a clearly recognizable dragon emblem. The rectangular stone block is a deliberate stackable architectural volume; actual stacked30/31 view reads as two repeated heraldic panels with continuous stone courses. Integrated awning surroundings share its restrained warm stone and carved trim. It does not require a free-standing sculpture silhouette to serve this role.",
+    "acceptance_evidence": "assets-work/Environment/coordination/masonry-retention-review.json#HouseEtc01"
   },
   {
     "model": "HouseEtc02",
@@ -3273,12 +3275,12 @@
       ]
     },
     "treatment": "partial geometry/art treatment",
-    "remaining_problem": "Relief study lacked reduced/assembly payoff; cap study changed stacked seam profile on HouseEtc01 and had insufficient gain on StoneMuWall02/03. Original merged game BMDs retained. New art solution still required.",
+    "remaining_problem": "Fine crest anatomy stays mainly painted. Broad-side panel is deliberately quiet; retaining it is not a claim of additional sculptural detail. Two previously documented inherited custom-normal incidents remain baseline, not repaired.",
     "priority": 1,
     "owner": "furniture",
     "branch": "codex/lorencia-q02-furniture",
     "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture",
-    "status": "in progress",
+    "status": "accepted",
     "baseline": "7b808473",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
     "commits": [],
@@ -3302,9 +3304,11 @@
       ]
     },
     "intended_improvement": "Revisit facade design/relief without altering real modular connection edges; reassess complete shared painting group if needed.",
-    "assessment": "production",
+    "assessment": "retain defensible",
     "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneMuWall02/final-offline.png",
-    "artistic_gate_resolved": false
+    "artistic_gate_resolved": true,
+    "retention_rationale": "The narrow pointed end profile and compact carved crest distinguish the wall terminal from the broad shield modules. The long taper and restrained panel center give the gate assembly a readable ending without competing with portcullis/dragon shields. Existing upper carving and border painting are adequate at assembly scale.",
+    "acceptance_evidence": "assets-work/Environment/coordination/masonry-retention-review.json#StoneMuWall02"
   },
   {
     "model": "StoneMuWall03",
@@ -3319,12 +3323,12 @@
       ]
     },
     "treatment": "partial geometry/art treatment",
-    "remaining_problem": "Relief study lacked reduced/assembly payoff; cap study changed stacked seam profile on HouseEtc01 and had insufficient gain on StoneMuWall02/03. Original merged game BMDs retained. New art solution still required.",
+    "remaining_problem": "Close oblique inspection exposes coarse cheek planes and painted small ornament. Repeated motif is intentional modular rhythm rather than unique sculpture; no new geometry improvement is claimed.",
     "priority": 1,
     "owner": "furniture",
     "branch": "codex/lorencia-q02-furniture",
     "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture",
-    "status": "in progress",
+    "status": "accepted",
     "baseline": "7b808473",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
     "commits": [],
@@ -3348,9 +3352,11 @@
       ]
     },
     "intended_improvement": "Revisit facade design/relief without altering real modular connection edges; reassess complete shared painting group if needed.",
-    "assessment": "production",
+    "assessment": "retain defensible",
     "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneMuWall03/final-offline.png",
-    "artistic_gate_resolved": false
+    "artistic_gate_resolved": true,
+    "retention_rationale": "The broad projecting shield face, sloped cap and lower point have a distinctive defensive outline. Repeated dragon noses/eye shadows read as a consistent fortification motif in the actual south-gate assembly; horizontal ornamental bands and matched warm stone connect the shields to plain wall spans and gate piers. The facade stays legible without added recessed islands.",
+    "acceptance_evidence": "assets-work/Environment/coordination/masonry-retention-review.json#StoneMuWall03"
   },
   {
     "model": "StoneMuWall04",
@@ -3368,12 +3374,12 @@
       ]
     },
     "treatment": "partial geometry/art treatment",
-    "remaining_problem": "Cannon/rear timber platform and ladder defensibly retain their prior rebuild/material work. Front dragon stone panel remains the same shallow angular relief/block mass identified in02/03. Needs coordinated artistic pass with that family eventually; no immediate geometry change solely to match accepted architecture. Rejected Masonry01 candidates are not integration targets.",
+    "remaining_problem": "Front relief has03 close-up limitations; dark cannon remains diffuse iron and was separately reviewed, not assumed an additive error. Rear attachments remain unchanged; no new sculptural detail claimed.",
     "priority": 2,
     "owner": "furniture",
     "branch": "codex/lorencia-q02-furniture",
     "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture",
-    "status": "in progress",
+    "status": "accepted",
     "baseline": "7b808473",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
     "commits": [],
@@ -3397,9 +3403,11 @@
       ]
     },
     "intended_improvement": "Compare actual assemblies after first batches and propagate appropriate geometry treatment; preserve effect cards and gate/opening geometry.",
-    "assessment": "production",
+    "assessment": "retain defensible",
     "evidence": "assets-work/Environment/coordination/companion-review.json",
-    "artistic_gate_resolved": false
+    "artistic_gate_resolved": true,
+    "retention_rationale": "The same shield face deliberately matches03 while the rear wooden firing platform, ladder, chest and iron cannon supply a separate readable function. Siege-wall rear context clearly separates wood from stone and iron; front retains matching sloped cap and pointed crest rhythm. Current combined design is coherent and visually useful.",
+    "acceptance_evidence": "assets-work/Environment/coordination/masonry-retention-review.json#StoneMuWall04"
   },
   {
     "model": "StoneStatue01",
