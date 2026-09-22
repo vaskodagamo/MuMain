@@ -450,3 +450,22 @@ hotkeys/selection/cooldown/disabled overlays, item models and counts, localized
 tooltips, HiDPI and real gameplay readability remain pending. Shared skill-slot
 art also requires MU Helper and pet-window review. All previews are offline
 mockups, not client screenshots.
+
+## 2026-09-22 — Start Lorencia artistic quality continuation (ASTRA / Codex)
+
+**Goal:** Complete genuinely unfinished Lorencia static art before later maps; historical
+106/106 acceptance is inventory/technical coverage, not artistic completion.
+
+**Done:** Verified owner-fork main at merged PR #11 revision `7b808473`; preserved primary
+checkout uncommitted documentation. Created isolated integration plus two worker worktrees.
+Independent reviewer verified all 106 preview manifests and 204 referenced game hashes.
+Assigned seven geometry-only masonry/modular assets covering 152 placements, with all
+textures frozen. Set up official checksum-verified Blender 5.2.2 and Source Tools 3.4.3
+in workspace-local astra-tools; modeling uses Blender Python API.
+
+**Verified:** Headless Blender initialization and add-on setup succeed outside sandbox;
+sandbox Metal initialization crashes before Python. Existing Lorencia client success is
+user-reported only; no runtime write or client observation by this task. No new asset accepted.
+
+**Open:** Production and independent export/visual review; full current artistic assessment.
+See assets-work/Environment/coordination/handoff.md for ownership and exact restart work.

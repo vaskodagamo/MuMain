@@ -1,3 +1,9 @@
+## Current remake assessment — 2026-09-22
+
+Lorencia is **not artistically complete**. Historical “106/106 accepted offline” records below describe first-pass inventory coverage and technical acceptance, not the current artistic gate. PR #11 is merged at `7b808473`; owner-fork main was verified at that revision on 2026-09-22. The user reports that this existing Lorencia baseline works in game. ASTRA has not personally observed that verification, and new changes do not inherit it.
+
+Current integration branch: `codex/environment-remake-continuation`, worktree `/Users/lukasmac/Documents/claude-test-mumain/MuMain-environment-remake`. See [current environment board](../../Environment/coordination/asset-board.md) and [restart handoff](../../Environment/coordination/handoff.md). Prior paths/publication states below are historical. Terrain and Beer01 remain protected references.
+
 # Lorencia rebuild consolidated handoff — 2026-09-22
 
 **106/106 in-scope static assets accepted offline**, representing the actual World1 inventory; the complete static inventory has 2,786 placements. Four completed pilot models are preserved, and later batches cover the remaining models. The 17 completed terrain paintings remain unchanged. Client acceptance is pending for this entire pass.
