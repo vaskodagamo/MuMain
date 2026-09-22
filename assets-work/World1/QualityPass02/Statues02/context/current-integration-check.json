@@ -1,0 +1,128 @@
+{
+  "status": "PASS",
+  "neighbors": {
+    "Fence01": {
+      "src/bin/Data/Object1/Fence01.bmd": {
+        "snapshot_sha256": "594570345d8a5f665ad86718c03b491744835179cc1e4e56589387b1bd8b7d34",
+        "current_integration_sha256": "594570345d8a5f665ad86718c03b491744835179cc1e4e56589387b1bd8b7d34",
+        "match": true
+      },
+      "src/bin/Data/Object1/tile_wood02.OZJ": {
+        "snapshot_sha256": "1e829e6bc9af60739335ec85fc307d2c17806700e6d95f8845b7da78c4532eda",
+        "current_integration_sha256": "1e829e6bc9af60739335ec85fc307d2c17806700e6d95f8845b7da78c4532eda",
+        "match": true
+      }
+    },
+    "Grass05": {
+      "src/bin/Data/Object1/Grass05.bmd": {
+        "snapshot_sha256": "1f13a8c297a31afc6ffe1ab61f84b991e6c3cb8fa8096a967119995044d674e4",
+        "current_integration_sha256": "1f13a8c297a31afc6ffe1ab61f84b991e6c3cb8fa8096a967119995044d674e4",
+        "match": true
+      },
+      "src/bin/Data/Object1/tree_09.OZT": {
+        "snapshot_sha256": "cb9cf4565ffda802131cde6b53e64a66550c2949efbf3b123f2f73a00aa65349",
+        "current_integration_sha256": "cb9cf4565ffda802131cde6b53e64a66550c2949efbf3b123f2f73a00aa65349",
+        "match": true
+      }
+    },
+    "PoseBox01": {
+      "src/bin/Data/Object1/PoseBox01.bmd": {
+        "snapshot_sha256": "cb49f56b5c55fdd4b62122be14354ae749e86d6186cd360bd0d932889eaaca44",
+        "current_integration_sha256": "cb49f56b5c55fdd4b62122be14354ae749e86d6186cd360bd0d932889eaaca44",
+        "match": true
+      },
+      "src/bin/Data/Object1/ston03.OZJ": {
+        "snapshot_sha256": "47aa9eac2adc999cf5e1d54f17ce5639f66a50f5b6ea3c43eb5bb4e2f3f12b47",
+        "current_integration_sha256": "47aa9eac2adc999cf5e1d54f17ce5639f66a50f5b6ea3c43eb5bb4e2f3f12b47",
+        "match": true
+      }
+    },
+    "SteelDoor01": {
+      "src/bin/Data/Object1/SteelDoor01.bmd": {
+        "snapshot_sha256": "86822c7626b45ff15e1fcd554e55e0baa7443c55f8584faf29e81e96b8b104e6",
+        "current_integration_sha256": "86822c7626b45ff15e1fcd554e55e0baa7443c55f8584faf29e81e96b8b104e6",
+        "match": true
+      },
+      "src/bin/Data/Object1/steel_barred_b.OZJ": {
+        "snapshot_sha256": "18fb54247b0dc08f4dfe2daab5f9f4edfde880513d0ed597e449e58efafd8087",
+        "current_integration_sha256": "18fb54247b0dc08f4dfe2daab5f9f4edfde880513d0ed597e449e58efafd8087",
+        "match": true
+      },
+      "src/bin/Data/Object1/steel_barred_door.OZT": {
+        "snapshot_sha256": "36f41caa9871ef74ddd8cbe51798ba258ab77cd1db87d90da23d4cf876bdf741",
+        "current_integration_sha256": "36f41caa9871ef74ddd8cbe51798ba258ab77cd1db87d90da23d4cf876bdf741",
+        "match": true
+      }
+    },
+    "SteelWall02": {
+      "src/bin/Data/Object1/SteelWall02.bmd": {
+        "snapshot_sha256": "5425434423f7025a2be0e0eb7cbc4400ccb008595333721dd8f7b751e965d968",
+        "current_integration_sha256": "5425434423f7025a2be0e0eb7cbc4400ccb008595333721dd8f7b751e965d968",
+        "match": true
+      },
+      "src/bin/Data/Object1/steel_barred_b.OZJ": {
+        "snapshot_sha256": "18fb54247b0dc08f4dfe2daab5f9f4edfde880513d0ed597e449e58efafd8087",
+        "current_integration_sha256": "18fb54247b0dc08f4dfe2daab5f9f4edfde880513d0ed597e449e58efafd8087",
+        "match": true
+      },
+      "src/bin/Data/Object1/steel_barred_a.OZT": {
+        "snapshot_sha256": "6a362e7e813e3656e6598b9239cd6094381a48bf2f4a62f706c8f9b2151997a3",
+        "current_integration_sha256": "6a362e7e813e3656e6598b9239cd6094381a48bf2f4a62f706c8f9b2151997a3",
+        "match": true
+      }
+    },
+    "Stone04": {
+      "src/bin/Data/Object1/Stone04.bmd": {
+        "snapshot_sha256": "1dc2af66dea6ed878d71db68775bfeb58553dd5b33e977f37fdfcdbcebc2f2e8",
+        "current_integration_sha256": "1dc2af66dea6ed878d71db68775bfeb58553dd5b33e977f37fdfcdbcebc2f2e8",
+        "match": true
+      },
+      "src/bin/Data/Object1/ston01.OZJ": {
+        "snapshot_sha256": "593c4ec54ab68801d842b15f2b397b02918526d85190b613c875106110d33784",
+        "current_integration_sha256": "593c4ec54ab68801d842b15f2b397b02918526d85190b613c875106110d33784",
+        "match": true
+      }
+    },
+    "Tree06": {
+      "src/bin/Data/Object1/Tree06.bmd": {
+        "snapshot_sha256": "d4b63d362e5cbca78266e29c88e1bd463e7198ab088045a86569a523cb4b9236",
+        "current_integration_sha256": "d4b63d362e5cbca78266e29c88e1bd463e7198ab088045a86569a523cb4b9236",
+        "match": true
+      },
+      "src/bin/Data/Object1/tree_02.OZJ": {
+        "snapshot_sha256": "eef7dfe236aa633a03430e676634fc952aa02bd55dd0863dd2423f4d58639dd7",
+        "current_integration_sha256": "eef7dfe236aa633a03430e676634fc952aa02bd55dd0863dd2423f4d58639dd7",
+        "match": true
+      }
+    },
+    "Tree10": {
+      "src/bin/Data/Object1/Tree10.bmd": {
+        "snapshot_sha256": "471f2226cf526d3f1f4b81964ab9c97cb355eb37aa2822ed225f8761ed6b8679",
+        "current_integration_sha256": "471f2226cf526d3f1f4b81964ab9c97cb355eb37aa2822ed225f8761ed6b8679",
+        "match": true
+      },
+      "src/bin/Data/Object1/tree_07.OZT": {
+        "snapshot_sha256": "2d39a05c692b757ab88eb2f1b0fe4af483c2b86ba75e206354a8c010bb9c6a9f",
+        "current_integration_sha256": "2d39a05c692b757ab88eb2f1b0fe4af483c2b86ba75e206354a8c010bb9c6a9f",
+        "match": true
+      }
+    },
+    "Tree11": {
+      "src/bin/Data/Object1/Tree11.bmd": {
+        "snapshot_sha256": "6a9fa891a24dc83ab72a6cb095e6f558fccc8e1579d580f31a5aa0114b370f8d",
+        "current_integration_sha256": "6a9fa891a24dc83ab72a6cb095e6f558fccc8e1579d580f31a5aa0114b370f8d",
+        "match": true
+      },
+      "src/bin/Data/Object1/tree_06.OZT": {
+        "snapshot_sha256": "46428b82dd78db28498a2636b897f0f27b1608146593e7fb8d3894a6508fd754",
+        "current_integration_sha256": "46428b82dd78db28498a2636b897f0f27b1608146593e7fb8d3894a6508fd754",
+        "match": true
+      },
+      "src/bin/Data/Object1/tree_03.OZJ": {
+        "snapshot_sha256": "c2f6a1551cd47c49b3632546d563512daa1a2e50616b37cfdb2691d9a58002aa",
+        "current_integration_sha256": "c2f6a1551cd47c49b3632546d563512daa1a2e50616b37cfdb2691d9a58002aa",
+        "match": true
+      }
+    }
+  }
+}

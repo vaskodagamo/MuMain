@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "protected_original_vertices": 45,
+  "maximum_position_delta": 0.0,
+  "position_tolerance": 0.0003,
+  "policy": "Original pillar shell/cap/base anchors; memorial ground/base and capital/pyramid perimeter anchors; angel complete plinth and head anchors"
+}

@@ -1,0 +1,12 @@
+wrote /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Statues02/StoneStatue01/validation/new/StoneStatue01.smd
+wrote /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Statues02/StoneStatue01/validation/new/StoneStatue01_a00.smd
+wrote /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Statues02/StoneStatue01/validation/new/StoneStatue01.actions.txt
+
+/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Statues02/StoneStatue01/validation/new/StoneStatue01.smd: bones=1 frames=1 triangles=212 materials=1
+OK
+
+/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Statues02/StoneStatue01/validation/new/StoneStatue01_a00.smd: bones=1 frames=1 triangles=0 materials=0
+OK
+
+wrote /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Statues02/StoneStatue01/validation/new/skeleton.bmd (1 action(s))
+warning: skeleton.smd: triangles block is empty: this describes a skeleton-only model (animations without a mesh)

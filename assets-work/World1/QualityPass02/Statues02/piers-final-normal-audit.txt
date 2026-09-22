@@ -1,0 +1,7 @@
+00:00.593  blend            | Read blend: "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Statues02/StoneStatue01/source.blend"
+00:00.758  blend            | Read blend: "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Statues02/SteelStatue01/source.blend"
+{"status": "PASS", "maximum_direction_delta": 7.1124758078355e-07, "tolerance": 0.001, "materials": {"stone_statue02.jpg": 7.1124758078355e-07}, "frames": [{"frame": 0, "maximum_direction_delta": 7.1124758078355e-07}], "authored_corners": 636, "method": "Blender authored split corner normal against actual BMD raw normal node/vector, each through full baseline/final hierarchy in the static bind/action frame"}
+{"status": "PASS", "maximum_direction_delta": 6.136673772923351e-07, "tolerance": 0.001, "materials": {"tombstone_big.jpg": 6.136673772923351e-07}, "frames": [{"frame": 0, "maximum_direction_delta": 6.136673772923351e-07}], "authored_corners": 822, "method": "Blender authored split corner normal against actual BMD raw normal node/vector, each through full baseline/final hierarchy in the static bind/action frame"}
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:49:19)
+
+Blender quit
