@@ -39,7 +39,8 @@
     },
     "intended_improvement": "Retain Beer01 as reference; other props have no concrete current defect warranting another pass.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Beer01/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Beer01/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Beer02",
@@ -93,7 +94,8 @@
     },
     "intended_improvement": "Retain Beer01 as reference; other props have no concrete current defect warranting another pass.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Beer02/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Beer02/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Beer03",
@@ -138,7 +140,8 @@
     },
     "intended_improvement": "Retain Beer01 as reference; other props have no concrete current defect warranting another pass.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Beer03/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Beer03/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Bonfire01",
@@ -183,7 +186,8 @@
     },
     "intended_improvement": "Effect approximation reveals rigid rectangular log extrusions and square ends; soften/taper split-log cross-sections within bounds. Preserve fire_02 mesh1 effect shell and UVs exactly.",
     "assessment": "production",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Bonfire01/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Bonfire01/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Bridge01",
@@ -228,7 +232,8 @@
     },
     "intended_improvement": "Retain; round log edge refinement optional after higher-impact work, not a completion blocker from this view.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Bridge01/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Bridge01/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "BridgeStone01",
@@ -279,7 +284,8 @@
     },
     "intended_improvement": "Retain; round log edge refinement optional after higher-impact work, not a completion blocker from this view.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/BridgeStone01/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/BridgeStone01/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Candle01",
@@ -324,7 +330,8 @@
     },
     "intended_improvement": "Retain Beer01 as reference; other props have no concrete current defect warranting another pass.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Candle01/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Candle01/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Cannon01",
@@ -366,7 +373,8 @@
     },
     "intended_improvement": "Retain. Optional later muzzle-face wear variation only; current plain pale ring is not a demonstrated blocker. Preserve shared wood atlas unless full 12-consumer review.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Cannon01/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Cannon01/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Cannon02",
@@ -408,7 +416,8 @@
     },
     "intended_improvement": "Retain. Optional later muzzle-face wear variation only; current plain pale ring is not a demonstrated blocker. Preserve shared wood atlas unless full 12-consumer review.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Cannon02/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Cannon02/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Cannon03",
@@ -450,7 +459,8 @@
     },
     "intended_improvement": "Retain. Optional later muzzle-face wear variation only; current plain pale ring is not a demonstrated blocker. Preserve shared wood atlas unless full 12-consumer review.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Cannon03/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Cannon03/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Carriage01",
@@ -498,7 +508,8 @@
     },
     "intended_improvement": "Retain; Carriage01 black card is documented additive preview limitation.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Carriage01/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Carriage01/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Carriage02",
@@ -540,7 +551,8 @@
     },
     "intended_improvement": "Retain; Carriage01 black card is documented additive preview limitation.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Carriage02/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Carriage02/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Carriage03",
@@ -569,7 +581,8 @@
     "first_placement": null,
     "intended_improvement": "Retain; Carriage01 black card is documented additive preview limitation.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Carriage03/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Carriage03/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Carriage04",
@@ -614,7 +627,8 @@
     },
     "intended_improvement": "Retain; Carriage01 black card is documented additive preview limitation.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Carriage04/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Carriage04/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Curtain01",
@@ -659,7 +673,8 @@
     },
     "intended_improvement": "Retain; banners retain original geometry with texture treatment and original animation.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Curtain01/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Curtain01/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "DoungeonGate01",
@@ -701,7 +716,8 @@
     },
     "intended_improvement": "Retain provisionally; inspect existing effect approximations before final artistic gate, preserve actual effect slots and fire anchors.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/DoungeonGate01/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/DoungeonGate01/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Fence01",
@@ -743,7 +759,8 @@
     },
     "intended_improvement": "Retain; check adjacency only if shared materials change.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Fence01/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Fence01/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Fence02",
@@ -785,7 +802,8 @@
     },
     "intended_improvement": "Retain; check adjacency only if shared materials change.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Fence02/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Fence02/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Fence03",
@@ -827,7 +845,8 @@
     },
     "intended_improvement": "Retain; check adjacency only if shared materials change.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Fence03/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Fence03/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Fence04",
@@ -869,7 +888,8 @@
     },
     "intended_improvement": "Retain; check adjacency only if shared materials change.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Fence04/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Fence04/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "FireLight01",
@@ -917,7 +937,8 @@
     },
     "intended_improvement": "Retain provisionally; inspect existing effect approximations before final artistic gate, preserve actual effect slots and fire anchors.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/FireLight01/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/FireLight01/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "FireLight02",
@@ -965,7 +986,8 @@
     },
     "intended_improvement": "Retain provisionally; inspect existing effect approximations before final artistic gate, preserve actual effect slots and fire anchors.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/FireLight02/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/FireLight02/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Furniture01",
@@ -1016,7 +1038,8 @@
     },
     "intended_improvement": "Retain; seating identity and interaction footprint protected.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Furniture01/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Furniture01/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Furniture02",
@@ -1061,7 +1084,8 @@
     },
     "intended_improvement": "Retain; seating identity and interaction footprint protected.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Furniture02/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Furniture02/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Furniture03",
@@ -1103,7 +1127,8 @@
     },
     "intended_improvement": "Retain; low triangle count is not a defect.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Furniture03/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Furniture03/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Furniture04",
@@ -1145,7 +1170,8 @@
     },
     "intended_improvement": "Retain; low triangle count is not a defect.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Furniture04/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Furniture04/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Furniture05",
@@ -1187,7 +1213,8 @@
     },
     "intended_improvement": "Retain; low triangle count is not a defect.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Furniture05/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Furniture05/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Furniture06",
@@ -1232,7 +1259,8 @@
     },
     "intended_improvement": "Retain; seating identity and interaction footprint protected.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Furniture06/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Furniture06/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Furniture07",
@@ -1274,7 +1302,8 @@
     },
     "intended_improvement": "Retain; seating identity and interaction footprint protected.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Furniture07/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Furniture07/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Grass01",
@@ -1316,7 +1345,8 @@
     },
     "intended_improvement": "Retain current BMDs; inspect alpha filtering in any later genuine client review.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Grass01/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Grass01/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Grass02",
@@ -1358,7 +1388,8 @@
     },
     "intended_improvement": "Retain current BMDs; inspect alpha filtering in any later genuine client review.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Grass02/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Grass02/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Grass03",
@@ -1403,7 +1434,8 @@
     },
     "intended_improvement": "Rebuild selected silhouette curves and alpha-card arrangement using existing textures and each original bone; preserve clump footprints and overall bounds.",
     "assessment": "production",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Grass03/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Grass03/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Grass04",
@@ -1448,7 +1480,8 @@
     },
     "intended_improvement": "Rebuild selected silhouette curves and alpha-card arrangement using existing textures and each original bone; preserve clump footprints and overall bounds.",
     "assessment": "production",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Grass04/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Grass04/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Grass05",
@@ -1462,10 +1495,10 @@
     "treatment": "texture-only treatment",
     "remaining_problem": "Broad leaf tips and folded planes visibly form abrupt straight triangular bends, repeated across 399 placements.",
     "priority": 2,
-    "owner": "unclaimed",
-    "branch": null,
-    "worktree": null,
-    "status": "unclaimed",
+    "owner": "furniture / broadleaf",
+    "branch": "codex/lorencia-q02-furniture",
+    "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture",
+    "status": "in progress",
     "baseline": "7b808473",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
     "commits": [],
@@ -1490,7 +1523,8 @@
     },
     "intended_improvement": "Replace abrupt creases with deliberate leaf arcs and tapered tips under same bounds/rig/UV material contract; compare reduced scale.",
     "assessment": "production",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Grass05/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Grass05/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Grass06",
@@ -1504,10 +1538,10 @@
     "treatment": "texture-only treatment",
     "remaining_problem": "Broad leaf tips and folded planes visibly form abrupt straight triangular bends, repeated across 399 placements.",
     "priority": 2,
-    "owner": "unclaimed",
-    "branch": null,
-    "worktree": null,
-    "status": "unclaimed",
+    "owner": "furniture / broadleaf",
+    "branch": "codex/lorencia-q02-furniture",
+    "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture",
+    "status": "in progress",
     "baseline": "7b808473",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
     "commits": [],
@@ -1532,7 +1566,8 @@
     },
     "intended_improvement": "Replace abrupt creases with deliberate leaf arcs and tapered tips under same bounds/rig/UV material contract; compare reduced scale.",
     "assessment": "production",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Grass06/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Grass06/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Grass07",
@@ -1574,7 +1609,8 @@
     },
     "intended_improvement": "Retain.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Grass07/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Grass07/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Grass08",
@@ -1616,7 +1652,8 @@
     },
     "intended_improvement": "Retain.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Grass08/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Grass08/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Hanging01",
@@ -1658,7 +1695,8 @@
     },
     "intended_improvement": "Retain; dark cannon iron is still readable by muzzle outline, no basis to repaint all shared wood.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Hanging01/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Hanging01/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "House01",
@@ -1709,7 +1747,8 @@
     },
     "intended_improvement": "Refine cornices and awning board thickness; improve roof course profile and curvature without changing openings or effect slots. Freeze broad shared texture groups.",
     "assessment": "production",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/House01/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/House01/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "House02",
@@ -1754,7 +1793,8 @@
     },
     "intended_improvement": "Retain Beer01 as reference; other props have no concrete current defect warranting another pass.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/House02/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/House02/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "House03",
@@ -1808,7 +1848,8 @@
     },
     "intended_improvement": "Refine cornices and awning board thickness; improve roof course profile and curvature without changing openings or effect slots. Freeze broad shared texture groups.",
     "assessment": "production",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/House03/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/House03/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "House04",
@@ -1874,7 +1915,8 @@
     },
     "intended_improvement": "Refine cornices and awning board thickness; improve roof course profile and curvature without changing openings or effect slots. Freeze broad shared texture groups.",
     "assessment": "production",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/House04/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/House04/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "House05",
@@ -1922,7 +1964,8 @@
     },
     "intended_improvement": "Retain; preserve moving wheel/water mesh and canopy animation.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/House05/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/House05/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "HouseEtc01",
@@ -1937,12 +1980,12 @@
       ]
     },
     "treatment": "partial geometry/art treatment",
-    "remaining_problem": "Strong painted beast relief remains carried by coarse box silhouettes and broad sharp planar borders.",
+    "remaining_problem": "Relief study lacked reduced/assembly payoff; cap study changed stacked seam profile on HouseEtc01 and had insufficient gain on StoneMuWall02/03. Original merged game BMDs retained. New art solution still required.",
     "priority": 1,
-    "owner": "furniture",
+    "owner": "unclaimed (masonry studies deferred)",
     "branch": "codex/lorencia-q02-furniture",
     "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture",
-    "status": "in progress",
+    "status": "unclaimed",
     "baseline": "7b808473",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
     "commits": [],
@@ -1965,9 +2008,10 @@
         39.47319091796875
       ]
     },
-    "intended_improvement": "Dressed edge/cornice profiles and purposeful relief inside invariant bounds; preserve all modular contacts. Active masonry owner.",
+    "intended_improvement": "Revisit facade design/relief without altering real modular connection edges; reassess complete shared painting group if needed.",
     "assessment": "production",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/HouseEtc01/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/HouseEtc01/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "HouseEtc02",
@@ -2030,7 +2074,8 @@
     },
     "intended_improvement": "Compare actual assemblies after first batches and propagate appropriate geometry treatment; preserve effect cards and gate/opening geometry.",
     "assessment": "follow-up consistency",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/HouseEtc02/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/HouseEtc02/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "HouseEtc03",
@@ -2075,7 +2120,8 @@
     },
     "intended_improvement": "Retain; alpha/material cards are intentional. HouseEtc03 is essentially original geometry with texture treatment.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/HouseEtc03/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/HouseEtc03/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "HouseWall01",
@@ -2126,7 +2172,8 @@
     },
     "intended_improvement": "Profile beam edges and shallow stepped eaves; preserve contacts, bounds and HeroTile roof fade. Active architecture owner.",
     "assessment": "production",
-    "evidence": "../../World1/QualityPass02/Architecture01/HouseWall01/review/comparison.jpg"
+    "evidence": "../../World1/QualityPass02/Architecture01/HouseWall01/review/comparison.jpg",
+    "artistic_gate_resolved": true
   },
   {
     "model": "HouseWall02",
@@ -2180,7 +2227,8 @@
     },
     "intended_improvement": "Compare actual assemblies after first batches and propagate appropriate geometry treatment; preserve effect cards and gate/opening geometry.",
     "assessment": "follow-up consistency",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/HouseWall02/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/HouseWall02/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "HouseWall03",
@@ -2222,7 +2270,8 @@
     },
     "intended_improvement": "Compare actual assemblies after first batches and propagate appropriate geometry treatment; preserve effect cards and gate/opening geometry.",
     "assessment": "follow-up consistency",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/HouseWall03/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/HouseWall03/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "HouseWall04",
@@ -2273,7 +2322,8 @@
     },
     "intended_improvement": "Profile beam edges and shallow stepped eaves; preserve contacts, bounds and HeroTile roof fade. Active architecture owner.",
     "assessment": "production",
-    "evidence": "../../World1/QualityPass02/Architecture01/HouseWall04/review/comparison.jpg"
+    "evidence": "../../World1/QualityPass02/Architecture01/HouseWall04/review/comparison.jpg",
+    "artistic_gate_resolved": true
   },
   {
     "model": "HouseWall05",
@@ -2321,7 +2371,8 @@
     },
     "intended_improvement": "Profile beam edges and shallow stepped eaves; preserve contacts, bounds and HeroTile roof fade. Active architecture owner.",
     "assessment": "production",
-    "evidence": "../../World1/QualityPass02/Architecture01/HouseWall05/review/comparison.jpg"
+    "evidence": "../../World1/QualityPass02/Architecture01/HouseWall05/review/comparison.jpg",
+    "artistic_gate_resolved": true
   },
   {
     "model": "HouseWall06",
@@ -2369,7 +2420,8 @@
     },
     "intended_improvement": "Profile beam edges and shallow stepped eaves; preserve contacts, bounds and HeroTile roof fade. Active architecture owner.",
     "assessment": "production",
-    "evidence": "../../World1/QualityPass02/Architecture01/HouseWall06/review/comparison.jpg"
+    "evidence": "../../World1/QualityPass02/Architecture01/HouseWall06/review/comparison.jpg",
+    "artistic_gate_resolved": true
   },
   {
     "model": "Ship01",
@@ -2438,7 +2490,8 @@
     },
     "intended_improvement": "Retain; inspect closer placement scale if later assembly exposes a defect.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Ship01/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Ship01/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Sign01",
@@ -2486,7 +2539,8 @@
     },
     "intended_improvement": "Retain; banners retain original geometry with texture treatment and original animation.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Sign01/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Sign01/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Sign02",
@@ -2528,7 +2582,8 @@
     },
     "intended_improvement": "Retain; banners retain original geometry with texture treatment and original animation.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Sign02/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Sign02/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Stair01",
@@ -2570,7 +2625,8 @@
     },
     "intended_improvement": "Retain; round log edge refinement optional after higher-impact work, not a completion blocker from this view.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Stair01/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Stair01/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "SteelDoor01",
@@ -2615,7 +2671,8 @@
     },
     "intended_improvement": "Retain; alpha/material cards are intentional. HouseEtc03 is essentially original geometry with texture treatment.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/SteelDoor01/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/SteelDoor01/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "SteelStatue01",
@@ -2657,7 +2714,8 @@
     },
     "intended_improvement": "Shaped caps and restrained bevels; purposeful angel wing/body silhouette refinement. Freeze shared basin/plinth textures unless full consumers reviewed.",
     "assessment": "production",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/SteelStatue01/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/SteelStatue01/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "SteelWall01",
@@ -2702,7 +2760,8 @@
     },
     "intended_improvement": "Retain; alpha/material cards are intentional. HouseEtc03 is essentially original geometry with texture treatment.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/SteelWall01/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/SteelWall01/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "SteelWall02",
@@ -2747,7 +2806,8 @@
     },
     "intended_improvement": "Retain; alpha/material cards are intentional. HouseEtc03 is essentially original geometry with texture treatment.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/SteelWall02/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/SteelWall02/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "SteelWall03",
@@ -2792,7 +2852,8 @@
     },
     "intended_improvement": "Retain; alpha/material cards are intentional. HouseEtc03 is essentially original geometry with texture treatment.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/SteelWall03/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/SteelWall03/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Stone01",
@@ -2837,7 +2898,8 @@
     },
     "intended_improvement": "Retain; avoid needless smoothing of intended rock facets.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Stone01/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Stone01/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Stone02",
@@ -2882,7 +2944,8 @@
     },
     "intended_improvement": "Retain; avoid needless smoothing of intended rock facets.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Stone02/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Stone02/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Stone03",
@@ -2924,7 +2987,8 @@
     },
     "intended_improvement": "Retain; avoid needless smoothing of intended rock facets.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Stone03/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Stone03/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Stone04",
@@ -2966,7 +3030,8 @@
     },
     "intended_improvement": "Retain; avoid needless smoothing of intended rock facets.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Stone04/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Stone04/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Stone05",
@@ -3008,7 +3073,8 @@
     },
     "intended_improvement": "Retain; avoid needless smoothing of intended rock facets.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Stone05/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Stone05/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "StoneMuWall01",
@@ -3062,7 +3128,8 @@
     },
     "intended_improvement": "Compare actual assemblies after first batches and propagate appropriate geometry treatment; preserve effect cards and gate/opening geometry.",
     "assessment": "follow-up consistency",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneMuWall01/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneMuWall01/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "StoneMuWall02",
@@ -3080,12 +3147,12 @@
       ]
     },
     "treatment": "partial geometry/art treatment",
-    "remaining_problem": "Strong painted beast relief remains carried by coarse box silhouettes and broad sharp planar borders.",
+    "remaining_problem": "Relief study lacked reduced/assembly payoff; cap study changed stacked seam profile on HouseEtc01 and had insufficient gain on StoneMuWall02/03. Original merged game BMDs retained. New art solution still required.",
     "priority": 1,
-    "owner": "furniture",
+    "owner": "unclaimed (masonry studies deferred)",
     "branch": "codex/lorencia-q02-furniture",
     "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture",
-    "status": "in progress",
+    "status": "unclaimed",
     "baseline": "7b808473",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
     "commits": [],
@@ -3108,9 +3175,10 @@
         106.5
       ]
     },
-    "intended_improvement": "Dressed edge/cornice profiles and purposeful relief inside invariant bounds; preserve all modular contacts. Active masonry owner.",
+    "intended_improvement": "Revisit facade design/relief without altering real modular connection edges; reassess complete shared painting group if needed.",
     "assessment": "production",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneMuWall02/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneMuWall02/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "StoneMuWall03",
@@ -3125,12 +3193,12 @@
       ]
     },
     "treatment": "partial geometry/art treatment",
-    "remaining_problem": "Strong painted beast relief remains carried by coarse box silhouettes and broad sharp planar borders.",
+    "remaining_problem": "Relief study lacked reduced/assembly payoff; cap study changed stacked seam profile on HouseEtc01 and had insufficient gain on StoneMuWall02/03. Original merged game BMDs retained. New art solution still required.",
     "priority": 1,
-    "owner": "furniture",
+    "owner": "unclaimed (masonry studies deferred)",
     "branch": "codex/lorencia-q02-furniture",
     "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture",
-    "status": "in progress",
+    "status": "unclaimed",
     "baseline": "7b808473",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
     "commits": [],
@@ -3153,9 +3221,10 @@
         106.5
       ]
     },
-    "intended_improvement": "Dressed edge/cornice profiles and purposeful relief inside invariant bounds; preserve all modular contacts. Active masonry owner.",
+    "intended_improvement": "Revisit facade design/relief without altering real modular connection edges; reassess complete shared painting group if needed.",
     "assessment": "production",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneMuWall03/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneMuWall03/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "StoneMuWall04",
@@ -3203,7 +3272,8 @@
     },
     "intended_improvement": "Compare actual assemblies after first batches and propagate appropriate geometry treatment; preserve effect cards and gate/opening geometry.",
     "assessment": "follow-up consistency",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneMuWall04/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneMuWall04/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "StoneStatue01",
@@ -3245,7 +3315,8 @@
     },
     "intended_improvement": "Shaped caps and restrained bevels; purposeful angel wing/body silhouette refinement. Freeze shared basin/plinth textures unless full consumers reviewed.",
     "assessment": "production",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneStatue01/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneStatue01/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "StoneStatue02",
@@ -3287,7 +3358,8 @@
     },
     "intended_improvement": "Retain. StoneStatue02 is texture/UV treatment with essentially original geometry.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneStatue02/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneStatue02/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "StoneStatue03",
@@ -3332,7 +3404,8 @@
     },
     "intended_improvement": "Shaped caps and restrained bevels; purposeful angel wing/body silhouette refinement. Freeze shared basin/plinth textures unless full consumers reviewed.",
     "assessment": "production",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneStatue03/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneStatue03/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "StoneWall01",
@@ -3383,7 +3456,8 @@
     },
     "intended_improvement": "Retain pending comparison against adjacent new masonry; no unconditional need to sculpt each stone.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneWall01/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneWall01/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "StoneWall02",
@@ -3434,7 +3508,8 @@
     },
     "intended_improvement": "Retain pending comparison against adjacent new masonry; no unconditional need to sculpt each stone.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneWall02/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneWall02/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "StoneWall03",
@@ -3482,7 +3557,8 @@
     },
     "intended_improvement": "Retain pending comparison against adjacent new masonry; no unconditional need to sculpt each stone.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneWall03/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneWall03/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "StoneWall04",
@@ -3527,7 +3603,8 @@
     },
     "intended_improvement": "Retain; banners retain original geometry with texture treatment and original animation.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneWall04/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneWall04/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "StoneWall05",
@@ -3556,7 +3633,8 @@
     "first_placement": null,
     "intended_improvement": "Retain pending comparison against adjacent new masonry; no unconditional need to sculpt each stone.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneWall05/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneWall05/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "StoneWall06",
@@ -3604,7 +3682,8 @@
     },
     "intended_improvement": "Retain pending comparison against adjacent new masonry; no unconditional need to sculpt each stone.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneWall06/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneWall06/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Straw01",
@@ -3646,7 +3725,8 @@
     },
     "intended_improvement": "Retain; Carriage01 black card is documented additive preview limitation.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Straw01/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Straw01/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Straw02",
@@ -3688,7 +3768,8 @@
     },
     "intended_improvement": "Retain; Carriage01 black card is documented additive preview limitation.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Straw02/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Straw02/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "StreetLight01",
@@ -3733,7 +3814,8 @@
     },
     "intended_improvement": "Retain; round log edge refinement optional after higher-impact work, not a completion blocker from this view.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/StreetLight01/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/StreetLight01/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Tent01",
@@ -3778,7 +3860,8 @@
     },
     "intended_improvement": "Retain; preserve moving wheel/water mesh and canopy animation.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tent01/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tent01/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Tomb01",
@@ -3820,7 +3903,8 @@
     },
     "intended_improvement": "Retain. StoneStatue02 is texture/UV treatment with essentially original geometry.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tomb01/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tomb01/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Tomb02",
@@ -3862,7 +3946,8 @@
     },
     "intended_improvement": "Retain. StoneStatue02 is texture/UV treatment with essentially original geometry.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tomb02/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tomb02/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Tomb03",
@@ -3904,7 +3989,8 @@
     },
     "intended_improvement": "Retain. StoneStatue02 is texture/UV treatment with essentially original geometry.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tomb03/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tomb03/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "TreasureChest01",
@@ -3946,7 +4032,8 @@
     },
     "intended_improvement": "Retain Beer01 as reference; other props have no concrete current defect warranting another pass.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/TreasureChest01/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/TreasureChest01/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "TreasureDrum01",
@@ -3988,7 +4075,8 @@
     },
     "intended_improvement": "Retain Beer01 as reference; other props have no concrete current defect warranting another pass.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/TreasureDrum01/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/TreasureDrum01/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Tree01",
@@ -4033,7 +4121,8 @@
     },
     "intended_improvement": "Retain unless placement/reduced-scale assembly reveals concrete defect. Grass02/Tree12/Tree13 normal-binding protections remain absolute for routine re-export.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree01/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree01/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Tree02",
@@ -4078,7 +4167,8 @@
     },
     "intended_improvement": "Retain unless placement/reduced-scale assembly reveals concrete defect. Grass02/Tree12/Tree13 normal-binding protections remain absolute for routine re-export.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree02/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree02/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Tree03",
@@ -4120,7 +4210,8 @@
     },
     "intended_improvement": "Retain unless placement/reduced-scale assembly reveals concrete defect. Grass02/Tree12/Tree13 normal-binding protections remain absolute for routine re-export.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree03/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree03/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Tree04",
@@ -4162,7 +4253,8 @@
     },
     "intended_improvement": "Retain unless placement/reduced-scale assembly reveals concrete defect. Grass02/Tree12/Tree13 normal-binding protections remain absolute for routine re-export.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree04/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree04/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Tree05",
@@ -4204,7 +4296,8 @@
     },
     "intended_improvement": "Retain unless placement/reduced-scale assembly reveals concrete defect. Grass02/Tree12/Tree13 normal-binding protections remain absolute for routine re-export.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree05/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree05/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Tree06",
@@ -4246,7 +4339,8 @@
     },
     "intended_improvement": "Retain unless placement/reduced-scale assembly reveals concrete defect. Grass02/Tree12/Tree13 normal-binding protections remain absolute for routine re-export.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree06/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree06/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Tree07",
@@ -4291,7 +4385,8 @@
     },
     "intended_improvement": "Retain unless placement/reduced-scale assembly reveals concrete defect. Grass02/Tree12/Tree13 normal-binding protections remain absolute for routine re-export.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree07/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree07/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Tree08",
@@ -4333,7 +4428,8 @@
     },
     "intended_improvement": "Retain unless placement/reduced-scale assembly reveals concrete defect. Grass02/Tree12/Tree13 normal-binding protections remain absolute for routine re-export.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree08/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree08/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Tree09",
@@ -4375,7 +4471,8 @@
     },
     "intended_improvement": "Rebuild selected silhouette curves and alpha-card arrangement using existing textures and each original bone; preserve clump footprints and overall bounds.",
     "assessment": "production",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree09/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree09/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Tree10",
@@ -4417,7 +4514,8 @@
     },
     "intended_improvement": "Rebuild selected silhouette curves and alpha-card arrangement using existing textures and each original bone; preserve clump footprints and overall bounds.",
     "assessment": "production",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree10/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree10/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Tree11",
@@ -4462,7 +4560,8 @@
     },
     "intended_improvement": "Retain unless placement/reduced-scale assembly reveals concrete defect. Grass02/Tree12/Tree13 normal-binding protections remain absolute for routine re-export.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree11/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree11/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Tree12",
@@ -4507,7 +4606,8 @@
     },
     "intended_improvement": "Retain unless placement/reduced-scale assembly reveals concrete defect. Grass02/Tree12/Tree13 normal-binding protections remain absolute for routine re-export.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree12/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree12/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Tree13",
@@ -4552,7 +4652,8 @@
     },
     "intended_improvement": "Retain unless placement/reduced-scale assembly reveals concrete defect. Grass02/Tree12/Tree13 normal-binding protections remain absolute for routine re-export.",
     "assessment": "retain defensible",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree13/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree13/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Waterspout01",
@@ -4603,7 +4704,8 @@
     },
     "intended_improvement": "Geometry-only dragon silhouette and curvature pass with restrained diffuse tonal definition if exact exclusive dragon texture ownership verified; preserve all four original mesh slots, water UVs, 11 bones and 21 action keys. Review wings from multiple angles.",
     "assessment": "production",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Waterspout01/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Waterspout01/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Well01",
@@ -4638,7 +4740,8 @@
     "first_placement": null,
     "intended_improvement": "Remodel pot lips/necks with coherent wall thickness and curves; refine well rim/roof thickness inside original bounds. Review all jar/well/tub consumers.",
     "assessment": "production",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Well01/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Well01/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Well02",
@@ -4680,7 +4783,8 @@
     },
     "intended_improvement": "Remodel pot lips/necks with coherent wall thickness and curves; refine well rim/roof thickness inside original bounds. Review all jar/well/tub consumers.",
     "assessment": "production",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Well02/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Well02/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Well03",
@@ -4722,7 +4826,8 @@
     },
     "intended_improvement": "Remodel pot lips/necks with coherent wall thickness and curves; refine well rim/roof thickness inside original bounds. Review all jar/well/tub consumers.",
     "assessment": "production",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Well03/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Well03/final-offline.png",
+    "artistic_gate_resolved": false
   },
   {
     "model": "Well04",
@@ -4764,6 +4869,7 @@
     },
     "intended_improvement": "Remodel pot lips/necks with coherent wall thickness and curves; refine well rim/roof thickness inside original bounds. Review all jar/well/tub consumers.",
     "assessment": "production",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Well04/final-offline.png"
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Well04/final-offline.png",
+    "artistic_gate_resolved": false
   }
 ]

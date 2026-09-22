@@ -51,3 +51,13 @@ five companion consistency reviews remain beyond these four accepted replacement
 
 Next dispatched: Tree09/10 + Grass03/04, architecture artist in same worker branch/worktree,
 owned new batch QualityPass02/Scrub01 only; all three alpha texture containers frozen.
+
+## Masonry study deferred; baseline protected
+
+No Masonry01 candidate accepted for integration. Motif relief50→762 (HouseEtc01) inflated
+triangles without sufficient assembly/readability gain. Cheaper54/132/194 cap study improved
+HouseEtc01 in isolation but introduced a V-shaped side notch in actual stacked records30/31;
+strict modular connection-profile preservation takes precedence.02/03 cap changes still lack
+sufficient visual gain. All three merged BMDs retained; all three remain artistically unresolved.
+Worker will retain rejected source/evidence in its branch, then produce Grass05/06 broadleaf
+arcs in QualityPass02/Broadleaf01. Exact tree_09.OZT remains frozen;399 placements.

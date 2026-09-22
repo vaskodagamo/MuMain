@@ -20,3 +20,7 @@ low-payoff tessellation. Architecture revised exports pass converter/rig/raw-nor
 checks; individual review ready, assembly render script repair pending. No accepted game changes.
 
 Accepted first checkpoint: four modular assets integrated9abdf7e8; final reviewer BMD/image hashes match. Combined check115/115 resolve and exact4-path game scope. Dispatched530-placement scrub family next; masonry revision remains unaccepted. No runtime/client or other-map work.
+
+Published accepted architecture checkpoint as draft[PR12](https://github.com/vaskodagamo/MuMain/pull/12), branchcodex/environment-remake-continuation atda7f9bb3. Attached to current task. Continuing production; no merge.
+
+Masonry study-only checkpoint d6e85282 retained on worker branch; all three game BMDs unchanged. House cap altered a stacked seam, other studies lacked clear visual gain. Broadleaf Grass05/06 production started with frozen tree_09.OZT. Scrub first experiment rejected; shape and cross-tuft export issues under focused revision. Four architecture assets remain the only accepted replacements.
