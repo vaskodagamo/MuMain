@@ -14,7 +14,7 @@ Lorencia is not artistically complete. Historical 106/106 means first-pass cover
 All21 replacements independently accepted offline with packed sources, official exports, matching images and technical evidence. Ledger accepted-exports.json; latest statues-integration-validation.json passes exact21 game paths and115model texture resolution. All textures unchanged. Existing client success is user-reported only for baseline7b808473; new changes client pending.
 
 ## Active ownership and next actions
-Architecture worktree MuMain-q02-architecture / codex/lorencia-q02-architecture: owns ONLY Waterspout01 BMD and QualityPass02/Fountain02. Frozen textures. Edit actual dragon geometry in slot1; additional34 basin triangles there are protected. Preserve other3meshes, all21frames and water/particle interface. Follow next-statues-brief.md/evidence fountain section.
+Architecture worktree MuMain-q02-architecture / codex/lorencia-q02-architecture: owns ONLY Waterspout01 BMD and QualityPass02/Fountain02. The three shared textures remain frozen. The exact dedicated reagon_waterspout.OZJ is now owned for a scoped dragon paint candidate, conditional on exact decoded preservation of all34 protected basin-face texels plus filtering margin and final consumer review. Edit actual dragon geometry in slot1; additional34 basin triangles there are protected. Preserve other3meshes, all21frames and water/particle interface. Follow next-statues-brief.md/evidence fountain section.
 
 Furniture worktree MuMain-q02-furniture / codex/lorencia-q02-furniture: rejected masonry studies are committed and published as fb734c0c, with no game-file changes. Read-only Dungeon readiness is complete; production waits for Lorencia acceptance.
 
