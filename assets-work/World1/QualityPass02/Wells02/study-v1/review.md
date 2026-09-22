@@ -1,0 +1,1 @@
+First mouth/lip direction provisionally accepted. Interior UV rays require compact clay patch refinement before final review. Well02 geometry not yet included; no Data changes. Packed sources and actual exports are retained.

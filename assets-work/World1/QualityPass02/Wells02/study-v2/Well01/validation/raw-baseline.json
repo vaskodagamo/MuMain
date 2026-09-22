@@ -1,0 +1,29 @@
+{
+  "file": "assets-work/World1/QualityPass02/Wells02/Well01/baseline/Well01.bmd",
+  "mesh_bindings": [
+    {
+      "mesh": 0,
+      "material": "tub.jpg",
+      "vertex_to_normal_node_mismatch_corner_counts": {
+        "6:0": 42
+      }
+    },
+    {
+      "mesh": 1,
+      "material": "horse_drawn_01.jpg",
+      "vertex_to_normal_node_mismatch_corner_counts": {
+        "6:0": 24
+      }
+    },
+    {
+      "mesh": 2,
+      "material": "well.jpg",
+      "vertex_to_normal_node_mismatch_corner_counts": {}
+    },
+    {
+      "mesh": 3,
+      "material": "jar_01.jpg",
+      "vertex_to_normal_node_mismatch_corner_counts": {}
+    }
+  ]
+}

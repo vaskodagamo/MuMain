@@ -1,0 +1,56 @@
+{
+  "status": "PASS",
+  "triangles": 317,
+  "minimum_area": 13.969644530259867,
+  "unchanged_legacy_faces": [
+    {
+      "triangle": 37,
+      "baseline_triangle": 107,
+      "material": "well.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 0.05603639825668992
+    },
+    {
+      "triangle": 38,
+      "baseline_triangle": 108,
+      "material": "well.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": -0.07386827190944512
+    },
+    {
+      "triangle": 39,
+      "baseline_triangle": 109,
+      "material": "well.jpg",
+      "uv_area": 0.004452824999999991,
+      "min_normal_dot": -0.07379833566407296
+    },
+    {
+      "triangle": 43,
+      "baseline_triangle": 113,
+      "material": "well.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 1.0
+    },
+    {
+      "triangle": 46,
+      "baseline_triangle": 116,
+      "material": "well.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 1.0
+    },
+    {
+      "triangle": 49,
+      "baseline_triangle": 119,
+      "material": "well.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 1.0000000000649751
+    },
+    {
+      "triangle": 52,
+      "baseline_triangle": 122,
+      "material": "well.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 1.0
+    }
+  ]
+}

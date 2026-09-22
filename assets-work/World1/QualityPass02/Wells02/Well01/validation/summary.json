@@ -1,0 +1,35 @@
+{
+  "status": "PASS",
+  "bounds_before": [
+    [
+      -154.76,
+      -125.85,
+      -0.07
+    ],
+    [
+      121.57,
+      93.46,
+      270.82
+    ]
+  ],
+  "bounds_after": [
+    [
+      -154.76,
+      -125.85,
+      -0.07
+    ],
+    [
+      121.57,
+      93.46,
+      270.82
+    ]
+  ],
+  "skeleton_actions": "EQUIVALENT",
+  "mesh_order": [
+    "tub.jpg",
+    "horse_drawn_01.jpg",
+    "well.jpg",
+    "jar_01.jpg"
+  ],
+  "client_verified": false
+}

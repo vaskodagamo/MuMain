@@ -1,0 +1,147 @@
+{
+  "status": "PASS",
+  "triangles": 744,
+  "minimum_area": 4.784141699375982,
+  "unchanged_legacy_faces": [
+    {
+      "triangle": 2,
+      "baseline_triangle": 37,
+      "material": "jar_01.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 0.671623866947418
+    },
+    {
+      "triangle": 3,
+      "baseline_triangle": 38,
+      "material": "jar_01.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 0.2963561228078266
+    },
+    {
+      "triangle": 8,
+      "baseline_triangle": 43,
+      "material": "jar_01.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 0.15591023108761587
+    },
+    {
+      "triangle": 9,
+      "baseline_triangle": 44,
+      "material": "jar_01.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 0.1559105180237192
+    },
+    {
+      "triangle": 14,
+      "baseline_triangle": 49,
+      "material": "jar_01.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 0.1704237084546843
+    },
+    {
+      "triangle": 15,
+      "baseline_triangle": 50,
+      "material": "jar_01.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 0.5357890732910787
+    },
+    {
+      "triangle": 20,
+      "baseline_triangle": 55,
+      "material": "jar_01.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 0.6437059849687319
+    },
+    {
+      "triangle": 21,
+      "baseline_triangle": 56,
+      "material": "jar_01.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 0.29634920359268
+    },
+    {
+      "triangle": 26,
+      "baseline_triangle": 61,
+      "material": "jar_01.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 0.5023289855439118
+    },
+    {
+      "triangle": 27,
+      "baseline_triangle": 62,
+      "material": "jar_01.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 0.11718082491683737
+    },
+    {
+      "triangle": 32,
+      "baseline_triangle": 67,
+      "material": "jar_01.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 0.17041410079495167
+    },
+    {
+      "triangle": 33,
+      "baseline_triangle": 68,
+      "material": "jar_01.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 0.4793537403667067
+    },
+    {
+      "triangle": 38,
+      "baseline_triangle": 178,
+      "material": "jar_01.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 0.6371462554603344
+    },
+    {
+      "triangle": 39,
+      "baseline_triangle": 179,
+      "material": "jar_01.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 0.2525630381768893
+    },
+    {
+      "triangle": 44,
+      "baseline_triangle": 184,
+      "material": "jar_01.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 0.24410443585496558
+    },
+    {
+      "triangle": 45,
+      "baseline_triangle": 185,
+      "material": "jar_01.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 0.2441048001753336
+    },
+    {
+      "triangle": 50,
+      "baseline_triangle": 190,
+      "material": "jar_01.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 0.2596298543948838
+    },
+    {
+      "triangle": 51,
+      "baseline_triangle": 191,
+      "material": "jar_01.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 0.3965482114050709
+    },
+    {
+      "triangle": 126,
+      "baseline_triangle": 686,
+      "material": "jar_01.jpg",
+      "uv_area": 0.00041295999999999987,
+      "min_normal_dot": -0.01604389813262089
+    },
+    {
+      "triangle": 129,
+      "baseline_triangle": 689,
+      "material": "jar_01.jpg",
+      "uv_area": 0.00041295999999999987,
+      "min_normal_dot": -0.015962575669329352
+    }
+  ]
+}

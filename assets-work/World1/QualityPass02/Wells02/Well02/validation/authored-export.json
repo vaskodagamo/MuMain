@@ -1,0 +1,8 @@
+{
+  "result": "PASS",
+  "max_distances": [
+    1.9073486328125e-06,
+    1.9073486328125e-06
+  ],
+  "space": "bone-matched bind/world coordinates"
+}

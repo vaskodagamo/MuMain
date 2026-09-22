@@ -1,0 +1,20 @@
+{
+  "stage": "new",
+  "keys": 1,
+  "normal_aliases": {
+    "1:0": {
+      "corners": 20,
+      "max_world_normal_direction_error": 0
+    },
+    "2:0": {
+      "corners": 20,
+      "max_world_normal_direction_error": 0
+    },
+    "3:0": {
+      "corners": 10,
+      "max_world_normal_direction_error": 0
+    }
+  },
+  "criterion": "Normal world direction differs by less than1e-5 at every action key",
+  "status": "PASS"
+}
