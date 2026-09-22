@@ -1,4 +1,4 @@
-# Bonfire01 bounded wood study (not dispatched)
+# Bonfire01 bounded wood study (dispatched to furniture, 2026-09-23)
 
 Current FireProps01 comparison shows six square-section logs with sharp long edges; updated bark is stronger but square cut silhouettes remain. Refine opaque fire_01 wood mesh only: intentional softened/chipped longitudinal profiles and believable end faces while preserving six-log layout, original lowest contacts and full effect-clearance envelope. Do not merely subdivide.
 
