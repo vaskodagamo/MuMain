@@ -1,0 +1,2 @@
+OK /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Statues02/StoneStatue03/exports/angel_stone_statue.OZJ
+OK /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Statues02/StoneStatue03/exports/tombstone_big.OZJ

@@ -1,0 +1,7 @@
+model /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Statues02/StoneStatue01/exports/StoneStatue01.bmd
+  name field: StoneStatue01.smd  version: 12
+  meshes: 1  bones: 1  actions: 1  triangles: 212
+  bounds (bind pose): min -54.56 -54.34 0.00  max 54.62 56.47 399.99  size 109.19 110.81 399.99
+  mesh 0: triangles=212 vertices=158 normals=160 uvs=155 texture=stone_statue02.jpg
+  bone 0: "Box11" parent=-1
+  action 0: keys=1 lock=0

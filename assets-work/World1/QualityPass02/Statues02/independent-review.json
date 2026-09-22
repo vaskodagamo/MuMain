@@ -1,0 +1,546 @@
+{
+  "decision": "ACCEPT all3 at exact hashes",
+  "assets": {
+    "StoneStatue01": {
+      "export_sha256": "bd36218ec97576af5fbbe1e7aa425130dda42663e7d66c82f20a8e695f1507d1",
+      "source_sha256": "83f95c0b824292837aadd62897dc1b4bf2fc195d0c5fb4bc9cd2e17127523f94",
+      "rationale": "Recessed arch/niche and continuous side jambs give existing sculpted figure a readable architectural frame; base/shell/cap extrema retain exact contacts. Corrected placement3 fully framed with hidden marker omitted.",
+      "final_proof": {
+        "status": "PASS",
+        "bmd_sha256": "bd36218ec97576af5fbbe1e7aa425130dda42663e7d66c82f20a8e695f1507d1",
+        "triangles": 212,
+        "prop_target": 1500,
+        "export_texture_containers_exact": {
+          "src/bin/Data/Object1/stone_statue02.OZJ": "e1d4f7b95afae6c9936eb117a71592e94322b041efafa887bcdf6d731e4a630b"
+        },
+        "client_verified": false,
+        "proofs": {
+          "converter": {
+            "status": "PASS",
+            "bounds_before": [
+              [
+                -54.56,
+                -54.34,
+                0.0
+              ],
+              [
+                54.62,
+                56.47,
+                399.99
+              ]
+            ],
+            "bounds_after": [
+              [
+                -54.56,
+                -54.34,
+                0.0
+              ],
+              [
+                54.62,
+                56.47,
+                399.99
+              ]
+            ],
+            "skeleton_actions": "EQUIVALENT",
+            "full_comparison": "DIFFERENT",
+            "sha256": "bd36218ec97576af5fbbe1e7aa425130dda42663e7d66c82f20a8e695f1507d1",
+            "textures_frozen": true,
+            "client_verified": false
+          },
+          "authored_triangles": {
+            "status": "PASS",
+            "triangles": 212,
+            "one_to_one_triangle_match": true,
+            "area_metrics": {
+              "minimum_geometry_area": 25.140722602953506,
+              "minimum_uv_area": 3.425270455092999e-05,
+              "zero_geometry": 0,
+              "zero_uv": 0
+            },
+            "baseline_area_metrics": {
+              "minimum_geometry_area": 25.142575128478516,
+              "minimum_uv_area": 7.263230477860816e-05,
+              "zero_geometry": 0,
+              "zero_uv": 0
+            },
+            "protected_contract": {
+              "exact_plinth_triangles": 0,
+              "policy": "Angel plinth triangle/UV/bone identity; per-root extrema and all ground-contact vertices retained"
+            },
+            "every_authored_triangle_matches_material_bone_position_uv": true,
+            "maximum_position_delta": 9.999999992515995e-07,
+            "position_tolerance": 0.0003,
+            "uv_tolerance": 1e-06,
+            "uv_layers": [
+              "Float2"
+            ],
+            "packed_images": {
+              "stone_statue02.jpg": [
+                256,
+                512
+              ],
+              "stone_statue02.jpg.001": [
+                64,
+                128
+              ],
+              "stone_statue02.jpg.002": [
+                64,
+                128
+              ]
+            },
+            "per_root_contract": {
+              "0": {
+                "bounds_before": [
+                  [
+                    -54.5648,
+                    -54.337898,
+                    0.0
+                  ],
+                  [
+                    54.624401,
+                    56.4729,
+                    399.986694
+                  ]
+                ],
+                "bounds_after": [
+                  [
+                    -54.5648,
+                    -54.337898,
+                    0.0
+                  ],
+                  [
+                    54.624401,
+                    56.4729,
+                    399.986694
+                  ]
+                ],
+                "ground_contacts": 6,
+                "maximum_contact_delta": 0.0
+              }
+            }
+          },
+          "raw_normals": {
+            "status": "PASS",
+            "maximum_direction_delta": 7.1124758078355e-07,
+            "tolerance": 0.001,
+            "materials": {
+              "stone_statue02.jpg": 7.1124758078355e-07
+            },
+            "frames": [
+              {
+                "frame": 0,
+                "maximum_direction_delta": 7.1124758078355e-07
+              }
+            ],
+            "authored_corners": 636,
+            "method": "Blender authored split corner normal against actual BMD raw normal node/vector, each through full baseline/final hierarchy in the static bind/action frame"
+          },
+          "contacts": {
+            "status": "PASS",
+            "protected_original_vertices": 28,
+            "maximum_position_delta": 0.0,
+            "position_tolerance": 0.0003,
+            "policy": "Original pillar shell/cap/base anchors; memorial ground/base and capital/pyramid perimeter anchors; angel complete plinth and head anchors"
+          }
+        }
+      },
+      "audit_sha256": {
+        "final-proof.json": "72a354f2aa9bc90698cf2d6735e70923bb27d78ce41fd1575a41c64a8a5bc0ce",
+        "summary.json": "e29ac0d705ee25360bde55c650f46969c746c51bdee04422b8ee80752616a630",
+        "frozen-textures.json": "0120fc6487820ee44cea6f4ba2608bbc0b9670cd56ca5cbd0abfd9a65b4b5584",
+        "authored-match.json": "313de02e1fde1e2ea345eaa7cdfaa2a7ff4a3f5aa0b97062688272b141918d97",
+        "raw-normal-bindings.json": "00d055f0294cd60ca6c90934409a97f785fa0701db9ab8b621d3632cf579d38c",
+        "local-motion.json": "24bb68a7cf45261c62e0ee13f53a75a46b9272ba08a8d30897edecbc89a8747e",
+        "authored.json": "c62dab7691afcb4da4180b26297c1e3568df82546ca3d53a67238da2a0e278b9",
+        "authored-raw-normals.json": "04aa38c9950f9be16252bfb75896fe1806bedbce1fdec7a24f2c7e85dfc1f18a",
+        "contact-contract.json": "190600210d0abe090099755218a6fc3f140ff5eec42883d4077f4512f191f1c5"
+      }
+    },
+    "StoneStatue03": {
+      "export_sha256": "ddfa5d87568039df181dcf24831bd64b4c573ebccfe04c1c9973dba785bac8f3",
+      "source_sha256": "b47fc0135f4f86fcdc2728232238e3a138f036b8b426d0c961c903a6f89757fd",
+      "rationale": "Three broad curved overlapping feather masses replace bent wedge wings, visible in normal/reverse/reduced and foliage placements. Root attachment continuous; pale UV sliver removed; robe has continuous carved drapery shading.",
+      "final_proof": {
+        "status": "PASS",
+        "bmd_sha256": "ddfa5d87568039df181dcf24831bd64b4c573ebccfe04c1c9973dba785bac8f3",
+        "triangles": 1353,
+        "prop_target": 1500,
+        "export_texture_containers_exact": {
+          "src/bin/Data/Object1/tombstone_big.OZJ": "e4a98d7db022ec92f6d9f63d147475f2c6c34bae82aa306f68b3f60f9c113940",
+          "src/bin/Data/Object1/angel_stone_statue.OZJ": "41badb3711151f592185b4c105701cc0652bce19ae796987f978294485673d12"
+        },
+        "client_verified": false,
+        "proofs": {
+          "converter": {
+            "status": "PASS",
+            "bounds_before": [
+              [
+                -72.77,
+                -53.36,
+                -0.08
+              ],
+              [
+                74.61,
+                39.88,
+                264.77
+              ]
+            ],
+            "bounds_after": [
+              [
+                -72.77,
+                -53.36,
+                -0.08
+              ],
+              [
+                74.61,
+                39.88,
+                264.77
+              ]
+            ],
+            "skeleton_actions": "EQUIVALENT",
+            "full_comparison": "DIFFERENT",
+            "sha256": "ddfa5d87568039df181dcf24831bd64b4c573ebccfe04c1c9973dba785bac8f3",
+            "textures_frozen": true,
+            "client_verified": false
+          },
+          "authored_triangles": {
+            "status": "PASS",
+            "triangles": 1353,
+            "one_to_one_triangle_match": true,
+            "area_metrics": {
+              "minimum_geometry_area": 1.5104336463587864,
+              "minimum_uv_area": 9.749316811635822e-07,
+              "zero_geometry": 0,
+              "zero_uv": 0
+            },
+            "baseline_area_metrics": {
+              "minimum_geometry_area": 20.77778197011237,
+              "minimum_uv_area": 9.749316811635822e-07,
+              "zero_geometry": 0,
+              "zero_uv": 0
+            },
+            "protected_contract": {
+              "exact_plinth_triangles": 20,
+              "policy": "Angel plinth triangle/UV/bone identity; per-root extrema and all ground-contact vertices retained"
+            },
+            "every_authored_triangle_matches_material_bone_position_uv": true,
+            "maximum_position_delta": 4.999999987376214e-07,
+            "position_tolerance": 0.0003,
+            "uv_tolerance": 1e-06,
+            "uv_layers": [
+              "Float2"
+            ],
+            "packed_images": {
+              "angel_stone_statue.jpg": [
+                512,
+                512
+              ],
+              "angel_stone_statue.jpg.001": [
+                128,
+                128
+              ],
+              "tombstone_big.jpg": [
+                512,
+                512
+              ],
+              "tombstone_big.jpg.001": [
+                128,
+                128
+              ]
+            },
+            "per_root_contract": {
+              "0": {
+                "bounds_before": [
+                  [
+                    -72.766998,
+                    -53.358002,
+                    -0.0842
+                  ],
+                  [
+                    74.606697,
+                    39.882099,
+                    264.767609
+                  ]
+                ],
+                "bounds_after": [
+                  [
+                    -72.766998,
+                    -53.358002,
+                    -0.0842
+                  ],
+                  [
+                    74.606697,
+                    39.882099,
+                    264.767609
+                  ]
+                ],
+                "ground_contacts": 4,
+                "maximum_contact_delta": 0.0
+              }
+            }
+          },
+          "raw_normals": {
+            "status": "PASS",
+            "maximum_direction_delta": 0.00047909578433559774,
+            "tolerance": 0.001,
+            "materials": {
+              "tombstone_big.jpg": 0.00033577048095842954,
+              "angel_stone_statue.jpg": 0.00047909578433559774
+            },
+            "frames": [
+              {
+                "frame": 0,
+                "maximum_direction_delta": 0.00047909578433559774
+              }
+            ],
+            "authored_corners": 4059,
+            "method": "Blender authored split corner normal against actual BMD raw normal node/vector, each through full baseline/final hierarchy in the static bind/action frame"
+          },
+          "contacts": {
+            "status": "PASS",
+            "protected_original_vertices": 45,
+            "maximum_position_delta": 0.0,
+            "position_tolerance": 0.0003,
+            "policy": "Original pillar shell/cap/base anchors; memorial ground/base and capital/pyramid perimeter anchors; angel complete plinth and head anchors"
+          }
+        }
+      },
+      "audit_sha256": {
+        "final-proof.json": "2d4c970d961cfc267ee895a049d5aa399cd925d5718a636a945e23c06c88864b",
+        "summary.json": "5b4c3d62ae1b1e7b7e805398128b2dffe08e9155480806c7c81d3eac5abeb30e",
+        "frozen-textures.json": "fe844f273ce16cd3a57c29625ff8733ba44f4353102b2ed1e1293d5e35b5d004",
+        "authored-match.json": "a87a4008e717c100ed8c289b5d8eb49f48a0e55df94ffcb708d7c563c5836447",
+        "raw-normal-bindings.json": "61bd851d2b37bc18b94a2ba0628c789579c0dc3aec896b159950034f4a504179",
+        "local-motion.json": "4b519de29b11cfa4a0b7f5dbd3276ffcff80185ecd644693f83268f00308629c",
+        "authored.json": "8888d03b27f0f5935a65b3508ff4e89222528b52596a7f7b6dbeb68f06c0ae02",
+        "authored-raw-normals.json": "d3dc9f3778b8c0d4b538585d4bff64d0f6ddc76a4acb1878a555e1f1e75140d0",
+        "contact-contract.json": "47ade7fbe46ce7f0aeceb43174151b3457ea5361dde08336001ce35a23712663"
+      }
+    },
+    "SteelStatue01": {
+      "export_sha256": "c118a1bd217e809a858e5b6eccef5ef83041d7d136499c3a7acca314415dcbf1",
+      "source_sha256": "2789ef2c61dcb1c31956d493de5dc87372b4002f0ccec69f6c424616aa6410eb",
+      "rationale": "Undercut stepped capital and projected bronze plaque make distinct assembled memorial construction; joins to adjacent iron fence/gate retained in both placed pairs.",
+      "final_proof": {
+        "status": "PASS",
+        "bmd_sha256": "c118a1bd217e809a858e5b6eccef5ef83041d7d136499c3a7acca314415dcbf1",
+        "triangles": 274,
+        "prop_target": 1500,
+        "export_texture_containers_exact": {
+          "src/bin/Data/Object1/tombstone_big.OZJ": "e4a98d7db022ec92f6d9f63d147475f2c6c34bae82aa306f68b3f60f9c113940"
+        },
+        "client_verified": false,
+        "proofs": {
+          "converter": {
+            "status": "PASS",
+            "bounds_before": [
+              [
+                -65.92,
+                -65.01,
+                -0.04
+              ],
+              [
+                65.87,
+                66.77,
+                321.58
+              ]
+            ],
+            "bounds_after": [
+              [
+                -65.92,
+                -65.01,
+                -0.04
+              ],
+              [
+                65.87,
+                66.77,
+                321.58
+              ]
+            ],
+            "skeleton_actions": "EQUIVALENT",
+            "full_comparison": "DIFFERENT",
+            "sha256": "c118a1bd217e809a858e5b6eccef5ef83041d7d136499c3a7acca314415dcbf1",
+            "textures_frozen": true,
+            "client_verified": false
+          },
+          "authored_triangles": {
+            "status": "PASS",
+            "triangles": 274,
+            "one_to_one_triangle_match": true,
+            "area_metrics": {
+              "minimum_geometry_area": 8.791030919377762,
+              "minimum_uv_area": 0.0001058083647649255,
+              "zero_geometry": 0,
+              "zero_uv": 0
+            },
+            "baseline_area_metrics": {
+              "minimum_geometry_area": 38.034009872513074,
+              "minimum_uv_area": 0.00032385015627145464,
+              "zero_geometry": 0,
+              "zero_uv": 0
+            },
+            "protected_contract": {
+              "exact_plinth_triangles": 0,
+              "policy": "Angel plinth triangle/UV/bone identity; per-root extrema and all ground-contact vertices retained"
+            },
+            "every_authored_triangle_matches_material_bone_position_uv": true,
+            "maximum_position_delta": 1.664550779878482e-06,
+            "position_tolerance": 0.0003,
+            "uv_tolerance": 1e-06,
+            "uv_layers": [
+              "Float2"
+            ],
+            "packed_images": {
+              "tombstone_big.jpg": [
+                512,
+                512
+              ],
+              "tombstone_big.jpg.001": [
+                128,
+                128
+              ],
+              "tombstone_big.jpg.002": [
+                128,
+                128
+              ]
+            },
+            "per_root_contract": {
+              "0": {
+                "bounds_before": [
+                  [
+                    -65.917503,
+                    -65.0149,
+                    -0.0396
+                  ],
+                  [
+                    65.870003,
+                    66.772598,
+                    321.581299
+                  ]
+                ],
+                "bounds_after": [
+                  [
+                    -65.917503,
+                    -65.0149,
+                    -0.0396
+                  ],
+                  [
+                    65.870003,
+                    66.772598,
+                    321.581299
+                  ]
+                ],
+                "ground_contacts": 4,
+                "maximum_contact_delta": 0.0
+              }
+            }
+          },
+          "raw_normals": {
+            "status": "PASS",
+            "maximum_direction_delta": 6.136673772923351e-07,
+            "tolerance": 0.001,
+            "materials": {
+              "tombstone_big.jpg": 6.136673772923351e-07
+            },
+            "frames": [
+              {
+                "frame": 0,
+                "maximum_direction_delta": 6.136673772923351e-07
+              }
+            ],
+            "authored_corners": 822,
+            "method": "Blender authored split corner normal against actual BMD raw normal node/vector, each through full baseline/final hierarchy in the static bind/action frame"
+          },
+          "contacts": {
+            "status": "PASS",
+            "protected_original_vertices": 28,
+            "maximum_position_delta": 0.0,
+            "position_tolerance": 0.0003,
+            "policy": "Original pillar shell/cap/base anchors; memorial ground/base and capital/pyramid perimeter anchors; angel complete plinth and head anchors"
+          }
+        }
+      },
+      "audit_sha256": {
+        "final-proof.json": "5f00e314edd4800d9ee5b62763e2414da93954f2434ff74c733819ab72c0bd29",
+        "summary.json": "16d9b83ab1b9a18c9271c04bb772de9cbdb4491a2ca1abd76de575725cb78f51",
+        "frozen-textures.json": "dfcbba4d7d07cb0157aa328544248d67667f2b93846242ba8ace58a87f6a77ce",
+        "authored-match.json": "2350f56bd6c4536e5e838284133284074b82ea2ebeb845118b7de4475363fff6",
+        "raw-normal-bindings.json": "8d5ff572dcd70284c99c80ae7ec505fd513b4532124bb7c4afafb38fab4eaee2",
+        "local-motion.json": "aea2d345e99e46c858597b2caa4b2b85d1e960b30fc26f48e2a76fcd548150d0",
+        "authored.json": "8e7a5312cc84ebfd2c6424b01158858f1f0c71bbc86dfa30eb51eba7fc53ac91",
+        "authored-raw-normals.json": "0fed466b9a82e97b254fc4f97561ea7d5952d1bffd0684defcb6532faafbb515",
+        "contact-contract.json": "190600210d0abe090099755218a6fc3f140ff5eec42883d4077f4512f191f1c5"
+      }
+    }
+  },
+  "limits": [
+    "Offline actual placed geometry and diffuse material render evidence, not engine terrain/lighting/client proof.",
+    "Pillar niche change is restrained in heavily tree-occluded placement0; unoccluded3/4 establish its sculptural framing.",
+    "Angel face/head and plinth retain original style; broader feather masses and continuous robe shading are scoped improvement.",
+    "Steel dark memorial material retained; capital and bronze plaque carry visible improvement."
+  ],
+  "evidence": {
+    "StoneStatue01/review/candidate-light.png": "90aa644d0b7be8bd91631852e7961ba0675845273f127e846fd48ea24ee51597",
+    "StoneStatue01/review/baseline-reverse.png": "e586489e7e2bd83260e0726afdfde08725b89fbb847c3b6795938013f191430b",
+    "StoneStatue01/review/baseline.png": "5ca5f5810024518c52455e61b15ec5236622a8485463fe9a253c229d57d79be2",
+    "StoneStatue01/review/candidate-small.png": "b47fc24d815c9b64e823f797c8368d814576ac850101247b56d437deece8389d",
+    "StoneStatue01/review/candidate-reverse.png": "f7d4fe850c156d31dfa7a4b4349a86186e0d049e3947cba73c79d6016f2c88db",
+    "StoneStatue01/review/original.png": "e754572b9d199051c10780753c5a8b9e6b5f1be7b94578d7fc9aeb5e1e6b26e2",
+    "StoneStatue01/review/wireframe.png": "fa1a1d15ef6c47eb72370f0a38ea5d931629b74d3ebea9df96e79cf29159360a",
+    "StoneStatue01/review/candidate.png": "bf21c6055de4bc26d03cf31c64844101cebdda5b31c9e2837e9a129072f16e9e",
+    "StoneStatue01/review/baseline-small.png": "e40b6adc246107334d4d3b3228e87558b08be1885ebd3fef6a857da21eca4601",
+    "StoneStatue01/review/baseline-light.png": "c4699c86b1e6a2d7a95feb2eed37d34ab68c21d3c1e911ab45752b22e9c33994",
+    "StoneStatue03/review/candidate-light.png": "d6a47c7c919b88caf230f4210b679950c397695d5873840d57a29d9074b69508",
+    "StoneStatue03/review/baseline-reverse.png": "1c83566cfc0250f06640c8968d5bcb869e16e999ec2c486545ee4d121de5f518",
+    "StoneStatue03/review/baseline.png": "b3364f9ab28cb504b1e6b8a67990af43448938bbc27afadf6d7f85c70d52bc36",
+    "StoneStatue03/review/candidate-small.png": "d56f201e2515dcdb8739bf4835d112e0aaa6b0bff89d80fa1108ee443be6cf8f",
+    "StoneStatue03/review/candidate-reverse.png": "3c99f969294600b54c5e6f216157f996e111d61efc66b65a881a0c3dd52377e0",
+    "StoneStatue03/review/original.png": "083fb5b0a4bdda5ef4b7c097b133b82783a0327e81adedb5f37c8c8b3663a4a6",
+    "StoneStatue03/review/wireframe.png": "223e900017ff8074aada79fb6bef536346f86039326bf2850483207f27e05a98",
+    "StoneStatue03/review/candidate.png": "de4de674d6c7815b874b4a75393e2f00256ee955549a947d0a900ade98543ef0",
+    "StoneStatue03/review/baseline-small.png": "c85364bdb20ff09899762e4c6fc741b9a9ed5325c53841d511f56b483b63c300",
+    "StoneStatue03/review/baseline-light.png": "0672e6b4fd9765bfc7affeef9735e0097a5a919f187b0c0cff9f633adff64b58",
+    "SteelStatue01/review/candidate-light.png": "c2c0d422fdbefe5719180f5cf3bf4a508e1eb531f90635cfa41ffd6a905bc650",
+    "SteelStatue01/review/baseline-reverse.png": "a93ab5bb251114e23f9c540fd99f2c55157f8375a2ada53f9e24e33eabc49118",
+    "SteelStatue01/review/baseline.png": "737bbe8ccf0fd75f7dd175822d070fcaa800d409b469039078e414bab75a5968",
+    "SteelStatue01/review/candidate-small.png": "7ff8c4b0057398d31da9324a4a638906832db6548a055699ec71acfad6e19f26",
+    "SteelStatue01/review/candidate-reverse.png": "767a93ab149c89c4d7afd59632c8dc329f5757fe79d07b7494537992ef8494ef",
+    "SteelStatue01/review/original.png": "456209ea69ae5cddf3c12bc18849bc109c35b6f9d816bd3f40a032612f28b310",
+    "SteelStatue01/review/wireframe.png": "f5f60b85174dac5879d69013a142af1c48dcd2391b34df2dcc6a99f113f12af8",
+    "SteelStatue01/review/candidate.png": "88a09300e3abdd89eed7f75fe5d0f87c1535857e18093e04dcda3cafdc24c018",
+    "SteelStatue01/review/baseline-small.png": "05e2dd518293fc3157f6d9b31db1a9034359eaaa61d34e8130c650daf719cf9b",
+    "SteelStatue01/review/baseline-light.png": "3e833a927b85a87a4cb0a6332616c919399c8176d14464999f967443727ff857",
+    "review/StoneStatue03-0-baseline.png": "b53dafc80a29fd1cc0497d7833b27ed263ea288806016af507bc1b48c4c92c74",
+    "review/SteelStatue01-2-baseline-reverse.png": "ccf296f6de2fbc506e93014c84b73af4c6c0af18820dfb9688c593e638637909",
+    "review/StoneStatue01-4-candidate-reverse.png": "dfd2eec3dee4a2ea6f22e5ac3d22eb7ea88793dfa2adf7325492747eea316042",
+    "review/StoneStatue01-3-baseline-reverse.png": "c52e226c53da6556e20dbe6c59e130f31125908eeaf4b2ed64aa910bd92b9702",
+    "review/StoneStatue03-2-baseline-reverse.png": "89fe062b358d1b6fccea1be97bceae42d3234c532d942762247faa37ef5e11db",
+    "review/StoneStatue03-3-candidate-reverse.png": "76ebf6a9c719fc2e729fb24c4775a4676f4c79a4b1dc7f7b98228a0c7f40163f",
+    "review/SteelStatue01-0-candidate-reverse.png": "96308e825e6a150eb1614c5477471506d6cfe3de3da005540bc111f27ed69802",
+    "review/StoneStatue01-0-candidate-reverse.png": "3232190a7539d0f91cf7cc22248653fc6c99d14c79915d1d6a6b494ea9429889",
+    "review/SteelStatue01-2-baseline.png": "eb1ad0f855fb33c5c45930be96c1e922ae231fd6caef28a66034ef7b8eafa1c5",
+    "review/StoneStatue03-3-candidate.png": "3ca2aca43d0f22abcfe152d3fc0f46be2546b31f64c21c0379194ab9de841ede",
+    "review/StoneStatue03-3-baseline-reverse.png": "ef2b6404ca9dc584360e6615e4d4893387f8f077506fa2458e1925c91a4bb352",
+    "review/StoneStatue01-0-baseline.png": "c44caf5e495ed39c612b6cb7fbbdb6afa9c16801182c55ca3f63eadc275a201c",
+    "review/SteelStatue01-2-candidate-reverse.png": "914984c41aa95387dd4f2c4ddaaa8aea9ed27f2eaf8dafc94f4ff0ad601f6795",
+    "review/StoneStatue03-0-candidate.png": "913d66a9c2a20ec37cd93d8aa39620a9ff5fc7afc868636b342ac280956d1238",
+    "review/SteelStatue01-2-candidate.png": "64bd75c635552ed74815fb4ed1e764c64e43f5e8050895616d731678e3f91e75",
+    "review/StoneStatue03-0-candidate-reverse.png": "e180aaadfda9dbfc78658c9bff1815b30b8f1fd506ac5aa39a6bdca7d4e3c8e5",
+    "review/StoneStatue01-4-baseline-reverse.png": "cddcc53865fa6da86159d1f2f19c5e032a36669061018e1a39631e5c543780fb",
+    "review/StoneStatue01-3-candidate.png": "1e05c828bdd07910067d46a85fee0826d6dfea6144b60e41423d670ef42a647e",
+    "review/StoneStatue03-0-baseline-reverse.png": "624692dd9f539cf5e8fec5bce2105f3e0e3d61d02f850cde6fbdf52044d2c141",
+    "review/SteelStatue01-0-candidate.png": "8e6eeecf570c261e0f66b147cd57453dc524b6a87ff7f0cff6687cc72cf34387",
+    "review/StoneStatue01-0-candidate.png": "273452cb168d7cd0379087f242b2e18aa34c34afbec21309109e33cc98f91717",
+    "review/StoneStatue01-4-candidate.png": "1b49c45a3c047391ac165927258fb757b7c673c3646eeb21bbb208fa86055eff",
+    "review/StoneStatue01-3-baseline.png": "b7e5b13125732c3e6834f6766d866a5cc34d26a2404ae3414c3ac9676006d91f",
+    "review/StoneStatue01-4-baseline.png": "29371b251c4b8ad519eca0aa28f583de1cccf6a52f115ce6d566da5bc8ae293a",
+    "review/StoneStatue03-2-candidate-reverse.png": "81fef458eac1857876b80d5d5c05a65bec5d012d76f7b6b7df4a494057d480f8",
+    "review/StoneStatue03-2-candidate.png": "c17695676d88bd9388d228d0f068e697c099cbd428d293f5728a7c7e44b47635",
+    "review/SteelStatue01-0-baseline-reverse.png": "3ecc1aeb0b8d6f9d9e4b6f70f87b83536b245d428d228c2486e9713fedda8ca8",
+    "review/SteelStatue01-0-baseline.png": "75f187cb8f7ab5e757db5dcc14f75879a15139f0f9d5e14dfd097dc991ef5082",
+    "review/StoneStatue01-0-baseline-reverse.png": "fdb36990f7dde6b5de4a891afc8a0f55de3c6186142e857c415f2e9794f32762",
+    "review/StoneStatue03-3-baseline.png": "f84aea27c7dc5d04ce3156210ad156af1ef7c0095f667512d6a7c48403c974a9",
+    "review/StoneStatue01-3-candidate-reverse.png": "12a3b5c544492b00a3d63011173b2d69b71cf3085aaa160629fc6de64a5d0cec",
+    "review/StoneStatue03-2-baseline.png": "faa132247c72b6bb1db3a990dff6356cef012d89e1d4e1d151c67ceda2ae2242"
+  }
+}

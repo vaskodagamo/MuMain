@@ -1,0 +1,48 @@
+00:00.624  blend            | Read blend: "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Statues02/StoneStatue03/source.blend"
+skipping reference object 'StoneStatue03.001' (REF_ collection or mu_reference)
+skipping reference object 'StoneStatue03.002' (REF_ collection or mu_reference)
+
+Blender Source Tools: exporting REF_BASELINE
+ ERROR: Nothing in Group "REF_BASELINE" is enabled for export
+
+Blender Source Tools: exporting REF_ORIGINAL
+ ERROR: Nothing in Group "REF_ORIGINAL" is enabled for export
+
+Blender Source Tools: exporting StoneStatue03_mu_export
+- Baking...
+- /private/var/folders/5c/gyglnk2d6mx3v2m0frrgvl2w0000gn/T/mu_export_skigc2fn/StoneStatue03_mu_export.smd
+- Exported 1 bones
+- Exported 1 frames
+- Exported 1353 polys
+- Exported 2 materials
+   angel_stone_statue.jpg
+   tombstone_big.jpg
+- SMD export took 0.04944896697998047 
+
+
+Blender Source Tools: exporting StoneStatue03_skeleton
+- Baking...
+- /private/var/folders/5c/gyglnk2d6mx3v2m0frrgvl2w0000gn/T/mu_export_skigc2fn/anims/StoneStatue03_a00.smd
+- Exported 1 bones
+- Exported 1 frames
+- SMD export took 0.0008370876312255859 
+
+2 Errors and 0 Warnings
+Error: Nothing in Group "REF_BASELINE" is enabled for export
+Error: Nothing in Group "REF_ORIGINAL" is enabled for export
+2 files exported in 0.1 seconds with 2 Errors and 0 Warnings
+Info: 2 files exported in 0.1 seconds with 2 Errors and 0 Warnings
++ /Users/lukasmac/Documents/claude-test-mumain/MuMain/out/build/macos-arm64/tools/bmdconv/Release/bmdconv smd2bmd /var/folders/5c/gyglnk2d6mx3v2m0frrgvl2w0000gn/T/mu_export_skigc2fn/StoneStatue03_mu_export.smd /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Statues02/StoneStatue03/exports/StoneStatue03.bmd --anim /var/folders/5c/gyglnk2d6mx3v2m0frrgvl2w0000gn/T/mu_export_skigc2fn/anims/StoneStatue03_a00.smd --name StoneStatue03.smd
+wrote /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Statues02/StoneStatue03/exports/StoneStatue03.bmd (1 action(s))
++ /Users/lukasmac/Documents/claude-test-mumain/MuMain/out/build/macos-arm64/tools/bmdconv/Release/bmdconv info /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Statues02/StoneStatue03/exports/StoneStatue03.bmd
+model /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Statues02/StoneStatue03/exports/StoneStatue03.bmd
+  name field: StoneStatue03.smd  version: 12
+  meshes: 2  bones: 1  actions: 1  triangles: 1353
+  bounds (bind pose): min -72.77 -53.36 -0.08  max 74.61 39.88 264.77  size 147.37 93.24 264.85
+  mesh 0: triangles=20 vertices=20 normals=43 uvs=20 texture=tombstone_big.jpg
+  mesh 1: triangles=1333 vertices=718 normals=3927 uvs=640 texture=angel_stone_statue.jpg
+  bone 0: "Box03" parent=-1
+  action 0: keys=1 lock=0
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:49:19)
+
+Blender quit

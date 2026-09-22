@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "maximum_direction_delta": 0.00047909578433559774,
+  "tolerance": 0.001,
+  "materials": {
+    "tombstone_big.jpg": 0.00033577048095842954,
+    "angel_stone_statue.jpg": 0.00047909578433559774
+  },
+  "frames": [
+    {
+      "frame": 0,
+      "maximum_direction_delta": 0.00047909578433559774
+    }
+  ],
+  "authored_corners": 4059,
+  "method": "Blender authored split corner normal against actual BMD raw normal node/vector, each through full baseline/final hierarchy in the static bind/action frame"
+}
