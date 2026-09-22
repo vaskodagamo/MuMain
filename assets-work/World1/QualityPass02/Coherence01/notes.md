@@ -9,3 +9,5 @@ This is a local coherence check, not final Lorencia acceptance: masonry/statues/
 Coordinator inspected all five neighborhoods. Masonry, timber, vegetation, furniture and new surrounds/roof construction remain mutually consistent; no additional placement or material regression observed in these static views. Independent coherence assessment pending.
 
 Run the configured Blender in background with --factory-startup --python-exit-code 1 --python assets-work/World1/QualityPass02/Coherence01/review.py. The script validates game hashes before loading evidence and writes only this review directory.
+
+Reproduction refuses to overwrite evidence with changed source hashes/placements. Set MU_COHERENCE_OUTPUT to a new review directory for a later integrated checkpoint.

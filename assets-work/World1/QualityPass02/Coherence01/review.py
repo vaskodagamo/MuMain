@@ -6,6 +6,7 @@ These diffuse bind-pose comparisons omit terrain and engine effect animation.
 import hashlib
 import json
 import math
+import os
 from pathlib import Path
 import sys
 
@@ -19,6 +20,7 @@ REPO = WORLD.parents[1]
 sys.path.insert(0, str(WORLD / 'StaticBatch01'))
 from review_scene import mesh_bounds, render, set_camera, set_lighting
 
+OUTPUT = Path(os.environ.get("MU_COHERENCE_OUTPUT", str(ROOT / "review")))
 RADIUS = 650
 REGIONS = {'tavern': (12738, 12838), 'well': (14700, 11700),
            'homes': (14700, 14700), 'awning': (11750, 14500),
@@ -113,10 +115,15 @@ def render_stage(records, sources, anchor, stage, out, bounds=None):
 
 
 def review_region(label, anchor_xy):
-    out = ROOT / 'review' / label
+    out = OUTPUT / label
     out.mkdir(parents=True, exist_ok=True)
     records = records_for(anchor_xy)
     sources = {name: references(name) for name in sorted({r['name'] for r in records})}
+    previous = out / 'provenance.json'
+    if previous.exists():
+        prior = json.loads(previous.read_text())
+        assert prior['sources'] == sources and prior['records'] == records, (
+            'Changed inputs: use MU_COHERENCE_OUTPUT for a new evidence directory.')
     anchor = Vector((*anchor_xy, records[0]['position'][2]))
     bounds = render_stage(records, sources, anchor, 'baseline', out)
     render_stage(records, sources, anchor, 'integrated', out, bounds)
