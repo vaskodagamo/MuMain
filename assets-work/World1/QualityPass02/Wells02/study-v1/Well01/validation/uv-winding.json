@@ -1,0 +1,189 @@
+{
+  "status": "PASS",
+  "triangles": 955,
+  "minimum_area": 4.811492354076096,
+  "unchanged_legacy_faces": [
+    {
+      "triangle": 195,
+      "baseline_triangle": 195,
+      "material": "well.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 0.8955340179261788
+    },
+    {
+      "triangle": 196,
+      "baseline_triangle": 196,
+      "material": "well.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 0.90798106630287
+    },
+    {
+      "triangle": 201,
+      "baseline_triangle": 201,
+      "material": "well.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 1.0
+    },
+    {
+      "triangle": 204,
+      "baseline_triangle": 204,
+      "material": "well.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 1.0
+    },
+    {
+      "triangle": 207,
+      "baseline_triangle": 207,
+      "material": "well.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 1.0000000000649751
+    },
+    {
+      "triangle": 210,
+      "baseline_triangle": 210,
+      "material": "well.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 1.0
+    },
+    {
+      "triangle": 213,
+      "baseline_triangle": 248,
+      "material": "jar_01.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 0.6716248610446378
+    },
+    {
+      "triangle": 214,
+      "baseline_triangle": 249,
+      "material": "jar_01.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 0.2963552024931542
+    },
+    {
+      "triangle": 219,
+      "baseline_triangle": 254,
+      "material": "jar_01.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 0.15591173727448038
+    },
+    {
+      "triangle": 220,
+      "baseline_triangle": 255,
+      "material": "jar_01.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 0.15591173727448038
+    },
+    {
+      "triangle": 225,
+      "baseline_triangle": 260,
+      "material": "jar_01.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 0.17048947995235508
+    },
+    {
+      "triangle": 226,
+      "baseline_triangle": 261,
+      "material": "jar_01.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 0.5357918644325373
+    },
+    {
+      "triangle": 231,
+      "baseline_triangle": 266,
+      "material": "jar_01.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 0.6436790862445274
+    },
+    {
+      "triangle": 232,
+      "baseline_triangle": 267,
+      "material": "jar_01.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 0.29634912546302083
+    },
+    {
+      "triangle": 237,
+      "baseline_triangle": 272,
+      "material": "jar_01.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 0.5023140379913141
+    },
+    {
+      "triangle": 238,
+      "baseline_triangle": 273,
+      "material": "jar_01.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 0.11718822305032858
+    },
+    {
+      "triangle": 243,
+      "baseline_triangle": 278,
+      "material": "jar_01.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 0.17041466602708932
+    },
+    {
+      "triangle": 244,
+      "baseline_triangle": 279,
+      "material": "jar_01.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 0.47934710062349983
+    },
+    {
+      "triangle": 249,
+      "baseline_triangle": 389,
+      "material": "jar_01.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 0.6373802044034826
+    },
+    {
+      "triangle": 250,
+      "baseline_triangle": 390,
+      "material": "jar_01.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 0.2525744303718972
+    },
+    {
+      "triangle": 255,
+      "baseline_triangle": 395,
+      "material": "jar_01.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 0.24409187915480324
+    },
+    {
+      "triangle": 256,
+      "baseline_triangle": 396,
+      "material": "jar_01.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 0.2440938767466281
+    },
+    {
+      "triangle": 261,
+      "baseline_triangle": 401,
+      "material": "jar_01.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 0.25959622797667514
+    },
+    {
+      "triangle": 262,
+      "baseline_triangle": 402,
+      "material": "jar_01.jpg",
+      "uv_area": 0.0,
+      "min_normal_dot": 0.4767025411196318
+    },
+    {
+      "triangle": 337,
+      "baseline_triangle": 897,
+      "material": "jar_01.jpg",
+      "uv_area": 0.00041295999999999987,
+      "min_normal_dot": -0.016240766169948035
+    },
+    {
+      "triangle": 340,
+      "baseline_triangle": 900,
+      "material": "jar_01.jpg",
+      "uv_area": 0.00041295999999999987,
+      "min_normal_dot": -0.016142019981098033
+    }
+  ]
+}

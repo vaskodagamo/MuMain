@@ -1,0 +1,7 @@
+model /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Wells02/Well02/exports/Well02.bmd
+  name field: Well02.smd  version: 12
+  meshes: 1  bones: 1  actions: 1  triangles: 317
+  bounds (bind pose): min -79.28 -93.46 0.00  max 78.00 93.46 270.82  size 157.27 186.92 270.82
+  mesh 0: triangles=317 vertices=200 normals=221 uvs=224 texture=well.jpg
+  bone 0: "Cylinder04" parent=-1
+  action 0: keys=1 lock=0

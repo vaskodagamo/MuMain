@@ -1,0 +1,51 @@
+{
+  "status": "PASS",
+  "protected_roof_underside": {
+    "Well02": [
+      {
+        "baseline_triangle": 54,
+        "candidate_triangle": 0,
+        "maximum_local_position_or_uv_error": 0.0
+      },
+      {
+        "baseline_triangle": 55,
+        "candidate_triangle": 1,
+        "maximum_local_position_or_uv_error": 0.0
+      },
+      {
+        "baseline_triangle": 56,
+        "candidate_triangle": 2,
+        "maximum_local_position_or_uv_error": 0.0
+      },
+      {
+        "baseline_triangle": 57,
+        "candidate_triangle": 3,
+        "maximum_local_position_or_uv_error": 0.0
+      }
+    ],
+    "Well01": [
+      {
+        "baseline_triangle": 54,
+        "candidate_triangle": 88,
+        "maximum_local_position_or_uv_error": 0.0
+      },
+      {
+        "baseline_triangle": 55,
+        "candidate_triangle": 89,
+        "maximum_local_position_or_uv_error": 0.0
+      },
+      {
+        "baseline_triangle": 56,
+        "candidate_triangle": 90,
+        "maximum_local_position_or_uv_error": 0.0
+      },
+      {
+        "baseline_triangle": 57,
+        "candidate_triangle": 91,
+        "maximum_local_position_or_uv_error": 0.0
+      }
+    ]
+  },
+  "tolerance": 0.0003,
+  "criterion": "Both full roof underside planes retain baseline position, named bone, UV, material and cyclic winding; these are the original structural support contacts."
+}

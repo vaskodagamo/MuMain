@@ -1,0 +1,14 @@
+{
+  "file": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Wells02/Well03/exports/Well03.bmd",
+  "mesh_bindings": [
+    {
+      "mesh": 0,
+      "material": "jar_01.jpg",
+      "vertex_to_normal_node_mismatch_corner_counts": {
+        "1:0": 20,
+        "2:0": 20,
+        "3:0": 10
+      }
+    }
+  ]
+}

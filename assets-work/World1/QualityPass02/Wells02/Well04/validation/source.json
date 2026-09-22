@@ -1,0 +1,338 @@
+{
+  "per_root": {
+    "Cylinder07": {
+      "before": [
+        [
+          -27.815000534057617,
+          -16.641202926635742,
+          -0.06809999793767929
+        ],
+        [
+          14.031200408935547,
+          37.41709899902344,
+          99.25900268554688
+        ]
+      ],
+      "after": [
+        [
+          -27.815000534057617,
+          -16.641202926635742,
+          -0.06809999793767929
+        ],
+        [
+          14.031200408935547,
+          37.41709899902344,
+          99.25900268554688
+        ]
+      ],
+      "ground_contacts": 10,
+      "maximum_ground_contact_error": 0.0
+    },
+    "Cylinder08": {
+      "before": [
+        [
+          24.567096710205078,
+          62.53138732910156,
+          6.907800197601318
+        ],
+        [
+          48.20490264892578,
+          85.90910339355469,
+          52.37419891357422
+        ]
+      ],
+      "after": [
+        [
+          24.567096710205078,
+          62.53138732910156,
+          6.907800197601318
+        ],
+        [
+          48.20490264892578,
+          85.90910339355469,
+          52.37419891357422
+        ]
+      ],
+      "ground_contacts": 10,
+      "maximum_ground_contact_error": 0.0
+    },
+    "Cylinder09": {
+      "before": [
+        [
+          -18.039400100708008,
+          83.69170379638672,
+          0.9329000115394592
+        ],
+        [
+          22.887800216674805,
+          126.72509765625,
+          35.820899963378906
+        ]
+      ],
+      "after": [
+        [
+          -18.039400100708008,
+          83.69170379638672,
+          0.9329000115394592
+        ],
+        [
+          22.887800216674805,
+          126.72509765625,
+          35.820899963378906
+        ]
+      ],
+      "ground_contacts": 10,
+      "maximum_ground_contact_error": 0.0
+    },
+    "Cylinder10": {
+      "before": [
+        [
+          -25.156150817871094,
+          41.853145599365234,
+          -0.06809999793767929
+        ],
+        [
+          7.160213947296143,
+          78.05723571777344,
+          72.90499877929688
+        ]
+      ],
+      "after": [
+        [
+          -25.156150817871094,
+          41.853145599365234,
+          -0.06809999793767929
+        ],
+        [
+          7.160213947296143,
+          78.05719757080078,
+          72.90499877929688
+        ]
+      ],
+      "ground_contacts": 10,
+      "maximum_ground_contact_error": 0.0
+    },
+    "Cylinder11": {
+      "before": [
+        [
+          18.655399322509766,
+          -75.18609619140625,
+          -1.258499026298523
+        ],
+        [
+          49.58539962768555,
+          -13.097999572753906,
+          31.263200759887695
+        ]
+      ],
+      "after": [
+        [
+          18.655399322509766,
+          -75.18609619140625,
+          -1.258499026298523
+        ],
+        [
+          49.58539962768555,
+          -13.097999572753906,
+          31.263200759887695
+        ]
+      ],
+      "ground_contacts": 2,
+      "maximum_ground_contact_error": 0.0
+    },
+    "Cylinder12": {
+      "before": [
+        [
+          -43.642601013183594,
+          -134.58270263671875,
+          1.4399000406265259
+        ],
+        [
+          18.014202117919922,
+          -69.75279998779297,
+          53.99869918823242
+        ]
+      ],
+      "after": [
+        [
+          -43.642601013183594,
+          -134.58270263671875,
+          1.4399000406265259
+        ],
+        [
+          18.014202117919922,
+          -69.75279998779297,
+          53.99869918823242
+        ]
+      ],
+      "ground_contacts": 10,
+      "maximum_ground_contact_error": 0.0
+    },
+    "Cylinder13": {
+      "before": [
+        [
+          -25.848730087280273,
+          -55.14049530029297,
+          -0.06809999793767929
+        ],
+        [
+          -1.8153760433197021,
+          -30.997020721435547,
+          52.43050003051758
+        ]
+      ],
+      "after": [
+        [
+          -25.848730087280273,
+          -55.140499114990234,
+          -0.06809999793767929
+        ],
+        [
+          -1.8153940439224243,
+          -30.997020721435547,
+          52.43050003051758
+        ]
+      ],
+      "ground_contacts": 10,
+      "maximum_ground_contact_error": 0.0
+    },
+    "Cylinder14": {
+      "before": [
+        [
+          14.951099395751953,
+          -119.54010009765625,
+          -0.06809999793767929
+        ],
+        [
+          58.29050064086914,
+          -88.56559753417969,
+          72.10310363769531
+        ]
+      ],
+      "after": [
+        [
+          14.951099395751953,
+          -119.54010009765625,
+          -0.06809999793767929
+        ],
+        [
+          58.29050064086914,
+          -88.56559753417969,
+          72.10310363769531
+        ]
+      ],
+      "ground_contacts": 10,
+      "maximum_ground_contact_error": 0.0
+    }
+  },
+  "retained_triangles": 928,
+  "triangles": 1488,
+  "bounds_before": [
+    [
+      -43.642601013183594,
+      -134.58270263671875,
+      -1.258499026298523
+    ],
+    [
+      58.29050064086914,
+      126.72509765625,
+      99.25900268554688
+    ]
+  ],
+  "bounds_after": [
+    [
+      -43.642601013183594,
+      -134.58270263671875,
+      -1.258499026298523
+    ],
+    [
+      58.29050064086914,
+      126.72509765625,
+      99.25900268554688
+    ]
+  ],
+  "parts": [
+    {
+      "bone": "Cylinder07",
+      "kind": "vessel",
+      "triangles": 70,
+      "baseline_neck_vertices": 10,
+      "canonical_section_triangles": 50,
+      "canonical_profile_v": 0.0034
+    },
+    {
+      "bone": "Cylinder08",
+      "kind": "vessel",
+      "triangles": 70,
+      "baseline_neck_vertices": 10,
+      "canonical_section_triangles": 50,
+      "canonical_profile_v": 0.2643
+    },
+    {
+      "bone": "Cylinder09",
+      "kind": "vessel",
+      "triangles": 70,
+      "baseline_neck_vertices": 10,
+      "canonical_section_triangles": 50,
+      "canonical_profile_v": 0.5372
+    },
+    {
+      "bone": "Cylinder10",
+      "kind": "vessel",
+      "triangles": 70,
+      "baseline_neck_vertices": 10,
+      "canonical_section_triangles": 50,
+      "canonical_profile_v": 0.8049
+    },
+    {
+      "bone": "Cylinder11",
+      "kind": "vessel",
+      "triangles": 70,
+      "baseline_neck_vertices": 10,
+      "canonical_section_triangles": 50,
+      "canonical_profile_v": 0.2643
+    },
+    {
+      "bone": "Cylinder12",
+      "kind": "vessel",
+      "triangles": 70,
+      "baseline_neck_vertices": 10,
+      "canonical_section_triangles": 50,
+      "canonical_profile_v": 0.5372
+    },
+    {
+      "bone": "Cylinder13",
+      "kind": "vessel",
+      "triangles": 70,
+      "baseline_neck_vertices": 10,
+      "canonical_section_triangles": 50,
+      "canonical_profile_v": 0.8049
+    },
+    {
+      "bone": "Cylinder14",
+      "kind": "vessel",
+      "triangles": 70,
+      "baseline_neck_vertices": 10,
+      "canonical_section_triangles": 50,
+      "canonical_profile_v": 0.0034
+    }
+  ],
+  "bone_order": [
+    "Cylinder07",
+    "Cylinder08",
+    "Cylinder09",
+    "Cylinder10",
+    "Cylinder11",
+    "Cylinder12",
+    "Cylinder13",
+    "Cylinder14"
+  ],
+  "actions": {
+    "Well04_a00": {
+      "index": 0,
+      "lock": false
+    }
+  },
+  "textures": "Frozen",
+  "client_verified": false
+}
