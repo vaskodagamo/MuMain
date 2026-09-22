@@ -1,0 +1,158 @@
+{
+  "kind": "OFFLINE ACTUAL PLACEMENTS, NOT CLIENT",
+  "anchor": [
+    14300.0,
+    14700.0,
+    165.00001525878906
+  ],
+  "records": [
+    {
+      "name": "House01",
+      "index": 0,
+      "position": [
+        14300.0,
+        14700.0,
+        165.00001525878906
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        2070.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        143.0,
+        147.0
+      ]
+    },
+    {
+      "name": "Stair01",
+      "index": 1,
+      "position": [
+        14431.8681640625,
+        14461.7275390625,
+        164.99998474121094
+      ],
+      "rotation": [
+        10.0,
+        0.0,
+        1980.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        144.318681640625,
+        144.617275390625
+      ]
+    },
+    {
+      "name": "Sign01",
+      "index": 2,
+      "position": [
+        14099.103515625,
+        14466.4345703125,
+        330.0000305175781
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        810.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        140.99103515625,
+        144.664345703125
+      ]
+    },
+    {
+      "name": "StoneMuWall02",
+      "index": 29,
+      "position": [
+        14450.0,
+        14950.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1260.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        144.5,
+        149.5
+      ]
+    },
+    {
+      "name": "StoneMuWall03",
+      "index": 20,
+      "position": [
+        13950.0,
+        14950.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1260.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        139.5,
+        149.5
+      ]
+    },
+    {
+      "name": "StoneMuWall03",
+      "index": 21,
+      "position": [
+        14250.0,
+        14950.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1260.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        142.5,
+        149.5
+      ]
+    },
+    {
+      "name": "StoneMuWall03",
+      "index": 36,
+      "position": [
+        14650.0,
+        14950.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1260.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        146.5,
+        149.5
+      ]
+    }
+  ],
+  "bounds": [
+    [
+      -500.494140625,
+      -352.443115234375,
+      -174.1735382080078
+    ],
+    [
+      499.5059509277344,
+      397.3951110839844,
+      334.09295654296875
+    ]
+  ],
+  "light_markers": "Light03 original anchor transforms recorded; hidden engine marker boxes omitted",
+  "effect": "light_02 additive approximation at0.55, not engine evidence",
+  "omitted": "Terrain/collision/baked lighting/unselected unrelated objects"
+}

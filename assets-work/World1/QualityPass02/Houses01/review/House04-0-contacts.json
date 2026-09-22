@@ -1,0 +1,234 @@
+{
+  "kind": "OFFLINE ACTUAL PLACEMENTS, NOT CLIENT",
+  "anchor": [
+    11550.0,
+    11300.0,
+    165.00003051757812
+  ],
+  "records": [
+    {
+      "name": "House04",
+      "index": 0,
+      "position": [
+        11550.0,
+        11300.0,
+        165.00003051757812
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        2160.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        115.5,
+        113.0
+      ]
+    },
+    {
+      "name": "Sign01",
+      "index": 0,
+      "position": [
+        11647.5810546875,
+        11376.6376953125,
+        315.0000305175781
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1260.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        116.475810546875,
+        113.766376953125
+      ]
+    },
+    {
+      "name": "Fence03",
+      "index": 5,
+      "position": [
+        11800.0,
+        11600.0,
+        165.00001525878906
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        2340.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        118.0,
+        116.0
+      ]
+    },
+    {
+      "name": "Fence03",
+      "index": 6,
+      "position": [
+        11600.0,
+        11600.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        2340.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        116.0,
+        116.0
+      ]
+    },
+    {
+      "name": "Fence03",
+      "index": 7,
+      "position": [
+        11400.0,
+        11600.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        2340.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        114.0,
+        116.0
+      ]
+    },
+    {
+      "name": "SteelWall02",
+      "index": 2,
+      "position": [
+        11600.0,
+        11600.0,
+        165.00003051757812
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        900.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        116.0,
+        116.0
+      ]
+    },
+    {
+      "name": "SteelWall03",
+      "index": 1,
+      "position": [
+        11350.0,
+        11600.0,
+        165.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1080.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        113.5,
+        116.0
+      ]
+    },
+    {
+      "name": "StoneMuWall02",
+      "index": 3,
+      "position": [
+        11250.0,
+        11050.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1350.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        112.5,
+        110.5
+      ]
+    },
+    {
+      "name": "StoneMuWall03",
+      "index": 6,
+      "position": [
+        11250.0,
+        11550.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1350.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        112.5,
+        115.5
+      ]
+    },
+    {
+      "name": "StoneMuWall03",
+      "index": 7,
+      "position": [
+        11250.0,
+        11250.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1350.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        112.5,
+        112.5
+      ]
+    },
+    {
+      "name": "HouseEtc03",
+      "index": 4,
+      "position": [
+        11700.0,
+        11000.0,
+        164.99998474121094
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1890.0
+      ],
+      "scale": 0.5600004196166992,
+      "tile": [
+        117.0,
+        110.0
+      ]
+    }
+  ],
+  "bounds": [
+    [
+      -447.3951110839844,
+      -355.87957763671875,
+      -174.17355346679688
+    ],
+    [
+      350.4195251464844,
+      399.50592041015625,
+      413.9349060058594
+    ]
+  ],
+  "light_markers": "Light03 original anchor transforms recorded; hidden engine marker boxes omitted",
+  "effect": "light_02 additive approximation at0.55, not engine evidence",
+  "omitted": "Terrain/collision/baked lighting/unselected unrelated objects"
+}

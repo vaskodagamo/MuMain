@@ -1,0 +1,170 @@
+{
+  "status": "PASS",
+  "method": "Every authored source triangle corner mapped one-to-one to final SMD corner, transformed through original intended raw baseline action and actual final raw BMD action at all40 keys",
+  "corners": 4482,
+  "frames": [
+    {
+      "frame": 0,
+      "maximum_authored_corner_distance": 4.825252777356536e-05
+    },
+    {
+      "frame": 1,
+      "maximum_authored_corner_distance": 5.501634636633284e-05
+    },
+    {
+      "frame": 2,
+      "maximum_authored_corner_distance": 4.825252777356536e-05
+    },
+    {
+      "frame": 3,
+      "maximum_authored_corner_distance": 6.151014517439689e-05
+    },
+    {
+      "frame": 4,
+      "maximum_authored_corner_distance": 4.9591064453125e-05
+    },
+    {
+      "frame": 5,
+      "maximum_authored_corner_distance": 4.9591064453125e-05
+    },
+    {
+      "frame": 6,
+      "maximum_authored_corner_distance": 6.151014517439689e-05
+    },
+    {
+      "frame": 7,
+      "maximum_authored_corner_distance": 5.117953439712043e-05
+    },
+    {
+      "frame": 8,
+      "maximum_authored_corner_distance": 6.115424935104904e-05
+    },
+    {
+      "frame": 9,
+      "maximum_authored_corner_distance": 4.825252777356536e-05
+    },
+    {
+      "frame": 10,
+      "maximum_authored_corner_distance": 4.825252777356536e-05
+    },
+    {
+      "frame": 11,
+      "maximum_authored_corner_distance": 4.9591064453125e-05
+    },
+    {
+      "frame": 12,
+      "maximum_authored_corner_distance": 4.640779518354965e-05
+    },
+    {
+      "frame": 13,
+      "maximum_authored_corner_distance": 4.640779518354965e-05
+    },
+    {
+      "frame": 14,
+      "maximum_authored_corner_distance": 5.2995468099402634e-05
+    },
+    {
+      "frame": 15,
+      "maximum_authored_corner_distance": 4.9591064453125e-05
+    },
+    {
+      "frame": 16,
+      "maximum_authored_corner_distance": 5.117953439712043e-05
+    },
+    {
+      "frame": 17,
+      "maximum_authored_corner_distance": 4.825252777356536e-05
+    },
+    {
+      "frame": 18,
+      "maximum_authored_corner_distance": 5.035544884660372e-05
+    },
+    {
+      "frame": 19,
+      "maximum_authored_corner_distance": 4.825252777356536e-05
+    },
+    {
+      "frame": 20,
+      "maximum_authored_corner_distance": 4.640779518354965e-05
+    },
+    {
+      "frame": 21,
+      "maximum_authored_corner_distance": 4.825252777356536e-05
+    },
+    {
+      "frame": 22,
+      "maximum_authored_corner_distance": 5.035544884660372e-05
+    },
+    {
+      "frame": 23,
+      "maximum_authored_corner_distance": 4.825252777356536e-05
+    },
+    {
+      "frame": 24,
+      "maximum_authored_corner_distance": 5.117953439712043e-05
+    },
+    {
+      "frame": 25,
+      "maximum_authored_corner_distance": 4.9591064453125e-05
+    },
+    {
+      "frame": 26,
+      "maximum_authored_corner_distance": 5.2995468099402634e-05
+    },
+    {
+      "frame": 27,
+      "maximum_authored_corner_distance": 4.640779518354965e-05
+    },
+    {
+      "frame": 28,
+      "maximum_authored_corner_distance": 4.640779518354965e-05
+    },
+    {
+      "frame": 29,
+      "maximum_authored_corner_distance": 4.9591064453125e-05
+    },
+    {
+      "frame": 30,
+      "maximum_authored_corner_distance": 4.825252777356536e-05
+    },
+    {
+      "frame": 31,
+      "maximum_authored_corner_distance": 4.825252777356536e-05
+    },
+    {
+      "frame": 32,
+      "maximum_authored_corner_distance": 6.115424935104904e-05
+    },
+    {
+      "frame": 33,
+      "maximum_authored_corner_distance": 5.117953439712043e-05
+    },
+    {
+      "frame": 34,
+      "maximum_authored_corner_distance": 6.151014517439689e-05
+    },
+    {
+      "frame": 35,
+      "maximum_authored_corner_distance": 4.9591064453125e-05
+    },
+    {
+      "frame": 36,
+      "maximum_authored_corner_distance": 4.9591064453125e-05
+    },
+    {
+      "frame": 37,
+      "maximum_authored_corner_distance": 6.151014517439689e-05
+    },
+    {
+      "frame": 38,
+      "maximum_authored_corner_distance": 4.825252777356536e-05
+    },
+    {
+      "frame": 39,
+      "maximum_authored_corner_distance": 5.501634636633284e-05
+    }
+  ],
+  "maximum": 6.151014517439689e-05,
+  "tolerance": 0.002,
+  "normal_proof": "raw-normal-bindings.json evaluates actual raw normal ownership/direction through every hierarchical frame"
+}

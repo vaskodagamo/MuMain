@@ -1,0 +1,95 @@
+{
+  "status": "PASS",
+  "triangles": 1544,
+  "one_to_one_triangle_match": true,
+  "area_metrics": {
+    "minimum_geometry_area": 3.9926543737292217,
+    "minimum_uv_area": 7.339465508948706e-05,
+    "zero_geometry": 0,
+    "zero_uv": 0
+  },
+  "baseline_area_metrics": {
+    "minimum_geometry_area": 3.9926543737292217,
+    "minimum_uv_area": 7.339465508948706e-05,
+    "zero_geometry": 0,
+    "zero_uv": 0
+  },
+  "protected_contract": {
+    "protected_original_points": 139,
+    "maximum_position_delta": 0,
+    "controlled_light_triangles": 0,
+    "awning_boundary_edges": 0,
+    "policy": "Every original non-awning vertex and every awning perimeter endpoint retained; exact controlled light triangles preserved"
+  },
+  "every_authored_triangle_matches_material_bone_position_uv": true,
+  "maximum_position_delta": 7.643066410878419e-06,
+  "position_tolerance": 0.002,
+  "uv_tolerance": 1e-05,
+  "uv_layers": [
+    "Float2"
+  ],
+  "packed_images": {
+    "tile_house01.jpg": [
+      512,
+      512
+    ],
+    "tile_house01.jpg.001": [
+      512,
+      512
+    ],
+    "tile_ston04.jpg": [
+      512,
+      512
+    ],
+    "tile_ston04.jpg.001": [
+      512,
+      512
+    ],
+    "tile_ston05.jpg": [
+      512,
+      512
+    ],
+    "tile_ston05.jpg.001": [
+      512,
+      512
+    ],
+    "tile_ston06.jpg": [
+      512,
+      512
+    ],
+    "tile_ston06.jpg.001": [
+      512,
+      512
+    ]
+  },
+  "per_root_contract": {
+    "0": {
+      "bounds_before": [
+        [
+          -222.342194,
+          -301.182709,
+          -0.6184
+        ],
+        [
+          213.050201,
+          302.262909,
+          314.601593
+        ]
+      ],
+      "bounds_after": [
+        [
+          -222.342194,
+          -301.182709,
+          -0.6184
+        ],
+        [
+          213.050201,
+          302.262909,
+          314.601593
+        ]
+      ],
+      "ground_contacts": 8,
+      "maximum_contact_delta": 0.0
+    }
+  }
+}

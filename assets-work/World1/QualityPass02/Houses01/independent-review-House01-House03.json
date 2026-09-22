@@ -1,0 +1,125 @@
+{
+  "stage": "Final independent House01 and House03 acceptance",
+  "decision": "ACCEPT House01 and House03 at the exact hashes listed",
+  "assets": {
+    "House01": {
+      "export_sha256": "ebae8d2a2bda5483e42f2c9c41066354e9fcee00df82549a63bca0bc367932b4",
+      "images": {
+        "candidate-light.png": "14a6b7d48dc06452796ef5c6e64e4054db178169c9874853a789b3c151a4d51b",
+        "baseline-reverse.png": "1a98fdfa3c432a45f9696039e7b734fd754026f9df080e153d18c60757bef5d6",
+        "baseline.png": "f10163e1b105d444a2c241e97cce6c9a0379511e563d899455dc883702955f28",
+        "candidate-small.png": "f5216a156448d74f64e41c4d6dd890ded9b486e3c404e3c2446859eec465aa41",
+        "candidate-reverse.png": "467b352722020afb5dd6ac3822333b915619d8c7d710506a540694308c319269",
+        "original.png": "b66986f6ec9cad986b67933a8dd5c73678b8430cd25313027687f469802ed698",
+        "wireframe.png": "a621b9b2fd475c5f421ba46a6b03db27e0e61ce08197bef76fd1c70f2189558c",
+        "candidate.png": "4bb9adca24bffabe8e86ea0998c043af8e22aa6ae4062626494d663753e818a0",
+        "baseline-small.png": "3607e4df1bf44afa97df0804e4131ce66247b75df50f8e7ac40313e648bde1c8",
+        "baseline-light.png": "dffaba3a96dfabea37ecb175778383bcc84c6de877b9641afb3be30a484c0dc6"
+      }
+    },
+    "House03": {
+      "export_sha256": "0fdb5c6fd61ae8239c780f2622b7764dee3ab3decec2708520722c4af2944d0c",
+      "images": {
+        "candidate-light.png": "11f3f5a0adadacce40f8cf2adbd2ee0f8eba25869a4eed887df171c0b19f5b75",
+        "baseline-reverse.png": "b95ce876310e8ae501b8fee8b6db4eb37c8baa6063835b38a0e7905b31c150b4",
+        "baseline.png": "27a7392d4f882258afa603ff2842d59983cb413871e010c2168ed80e22b77a80",
+        "candidate-small.png": "4158b34265a85279c2c38da92702cde5307cdf5d12149873fb578150b3e1cb50",
+        "candidate-reverse.png": "d542e646e1ed690d2a3eaf64b7f7269094ece9476e1b519c0410700180db50b9",
+        "original.png": "6a67b08dda425e788a0a11b2ab8b31be7e5faad851d14b2a1a884edfffdbe4d8",
+        "wireframe.png": "3bcf3b29a5db82a1eb8613fc1bbcfc0d5ba71a660cf42bf7f057f8fdc8ae5205",
+        "candidate.png": "171692ae384531c3fd535fa9594f38560577c90e8a21e0d9b858eb65621bf563",
+        "baseline-small.png": "6265b8ffd7096a1ae059b2f48bcdbacdd0ff122ad29fafaa44877c76c579d6fe",
+        "baseline-light.png": "0c99d8767085866b2957fe76337558611a0191b6d0bf5230952dd99149523c72"
+      }
+    }
+  },
+  "visual_findings": {
+    "House01": "Stone jambs/sills and deeper under-eave corbels read in light/reverse. Reduced main gain modest; box and roof silhouette largely unchanged.",
+    "House03": "Real canopy underbeam/knee braces and flue rims improve structural detail. Much is hidden below canopy at reduced main angle; require actual neighbor/effect context."
+  },
+  "remaining_gates": [],
+  "context_findings": {
+    "House01": "Actual placement0 stone portal and window surrounds visibly improve depth; ladder/sign/rear masonry appear unchanged. Second placement has heavy inherited masonry/straw occlusion, with chimney improvement visible. No new contact opening observed.",
+    "House03": "Actual placement with frozen House02 records3/5, HouseEtc01 records40/41, TreasureDrum39 reveals clear underbeam/knee-brace structure through alpha board gaps. Main/reverse show no new neighbor interference. Flue rims read as substantial masonry."
+  },
+  "limits": [
+    "Offline Blender placement and additive effect approximations, not live client or collision validation.",
+    "House01 box outline and roof largely remain baseline; gain is purposeful structural surround/corbel detail.",
+    "House03 old alpha board fringe remains texture-limited; supports and curvature improve construction.",
+    "House04 is excluded from this acceptance."
+  ],
+  "proof": {
+    "House01": {
+      "summary.json": {
+        "sha256": "321a589b6a42a7a355e9d9f5ddd623a8d8602891b99120243e2f475e6d65b06b",
+        "status": "PASS"
+      },
+      "frozen-textures.json": {
+        "sha256": "1e84d4a5026b4e46e1141fd680f38338a1371c5371f81f5cca5228b334f679a6",
+        "status": null
+      },
+      "authored-match.json": {
+        "sha256": "8153a5a0a98549e5bd0b966de9ad7d473afaacc0d7ca57bd6bf72026f6045e8e",
+        "status": "PASS"
+      },
+      "raw-normal-bindings.json": {
+        "sha256": "01a2a9a1c42a094cec0c0b2d0c15b0af723e9af676e7b609f54261f1274c2de5",
+        "status": "PASS"
+      },
+      "local-motion.json": {
+        "sha256": "abf5266835b6d7d96e2bdb063d93c7c685c3e37260554f5bed4b441ea8350e6e",
+        "status": "PASS"
+      },
+      "authored.json": {
+        "sha256": "3a0de0649529bd4694edac9f0ca9825ffdcbc37e466887243a53588de0632fce",
+        "status": null
+      }
+    },
+    "House03": {
+      "summary.json": {
+        "sha256": "9b8c128817a5b2fd159faa8d15e60d781759101a2787956b7ecc2c741869a482",
+        "status": "PASS"
+      },
+      "frozen-textures.json": {
+        "sha256": "a3dd632694b41020aecbf0f5ceeabe6662bde01ee225f824e45dd43b85d3b010",
+        "status": null
+      },
+      "authored-match.json": {
+        "sha256": "bed1a2bd93690b88dc45cb08cef5ac6d9861f30374846c40470be4a32b5ea39f",
+        "status": "PASS"
+      },
+      "raw-normal-bindings.json": {
+        "sha256": "466939073710706aaffaee4947e74df989a2e39f1eb264a013df133a6216bd19",
+        "status": "PASS"
+      },
+      "local-motion.json": {
+        "sha256": "ddbf0d63d2c17b2753b5ef81335434024d195d552f2b45d5e306500b0829649a",
+        "status": "PASS"
+      },
+      "authored.json": {
+        "sha256": "65b0b7742f607d518fd3ad24b6fdbd2a46794c4adc195e568e3314007ef316d7",
+        "status": null
+      }
+    }
+  },
+  "context_image_hashes": {
+    "House01-0-baseline.png": "8364c0ae778ba83d53e66e03f2b461db7ddcd549ccca28d1c19c809e46cad3dc",
+    "House01-1-baseline.png": "69b3dd727cd8235e3ca831856d41ece52c7eea689950cd0018a1827b148d4f16",
+    "House01-0-candidate.png": "8b8a8408fb2df4674de0d3b2fb33f4b2249119ac09fd227a3eca01e1323c464a",
+    "House01-0-candidate-reverse.png": "ccf7546b08d6760c3a971ee053ada36dd0d57093b388007939d14253eb46c5dd",
+    "House03-0-baseline.png": "c7e09b4d4baa4f217aea300c27e18701881a891732c66f8326de6045aa6ef14a",
+    "House03-0-candidate.png": "e0e7731739faca6e2e8b279098602906015df2b2c9459b0cc462b7dc3cfbc682",
+    "House01-1-candidate.png": "4583ac24c2a5de296dc5a4bc07d003b940ff85252a3f31679922ad169c7016a7",
+    "House03-0-candidate-reverse.png": "ae14cb80c35351fe187b1c81e8684326e0eec67d0b35a6ff29f1c8cf5be20831",
+    "House01-0-baseline-reverse.png": "ef4acd62f354c2f374c1e561c94e10b8455f5d8244a39545b44ed8d9e163df98",
+    "House01-1-baseline-reverse.png": "38b762338c490d8aae60a89b14e049d7270d7b088d5e29fb36b8abb352eee403",
+    "House03-0-baseline-reverse.png": "b330649757b85a65bb656955f95b450be1bda23d6b36106876b5e818733b3859",
+    "House01-1-candidate-reverse.png": "305045d78b973f31588f6615176e812f8585ef3b9d124b52ca50c43e19f31074"
+  },
+  "effect_image_hashes": {
+    "baseline-effect-0.4.png": "5e5a28e6a7291735756824a2f98b5a117cc746c974a59621d5480818f7cf6293",
+    "baseline-effect-0.7.png": "422054d48cc4bfc38284ec006fa737d4e8d42a176d2ad495c2c3f296550b9a33",
+    "candidate-effect-0.7.png": "b9de576cc060f3a0838aaf47f56b7b3a686ed36af97b9f47e86d4178537f9f33",
+    "candidate-effect-0.4.png": "0482e93e09d9f22b0240eb459a2fc157dc32f99bc552af733b171ea3806bfb88"
+  }
+}

@@ -1,0 +1,187 @@
+{
+  "status": "PASS",
+  "triangles": 1335,
+  "one_to_one_triangle_match": true,
+  "area_metrics": {
+    "minimum_geometry_area": 9.063903699883495,
+    "minimum_uv_area": 0.0,
+    "zero_geometry": 0,
+    "zero_uv": 2
+  },
+  "baseline_area_metrics": {
+    "minimum_geometry_area": 67.1242689380581,
+    "minimum_uv_area": 0.0,
+    "zero_geometry": 0,
+    "zero_uv": 2
+  },
+  "protected_contract": {
+    "protected_original_points": 231,
+    "maximum_position_delta": 0,
+    "controlled_light_triangles": 6,
+    "awning_boundary_edges": 14,
+    "policy": "Every original non-awning vertex and every awning perimeter endpoint retained; exact controlled light triangles preserved"
+  },
+  "every_authored_triangle_matches_material_bone_position_uv": true,
+  "maximum_position_delta": 3.099999997857594e-05,
+  "position_tolerance": 0.002,
+  "uv_tolerance": 1e-05,
+  "uv_layers": [
+    "Float2"
+  ],
+  "packed_images": {
+    "light_02.jpg": [
+      128,
+      128
+    ],
+    "light_02.jpg.001": [
+      128,
+      128
+    ],
+    "tile_ston04.jpg": [
+      512,
+      512
+    ],
+    "tile_ston04.jpg.001": [
+      512,
+      512
+    ],
+    "tile_ston05.jpg": [
+      512,
+      512
+    ],
+    "tile_ston05.jpg.001": [
+      512,
+      512
+    ],
+    "tile_ston06.jpg": [
+      512,
+      512
+    ],
+    "tile_ston06.jpg.001": [
+      512,
+      512
+    ],
+    "tile_ston07.tga": [
+      512,
+      512
+    ],
+    "tile_ston07.tga.001": [
+      512,
+      512
+    ]
+  },
+  "per_root_contract": {
+    "0": {
+      "bounds_before": [
+        [
+          -330.60379,
+          -463.454376,
+          -1.3744
+        ],
+        [
+          302.31601,
+          450.869812,
+          381.383392
+        ]
+      ],
+      "bounds_after": [
+        [
+          -330.60379,
+          -463.454376,
+          -1.3744
+        ],
+        [
+          302.31601,
+          450.869812,
+          381.383392
+        ]
+      ],
+      "ground_contacts": 32,
+      "maximum_contact_delta": 0.0
+    },
+    "1": {
+      "bounds_before": [
+        [
+          82.087402,
+          261.525787,
+          49.371002
+        ],
+        [
+          206.749405,
+          299.606293,
+          132.859894
+        ]
+      ],
+      "bounds_after": [
+        [
+          82.087402,
+          261.525787,
+          49.371002
+        ],
+        [
+          206.749405,
+          299.606293,
+          132.859894
+        ]
+      ],
+      "ground_contacts": 2,
+      "maximum_contact_delta": 0.0
+    },
+    "2": {
+      "bounds_before": [
+        [
+          82.087402,
+          222.087006,
+          82.881798
+        ],
+        [
+          206.749405,
+          246.410095,
+          209.968201
+        ]
+      ],
+      "bounds_after": [
+        [
+          82.087402,
+          222.087006,
+          82.881798
+        ],
+        [
+          206.749405,
+          246.410095,
+          209.968201
+        ]
+      ],
+      "ground_contacts": 1,
+      "maximum_contact_delta": 0.0
+    },
+    "3": {
+      "bounds_before": [
+        [
+          82.087402,
+          320.116608,
+          49.371002
+        ],
+        [
+          206.74942,
+          344.439697,
+          180.563705
+        ]
+      ],
+      "bounds_after": [
+        [
+          82.087402,
+          320.116608,
+          49.371002
+        ],
+        [
+          206.74942,
+          344.439697,
+          180.563705
+        ]
+      ],
+      "ground_contacts": 1,
+      "maximum_contact_delta": 0.0
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "triangles": 1494,
+  "bounds_before": [
+    [
+      -250.01089477539062,
+      -240.25079345703125,
+      -0.8140000104904175
+    ],
+    [
+      252.6663055419922,
+      199.92037963867188,
+      413.9349060058594
+    ]
+  ],
+  "bounds_after": [
+    [
+      -250.01089477539062,
+      -240.25079345703125,
+      -0.8140000104904175
+    ],
+    [
+      252.6663055419922,
+      199.92037963867188,
+      413.9349060058594
+    ]
+  ],
+  "geometry_only": true,
+  "roof_boundary_edges": 21,
+  "protected": "Every nonroof triangle, every original vertex and all dome perimeter/dormer edges"
+}

@@ -1,0 +1,212 @@
+{
+  "status": "PASS",
+  "poses": [
+    {
+      "pose": "bind",
+      "shared_normal_corners": 0,
+      "maximum_world_direction_delta": 0
+    },
+    {
+      "pose": "0",
+      "shared_normal_corners": 0,
+      "maximum_world_direction_delta": 0
+    },
+    {
+      "pose": "1",
+      "shared_normal_corners": 0,
+      "maximum_world_direction_delta": 0
+    },
+    {
+      "pose": "2",
+      "shared_normal_corners": 0,
+      "maximum_world_direction_delta": 0
+    },
+    {
+      "pose": "3",
+      "shared_normal_corners": 0,
+      "maximum_world_direction_delta": 0
+    },
+    {
+      "pose": "4",
+      "shared_normal_corners": 0,
+      "maximum_world_direction_delta": 0
+    },
+    {
+      "pose": "5",
+      "shared_normal_corners": 0,
+      "maximum_world_direction_delta": 0
+    },
+    {
+      "pose": "6",
+      "shared_normal_corners": 0,
+      "maximum_world_direction_delta": 0
+    },
+    {
+      "pose": "7",
+      "shared_normal_corners": 0,
+      "maximum_world_direction_delta": 0
+    },
+    {
+      "pose": "8",
+      "shared_normal_corners": 0,
+      "maximum_world_direction_delta": 0
+    },
+    {
+      "pose": "9",
+      "shared_normal_corners": 0,
+      "maximum_world_direction_delta": 0
+    },
+    {
+      "pose": "10",
+      "shared_normal_corners": 0,
+      "maximum_world_direction_delta": 0
+    },
+    {
+      "pose": "11",
+      "shared_normal_corners": 0,
+      "maximum_world_direction_delta": 0
+    },
+    {
+      "pose": "12",
+      "shared_normal_corners": 0,
+      "maximum_world_direction_delta": 0
+    },
+    {
+      "pose": "13",
+      "shared_normal_corners": 0,
+      "maximum_world_direction_delta": 0
+    },
+    {
+      "pose": "14",
+      "shared_normal_corners": 0,
+      "maximum_world_direction_delta": 0
+    },
+    {
+      "pose": "15",
+      "shared_normal_corners": 0,
+      "maximum_world_direction_delta": 0
+    },
+    {
+      "pose": "16",
+      "shared_normal_corners": 0,
+      "maximum_world_direction_delta": 0
+    },
+    {
+      "pose": "17",
+      "shared_normal_corners": 0,
+      "maximum_world_direction_delta": 0
+    },
+    {
+      "pose": "18",
+      "shared_normal_corners": 0,
+      "maximum_world_direction_delta": 0
+    },
+    {
+      "pose": "19",
+      "shared_normal_corners": 0,
+      "maximum_world_direction_delta": 0
+    },
+    {
+      "pose": "20",
+      "shared_normal_corners": 0,
+      "maximum_world_direction_delta": 0
+    },
+    {
+      "pose": "21",
+      "shared_normal_corners": 0,
+      "maximum_world_direction_delta": 0
+    },
+    {
+      "pose": "22",
+      "shared_normal_corners": 0,
+      "maximum_world_direction_delta": 0
+    },
+    {
+      "pose": "23",
+      "shared_normal_corners": 0,
+      "maximum_world_direction_delta": 0
+    },
+    {
+      "pose": "24",
+      "shared_normal_corners": 0,
+      "maximum_world_direction_delta": 0
+    },
+    {
+      "pose": "25",
+      "shared_normal_corners": 0,
+      "maximum_world_direction_delta": 0
+    },
+    {
+      "pose": "26",
+      "shared_normal_corners": 0,
+      "maximum_world_direction_delta": 0
+    },
+    {
+      "pose": "27",
+      "shared_normal_corners": 0,
+      "maximum_world_direction_delta": 0
+    },
+    {
+      "pose": "28",
+      "shared_normal_corners": 0,
+      "maximum_world_direction_delta": 0
+    },
+    {
+      "pose": "29",
+      "shared_normal_corners": 0,
+      "maximum_world_direction_delta": 0
+    },
+    {
+      "pose": "30",
+      "shared_normal_corners": 0,
+      "maximum_world_direction_delta": 0
+    },
+    {
+      "pose": "31",
+      "shared_normal_corners": 0,
+      "maximum_world_direction_delta": 0
+    },
+    {
+      "pose": "32",
+      "shared_normal_corners": 0,
+      "maximum_world_direction_delta": 0
+    },
+    {
+      "pose": "33",
+      "shared_normal_corners": 0,
+      "maximum_world_direction_delta": 0
+    },
+    {
+      "pose": "34",
+      "shared_normal_corners": 0,
+      "maximum_world_direction_delta": 0
+    },
+    {
+      "pose": "35",
+      "shared_normal_corners": 0,
+      "maximum_world_direction_delta": 0
+    },
+    {
+      "pose": "36",
+      "shared_normal_corners": 0,
+      "maximum_world_direction_delta": 0
+    },
+    {
+      "pose": "37",
+      "shared_normal_corners": 0,
+      "maximum_world_direction_delta": 0
+    },
+    {
+      "pose": "38",
+      "shared_normal_corners": 0,
+      "maximum_world_direction_delta": 0
+    },
+    {
+      "pose": "39",
+      "shared_normal_corners": 0,
+      "maximum_world_direction_delta": 0
+    }
+  ],
+  "threshold": 0.0001,
+  "method": "Actual raw normal nodes composed through full hierarchy at bind and all40 action frames"
+}

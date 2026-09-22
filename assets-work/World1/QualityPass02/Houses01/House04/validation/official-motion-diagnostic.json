@@ -1,0 +1,208 @@
+{
+  "status": "DIAGNOSTIC_NOT_ACCEPTANCE",
+  "maximum_world_matrix_delta": 0.00038361549377441406,
+  "maximum_posed_bounds_delta": 0.0,
+  "frames": [
+    {
+      "frame": 0,
+      "maximum_world_matrix_delta": 0.00035858154296875,
+      "maximum_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 1,
+      "maximum_world_matrix_delta": 0.00037384033203125,
+      "maximum_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 2,
+      "maximum_world_matrix_delta": 0.0003509521484375,
+      "maximum_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 3,
+      "maximum_world_matrix_delta": 0.0003509521484375,
+      "maximum_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 4,
+      "maximum_world_matrix_delta": 0.0003662109375,
+      "maximum_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 5,
+      "maximum_world_matrix_delta": 0.0003814697265625,
+      "maximum_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 6,
+      "maximum_world_matrix_delta": 0.000377655029296875,
+      "maximum_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 7,
+      "maximum_world_matrix_delta": 0.000347137451171875,
+      "maximum_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 8,
+      "maximum_world_matrix_delta": 0.0003662109375,
+      "maximum_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 9,
+      "maximum_world_matrix_delta": 0.0003795623779296875,
+      "maximum_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 10,
+      "maximum_world_matrix_delta": 0.0003833770751953125,
+      "maximum_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 11,
+      "maximum_world_matrix_delta": 0.000362396240234375,
+      "maximum_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 12,
+      "maximum_world_matrix_delta": 0.00037384033203125,
+      "maximum_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 13,
+      "maximum_world_matrix_delta": 0.00037288665771484375,
+      "maximum_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 14,
+      "maximum_world_matrix_delta": 0.00038361549377441406,
+      "maximum_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 15,
+      "maximum_world_matrix_delta": 0.0003752708435058594,
+      "maximum_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 16,
+      "maximum_world_matrix_delta": 0.0003795623779296875,
+      "maximum_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 17,
+      "maximum_world_matrix_delta": 0.0003795623779296875,
+      "maximum_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 18,
+      "maximum_world_matrix_delta": 6.103515625e-05,
+      "maximum_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 19,
+      "maximum_world_matrix_delta": 6.103515625e-05,
+      "maximum_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 20,
+      "maximum_world_matrix_delta": 6.103515625e-05,
+      "maximum_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 21,
+      "maximum_world_matrix_delta": 9.1552734375e-05,
+      "maximum_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 22,
+      "maximum_world_matrix_delta": 6.103515625e-05,
+      "maximum_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 23,
+      "maximum_world_matrix_delta": 6.103515625e-05,
+      "maximum_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 24,
+      "maximum_world_matrix_delta": 6.103515625e-05,
+      "maximum_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 25,
+      "maximum_world_matrix_delta": 6.103515625e-05,
+      "maximum_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 26,
+      "maximum_world_matrix_delta": 3.7760473787784576e-05,
+      "maximum_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 27,
+      "maximum_world_matrix_delta": 7.537752389907837e-05,
+      "maximum_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 28,
+      "maximum_world_matrix_delta": 9.1552734375e-05,
+      "maximum_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 29,
+      "maximum_world_matrix_delta": 7.4031762778759e-05,
+      "maximum_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 30,
+      "maximum_world_matrix_delta": 9.1552734375e-05,
+      "maximum_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 31,
+      "maximum_world_matrix_delta": 3.0517578125e-05,
+      "maximum_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 32,
+      "maximum_world_matrix_delta": 6.103515625e-05,
+      "maximum_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 33,
+      "maximum_world_matrix_delta": 0.00037384033203125,
+      "maximum_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 34,
+      "maximum_world_matrix_delta": 0.00037384033203125,
+      "maximum_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 35,
+      "maximum_world_matrix_delta": 0.0003662109375,
+      "maximum_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 36,
+      "maximum_world_matrix_delta": 0.0003662109375,
+      "maximum_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 37,
+      "maximum_world_matrix_delta": 0.0003509521484375,
+      "maximum_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 38,
+      "maximum_world_matrix_delta": 0.00035858154296875,
+      "maximum_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 39,
+      "maximum_world_matrix_delta": 0.0003662109375,
+      "maximum_posed_bounds_delta": 0.0
+    }
+  ],
+  "observation": "Euler noise concentrated in bones7/8 near Y1.570451 radians; no tolerances changed"
+}
