@@ -2,7 +2,7 @@
   "branch": "codex/environment-remake-continuation",
   "owner_remote": "git@github.com:vaskodagamo/MuMain.git",
   "draft_pr": "https://github.com/vaskodagamo/MuMain/pull/12",
-  "published_checkpoint": "b0a6dc3e",
+  "published_checkpoint": "60e46a41",
   "status": "draft, not merged",
   "lorencia_artistic_complete": false,
   "later_maps_started": false,
@@ -10,7 +10,10 @@
   "accepted_asset_commits": [
     "9abdf7e8",
     "4b0ccd02",
-    "072f77f6"
+    "072f77f6",
+    "7be0eaa3",
+    "5a0ad5b5"
   ],
-  "accepted_game_assets": 10
+  "accepted_game_assets": 17,
+  "pending_checkpoint": "17 accepted assets; push follows this coordination commit"
 }

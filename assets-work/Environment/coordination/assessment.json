@@ -158,10 +158,10 @@
     "treatment": "texture-only treatment / essentially original geometry",
     "remaining_problem": "Effect approximation reveals rigid rectangular log extrusions and square ends; soften/taper split-log cross-sections within bounds. Preserve fire_02 mesh1 effect shell and UVs exactly.",
     "priority": 2,
-    "owner": "unclaimed",
-    "branch": null,
-    "worktree": null,
-    "status": "unclaimed",
+    "owner": "furniture",
+    "branch": "codex/lorencia-q02-furniture",
+    "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture",
+    "status": "in progress",
     "baseline": "7b808473",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
     "commits": [],
@@ -4753,22 +4753,25 @@
       ]
     },
     "treatment": "partial geometry/art treatment",
-    "remaining_problem": "Pot mouths remain conspicuously polygonal despite rounded body subdivision; stone well is a straight tube with high-contrast painted stones and flat roof boards.",
+    "remaining_problem": "Independently accepted open pottery mouths and thick well roof boards; coarse retained pottery bodies/handles defensible; client observation pending.",
     "priority": 2,
     "owner": "furniture",
     "branch": "codex/lorencia-q02-furniture",
     "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture",
-    "status": "in progress",
+    "status": "accepted",
     "baseline": "7b808473",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
-    "commits": [],
+    "commits": [
+      "c1296be9",
+      "5a0ad5b5"
+    ],
     "placement_count": 0,
     "placement_records": "../../World1/coordination/dependency-map.json#/models/Well01/placements",
     "first_placement": null,
     "intended_improvement": "Remodel pot lips/necks with coherent wall thickness and curves; refine well rim/roof thickness inside original bounds. Review all jar/well/tub consumers.",
     "assessment": "production",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Well01/final-offline.png",
-    "artistic_gate_resolved": false
+    "evidence": "assets-work/World1/QualityPass02/Wells02/independent-final-review.json",
+    "artistic_gate_resolved": true
   },
   {
     "model": "Well02",
@@ -4780,15 +4783,18 @@
       ]
     },
     "treatment": "texture-only treatment / essentially original geometry",
-    "remaining_problem": "Pot mouths remain conspicuously polygonal despite rounded body subdivision; stone well is a straight tube with high-contrast painted stones and flat roof boards.",
+    "remaining_problem": "Independently accepted open pottery mouths and thick well roof boards; coarse retained pottery bodies/handles defensible; client observation pending.",
     "priority": 2,
     "owner": "furniture",
     "branch": "codex/lorencia-q02-furniture",
     "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture",
-    "status": "in progress",
+    "status": "accepted",
     "baseline": "7b808473",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
-    "commits": [],
+    "commits": [
+      "c1296be9",
+      "5a0ad5b5"
+    ],
     "placement_count": 1,
     "placement_records": "../../World1/coordination/dependency-map.json#/models/Well02/placements",
     "first_placement": {
@@ -4810,8 +4816,8 @@
     },
     "intended_improvement": "Remodel pot lips/necks with coherent wall thickness and curves; refine well rim/roof thickness inside original bounds. Review all jar/well/tub consumers.",
     "assessment": "production",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Well02/final-offline.png",
-    "artistic_gate_resolved": false
+    "evidence": "assets-work/World1/QualityPass02/Wells02/independent-final-review.json",
+    "artistic_gate_resolved": true
   },
   {
     "model": "Well03",
@@ -4823,15 +4829,18 @@
       ]
     },
     "treatment": "partial geometry/art treatment",
-    "remaining_problem": "Pot mouths remain conspicuously polygonal despite rounded body subdivision; stone well is a straight tube with high-contrast painted stones and flat roof boards.",
+    "remaining_problem": "Independently accepted open pottery mouths and thick well roof boards; coarse retained pottery bodies/handles defensible; client observation pending.",
     "priority": 2,
     "owner": "furniture",
     "branch": "codex/lorencia-q02-furniture",
     "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture",
-    "status": "in progress",
+    "status": "accepted",
     "baseline": "7b808473",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
-    "commits": [],
+    "commits": [
+      "c1296be9",
+      "5a0ad5b5"
+    ],
     "placement_count": 2,
     "placement_records": "../../World1/coordination/dependency-map.json#/models/Well03/placements",
     "first_placement": {
@@ -4853,8 +4862,8 @@
     },
     "intended_improvement": "Remodel pot lips/necks with coherent wall thickness and curves; refine well rim/roof thickness inside original bounds. Review all jar/well/tub consumers.",
     "assessment": "production",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Well03/final-offline.png",
-    "artistic_gate_resolved": false
+    "evidence": "assets-work/World1/QualityPass02/Wells02/independent-final-review.json",
+    "artistic_gate_resolved": true
   },
   {
     "model": "Well04",
@@ -4866,15 +4875,18 @@
       ]
     },
     "treatment": "partial geometry/art treatment",
-    "remaining_problem": "Pot mouths remain conspicuously polygonal despite rounded body subdivision; stone well is a straight tube with high-contrast painted stones and flat roof boards.",
+    "remaining_problem": "Independently accepted open pottery mouths and thick well roof boards; coarse retained pottery bodies/handles defensible; client observation pending.",
     "priority": 2,
     "owner": "furniture",
     "branch": "codex/lorencia-q02-furniture",
     "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture",
-    "status": "in progress",
+    "status": "accepted",
     "baseline": "7b808473",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
-    "commits": [],
+    "commits": [
+      "c1296be9",
+      "5a0ad5b5"
+    ],
     "placement_count": 2,
     "placement_records": "../../World1/coordination/dependency-map.json#/models/Well04/placements",
     "first_placement": {
@@ -4896,7 +4908,7 @@
     },
     "intended_improvement": "Remodel pot lips/necks with coherent wall thickness and curves; refine well rim/roof thickness inside original bounds. Review all jar/well/tub consumers.",
     "assessment": "production",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Well04/final-offline.png",
-    "artistic_gate_resolved": false
+    "evidence": "assets-work/World1/QualityPass02/Wells02/independent-final-review.json",
+    "artistic_gate_resolved": true
   }
 ]

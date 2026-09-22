@@ -1,32 +1,28 @@
-# Environment production handoff
+# Current environment remake handoff — 2026-09-23
 
-Goal active and incomplete. Integration worktree `/Users/lukasmac/Documents/claude-test-mumain/MuMain-environment-remake`, branch `codex/environment-remake-continuation`, baseline `7b808473`. Primary checkout has unrelated edits; preserve it.
+Lorencia is not artistically complete. Historical 106/106 means first-pass coverage, not final artistic acceptance. Continue autonomously through Lorencia gate, then other maps per objective.
 
-## Accepted replacements
+## Accepted integrated work
+- Architecture01: HouseWall01/04/05/06, integration `9abdf7e8`. Structural timber bays and shingle courses.
+- Scrub01: Tree09/10, Grass03/04, `4b0ccd02`. Continuous growth and rounded crowns. Reproduction baseline fix `1259e4f8`.
+- Broadleaf01: Grass05/06, `072f77f6`. Smooth drooping leaf arcs.
+- Houses01: House01/03/04, `7be0eaa3` from `32a1a24b`. Stone surrounds, structural awning supports and domed shingle laps. House04 protected rig/motion exact all40frames; authored source normals corrected to final preserved protected normals.
+- Wells02: Well01–04, `5a0ad5b5` from `c1296be9`. Open curved pottery mouths, thick roof boards; all actual-placement groups accepted.
 
-- Architecture01: HouseWall01/04/05/06, integrated `9abdf7e8`, worker `594b6db2`. Structural timber bays and roof-course depth.
-- Scrub01: Tree09/10 and Grass03/04, integrated `4b0ccd02`, worker `51679ab1`. Continuous tall growth and rounded connected crowns,530placements.
-- Broadleaf01: Grass05/06, integrated `072f77f6`, worker `0f78f88d`. Smooth long leaf arcs,399placements.
+All17 replacements independently accepted offline with packed sources, official exports, matching images and technical evidence. Ledger accepted-exports.json; latest wells-integration-validation.json passes exact17 game paths and115model texture resolution. All textures unchanged. Existing client success is user-reported only for baseline7b808473; new changes client pending.
 
-All10BMDs passed independent artistic/technical review, reviewed export hashes and combined texture resolution (115Object1 models). Alltextures unchanged. Detailed reports/sources/comparisons under QualityPass02; ledger `accepted-exports.json`. These are offline accepted, client pending. Prior client success was user-reported for baseline only.
+## Active ownership and next actions
+Architecture worktree MuMain-q02-architecture / codex/lorencia-q02-architecture: owns ONLY StoneStatue01/03, SteelStatue01 BMDs and QualityPass02/Statues02. Frozen textures. First angel experiment running. Follow next-statues-brief.md/evidence.
 
-## Active owners
+Furniture worktree MuMain-q02-furniture / codex/lorencia-q02-furniture: owns ONLY Bonfire01 BMD and QualityPass02/Bonfire02. Opaque fire_01 wood geometry only; freeze all textures and exact fire_02 additive mesh/UV/rig. Follow next-bonfire-brief.md. Official imports running.
 
-- architecture: isolated MuMain-q02-architecture, branch codex/lorencia-q02-architecture. Owns ONLY House01/03/04 BMDs + QualityPass02/Houses01.13textures frozen, neighbors read-only. Prepare imports complete. Start01/03 static work;04static roof later with all40frame rig/effect protection. Follow `next-houses-brief.md`/evidence.
-- furniture: isolated MuMain-q02-furniture, branch codex/lorencia-q02-furniture. Owns ONLY Well01–04 BMDs + QualityPass02/Wells02. All4sharedtextures frozen. Start03/04pot rims/curves then composite01; preserve Cannons01barrels. Follow `next-wells-brief.md`.
-- reviewer: preparing next statues/fountain brief and available for independent production gates. No production/shareddocwrites.
+Reviewer: remaining masonry visual direction, then independent statue/bonfire gates. Root alone maintains coordination and integrates accepted owned commits.
 
-Masonry HouseEtc01/StoneMuWall02/03 remain unresolved; baseline retained. Study-only commit `d6e85282` pushed on furniture branch; NOT integrated. Cap changed actual stacked seam; otherstudies weakgain. New solution must preserve connectionprofile. No approvalexception requested.
+Nine production assets remain: HouseEtc01, StoneMuWall02/03/04; StoneStatue01/03, SteelStatue01; Waterspout01; Bonfire01. Four companion baselines retained by explicit rationale in companion-review.json. Broader retained-asset/coherence gate still required. No later maps started.
 
-## Next actions and toolchain
+Masonry01 rejected study-only commit d6e85282 stays worker branch, NOT integrated. HouseEtc actual stacked seam failed; others lacked meaningful gain. Preserve exact connections, continue new interior-profile directions.
 
-Coordinator runs stable worker Blender scripts because existing worker contexts retained old sandbox. Full access/approvalnever active here; NEVER pass sandbox_permissions. Tool paths/env in toolchain.json. Blender5.2.2, SourceTools3.4.3; modeling via bpy. For pure library assembly renders use --factory-startup to avoid irrelevant SourceTools callback warnings. Do not interrupt existing GUI Blender/client or modify sharedruntime.
+## Operations
+Root executes stable worker bpy scripts using toolchain.json because inherited worker context Blender execution fails. Full access/approval never: do not pass sandbox_permissions. Set BLENDER and MU_BLENDER, MU_BMDCONV, BLENDER_USER_SCRIPTS and BLENDER_USER_CONFIG explicitly. Pure assembly processes use --factory-startup; do not mix final_evidence and library append in one process. Never interrupt user GUI Blender/client or alter shared runtime. Primary MuMain checkout unrelated edits untouched.
 
-Accept only clear visual gains and complete official export/source, rig/action, UV, rawnormal, perroot/contact and one-to-one triangle matching proofs. Integrate focused ownedcommits sequentially; update ledger then validate_quality_pass.py.16productioncandidates remain (4masonry includingStoneMuWall04front,3houses,3statues,4wells,1fountain,1bonfire). Fourcompanionassets retained with explicitrole/material/effect rationale incompanion-review.json; retained/coherence finalgate remains. No latermapproduction until Lorencia gate met.
-
-Draft PR12: https://github.com/vaskodagamo/MuMain/pull/12, ownerfork git@github.com:vaskodagamo/MuMain.git verified. Pushdraft updates authorized; nevermerge/force/upstream. Preserve protected Beer01/terrain and Grass02/Tree12/Tree13 originals.
-
-Latest production: House01/03 secondcandidate technicalPASS and directionprovisionallyapproved; actualneighbor/effect assemblies running. House04 firstcandidate stoppedby40frame localmotion Eulercheck, investigationongoing. Wells01/03/04 mouth/throat candidates directionprovisionallyapproved; innerUVstreaks beingrefined,02rimroofinprogress. InheritedWell01/04normalaliases independentlymeasuredzero worlddirectionerror (safe). Scrub baseline reproductionfix1259e4f8 validatedprepareafterinstallation.
-
-## 2026-09-23 house checkpoint
-Houses01 integrated7be0eaa3; all3accepted, total13BMDreplacements,115modeltexturesresolve. Architecture now owns ONLY StoneStatue01/03+SteelStatue01 and QualityPass02/Statues02, alltextures frozeninitially, next-statues-brief.md. Wells02 all4candidates atfinalreview aftercanonicalpotlips and physicalroofboards; allactualplacements rendered, protectedroofundersides exact. Remaining13production afterhouses (4masonry,3statues,4wells,1fountain,1bonfire); retained/coherencegate stillpending.
+Draft PR12: https://github.com/vaskodagamo/MuMain/pull/12. Verified owner origin git@github.com:vaskodagamo/MuMain.git; focused pushes authorized, never force/upstream/merge. Sources under QualityPass02, independent reports inside accepted batches. Require actual exported visual gain, one-to-one authored triangle position/bone/UV/winding, raw world normals and full motion/contact proof. Protect Beer01/terrain and Grass02/Tree12/Tree13 original BMDs.
