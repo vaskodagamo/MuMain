@@ -177,11 +177,6 @@ void CMuEditorCore::ToggleFullscreen()
     Editor::StudioWindow::SetFullscreen(m_pWindow, !IsFullscreen());
 }
 
-bool CMuEditorCore::WantsOsCursor() const
-{
-    return m_bHoveringUI || (m_bEditorMode && Editor::OfflineWorld::IsItemStudio());
-}
-
 void CMuEditorCore::UpdateStudioPreferences()
 {
     if (!Editor::OfflineWorld::IsItemStudio())
@@ -720,46 +715,46 @@ void CMuEditorCore::Render()
     m_bFrameStarted = false;
 }
 
+bool CMuEditorCore::IsMouseOverEditorUI() const
+{
+    // The windows that claim the mouse themselves (plus the gizmo drag, an open popup and
+    // the closed toolbar's button, a NoInputs window ImGui never reports as hovered), and
+    // whatever ImGui sees: any window, child region, image or gap between widgets, and a
+    // drag that started on a panel and left it. The item studio is all UI: its preview and
+    // the gaps between its panels too.
+    constexpr ImGuiHoveredFlags anyWindow = ImGuiHoveredFlags_AnyWindow |
+        ImGuiHoveredFlags_AllowWhenBlockedByPopup | ImGuiHoveredFlags_AllowWhenBlockedByActiveItem;
+    const bool itemStudio = m_bEditorMode && Editor::OfflineWorld::IsItemStudio();
+    return m_bHoveringUI || itemStudio || ImGui::GetIO().WantCaptureMouse || ImGui::IsWindowHovered(anyWindow);
+}
+
 void CMuEditorCore::UpdateCursors(bool captureFrame)
 {
-    // The game draws its cursor sprite where the pointer is not over editor UI; in the
-    // item studio it would sit under the panels (over the preview, in the gaps), so
-    // the studio keeps the OS pointer instead.
-    const bool osCursor = WantsOsCursor();
+    // The game draws its cursor sprite before ImGui, so over editor UI it would sit under
+    // the panels: there the OS pointer is shown instead, over the world the sprite.
+    m_bWantsOsCursor = IsMouseOverEditorUI();
     extern bool g_bRenderGameCursor;
-    g_bRenderGameCursor = !osCursor && !captureFrame;
+    g_bRenderGameCursor = !m_bWantsOsCursor && !captureFrame;
 
-#ifdef _WIN32
-    // Manage Windows cursor visibility
-    // Windows maintains an internal display counter - cursor is visible when counter >= 0
-    // We need to loop to force the counter to the correct state.
-    static bool lastOsCursorState = false;
-    if (osCursor != lastOsCursorState)
-    {
-        if (osCursor)
-        {
-            // Force cursor visible (counter >= CURSOR_VISIBLE_THRESHOLD)
-            while (ShowCursor(TRUE) < CURSOR_VISIBLE_THRESHOLD);
-        }
-        else
-        {
-            // Force cursor hidden (counter < CURSOR_VISIBLE_THRESHOLD)
-            while (ShowCursor(FALSE) >= CURSOR_VISIBLE_THRESHOLD);
-        }
-        lastOsCursorState = osCursor;
-    }
-#else
-    // Off Windows the SDL/ImGui backend drives the pointer over editor UI; the game
-    // hid the OS pointer at start (a blank cursor), so the studio shows it once
-    // (ShowCursor keeps a counter; the stub returns it) and hides it again when the
-    // editor closes.
-    const bool studio = m_bEditorMode && Editor::OfflineWorld::IsItemStudio();
-    if (studio != m_bKeepsOsCursor)
-    {
-        ShowCursor(studio ? TRUE : FALSE);
-        m_bKeepsOsCursor = studio;
-    }
-#endif
+    // ImGui's SDL backend shows the OS pointer every frame; over the world it leaves the
+    // pointer alone, over the UI it picks the shape (arrow, text beam, resize).
+    ImGuiIO& io = ImGui::GetIO();
+    if (m_bWantsOsCursor)
+        io.ConfigFlags &= ~ImGuiConfigFlags_NoMouseCursorChange;
+    else
+        io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
+
+    if (m_bOsCursorApplied && m_bOsCursorShown == m_bWantsOsCursor)
+        return;
+    // ShowCursor keeps the Win32 display counter (visible while >= CURSOR_VISIBLE_THRESHOLD)
+    // on every platform; the SDL version in WinUser.cpp returns it too. Loop to force the
+    // state, since the game also hides the pointer on its own (at start, WM_SETCURSOR).
+    if (m_bWantsOsCursor)
+        while (ShowCursor(TRUE) < CURSOR_VISIBLE_THRESHOLD);
+    else
+        while (ShowCursor(FALSE) >= CURSOR_VISIBLE_THRESHOLD);
+    m_bOsCursorShown = m_bWantsOsCursor;
+    m_bOsCursorApplied = true;
 }
 
 void CMuEditorCore::PrepareDrawData(SDL_GPUCommandBuffer* commandBuffer)
