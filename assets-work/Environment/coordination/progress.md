@@ -1,6 +1,6 @@
 # Current checkpoint — 2026-09-23
 
-PR #12 and PR #13 are merged; Object48 is in ready-for-review PR #16. The Lorencia goal remains open: its 22 accepted replacements and 84 retained decisions are first-pass coverage. New client verification is pending. Object48 passed bounded independent review and has been integrated in its own branch; the integrated BMD, export and texture-resolution evidence are recorded under assets-work/World2/Remains48. Next production priority is Lorencia.
+After PR #12 merged, current owner-fork main is `7c25cce6`. The Lorencia independent artistic/offline gate is complete at `bb641d04` (22 replacements plus 84 justified retention decisions); new client verification remains pending. Four Dungeon replacements are merged. Retention review PRs #18–#20 and #22 are open and ready; #21 is an unrelated editor-docs PR. Independent review passed for #20. Object45–47 evidence is in PR #22. Active supports/collars Object06/13/15 remain unchanged and have not cleared independent placed-scale review. Continue Dungeon's actual-placement inventory before selecting another production batch.
 
 # Environment production progress
 

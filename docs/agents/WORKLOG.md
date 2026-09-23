@@ -973,3 +973,14 @@ buttons by hand; Windows/Linux builds untested.
 **Done:** Refreshed an isolated worktree from owner-fork main after PR #12 merged. Integrated the reviewed Object48 BMD and recorded export, placement, texture and converter evidence. Updated current assessment: Lorencia remains artistically unfinished despite first-pass 22-replacement and 84-retention counts.
 **Verified:** The integrated BMD matches the reviewed export hash; the official converter validates its static and animation SMDs; the frozen texture container passes; all 63 Object2 models resolve their texture dependencies. Exactly one Object2 game path changes in this branch. Client and runtime verification remain pending.
 **Open / next:** Opened [PR #16](https://github.com/vaskodagamo/MuMain/pull/16), ready for review and mergeable against main. Resume production with a Lorencia quality batch from refreshed main.
+
+
+## 2026-09-23 — Dungeon inventory review checkpoints
+
+**Goal:** Continue the environment remake after the user merged PR #12, and publish bounded, reviewable updates against the owner-fork main.
+
+**Done:** Confirmed PRs #13, #16 and #17 are merged. Opened ready review checkpoints #18 and #19 previously; this turn added #20 for the unchanged Object42/43 fire props and #22 for retained bone models Object45–47. PR #21 is an unrelated editor-docs PR. The independent reviewer confirmed PR #20. Updated the current assessment and Dungeon handoff to distinguish merged replacements, retained baselines, active studies and offline-only evidence.
+
+**Verified:** Pulled current owner-fork main at `7c25cce6`. Object45–47 source BMDs, shared `bons.OZJ`, packed Blender scenes and rendered previews are hash-bound; two Object47 and four Object48 source placements are checked by the retention verifier. Lorencia's final offline gate remains `bb641d04`; 22 replacements and 84 retentions cover 106 in-scope assets. New client verification remains pending.
+
+**Open / next:** Independently review PR #20's reduced contexts and protected fire contract. Review the Object06/13/15 support study before deciding whether its read-only findings deserve a PR. The latest static triage found no coherent next 3–5 asset production batch among Object05/07/08/09/10/11/14; keep the Object09/animated Object12 clearance dependency explicit.

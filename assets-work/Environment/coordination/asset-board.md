@@ -1,20 +1,22 @@
 # Current environment remake board — 2026-09-23
 
-The overall goal remains in progress. PR #12 is merged with 22 accepted Lorencia replacements and 84 first-pass retention decisions. These records do not establish that Lorencia has reached consistent art quality; further assessment and production remain the top priority. The user reports that the prior Lorencia baseline worked in game. New changes have not been checked in the client.
+The overall goal remains in progress. Lorencia's independent final artistic/offline gate passed at `bb641d04`: 22 accepted replacements and 84 individually justified retained assets cover all 106 in-scope assets. This was not 106 remakes. New client verification remains pending; prior baseline client success is user-reported only.
 
-PR #13 is merged with three independently accepted Dungeon replacements: Object28, Object29 and Object01. Object48 is a bounded one-component refinement with independent offline acceptance; this branch contains its integrated export and focused review evidence. Client verification is pending. The next production work returns to Lorencia before expanding Dungeon work.
+Four Dungeon replacements are merged to main: Object28, Object29, Object01 and Object48. Open review checkpoints record unchanged baselines for Object51 (#18), Object37 (#19), Object42/43 (#20; independent review passed), and Objects45–47 (#22). The next work remains a bounded static inventory review; active support/collar candidates are not accepted and have not changed game assets.
 
-See current-remake-assessment.json for the active goal status, dungeon-assessment.json for asset-level status, and progress.md for dated checkpoints.
+See `current-remake-assessment.json` for goal status, `dungeon-assessment.json` for asset-level state, and `progress.md` for dated checkpoints.
 
 ## Accepted and proposed checkpoints
 
 | Map | State | Count | Scope |
 |---|---|---:|---|
-| Lorencia | PR #12 merged; quality work remains open | 22 replacements, 84 first-pass retention decisions | World1 static environment |
-| Dungeon | PR #13 merged | 3 replacements | Object28, Object29 and Object01 |
-| Dungeon | PR #16 open and ready for review | 1 replacement | Object48; bounds and texture contract preserved |
+| Lorencia | PR #12 merged; independent offline gate passed | 22 replacements, 84 retained assets | World1 static environment |
+| Dungeon | PR #13 and #16 merged | 4 replacements | Object28, Object29, Object01 and Object48 |
+| Dungeon | PR #18 and #19 open, ready for review | 2 retained baselines | Object51 and Object37 |
+| Dungeon | PR #20 open, ready; independent review passed | 2 retained baselines | Object42 and Object43 |
+| Dungeon | PR #22 open, ready for review | 3 retained baselines | Object45, Object46 and Object47 |
 
-New client verification remains pending. The accepted exports and their source packages are indexed in accepted-exports.json. The prior coordination snapshot follows as historical record.
+Client verification for new environment changes remains pending. Accepted exports and sources are indexed in `accepted-exports.json`.
 
 ---
 

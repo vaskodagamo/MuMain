@@ -1,32 +1,72 @@
 {
-  "accepted_replacements_merged_to_main": 25,
+  "accepted_replacements_merged_to_main": 26,
   "as_of": "2026-09-23",
   "client_verification_for_new_changes": "pending",
-  "current_next_priority": "Continue Lorencia artistic quality assessment and production before expanding later-map production.",
+  "current_next_priority": "Continue Dungeon inventory through actual placements, finish independent review of active support/fire-prop studies, then select the next coherent static batch. New client verification remains pending.",
   "dungeon": {
     "merged_replacements": [
       "Object28",
       "Object29",
-      "Object01"
+      "Object01",
+      "Object48"
     ],
     "object48": {
       "client_verification": "pending",
       "placements": 385,
       "pull_request": "https://github.com/vaskodagamo/MuMain/pull/16",
-      "status": "independent review accepted; PR #16 open and ready for review"
+      "status": "independently accepted and merged to main; offline only"
     },
-    "pull_request_13": "https://github.com/vaskodagamo/MuMain/pull/13"
+    "pull_request_13": "https://github.com/vaskodagamo/MuMain/pull/13",
+    "open_retention_reviews": [
+      {
+        "assets": [
+          "Object51"
+        ],
+        "pull_request": "https://github.com/vaskodagamo/MuMain/pull/18",
+        "status": "open and ready for review"
+      },
+      {
+        "assets": [
+          "Object37"
+        ],
+        "pull_request": "https://github.com/vaskodagamo/MuMain/pull/19",
+        "status": "open and ready for review"
+      },
+      {
+        "assets": [
+          "Object42",
+          "Object43"
+        ],
+        "pull_request": "https://github.com/vaskodagamo/MuMain/pull/20",
+        "status": "independently confirmed; open and ready for review"
+      },
+      {
+        "assets": [
+          "Object45",
+          "Object46",
+          "Object47"
+        ],
+        "pull_request": "https://github.com/vaskodagamo/MuMain/pull/22",
+        "status": "open and ready for review"
+      }
+    ]
   },
   "lorencia": {
     "accepted_replacements": 22,
-    "artistic_completion": false,
+    "artistic_completion": true,
     "baseline_client_verification": "User-reported working in game; not personally observed.",
     "first_pass_retention_decisions": 84,
     "interpretation": "Coverage and retention decisions from the first pass; they do not establish consistent-quality completion.",
     "new_client_verification": "pending",
     "pull_request": "https://github.com/vaskodagamo/MuMain/pull/12",
-    "status": "merged first-pass checkpoint; quality production continues"
+    "status": "independent final artistic/offline gate passed at bb641d04; new client verification pending",
+    "independent_final_gate": {
+      "revision": "bb641d04",
+      "accepted_replacements": 22,
+      "retained_assets": 84,
+      "interpretation": "22 accepted replacements plus 84 individually justified retained assets cover the 106 in-scope assets; this is not 106 remakes."
+    }
   },
   "overall_status": "in_progress",
-  "staged_later_map_review": "Dungeon baseline queue and Object51 direction remain documented; no further Dungeon production is claimed here."
+  "staged_later_map_review": "Dungeon inventory remains active; no client verification for new changes. See dungeon-assessment.json, progress.md and handoff.md."
 }

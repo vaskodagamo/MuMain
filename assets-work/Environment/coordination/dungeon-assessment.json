@@ -117,9 +117,11 @@
     "texture_names": [
       "deep_wall04.jpg"
     ],
-    "owner": null,
-    "status": "unclaimed; scope and visual assessment pending",
-    "client_verified": false
+    "owner": "architecture",
+    "status": "bounded support/collar study complete; artist recommends retaining baseline pending independent review",
+    "client_verified": false,
+    "branch": "codex/dungeon-supports-pr02",
+    "deliverables": "assets-work/World2/Supports01"
   },
   {
     "model": "Object07",
@@ -213,9 +215,11 @@
       "deep_wall04.jpg",
       "deep_wall01.jpg"
     ],
-    "owner": null,
-    "status": "unclaimed; scope and visual assessment pending",
-    "client_verified": false
+    "owner": "architecture",
+    "status": "bounded support/collar study complete; artist recommends retaining baseline pending independent review",
+    "client_verified": false,
+    "branch": "codex/dungeon-supports-pr02",
+    "deliverables": "assets-work/World2/Supports01"
   },
   {
     "model": "Object14",
@@ -240,9 +244,11 @@
     "texture_names": [
       "deep_wall04.jpg"
     ],
-    "owner": null,
-    "status": "unclaimed; scope and visual assessment pending",
-    "client_verified": false
+    "owner": "architecture",
+    "status": "bounded support/collar study complete; artist recommends retaining baseline pending independent review",
+    "client_verified": false,
+    "branch": "codex/dungeon-supports-pr02",
+    "deliverables": "assets-work/World2/Supports01"
   },
   {
     "model": "Object16",
@@ -634,9 +640,12 @@
       "wood01.jpg",
       "fire0a.jpg"
     ],
-    "owner": null,
-    "status": "unclaimed; scope and visual assessment pending",
-    "client_verified": false
+    "owner": "furniture",
+    "status": "baseline retention proposed; PR #20 open, independent confirmation pending",
+    "client_verified": false,
+    "branch": "codex/dungeon-hearths-pr02",
+    "deliverables": "assets-work/World2/FireProps01",
+    "evidence": "assets-work/World2/FireProps01/notes.md"
   },
   {
     "model": "Object43",
@@ -648,9 +657,12 @@
       "wood01.jpg",
       "fire0a.jpg"
     ],
-    "owner": null,
-    "status": "unclaimed; scope and visual assessment pending",
-    "client_verified": false
+    "owner": "furniture",
+    "status": "baseline retention proposed; PR #20 open, independent confirmation pending",
+    "client_verified": false,
+    "branch": "codex/dungeon-hearths-pr02",
+    "deliverables": "assets-work/World2/FireProps01",
+    "evidence": "assets-work/World2/FireProps01/notes.md"
   },
   {
     "model": "Object44",
@@ -676,9 +688,11 @@
       "bons.jpg"
     ],
     "owner": null,
-    "status": "static remains baseline preview complete; visual assessment pending",
+    "status": "retained baseline after independent visual review; PR #22 open",
     "client_verified": false,
-    "evidence": "assets-work/World2/Readiness02/notes.md"
+    "evidence": "assets-work/World2/Readiness02/retention-review.json",
+    "branch": "codex/dungeon-bones45-47-retention",
+    "deliverables": "assets-work/World2/Readiness02"
   },
   {
     "model": "Object46",
@@ -690,9 +704,11 @@
       "bons.jpg"
     ],
     "owner": null,
-    "status": "static remains baseline preview complete; visual assessment pending",
+    "status": "retained baseline after independent visual review; PR #22 open",
     "client_verified": false,
-    "evidence": "assets-work/World2/Readiness02/notes.md"
+    "evidence": "assets-work/World2/Readiness02/retention-review.json",
+    "branch": "codex/dungeon-bones45-47-retention",
+    "deliverables": "assets-work/World2/Readiness02"
   },
   {
     "model": "Object47",
@@ -704,9 +720,11 @@
       "bons.jpg"
     ],
     "owner": null,
-    "status": "static remains baseline preview complete; visual assessment pending",
+    "status": "retained baseline after independent visual review; PR #22 open",
     "client_verified": false,
-    "evidence": "assets-work/World2/Readiness02/notes.md"
+    "evidence": "assets-work/World2/Readiness02/retention-review.json",
+    "branch": "codex/dungeon-bones45-47-retention",
+    "deliverables": "assets-work/World2/Readiness02"
   },
   {
     "model": "Object48",
