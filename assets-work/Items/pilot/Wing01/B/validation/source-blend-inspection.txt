@@ -1,0 +1,9 @@
+$ /Applications/Blender.app/Contents/MacOS/Blender -b /Users/webproduktion3/Documents/claude-test-mumain/MuMain-items-style-pilot/assets-work/Items/pilot/Wing01/B/source.blend --python /tmp/mu_style_pilot/inspect_source.py -- Wing01
+
+00:00.537  blend            | Read blend: "/Users/webproduktion3/Documents/claude-test-mumain/MuMain-items-style-pilot/assets-work/Items/pilot/Wing01/B/source.blend"
+PILOT_SOURCE_JSON {"model": "Wing01", "candidate_mesh_objects": 1, "mesh_name": "Wing01", "vertices": 209, "polygons": 380, "triangles": 380, "bounds_min": [-93.3219985961914, 3.384000062942505, -58.40700149536133], "bounds_max": [93.45500183105469, 8.206000328063965, 58.55400085449219], "location": [0.0, 0.0, 0.0], "scale": [1.0, 1.0, 1.0], "rotation_euler": [0.0, 0.0, 0.0], "materials": ["elfin_wing.jpg"], "uv_layers": ["UVMap"], "max_vertex_group_assignments": 1, "bone_order_metadata": ["Line01", "Bone01", "Bone02", "Bone03", "Bone04", "Bone05", "Bone06", "Bone07", "Bone08", "Bone09", "Box02"], "bone_count": 11, "action_meta": {"Wing01_a00": {"index": 0, "lock": false}}, "active_action": "Wing01_skeleton", "active_action_frame_range": [0.0, 6.0]}
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:49:19)
+
+Blender quit
+
+exit_code=0

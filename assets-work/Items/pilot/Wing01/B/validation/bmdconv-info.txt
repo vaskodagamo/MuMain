@@ -1,0 +1,21 @@
+$ /Users/webproduktion3/Documents/claude-test-mumain/MuMain/out/build/macos-arm64/tools/bmdconv/Release/bmdconv info /Users/webproduktion3/Documents/claude-test-mumain/MuMain-items-style-pilot/assets-work/Items/pilot/Wing01/B/Wing01.bmd
+
+model /Users/webproduktion3/Documents/claude-test-mumain/MuMain-items-style-pilot/assets-work/Items/pilot/Wing01/B/Wing01.bmd
+  name field: Data2\Item\Wing\elfin_wing.smd  version: 12
+  meshes: 1  bones: 11  actions: 1  triangles: 380
+  bounds (bind pose): min -93.32 3.38 -58.41  max 93.46 8.21 58.55  size 186.78 4.82 116.96
+  mesh 0: triangles=380 vertices=209 normals=102 uvs=160 texture=elfin_wing.jpg
+  bone 0: "Line01" parent=-1
+  bone 1: "Bone01" parent=-1
+  bone 2: "Bone02" parent=1
+  bone 3: "Bone03" parent=2
+  bone 4: "Bone04" parent=1
+  bone 5: "Bone05" parent=4
+  bone 6: "Bone06" parent=1
+  bone 7: "Bone07" parent=6
+  bone 8: "Bone08" parent=1
+  bone 9: "Bone09" parent=8
+  bone 10: "Box02" parent=1
+  action 0: keys=7 lock=0
+
+exit_code=0

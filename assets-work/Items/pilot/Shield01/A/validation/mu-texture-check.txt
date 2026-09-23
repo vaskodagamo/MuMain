@@ -1,0 +1,5 @@
+$ python3 /Users/webproduktion3/Documents/claude-test-mumain/MuMain-items-style-pilot/tools/mu_texture.py check /Users/webproduktion3/Documents/claude-test-mumain/MuMain-items-style-pilot/assets-work/Items/pilot/Shield01/A/du_shield1.OZJ
+
+OK /Users/webproduktion3/Documents/claude-test-mumain/MuMain-items-style-pilot/assets-work/Items/pilot/Shield01/A/du_shield1.OZJ
+
+exit_code=0

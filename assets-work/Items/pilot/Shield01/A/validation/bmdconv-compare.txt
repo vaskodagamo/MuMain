@@ -1,0 +1,7 @@
+$ /Users/webproduktion3/Documents/claude-test-mumain/MuMain/out/build/macos-arm64/tools/bmdconv/Release/bmdconv compare /Users/webproduktion3/Documents/claude-test-mumain/MuMain-items-style-pilot/src/bin/Data/Item/Shield01.bmd /Users/webproduktion3/Documents/claude-test-mumain/MuMain-items-style-pilot/assets-work/Items/pilot/Shield01/A/Shield01.bmd
+
+meshes 1 vs 1, bones 1 vs 1, actions 1 vs 1, triangles 18 vs 432
+unmatched triangles: 18  max corner distance: 0.0000  max bone distance: 0.0000  differing bone names: 0
+DIFFERENT
+
+exit_code=2
