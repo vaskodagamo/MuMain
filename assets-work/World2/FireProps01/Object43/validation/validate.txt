@@ -1,0 +1,2 @@
+/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-hearths/assets-work/World2/FireProps01/Object43/validation/new/Object43.smd: bones=1 frames=1 triangles=70 materials=2
+OK

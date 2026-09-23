@@ -1,0 +1,9 @@
+00:02.346  blend            | Read blend: "/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-supports/assets-work/World2/Supports01/Object06/baseline/source.blend"
+00:02.431  blend            | Read blend: "/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-supports/assets-work/World2/Supports01/Object13/baseline/source.blend"
+00:02.455  blend            | Read blend: "/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-supports/assets-work/World2/Supports01/Object15/baseline/source.blend"
+Info: Saved as "source.blend"
+Info: Saved as "source.blend"
+Info: Saved as "source.blend"
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:49:19)
+
+Blender quit

@@ -1,0 +1,4 @@
+00:00.601  blend            | Read blend: "/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-wall51/assets-work/World2/Walls02/Object51/source.blend"
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:49:19)
+
+Blender quit

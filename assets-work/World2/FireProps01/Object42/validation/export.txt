@@ -1,0 +1,41 @@
+00:00.653  blend            | Read blend: "/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-hearths/assets-work/World2/FireProps01/Object42/source.blend"
+skipping reference object 'Object42.001' (REF_ collection or mu_reference)
+
+Blender Source Tools: exporting REF_ORIGINAL
+ ERROR: Nothing in Group "REF_ORIGINAL" is enabled for export
+
+Blender Source Tools: exporting Object42_mu_export
+- Baking...
+- /private/var/folders/5c/gyglnk2d6mx3v2m0frrgvl2w0000gn/T/mu_export_ogoqiuzs/Object42_mu_export.smd
+- Exported 1 bones
+- Exported 1 frames
+- Exported 44 polys
+- Exported 2 materials
+   wood01.jpg
+   fire0a.jpg
+- SMD export took 0.002179861068725586 
+
+
+Blender Source Tools: exporting Object42_skeleton
+- Baking...
+- /private/var/folders/5c/gyglnk2d6mx3v2m0frrgvl2w0000gn/T/mu_export_ogoqiuzs/anims/Object42_a00.smd
+- Exported 1 bones
+- Exported 1 frames
+- SMD export took 0.0007510185241699219 
+
+1 Errors and 0 Warnings
+Error: Nothing in Group "REF_ORIGINAL" is enabled for export
+2 files exported in 0.0 seconds with 1 Errors and 0 Warnings
+Info: 2 files exported in 0.0 seconds with 1 Errors and 0 Warnings
+wrote /Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-hearths/assets-work/World2/FireProps01/Object42/exports/Object42.bmd (1 action(s))
+model /Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-hearths/assets-work/World2/FireProps01/Object42/exports/Object42.bmd
+  name field: Data2\Object2\\xba\xae\xb5\xee.smd  version: 12
+  meshes: 2  bones: 1  actions: 1  triangles: 44
+  bounds (bind pose): min -18.36 -36.70 177.30  max 17.45 2.59 231.73  size 35.80 39.29 54.43
+  mesh 0: triangles=32 vertices=25 normals=33 uvs=22 texture=wood01.jpg
+  mesh 1: triangles=12 vertices=9 normals=9 uvs=9 texture=fire0a.jpg
+  bone 0: "Box03" parent=-1
+  action 0: keys=1 lock=0
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:49:19)
+
+Blender quit

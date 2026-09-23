@@ -1,0 +1,18 @@
+{
+  "source": "src/bin/Data/Object2/Object51.bmd",
+  "sha256": "81e200861fe90ba8c3616f28a61bdd1ae0b5025c749c8956f17a3193520ff2c0",
+  "dependencies": {
+    "src/bin/Data/Object2/Object51.bmd": "81e200861fe90ba8c3616f28a61bdd1ae0b5025c749c8956f17a3193520ff2c0",
+    "src/bin/Data/Object2/deep_wall12.OZJ": "9d3540a7af29454af04eb1d10c657ef65ec9f3d670e2426d6ed51d0426a3b45f"
+  },
+  "purpose": "Read-only baseline triage, not an accepted remake",
+  "evidence": {
+    "baseline.blend": "6ddc1cf9534826da0e29cce5065001c9b844ea104854b3d7655010ebe6db3580",
+    "baseline.png": "55d1823f122db013750d0aac1ec37cb844391a71c4c025da9edf7803f576cdf5"
+  },
+  "supplemental_evidence": {
+    "individual/baseline-front.png": "ed1509224d8736377fb6a28695c7f8aa7d0a52f2723fe16e2cab658aa66b99b1",
+    "individual/baseline-reduced.png": "68294474c140579e03b607c47ae5b11d05c011a92351e62610f5e068e0b6e7d9",
+    "individual/baseline-reverse.png": "c2e8bed5e851f2263ba95dac3074c7863ae7b50213d0de0333b7bce4e141325f"
+  }
+}

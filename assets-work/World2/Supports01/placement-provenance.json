@@ -1,0 +1,12 @@
+{
+  "map_path": "src/bin/Data/World2/EncTerrain2.obj",
+  "map_sha256": "5ada58ff8defadf4eadf669dc92bd308832d5f9b7e666234813ec5799405eb53",
+  "unchanged_since_readiness_base_7b808473": true,
+  "readiness_sha256": "9e63f1be62cc32850bacd67b12499fda528cb18628af9e39d28a74147bbb44bb",
+  "model_placement_hashes": {
+    "Object06": "446bea467253cb477670fab94ca3431aa80a7e27301e6e43c2eeaa0906da9ac0",
+    "Object13": "2fc9a1da1ddabc73e4127d77f8ea85b5c60820f100834faad2e2b56310593a8b",
+    "Object15": "f8bf6bd29505c2700234d15268ddbc0ef55ca1b8edda25e4defc333b25d00d63",
+    "Object04": "12de3c86f35bee6ebd81b10c68fcc11fcd07628ac909685b12ebae67f23a37d8"
+  }
+}

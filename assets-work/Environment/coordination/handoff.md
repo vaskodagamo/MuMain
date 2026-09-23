@@ -1,28 +1,28 @@
 # Current environment remake handoff — 2026-09-23
 
-The goal remains active. Lorencia is not artistically complete. Its 22 accepted replacements and 84 retention decisions in merged PR #12 are first-pass records, not a final quality gate. Continue with Lorencia assessment and production before starting another Dungeon production batch. The user reports that the previous Lorencia baseline worked in game; new changes remain client-unverified.
+The overall goal remains active. Lorencia passed its independent final artistic/offline gate at `bb641d04`; this closed its 22-replacement/84-retention assessment, while new client verification is pending. Main includes Dungeon replacements Object28, Object29, Object01 and Object48. Retention PRs #17–#20 have merged. PRs #22 and #23 remain open for review; new client verification is pending.
 
-Dungeon PR #13 merged three replacements (Object28, Object29 and Object01). Object48 is in focused PR #16, open and ready for review. Its independent review and integration report are included. No client or runtime checks were performed for these new assets.
+## Current pull requests
 
-## Current branches and pull requests
+PRs #17–#20 are merged and retain Objects49/50, Object51, Object37, and Objects42/43.
 
-- PR #12: merged to main in vaskodagamo/MuMain; 22 Lorencia replacements and 84 first-pass retention decisions.
-- PR #13: merged to main; Object28, Object29 and Object01.
-- Object48: branch codex/dungeon-remains48-accepted from refreshed main c40d0b0d; one BMD path differs, and all 63 Object2 model textures resolve.
-- The primary checkout has unrelated local edits. Keep all work in isolated task worktrees.
+- PR #18 (merged): retain Object51 after the rejected bevel study.
+- PR #19 (merged): retain Object37 after six actual corridor placements.
+- PR #20 (merged): retain unchanged Object42/43 fire props after independent review.
+- PR #22: Object45–47 baseline retention after individual and actual-cluster review; ready for review.
+- PR #23: reject the proposed Object06/13/15 replacements and retain current BMDs; independently reviewed and ready for review.
 
-## Next work
+## Active studies and next queue
 
-1. Start the next Lorencia quality batch from the current owner-fork main in a dedicated worktree. Reassess assets for visible quality gaps despite earlier acceptance labels; use placement frequency and prominence to prioritize.
-2. Keep the remaining Dungeon baseline queue documented while Lorencia is unfinished.
-3. For each accepted focused batch, commit and open one ready-for-review PR; do not merge it for the user.
+Architecture's Object06/13/15 support/collar study found too little reduced-scale improvement to justify its candidates; independent review agreed, and the original assets remain unchanged. Furniture's merged Objects42/43 package preserves fire meshes, texture and runtime anchors. The independent static triage of Objects05/07/08/09/10/11/14 did not identify a coherent 3–5 asset production batch: Object05's isolated surface issue is small/partly occluded in context, Object09 overlaps animated Object12 and needs all-frame clearance before any geometry work, and the remaining models already read clearly at actual scale. Continue with documented context and branch evidence; do not claim client verification.
 
-Historical production notes and the prior handoff snapshot follow.
+## Active checkout
+
+Dungeon production branches start from owner-fork main `1256aeed`. Keep the primary checkout's unrelated user edits untouched. Use Blender's official Python importer/exporter for any future candidate; game assets and textures remain unchanged in the current retention PRs. Open focused PRs when each evidence package passes verification; never merge main for the user.
 
 ---
 
 ## Historical handoff snapshot before Object48 integration
-
 # Dungeon environment production — current status, 2026-09-23
 
 Lorencia remains separately accepted offline at d3ce9acf in draft PR12. The user reports that earlier Lorencia baseline working in game; newly changed assets have no client verification.

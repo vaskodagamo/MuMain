@@ -1,0 +1,74 @@
+{
+  "records": [
+    [
+      "Object42",
+      {
+        "index": 297,
+        "position": [
+          87.8986587524414,
+          23189.81640625,
+          209.49996948242188
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          1170.0
+        ],
+        "scale": 1.0
+      }
+    ],
+    [
+      "Object01",
+      {
+        "index": 280,
+        "position": [
+          50.0,
+          23050.0,
+          169.49996948242188
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          90.0
+        ],
+        "scale": 1.0
+      }
+    ],
+    [
+      "Object01",
+      {
+        "index": 281,
+        "position": [
+          50.0,
+          23350.0,
+          169.50003051757812
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          90.0
+        ],
+        "scale": 1.0
+      }
+    ]
+  ],
+  "relative_origin": [
+    87.8986587524414,
+    23189.81640625,
+    209.49996948242188
+  ],
+  "bounds": [
+    [
+      -91.35855102539062,
+      -289.94342041015625,
+      -40.0
+    ],
+    [
+      36.69609069824219,
+      310.0566101074219,
+      251.60626220703125
+    ]
+  ],
+  "projection": "Orthographic",
+  "limitations": "Offline diffuse static shell only. No terrain, particles, runtime jitter, terrain lighting or client verification."
+}

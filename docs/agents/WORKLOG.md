@@ -988,3 +988,13 @@ capture.
 
 **Open / next:** I1 (Item Editor on the Mac + `--items`) and I2 (item catalog tools) can start in
 parallel. Reload of a non-world range is untested until I6 allows one.
+
+## 2026-09-23 — Dungeon inventory review checkpoints
+
+**Goal:** Continue the environment remake after the user merged PR #12, and publish bounded, reviewable updates against the owner-fork main.
+
+**Done:** Confirmed PRs #13, #16 and #17 are merged. Opened retention checkpoints #18–#20 and #22; the user has since merged PRs #18–#20. PR #21, an unrelated editor-docs change, also merged. PR #23 now records the rejected Object06/13/15 studies after independent review. Updated the current assessment and Dungeon handoff to distinguish merged replacements, retained baselines, active inventory and offline-only evidence.
+
+**Verified:** Pulled owner-fork main at `1256aeed` after those merges. Object45–47 source BMDs, shared `bons.OZJ`, packed Blender scenes and rendered previews are hash-bound; six exact Object47/Object48 cluster records match the main placement manifest. PR #20 independently passed 181 evidence-hash checks and all 120 placement records; its protected raw fire meshes and anchors remain unchanged. PR #23 independent review checked 218 evidence hashes and 446 placements. Lorencia's final offline gate remains `bb641d04`: 22 replacements and 84 retentions cover all 106 in-scope assets. New client verification remains pending.
+
+**Open / next:** Owner review of PRs #22 and #23; continue the Dungeon static inventory with actual-placement context. The latest triage found no coherent next 3–5 asset production batch among Object05/07/08/09/10/11/14; keep Object09's animated Object12 clearance dependency explicit.
