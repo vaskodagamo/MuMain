@@ -1,0 +1,193 @@
+00:00.642  blend            | Read blend: "/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-wall51/assets-work/World2/Walls02/Object51/baseline/source.blend"
+00:04.310  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-wall51/assets-work/World2/Walls02/Object51/review/current.png'
+00:04.787  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-wall51/assets-work/World2/Walls02/Object51/review/current-small.png'
+00:08.455  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-wall51/assets-work/World2/Walls02/Object51/review/current-reverse.png'
+Error in bpy.app.handlers.load_post[2]:
+Traceback (most recent call last):
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 206, in _onLoad
+    State.update_scene()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 194, in update_scene
+    make_export_list(scene)
+    ~~~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 602, in make_export_list
+    scene.vs.export_list.clear()
+    ^^^^^^^^
+AttributeError: 'Scene' object has no attribute 'vs'
+00:10.736  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-wall51/assets-work/World2/Walls02/context/candidate-comparison/current.png'
+Error in bpy.app.handlers.depsgraph_update_post[0]:
+Traceback (most recent call last):
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 201, in _onDepsgraphUpdate
+    State.update_scene(scene)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 194, in update_scene
+    make_export_list(scene)
+    ~~~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 602, in make_export_list
+    scene.vs.export_list.clear()
+    ^^^^^^^^
+AttributeError: 'Scene' object has no attribute 'vs'
+00:11.068  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-wall51/assets-work/World2/Walls02/context/candidate-comparison/current-small.png'
+Error in bpy.app.handlers.depsgraph_update_post[0]:
+Traceback (most recent call last):
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 201, in _onDepsgraphUpdate
+    State.update_scene(scene)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 194, in update_scene
+    make_export_list(scene)
+    ~~~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 602, in make_export_list
+    scene.vs.export_list.clear()
+    ^^^^^^^^
+AttributeError: 'Scene' object has no attribute 'vs'
+00:13.231  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-wall51/assets-work/World2/Walls02/context/candidate-comparison/current-reverse.png'
+Error in bpy.app.handlers.depsgraph_update_post[0]:
+Traceback (most recent call last):
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 201, in _onDepsgraphUpdate
+    State.update_scene(scene)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 194, in update_scene
+    make_export_list(scene)
+    ~~~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 602, in make_export_list
+    scene.vs.export_list.clear()
+    ^^^^^^^^
+AttributeError: 'Scene' object has no attribute 'vs'
+00:13.236  blend            | Read blend: "/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-wall51/assets-work/World2/Walls02/Object51/validation/reimported.blend"
+Error in bpy.app.handlers.load_post[2]:
+Traceback (most recent call last):
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 206, in _onLoad
+    State.update_scene()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 194, in update_scene
+    make_export_list(scene)
+    ~~~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 602, in make_export_list
+    scene.vs.export_list.clear()
+    ^^^^^^^^
+AttributeError: 'Scene' object has no attribute 'vs'
+Error in bpy.app.handlers.depsgraph_update_post[0]:
+Traceback (most recent call last):
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 201, in _onDepsgraphUpdate
+    State.update_scene(scene)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 194, in update_scene
+    make_export_list(scene)
+    ~~~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 602, in make_export_list
+    scene.vs.export_list.clear()
+    ^^^^^^^^
+AttributeError: 'Scene' object has no attribute 'vs'
+00:16.598  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-wall51/assets-work/World2/Walls02/Object51/review/candidate.png'
+Error in bpy.app.handlers.depsgraph_update_post[0]:
+Traceback (most recent call last):
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 201, in _onDepsgraphUpdate
+    State.update_scene(scene)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 194, in update_scene
+    make_export_list(scene)
+    ~~~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 602, in make_export_list
+    scene.vs.export_list.clear()
+    ^^^^^^^^
+AttributeError: 'Scene' object has no attribute 'vs'
+00:17.050  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-wall51/assets-work/World2/Walls02/Object51/review/candidate-small.png'
+Error in bpy.app.handlers.depsgraph_update_post[0]:
+Traceback (most recent call last):
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 201, in _onDepsgraphUpdate
+    State.update_scene(scene)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 194, in update_scene
+    make_export_list(scene)
+    ~~~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 602, in make_export_list
+    scene.vs.export_list.clear()
+    ^^^^^^^^
+AttributeError: 'Scene' object has no attribute 'vs'
+00:20.572  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-wall51/assets-work/World2/Walls02/Object51/review/candidate-reverse.png'
+Error in bpy.app.handlers.depsgraph_update_post[0]:
+Traceback (most recent call last):
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 201, in _onDepsgraphUpdate
+    State.update_scene(scene)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 194, in update_scene
+    make_export_list(scene)
+    ~~~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 602, in make_export_list
+    scene.vs.export_list.clear()
+    ^^^^^^^^
+AttributeError: 'Scene' object has no attribute 'vs'
+Error in bpy.app.handlers.load_post[2]:
+Traceback (most recent call last):
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 206, in _onLoad
+    State.update_scene()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 194, in update_scene
+    make_export_list(scene)
+    ~~~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 602, in make_export_list
+    scene.vs.export_list.clear()
+    ^^^^^^^^
+AttributeError: 'Scene' object has no attribute 'vs'
+Error in bpy.app.handlers.depsgraph_update_post[0]:
+Traceback (most recent call last):
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 201, in _onDepsgraphUpdate
+    State.update_scene(scene)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 194, in update_scene
+    make_export_list(scene)
+    ~~~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 602, in make_export_list
+    scene.vs.export_list.clear()
+    ^^^^^^^^
+AttributeError: 'Scene' object has no attribute 'vs'
+00:22.713  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-wall51/assets-work/World2/Walls02/context/candidate-comparison/candidate.png'
+Error in bpy.app.handlers.depsgraph_update_post[0]:
+Traceback (most recent call last):
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 201, in _onDepsgraphUpdate
+    State.update_scene(scene)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 194, in update_scene
+    make_export_list(scene)
+    ~~~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 602, in make_export_list
+    scene.vs.export_list.clear()
+    ^^^^^^^^
+AttributeError: 'Scene' object has no attribute 'vs'
+00:23.022  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-wall51/assets-work/World2/Walls02/context/candidate-comparison/candidate-small.png'
+Error in bpy.app.handlers.depsgraph_update_post[0]:
+Traceback (most recent call last):
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 201, in _onDepsgraphUpdate
+    State.update_scene(scene)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 194, in update_scene
+    make_export_list(scene)
+    ~~~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 602, in make_export_list
+    scene.vs.export_list.clear()
+    ^^^^^^^^
+AttributeError: 'Scene' object has no attribute 'vs'
+00:25.202  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-wall51/assets-work/World2/Walls02/context/candidate-comparison/candidate-reverse.png'
+Error in bpy.app.handlers.depsgraph_update_post[0]:
+Traceback (most recent call last):
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 201, in _onDepsgraphUpdate
+    State.update_scene(scene)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 194, in update_scene
+    make_export_list(scene)
+    ~~~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 602, in make_export_list
+    scene.vs.export_list.clear()
+    ^^^^^^^^
+AttributeError: 'Scene' object has no attribute 'vs'
+Info: No new files have been packed
+Info: Saved as "current-context.blend"
+Info: No new files have been packed
+Info: Saved as "current-context.blend"
+Info: No new files have been packed
+Info: Saved as "candidate-context.blend"
+Info: No new files have been packed
+Info: Saved as "candidate-context.blend"
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:49:19)
+
+Blender quit

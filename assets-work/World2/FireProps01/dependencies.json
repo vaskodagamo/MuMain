@@ -1,0 +1,59 @@
+{
+  "scanned_object2_models": 63,
+  "consumers": {
+    "wood01.jpg": [
+      {
+        "path": "src/bin/Data/Object2/Object19.bmd",
+        "mesh": 2,
+        "sha256": "da84354aabc016a43d97767f3d77ba9470386e0e5606e156b6ff8e8beed9b45d"
+      },
+      {
+        "path": "src/bin/Data/Object2/Object20.bmd",
+        "mesh": 2,
+        "sha256": "826486ef136e5878224a9475238bfe399eb79c79e0f055cf56764dcfdf01c68a"
+      },
+      {
+        "path": "src/bin/Data/Object2/Object21.bmd",
+        "mesh": 0,
+        "sha256": "6e4a0e4324cedc6f9b25f0f865f4943b9b81319dde6ef3b92f69182134457653"
+      },
+      {
+        "path": "src/bin/Data/Object2/Object22.bmd",
+        "mesh": 0,
+        "sha256": "9996504fb0288ec2c32cc0416c3673fe560fb4d96c236788fb5e774d1a9865e9"
+      },
+      {
+        "path": "src/bin/Data/Object2/Object35.bmd",
+        "mesh": 0,
+        "sha256": "e7bd137c03414faf2efba8f373ca419dca09facc532ae022bc4e61fd2becf47a"
+      },
+      {
+        "path": "src/bin/Data/Object2/Object42.bmd",
+        "mesh": 0,
+        "sha256": "63a03874ca7f76b8152362530b7e114365b322919849609f819e04d12f90f4da"
+      },
+      {
+        "path": "src/bin/Data/Object2/Object43.bmd",
+        "mesh": 0,
+        "sha256": "d21ee62c9bc56b26848c5d21dd11ba728dc73582a70421d86f63f97e42048ce0"
+      },
+      {
+        "path": "src/bin/Data/Object2/Object44.bmd",
+        "mesh": 0,
+        "sha256": "f900b12b7c35f77aaf16fc07a9772a72fad38f8b6bb134c143c570d91a0163e3"
+      }
+    ],
+    "fire0a.jpg": [
+      {
+        "path": "src/bin/Data/Object2/Object42.bmd",
+        "mesh": 1,
+        "sha256": "63a03874ca7f76b8152362530b7e114365b322919849609f819e04d12f90f4da"
+      },
+      {
+        "path": "src/bin/Data/Object2/Object43.bmd",
+        "mesh": 1,
+        "sha256": "d21ee62c9bc56b26848c5d21dd11ba728dc73582a70421d86f63f97e42048ce0"
+      }
+    ]
+  }
+}

@@ -1,0 +1,21 @@
+00:00.867  blend            | Read blend: "/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-hearths/assets-work/World2/FireProps01/Object42/baseline/source.blend"
+00:03.775  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-hearths/assets-work/World2/FireProps01/Object42/review/baseline-full.png'
+00:04.180  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-hearths/assets-work/World2/FireProps01/Object42/review/baseline-full-small.png'
+00:07.149  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-hearths/assets-work/World2/FireProps01/Object42/review/baseline-full-reverse.png'
+00:10.316  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-hearths/assets-work/World2/FireProps01/Object42/review/baseline-wood.png'
+00:10.759  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-hearths/assets-work/World2/FireProps01/Object42/review/baseline-wood-small.png'
+00:13.537  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-hearths/assets-work/World2/FireProps01/Object42/review/baseline-wood-reverse.png'
+00:13.706  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-hearths/assets-work/World2/FireProps01/Object42/review/baseline-wire.png'
+00:13.707  blend            | Read blend: "/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-hearths/assets-work/World2/FireProps01/Object43/baseline/source.blend"
+00:16.405  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-hearths/assets-work/World2/FireProps01/Object43/review/baseline-full.png'
+00:16.930  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-hearths/assets-work/World2/FireProps01/Object43/review/baseline-full-small.png'
+00:19.715  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-hearths/assets-work/World2/FireProps01/Object43/review/baseline-full-reverse.png'
+00:22.297  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-hearths/assets-work/World2/FireProps01/Object43/review/baseline-wood.png'
+00:22.666  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-hearths/assets-work/World2/FireProps01/Object43/review/baseline-wood-small.png'
+00:25.227  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-hearths/assets-work/World2/FireProps01/Object43/review/baseline-wood-reverse.png'
+00:25.280  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-hearths/assets-work/World2/FireProps01/Object43/review/baseline-wire.png'
+Info: Saved as "baseline-context.blend"
+Info: Saved as "baseline-context.blend"
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:49:19)
+
+Blender quit

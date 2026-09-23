@@ -1,0 +1,3 @@
+wrote /Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-hearths/assets-work/World2/FireProps01/Object43/baseline/smd/Object43.smd
+wrote /Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-hearths/assets-work/World2/FireProps01/Object43/baseline/smd/Object43_a00.smd
+wrote /Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-hearths/assets-work/World2/FireProps01/Object43/baseline/smd/Object43.actions.txt

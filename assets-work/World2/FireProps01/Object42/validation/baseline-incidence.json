@@ -1,0 +1,20 @@
+{
+  "baseline/smd": {
+    "nonpositive_corner_faces": [
+      21,
+      22,
+      29,
+      30
+    ],
+    "zero_uv_faces": []
+  },
+  "validation/new": {
+    "nonpositive_corner_faces": [
+      21,
+      22,
+      29,
+      30
+    ],
+    "zero_uv_faces": []
+  }
+}

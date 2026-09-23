@@ -1,0 +1,13 @@
+00:04.122  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-hearths/assets-work/World2/FireProps01/context/Object42/baseline.png'
+00:05.116  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-hearths/assets-work/World2/FireProps01/context/Object42/baseline-small.png'
+00:08.261  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-hearths/assets-work/World2/FireProps01/context/Object42/baseline-reverse.png'
+00:13.792  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-hearths/assets-work/World2/FireProps01/context/Object43/baseline.png'
+00:16.067  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-hearths/assets-work/World2/FireProps01/context/Object43/baseline-small.png'
+00:24.467  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-hearths/assets-work/World2/FireProps01/context/Object43/baseline-reverse.png'
+Info: No new files have been packed
+Info: Saved as "context.blend"
+Info: No new files have been packed
+Info: Saved as "context.blend"
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:49:19)
+
+Blender quit

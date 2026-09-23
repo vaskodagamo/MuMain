@@ -1,0 +1,20 @@
+{
+  "source": "src/bin/Data/Object2/Object37.bmd",
+  "sha256": "73f72c6b8efb1d6bf1a02c98d3441dd7af8bc164b57478e32abe22630bc614b0",
+  "dependencies": {
+    "src/bin/Data/Object2/Object37.bmd": "73f72c6b8efb1d6bf1a02c98d3441dd7af8bc164b57478e32abe22630bc614b0",
+    "src/bin/Data/Object2/deep_wall08.OZJ": "c44154dda257201ed30f1a184e24d64e15ed6b11df5186ff963848d066ffff33",
+    "src/bin/Data/Object2/deep_wall07.OZJ": "dc55fcfc282ca780dfed2f3f5c649acac0007765b1a43f4f3fc7ecd864f510ab",
+    "src/bin/Data/Object2/deep_wall01.OZJ": "78379458cc441ce547c482f20656e13f6672fd565c39373865de7fb9ebb9504a"
+  },
+  "purpose": "Read-only baseline triage, not an accepted remake",
+  "evidence": {
+    "baseline.blend": "fcfbe3f93e3a06dacf398a35b29edc468e1d132ad2e8783471399ae7ccf65a98",
+    "baseline.png": "ba2e6dd96cabf569b24244c291fd7db668ed12341a21ac0a4366e4194a3284d7"
+  },
+  "supplemental_evidence": {
+    "individual/baseline-front.png": "c7f48e0ac5a4cb29fe014014aa6d1fa8b50176e10800d739419edcead37b2dc3",
+    "individual/baseline-reduced.png": "0c1b690c90439ed010b7d99231e28ffac4803809a908a27e974c9a53dcd8760a",
+    "individual/baseline-reverse.png": "0bd53b7ff78de4d6eccc73d2b6ece229d10dc130bd00ef765923b5828d33fae2"
+  }
+}
