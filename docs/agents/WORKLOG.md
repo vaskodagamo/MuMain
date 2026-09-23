@@ -451,6 +451,20 @@ tooltips, HiDPI and real gameplay readability remain pending. Shared skill-slot
 art also requires MU Helper and pet-window review. All previews are offline
 mockups, not client screenshots.
 
+
+## 2026-09-23 — Start Dungeon static production
+
+Lorencia passed artistic/offline gate in separate draft PR12 (d3ce9acf); new client checks pending. Created focused main-based Dungeon integration and reused the two owned artist worktrees on new branches. PotteryObject28/29/30 and coffinObject21/22 are in production with all shared textures frozen; raw CP949 model names have a verified official-pipeline roundtrip. No Dungeon replacement accepted yet. See assets-work/Environment/coordination/handoff.md for exact ownership and next steps. Primary checkout/runtime untouched.
+
+
+### 2026-09-23 — Dungeon pottery acceptance and next architecture batches
+
+Integrated worker 15a1a4c4 as 6d0323d7: Object28 and Object29 ceramic forms accepted after independent exported-art and engine-contract review. Exact game scope is those two BMDs; all textures frozen and all 63 model dependencies resolve. Original Object30 and coffin Object21/22 retained on individual visual grounds; coffin studies remain separate at 6cd41d24. Packed sources, comparison assemblies and complete review evidence retained. New client checks pending. Walls01 (Object01/03) and Pier01 (Object04) now have disjoint ownership; Blender Python API production continues with frozen materials. Primary checkout and shared runtime untouched.
+
+
+### 2026-09-23 — Dungeon wall crown integrated; pier retained
+
+Integrated focused worker commits 81562d69 as c9a34462 for Object01 after independent review accepted the final64-triangle crown chamfer; source/export/integrated hashes match. The dragon plaque, all end faces, textures, original metadata and 1,262 bounds remain protected. Object03’s four-niche baseline and Object04’s carved pier are retained after independent visual review; pier candidates, complete consumer analysis and evidence are committed for future reference. Root combined scope check reports exactly three accepted Dungeon game BMDs and all63 Object2 texture dependencies resolve. New client checks remain pending. Next read-only queue Object45–48 comprises510 bone-remains placements and frozen shared bons.OZJ. Primary checkout/runtime remain untouched.
 ## 2026-09-22 - World1 editor catalog and regeneration-request contract (Claude Opus 5.5)
 **Goal:** Prepare world editor plan milestone M4. Give the in-client editor one per-model file to
 read, define how a request from the editor reaches Codex, and remove the stale "PR #11 not merged"

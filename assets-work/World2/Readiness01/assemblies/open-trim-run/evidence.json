@@ -1,0 +1,93 @@
+{
+  "kind": "OFFLINE_BASELINE_ACTUAL_PLACEMENTS",
+  "records": [
+    [
+      "Object15",
+      {
+        "index": 65,
+        "position": [
+          1550.0,
+          1750.0,
+          169.49996948242188
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": 1.0
+      }
+    ],
+    [
+      "Object15",
+      {
+        "index": 66,
+        "position": [
+          1450.0,
+          1750.0,
+          169.5
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": 1.0
+      }
+    ],
+    [
+      "Object15",
+      {
+        "index": 360,
+        "position": [
+          1650.0,
+          1750.0,
+          169.50001525878906
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": 1.0
+      }
+    ]
+  ],
+  "bounds": [
+    [
+      -158.8209991455078,
+      -59.19919204711914,
+      -17.182233810424805
+    ],
+    [
+      158.79119873046875,
+      58.99720764160156,
+      -0.13212637603282928
+    ]
+  ],
+  "anchor": [
+    1550.0,
+    1750.0,
+    169.49996948242188
+  ],
+  "sources": {
+    "Object15": {
+      "source": "src/bin/Data/Object2/Object15.bmd",
+      "sha256": "8cef1f8cd8061020debb3cf108183ddbe79fe29be577caee0e2e11d28fdee957",
+      "purpose": "Read-only baseline triage, not an accepted remake",
+      "dependencies": {
+        "src/bin/Data/Object2/Object15.bmd": "8cef1f8cd8061020debb3cf108183ddbe79fe29be577caee0e2e11d28fdee957",
+        "src/bin/Data/Object2/deep_wall04.OZJ": "83037896d1e2825447e840b4af780ed3608b12c5971c8369eccdfc0f4fb21505"
+      },
+      "evidence": {
+        "baseline.blend": "0aff6fceccf98d7f2a1a74828b075234b677a49170b37d60aa94e2dd23f4721b",
+        "baseline.png": "d2948d03764e83a10bc5dbc4aac48e3731cf756a3cfb9f4fa19fa292ff1204c0"
+      }
+    }
+  },
+  "images": {
+    "baseline-reverse.png": "b58d5ef43aa757c7ab30051d5803bac0f4899fbe55bdd21dddd71175e935af00",
+    "baseline.png": "cdbdb9559cc8c69d59718dafb4f9710caa56428556f360ac4315a25999df45e5",
+    "baseline-small.png": "45204047445d5cd8e9537ab5b406ade66f5377b89252d6bf7f1767a51a1dab85"
+  }
+}

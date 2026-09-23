@@ -1,0 +1,17 @@
+{
+  "decision": "BASELINE_TRIAGE_ONLY",
+  "family": ["Object45", "Object46", "Object47", "Object48"],
+  "placements": {"Object45": 21, "Object46": 25, "Object47": 79, "Object48": 385, "total": 510},
+  "triangles": {"Object45": 486, "Object46": 486, "Object47": 480, "Object48": 284},
+  "root_bones": ["Box01", "Box11", "Box13", "Box14"],
+  "actions": "one key each; no Dungeon engine types44-47 behavior found",
+  "textures_frozen": {
+    "bons.OZJ": {
+      "sha256": "0ed1d9cb1c8da9e0f128d51a607a7b4ecab8ee89bfdab67917ba0e7116542ec5",
+      "consumers": ["Object19", "Object32", "Object33", "Object44", "Object45", "Object46", "Object47", "Object48", "Object54"]
+    }
+  },
+  "status": "unowned; needs close visual review after active wall and pier decisions",
+  "reuse": "45/46 share indexed face topology only; shapes, bounds, UV, pose and root differ",
+  "baseline_evidence": "assets-work/World2/Readiness02"
+}
