@@ -1,0 +1,2 @@
+assets-work/World2/Remains48/Object48/validation/roundtrip/Object48_a00.smd: bones=1 frames=1 triangles=0 materials=0
+OK

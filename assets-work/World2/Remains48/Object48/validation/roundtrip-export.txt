@@ -1,0 +1,33 @@
+00:00.614  blend            | Read blend: "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-remains48/assets-work/World2/Remains48/Object48/baseline/source.blend"
+
+Blender Source Tools: exporting Object48_mu_export
+- Baking...
+- /private/var/folders/5c/gyglnk2d6mx3v2m0frrgvl2w0000gn/T/mu_export__w87_gmu/Object48_mu_export.smd
+- Exported 1 bones
+- Exported 1 frames
+- Exported 284 polys
+- Exported 1 materials
+   bons.jpg
+- SMD export took 0.008080244064331055 
+
+
+Blender Source Tools: exporting Object48_skeleton
+- Baking...
+- /private/var/folders/5c/gyglnk2d6mx3v2m0frrgvl2w0000gn/T/mu_export__w87_gmu/anims/Object48_a00.smd
+- Exported 1 bones
+- Exported 1 frames
+- SMD export took 0.0006971359252929688 
+
+2 files exported in 0.0 seconds
+Info: 2 files exported in 0.0 seconds
+wrote /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-remains48/assets-work/World2/Remains48/Object48/roundtrip/Object48.bmd (1 action(s))
+model /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-remains48/assets-work/World2/Remains48/Object48/roundtrip/Object48.bmd
+  name field: Data2\Object2\\xc7ذ\xf1e.smd  version: 12
+  meshes: 1  bones: 1  actions: 1  triangles: 284
+  bounds (bind pose): min -47.02 -89.52 -2.42  max 43.88 50.08 20.61  size 90.90 139.60 23.03
+  mesh 0: triangles=284 vertices=158 normals=158 uvs=76 texture=bons.jpg
+  bone 0: "Box14" parent=-1
+  action 0: keys=1 lock=0
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:49:19)
+
+Blender quit

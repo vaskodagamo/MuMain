@@ -1,0 +1,62 @@
+{
+  "decision": "RETAIN45_46_47_SCOPED_GEOMETRY_STUDY48",
+  "assets": {
+    "Object45": {
+      "decision": "RETAIN_BASELINE",
+      "rationale": "Distinct collapsed pose with raised arm and bent leg, readable skull sockets/jaw and bony limbs. Painted ribcage is solid and coarse at close range but identifies remains clearly; no specific normal-distance failure demonstrated at21 placements.",
+      "baseline_sha256": "faa5e69652f05385c1eb4b7cfef4f2eb41a0cbff9854214e27d41b06662888ca",
+      "verified_dependencies": {
+        "src/bin/Data/Object2/Object45.bmd": "faa5e69652f05385c1eb4b7cfef4f2eb41a0cbff9854214e27d41b06662888ca",
+        "src/bin/Data/Object2/bons.OZJ": "0ed1d9cb1c8da9e0f128d51a607a7b4ecab8ee89bfdab67917ba0e7116542ec5"
+      }
+    },
+    "Object46": {
+      "decision": "RETAIN_BASELINE",
+      "rationale": "Compact seated/folded pose, bowed head, crossed limbs and rib/pelvis separation already create distinctive corpse silhouette. Coarse rib painting acknowledged, but geometry-only expansion risks losing compact pose and contact arrangement without clear payoff;25placements.",
+      "baseline_sha256": "485ce5e8c42e02f891958157d67858928066499f0f0ebecdb07776550d84d760",
+      "verified_dependencies": {
+        "src/bin/Data/Object2/Object46.bmd": "485ce5e8c42e02f891958157d67858928066499f0f0ebecdb07776550d84d760",
+        "src/bin/Data/Object2/bons.OZJ": "0ed1d9cb1c8da9e0f128d51a607a7b4ecab8ee89bfdab67917ba0e7116542ec5"
+      }
+    },
+    "Object47": {
+      "decision": "RETAIN_BASELINE",
+      "rationale": "Six varied skull orientations, large dark sockets, nasal openings and separate jaw contours read immediately at actual cluster and reduced scale. Angular cranial planes are minor at that scale; do not smooth away individual scatter or add invisible teeth;79placements.",
+      "baseline_sha256": "26f4e9a8a62d1ae81eb6f7081aacf4fb5d6bb8256eb1bf6ba8bb79bd3a367169",
+      "verified_dependencies": {
+        "src/bin/Data/Object2/Object47.bmd": "26f4e9a8a62d1ae81eb6f7081aacf4fb5d6bb8256eb1bf6ba8bb79bd3a367169",
+        "src/bin/Data/Object2/bons.OZJ": "0ed1d9cb1c8da9e0f128d51a607a7b4ecab8ee89bfdab67917ba0e7116542ec5"
+      }
+    },
+    "Object48": {
+      "decision": "PROCEED_BOUNDED_GEOMETRY_STUDY",
+      "rationale": "385placements; square-cut long shafts and abrupt rectangular joint transitions read as chopped bars in isolated view and remain visible in closer actual debris groups. Trial purposeful gently tapered rounded shafts and fuller bone ends on one existing component, keeping component arrangement, every support/contact plane, hand/foot silhouettes and frozen painting. Do not remodel every part or propagate into45/46 without measured correspondence. Accept only visible actual-export improvement at reduced scale; otherwise retain baseline.",
+      "baseline_sha256": "17921ffd7b933790593e3f7cb21b1a2ca76ebbb863e3b17be3461b1651b2d686",
+      "verified_dependencies": {
+        "src/bin/Data/Object2/Object48.bmd": "17921ffd7b933790593e3f7cb21b1a2ca76ebbb863e3b17be3461b1651b2d686",
+        "src/bin/Data/Object2/bons.OZJ": "0ed1d9cb1c8da9e0f128d51a607a7b4ecab8ee89bfdab67917ba0e7116542ec5"
+      }
+    }
+  },
+  "evidence_sha256": {
+    "Object45/baseline.blend": "da0d70119f67bfbd002066f224919c030298e9562fd7f461d66e02f4815d22b0",
+    "Object45/baseline.png": "11c0bc9a47b689bde886f15aac432464d64aa813ddcf6573eef0d448f0bbbb8f",
+    "Object46/baseline.blend": "f16623138a4cc457f6fb08f27f75e05290ad0e1771496e92620e795ccaf67373",
+    "Object46/baseline.png": "cfe2e5ac97d43f882c43b774ff8fe2ee9777898dbade3eaff70e1bcdf9a62abe",
+    "Object47/baseline.blend": "cb98fdc2d715b0b098d0f0c9fbfb734669df5a4f50962d8d03d355455c6dabd3",
+    "Object47/baseline.png": "3046bcf5ebff4277a01de5efd44b8d31e0ded6469b7826bcbae6e0462c23a146",
+    "Object48/baseline.blend": "96f789ed14d9cd55b30db777d23579d2a6518dbe3ef33bd705937cc4aa51152d",
+    "Object48/baseline.png": "a0a0e76a65f870cf36c0db8f1dbf85a8ce40b9599e042f6b3d429b5764af4abf",
+    "assemblies/remains-cluster/evidence.json": "ae9ffc5b82243b56aad3e4efe084faf37f63d66aae04ef0268ad19604dab5054",
+    "assemblies/remains-cluster/baseline-reverse.png": "a01bf8a7d1390c8985526092808447044923388261a84fb6875dd76029a70c81",
+    "assemblies/remains-cluster/baseline.png": "5771285c61c468b2e755f6ee6ed93ccb0d24e82b1227035f01fb0b62ba0679b0",
+    "assemblies/remains-cluster/baseline-small.png": "97275ea4619b468ae3dd19d238968fe2439ea32c71e8dc67f2d801048fd5cf71"
+  },
+  "engine_scope": "Static environmental remains: each one root/one one-key action. Dungeon type44\u201347 have no relevant update effect/operation cases. Not animated monster or character replacements. Names alone did not establish identity; actual official imported diffuse renders inspected.",
+  "family": "510placements total;45/46 index topology similarity is not geometry/UV correspondence. No copying or reposing authorized by this assessment.",
+  "frozen_texture": "src/bin/Data/Object2/bons.OZJ; nine consumers19/32/33/44\u201348/54. All must remain unchanged for proposed study.",
+  "limits": [
+    "Individual previews contain only main view; no individual reduced/reverse image exists. Family context main/reverse/reduced includes47/48, not45/46. Retention45/46 based available full individual view and static contract, not invented context review.",
+    "Offline diffuse previews without terrain/client; final production gate would require all usual actual-export/context evidence."
+  ]
+}
