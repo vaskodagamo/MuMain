@@ -82,18 +82,21 @@ target_include_directories(editor_asset_request_tests PRIVATE
 )
 
 # The Item Editor's item catalog (assets-work/Items/catalog.json), its Browse
-# tab's filters and sort order, and what the preview's character wears for an
-# item. File-only code as well; MuClient supplies the engine's class rule
+# tab's filters and sort order, what the preview's character wears for an item,
+# and the A/B compare's candidates (deliveries, pilot variants, folders). File-only code as well; MuClient supplies the engine's class rule
 # (GameLogic::Items::CanClassEquip) the class filter and the preview call.
 mu_add_test(
     NAME editor_item_browse_tests
     SOURCES
         test_item_browse.cpp
+        test_item_candidates.cpp
         test_item_catalog.cpp
         test_preview_outfit.cpp
         ${PROJECT_SOURCE_DIR}/src/MuEditor/Editing/PreviewOutfit.cpp
         ${MU_EDITOR_ASSETS_DIR}/EditorText.cpp
+        ${MU_EDITOR_ASSETS_DIR}/FileDigest.cpp
         ${MU_EDITOR_ASSETS_DIR}/ItemBrowse.cpp
+        ${MU_EDITOR_ASSETS_DIR}/ItemCandidates.cpp
         ${MU_EDITOR_ASSETS_DIR}/ItemCatalog.cpp
         ${MU_EDITOR_ASSETS_DIR}/JsonFields.cpp
     LINK_LIBS

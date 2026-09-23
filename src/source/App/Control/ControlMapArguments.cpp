@@ -193,7 +193,7 @@ std::filesystem::path DefaultOutput(std::string_view folder, const std::string& 
 std::string UniqueStamp()
 {
     static unsigned int sequence = 0;
-    return Editor::Files::Timestamp() + "-" + std::to_string(++sequence);
+    return Editor::Files::BackupStamp() + "-" + std::to_string(++sequence);
 }
 
 bool MapFromJson(const json& value, int& map, std::string& error)

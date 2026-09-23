@@ -12,6 +12,26 @@
 
 #include <cstdint>
 #include <optional>
+#include <string>
+#include <vector>
+
+namespace Editor::Assets::HotReload
+{
+class ModelCopy;
+}
+
+// A second picture next to the first (the Item Editor's A/B compare): the same
+// item drawn from other files, in the same view, camera, +level and options.
+struct PreviewCompare
+{
+    // Not owned; each is swapped into Models[] while the right picture is drawn
+    // (HotReload::ScopedModelSwap). The owner retires them, never frees them at once.
+    std::vector<Editor::Assets::HotReload::ModelCopy*> copies;
+    std::string leftLabel;
+    std::string rightLabel;
+    std::string rightMessage;     // without copies: why the right picture is empty
+    std::uint64_t generation = 0; // changes whenever the copies change
+};
 
 // The live 3D preview in the Item Editor's Browse details: the selected item drawn
 // by the engine (see ItemPreviewScene.h for the four views) into a render target
@@ -32,6 +52,11 @@ public:
     // are the Browse class filter (Editor::Items::ANY_CLASS: none).
     void Render(const Editor::Items::BrowseRow& row, int filterClass, int filterStage);
 
+    // Asks the next Render() for two pictures side by side (the right one from
+    // `compare`'s copies), with one camera: dragging either turns both. Without a
+    // call before a Render() the preview shows one picture.
+    void SetCompare(PreviewCompare compare);
+
     // Draws the picture the last Render() asked for. Must run inside the renderer's
     // frame (BeginFrame/EndFrame) - see Core/ItemStudio.
     void RenderPending();
@@ -39,10 +64,20 @@ public:
     // Frees the render target and undresses the character.
     void Release();
 
+    // A model the preview may show was loaded again (hot reload): both pictures are
+    // framed and dressed again with the next draw; the targets and the camera stay.
+    // Safe to call from widget code, unlike Release(), whose targets this frame's
+    // ImGui draw may still show.
+    void ModelsChanged();
+
     // The picture of the last frame (renderer texture id, 0 = none) and its side in
     // pixels, e.g. for a clean capture of the preview.
     std::uint32_t Texture() const { return m_texture; }
     int TextureSize() const { return m_textureSize; }
+    // The right picture of the side-by-side view (0 = none), drawn in the same
+    // frame and with the same settings as Texture().
+    std::uint32_t CompareTexture() const { return m_compareTexture; }
+    int CompareTextureSize() const { return m_compareTextureSize; }
 
     // Everything the panel's controls choose, so a script (the request captures)
     // can change them and put the owner's choice back afterwards.
@@ -86,15 +121,31 @@ public:
 private:
     CItemPreview() = default;
 
+    // Mouse over the pictures in one frame.
+    struct PictureInput
+    {
+        bool hovered = false;
+        bool dragging = false;
+    };
+
     void RenderViewChoice();
-    void RenderPicture(float side);
+    void RenderPictures(float side);
+    void RenderPicture(float side, std::uint32_t texture, int textureSize, const char* id, const char* label,
+                       PictureInput& input, const char* message = nullptr);
     void RenderSlotGrid(const ImVec2& corner, float side) const;
-    void HandlePictureInput();
+    void ApplyPictureInput(const PictureInput& input);
     void RenderCameraButtons();
     void RenderLookControls(const Editor::Items::BrowseRow& row);
     void RenderEquippedControls(int filterClass);
     void UpdateSubject(const Editor::Items::BrowseRow& row, int filterClass, int filterStage);
     void PrepareIfChanged();
+    bool DrawsCompare() const { return m_compare && !m_compare->copies.empty(); }
+    void PrepareCompareIfChanged();
+    Editor::ItemEditor::SubjectFrame SharedFrame() const;
+    bool DrawPicture(Editor::ItemEditor::CItemPreviewScene& scene, std::uint32_t& texture, int& textureSize,
+                     const Editor::ItemEditor::SubjectFrame& frame);
+    void DrawComparePicture(const Editor::ItemEditor::SubjectFrame& frame);
+    void ReleaseCompare();
     void KeepPinnedOrbit();
     void Changed() { ++m_settingsVersion; }
 
@@ -102,6 +153,8 @@ private:
     Editor::ItemEditor::PreviewSubject m_subject;  // what Render() asks for
     Editor::ItemEditor::PreviewSubject m_prepared; // what the scene is set up for
     bool m_hasPrepared = false;
+    bool m_modelsChanged = false;        // prepare again, keep the orbit
+    bool m_compareModelsChanged = false; // the same for the right picture
     Editor::ItemEditor::SubjectFrame m_frame;
     Editor::Preview::Orbit m_orbit;
 
@@ -135,6 +188,18 @@ private:
     int m_wantedSize = 0;
     bool m_requested = false;
     int m_framesNotShown = 0;
+
+    // Side by side: the right picture's scene, frame and target.
+    std::optional<PreviewCompare> m_nextCompare; // for the next Render()
+    std::optional<PreviewCompare> m_compare;     // what the last Render() showed
+    Editor::ItemEditor::CItemPreviewScene m_compareScene;
+    Editor::ItemEditor::PreviewSubject m_comparePrepared;
+    std::uint64_t m_compareGeneration = 0;
+    bool m_hasComparePrepared = false;
+    Editor::ItemEditor::SubjectFrame m_compareFrame;
+    std::uint32_t m_compareTexture = 0;
+    int m_compareTextureSize = 0;
+    int m_framesWithoutCompare = 0;
 };
 
 #define g_ItemPreview CItemPreview::GetInstance()

@@ -2,7 +2,8 @@
 
 Every item the client knows, in three tabs: **Browse** (a list or thumbnail grid you filter by class,
 family, tier and status, sorted from basic to rare, with a live 3D preview and the facts of the
-selected item, its concept images, your verdict on it and **Ask Codex...**), **Stats table** (every field of
+selected item, an **A/B compare** of its current, original and new versions, its concept images, your
+verdict on it and **Ask Codex...**), **Stats table** (every field of
 `Data/Local/<lang>/Item_<lang>.bmd`, edited in place and saved into the game's own file) and
 **Requests** (every item request you filed for the art builder, with its status, and your withdraw /
 accept / reject). It exists only in editor builds (`ENABLE_EDITOR`), so the normal game is unaffected.
@@ -46,7 +47,10 @@ The quick start is for the Mac; everything after it is reference. The Map Editor
 7. **Ask Codex:** under the preview, **Ask Codex...** files a request for the art builder to upscale,
    repaint, remodel or redesign the item, with clean captures of the preview; commit and push the
    folder it writes. The **Requests** tab follows it from there. See [Ask Codex](#ask-codex).
-8. **Screen:** **Full screen** on the toolbar (or **Cmd+Ctrl+F**; **F11** on Windows and Linux) fills
+8. **Compare versions:** under the preview, **A/B compare** switches the item between what the build
+   installed, your checkout, the originals and new versions (a Codex delivery, the style pilot's A and
+   B), and **Side by side** shows two versions next to each other. See [A/B compare](#ab-compare).
+9. **Screen:** **Full screen** on the toolbar (or **Cmd+Ctrl+F**; **F11** on Windows and Linux) fills
    the display, **Window** goes back. **- 125% +** sets the size of all editor text and buttons. Both
    are remembered for the next start (`MuEditor/MuEditor.ini`); the first start on a display at least
    1440 points high (a 1440p or 5K screen) uses 125%, else 100%.
@@ -107,7 +111,8 @@ one family the tier order is the catalog's family order, so for example the Dark
 Short Sword, Kris, Rapier ... Knight Blade, Bone Blade, then the Divine Sword (a quest reward that
 never drops).
 
-**Right - the selected item:** name, key, the live 3D preview (see [Preview](#preview)), your verdict
+**Right - the selected item:** name, key, the live 3D preview (see [Preview](#preview)), the
+[A/B compare](#ab-compare), your verdict
 (**Looks good** / **Needs work**), the item's open requests and **Ask Codex...** (see
 [Ask Codex](#ask-codex)), its **Concepts** (see [Concepts](#concepts)), classes, required and drop
 level, status, family, tier (its place among the family's items and whether it drops from monsters),
@@ -217,11 +222,103 @@ closed. With the preview open the studio keeps its ~75 frames per second.
 | `Editing/PreviewSlot.h/.cpp` | The inventory view's slot and camera numbers in the target (pure math). |
 | `Editing/PreviewOutfit.h/.cpp` | Which hand, back or body part the item goes on, the rest of an armour set, and the class to dress (pure rules). |
 | `Core/ModelPose.h/.cpp`, `Core/ScopedOffscreenCapture.h` | Shared with the thumbnails: a posed model's bounds, and closing an offscreen capture on every path. |
+| `UI/ItemEditor/ItemAbCompare.h/.cpp`, `ItemAbCaptures.h/.cpp`, `ItemModelTypes.h/.cpp` | The A/B compare panel, its capture sheets, and which `Models[]` slots an item uses. |
+| `Core/ModelCopy.h/.cpp`, `Core/ModelFileCheck.h/.cpp` | The right picture's model copy (swapped into the engine's model only while that picture is drawn) and the file check it shares with the hot reload. |
+| `Assets/ItemCandidates.h/.cpp` | Finding deliveries, pilot variants and folders for an item (unit-tested in `tests/editor/test_item_candidates.cpp`). |
 
 The pure parts are unit-tested in `tests/editor/test_preview_camera.cpp` and `test_preview_outfit.cpp`.
 The scene hooks are `Editor::ItemStudio::RenderInsteadOfWorld()` (studio) and `RenderAfterWorld()`
 (map drawn), called by the main scene; the engine side shares `RenderDroppedItem` and
 `PlaceItemOnGround` with the game's own dropped items (`ZzzObject.cpp`).
+
+## A/B compare
+
+Under the preview of the selected item: which files the running client draws the item with, and a
+second picture of it from other files. Nothing here writes a file; the switch lasts until you switch
+again or restart the editor.
+
+**The client shows:** *as built* (what the client loaded at start from the game's own `Data` folder,
+which the last build copied from `src/bin/Data`), *current*, *original*, a candidate's name, or *mixed*
+(the item's models show different versions). Next to it: how many textures the client holds and their
+memory, so you can see that switching back gives the start values again.
+
+| Button | What the client shows then |
+|--------|----------------------------|
+| **as built** | The game's own `Data` files again (the start state). |
+| **current** | Your checkout's `src/bin/Data`: pulled or delivered files show here before the next build. |
+| **original** | The files from before the art rebuild, `out/ab/original/Data` (see below). |
+| **Candidates:** *delivery ...*, *before ...*, *pilot A*, *pilot B*, *folder ...* | New files next to the data tree (below); what a candidate does not hold comes from `src/bin/Data`. |
+| **Reload from disk** | The shown version read again (e.g. after a pull); also looks for new deliveries and pilot variants. |
+
+The switch goes everywhere the client draws the item: preview, thumbnail, inventory, ground, characters.
+A texture keeps its place, so **other items that use the same texture switch with it**; the panel lists
+them, and warns in yellow when a candidate replaces a texture other items use (accepting it changes
+them too). A file the client could not load (wrong format, too many meshes or vertices, a missing or
+oversized texture) is **refused with a message** in the status line; the item keeps what it showed.
+
+**Family ...: / All items:** as built, current or original for every item of the selected item's family,
+or for all items (about 900 models, about two seconds). The status line and `MuError.log`
+(`[Items] All items: ...`) give how many switched, which were refused and the texture count and memory
+before and after. Seven items are always refused, whatever the version: their models name textures
+the repository never had (Holy Storm Claw, Crimson Glory, Red Wing Helm, Seal of Healing,
+Talisman of Guardian, Rare Item Ticket, Elite SD Potion).
+
+### Side by side
+
+Tick **Side by side** and choose the right picture's version (**right:** as built, current, original or
+a candidate). Both pictures use the same view, +level, options and camera: dragging or zooming either
+picture, and **Front / Side / Back**, turn both. The details panel gets twice as wide. The left picture is the
+client's version (its label starts with *client:*), so to compare two candidates, show one in the
+client (e.g. **pilot A**) and pick the other on the right (**right: pilot B**). A candidate the client
+cannot load leaves the right picture empty with the reason.
+
+**Capture A/B sheet** takes the request capture angles (front, side, back, three-quarter, inventory,
+worn, +0/+9/+13 glow) of both pictures and saves, per angle, the two pictures and one sheet with both
+side by side into `out/item-ab/<item key>-<time>/` (`01-front-current.jpg`, `01-front-pilot-a.jpg`,
+`01-front-sheet.jpg`, ...); **Open folder** shows them. They stay out of the request folder: the request
+contract lets you write only `owner-decision.json` there (attach a sheet to a note or a follow-up
+request yourself).
+
+### Candidates
+
+| Candidate | Where the editor finds it |
+|-----------|---------------------------|
+| *delivery &lt;request&gt;* | `assets-work/Items/requests/<request>/delivery/<item key>/exports/` (after you pulled the worker's branch) |
+| *before &lt;request&gt;* | The same delivery's `original/`: the files the request started from |
+| *pilot A*, *pilot B* | `assets-work/Items/pilot/<model file name>/<A, B, ...>/`, e.g. `pilot/Axe01/A/` for the Small Axe |
+| *folder &lt;name&gt;* | **Load candidate from folder...**: pick any `.bmd`, `.OZJ` or `.OZT` in a folder; the folder is offered for this item until the editor closes |
+
+A folder counts for an item when it holds the item's model file or one of its textures under the
+game's file name (any letter case), for example `Axe01.bmd` and `Axes02.OZJ`.
+
+**Codex's style pilot** (`assets-work/Items/pilot/README.md`): select **Small Axe** (1-0), **Small Shield**
+(6-0) or **Wings of Elf** (12-0); **Candidates** shows *pilot A* and *pilot B*. Tick **Side by side**:
+current on the left, pilot A on the right. Click **pilot A** under Candidates and choose **right: pilot B**
+to see A and B together; **Front** stops the turn on the broad face, **Equipped** puts them in the hand,
+on the arm or on the back (**Back** for wings). **as built** puts the client back.
+
+**A delivered request:** in the Requests tab, **Compare** (next to Accept and Reject) opens the item in
+Browse with your checkout's files on the left and the delivery on the right. When your checkout already
+holds the delivery (the worker's branch is checked out), the left picture shows the delivery's *before*
+files instead (or the originals), and the panel says so.
+
+### Original files
+
+*original* needs the files from before the art rebuild, built from git once (about 30 seconds, 45 MB):
+
+```sh
+python3 tools/world_editor/materialize_variant.py original --items
+```
+
+It writes each catalog model at its original commit (SHA-256 checked against `catalog.json`) and every
+texture it names into `out/ab/original/Data/Item/`, `Data/Player/`, ... with `items-manifest.json`. When
+they are missing or were built from other originals than the catalog lists, the panel shows the command
+with **Copy command** and **Check again**, and *original* is not offered. The Map Editor's world
+originals (`... original --world 1`) live in the same folder; each run keeps the other's files.
+
+**Not switched:** the extra models of Rage Fighter gloves (left and right hand) and the models only the
+inventory draws (lucky boxes, some event items) stay as they are. In **Equipped**, the right picture
+shows only the selected armour part in its other version; the rest of the set is the client's.
 
 ## Concepts
 
@@ -398,6 +495,8 @@ to keep in play must be made in OpenMU too (admin panel, Items).
 | Item requests (Ask Codex, Requests) | `assets-work/Items/requests/<id>/` | `request.json`, `brief.md`, `captures/*.jpg`, `owner-decision.json` after Accept / Reject; commit and push them yourself. |
 | Your verdicts | `assets-work/Items/client-review.json` | Written by Looks good / Needs work; created on the first verdict. |
 | Picked concepts | `assets-work/Items/concepts/<key>/concept.jpg` | Offered as the request's `captures/ref-concept.jpg`. |
+| Original item files (A/B) | `out/ab/original/Data/...`, `out/ab/original/items-manifest.json` | Built by `materialize_variant.py original --items`; not in git. |
+| A/B sheets | `out/item-ab/<key>-<YYYYMMDD-HHMMSS>/` | **Capture A/B sheet**; not in git. |
 | Model files (status) | `src/bin/Data/Item/...`, `src/bin/Data/Player/...` in the checkout | Hashed and compared with the catalog's originals. |
 | Item table the game loads | `Data/Local/<lang>/Item_<lang>.bmd` next to the executable | `<lang>` is `LanguageSelection` in `config.ini` (`Eng`). On disk the file is `item_eng.bmd`; the editor saves under that spelling. |
 | Repository copy | `src/bin/Data/Local/Eng/item_eng.bmd` | Written on every save; this is the file git tracks. |

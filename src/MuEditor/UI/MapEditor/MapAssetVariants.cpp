@@ -69,7 +69,7 @@ void CMapAssetVariants::CheckOriginalFiles()
 
 void CMapAssetVariants::TakeOutcomes()
 {
-    const std::vector<HotReload::Outcome> outcomes = HotReload::TakeOutcomes();
+    const std::vector<HotReload::Outcome> outcomes = HotReload::TakeOutcomes(HotReload::WorldObjectRange());
     if (outcomes.empty())
         return;
     for (const HotReload::Outcome& outcome : outcomes)

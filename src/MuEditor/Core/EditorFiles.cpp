@@ -206,7 +206,7 @@ SavedFile MirrorSavedFile(const fs::path& dataRelative)
     if (repoRoot.root.empty())
         saved.localCopy = CopyNextToExecutable(dataRelative);
     else
-        saved.repo = MirrorIntoRepo(saved.runtimeFile, dataRelative, repoRoot.root, Timestamp());
+        saved.repo = MirrorIntoRepo(saved.runtimeFile, dataRelative, repoRoot.root, BackupStamp());
     LogSavedFile(saved);
     return saved;
 }
@@ -253,7 +253,7 @@ bool OpenWithSystem(const fs::path& path, std::string& error)
     return false;
 }
 
-std::string Timestamp()
+std::string BackupStamp()
 {
     const time_t now = time(nullptr);
     tm local{};

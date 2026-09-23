@@ -19,6 +19,8 @@ the Mac; everything after it is reference.
    ```sh
    cd out/build/macos-arm64-mueditor/src/Release/Main.app/Contents/MacOS && ./Main --editor --world 1
    ```
+   Over the editor's panels (and their gaps, previews and lists) you see the normal Mac pointer;
+   over the 3D world the game's own cursor.
 3. **Fly:** arrow keys, **PgUp/PgDn** up and down (**fn+Up/fn+Down** on a laptop), hold **Shift** to go
    faster, **right-drag** to look around (only while no tool is ticked). **Reset view** goes back.
 4. **Objects:** Objects tab, tick **Enable object editing**, choose **Select & edit**, click an object
@@ -377,7 +379,7 @@ is open and until the click that closes it is released (`test_popup_mouse_guard.
 
 | File | Change |
 |---|---|
-| `MuEditor/Core/MuEditorCore.h/.cpp` | Added `m_bShowMapEditor`; render the panel each frame; call `CaptureInputForPainting()` in `Update()` (before the game consumes input). While an ImGui popup is open, and until the click that closes it is released, the mouse counts as over the editor (`Editor::Editing::PopupMouseGuard`, unit-tested), and Esc closes open menus and lists (not dialogs). Leaves the overlay and the game cursor out of a view-capture frame. Runs the Assets tab's model reloads at the start of a frame. Draws ImGui with the renderer's overlay pipeline (`mu::GetEditorOverlayPipeline()`). |
+| `MuEditor/Core/MuEditorCore.h/.cpp` | Added `m_bShowMapEditor`; render the panel each frame; call `CaptureInputForPainting()` in `Update()` (before the game consumes input). While an ImGui popup is open, and until the click that closes it is released, the mouse counts as over the editor (`Editor::Editing::PopupMouseGuard`, unit-tested), and Esc closes open menus and lists (not dialogs). Shows the OS pointer, and not the game cursor (drawn under ImGui), while the mouse is over any editor window or editor UI owns it; over the world the game cursor. Leaves the overlay and the game cursor out of a view-capture frame. Runs the Assets tab's model reloads at the start of a frame. Draws ImGui with the renderer's overlay pipeline (`mu::GetEditorOverlayPipeline()`). |
 | `MuEditor/UI/Common/MuEditorUI.h/.cpp` | Toolbar **Map Editor** button + param. |
 | `Render/Sprites/GlobalBitmap.h/.cpp` | `RefreshCacheEntry(index)` — invalidate one quick-cache slot (see gotcha #4). Editor only: `ReloadImage(index, file)` reads a texture from disk into the same index, keeping the other models' references (A/B compare). |
 | `Camera/DefaultCamera.cpp`, `Camera/OrbitalCamera.cpp` | Their editor-only on-screen camera text is left out of a view-capture frame. |
@@ -904,6 +906,8 @@ and no file is changed.
    **Original** buttons stay greyed out. The shown command names the script by its full path, so
    it runs in a terminal from any folder: `python3 ...` on macOS and Linux, `py -3 ...` on
    Windows (the Python launcher python.org installs; with another Python, type `python` instead).
+   The Item Editor's originals (`... original --items`) go into the same `out/ab/original`; a world
+   run and an item run each keep the other's files.
 2. **All models: Current / Original** loads every model of the list again from `src/bin/Data` or
    from `out/ab/original`, a few per frame (the line next to the buttons counts them). **Current**
    also picks up files that changed on disk since the map was loaded.

@@ -4,11 +4,13 @@
 
 #include "ItemPreview.h"
 
+#include "Core/ModelCopy.h"
 #include "Core/ScopedOffscreenCapture.h"
 #include "Editing/ItemCapturePlan.h" // FaceYawDegrees
 #include "Editing/PreviewOutfit.h"
 #include "Editing/PreviewSlot.h"
 
+#include "Engine/Object/ZzzCharacter.h"  // WaitCharactersAnimation
 #include "Engine/Object/ZzzInfomation.h" // ItemAttribute
 #include "Render/Renderer/MuRenderer.h"
 #include "UI/NewUI/NewUISystem.h" // g_pOption
@@ -17,7 +19,9 @@
 
 namespace
 {
+using Editor::ItemEditor::CItemPreviewScene;
 using Editor::ItemEditor::PreviewView;
+using Editor::ItemEditor::SubjectFrame;
 namespace Preview = Editor::Preview;
 
 constexpr int MAX_ITEM_LEVEL = 15;
@@ -32,6 +36,8 @@ constexpr int FRAMES_BEFORE_RELEASE = 3;
 constexpr float BUTTON_PITCH = 10.0f;
 
 constexpr ImU32 PICTURE_BORDER = IM_COL32(110, 110, 120, 255);
+constexpr ImU32 LABEL_BACKGROUND = IM_COL32(0, 0, 0, 170);
+constexpr ImU32 LABEL_TEXT = IM_COL32(240, 240, 240, 255);
 constexpr ImU32 PICTURE_WAITING = IM_COL32(24, 24, 28, 255);
 constexpr ImU32 SLOT_LINE = IM_COL32(150, 140, 110, 160);
 constexpr float SLOT_LINE_THICKNESS = 1.0f;
@@ -69,15 +75,23 @@ CItemPreview& CItemPreview::GetInstance()
     return instance;
 }
 
+void CItemPreview::SetCompare(PreviewCompare compare)
+{
+    m_nextCompare = std::move(compare);
+}
+
 void CItemPreview::Render(const Editor::Items::BrowseRow& row, int filterClass, int filterStage)
 {
+    m_compare = std::move(m_nextCompare);
+    m_nextCompare.reset();
     UpdateSubject(row, filterClass, filterStage);
     m_renderedVersion = m_settingsVersion;
     m_showsModel = row.hasModel;
     RenderViewChoice();
-    const float side = ImGui::GetContentRegionAvail().x;
+    const float width = ImGui::GetContentRegionAvail().x;
+    const float side = m_compare ? (width - ImGui::GetStyle().ItemSpacing.x) * 0.5f : width;
     m_wantedSize = m_targetOverride > 0 ? m_targetOverride : Preview::TargetSize(side);
-    RenderPicture(side);
+    RenderPictures(side);
     if (UsesOrbit(m_view))
         RenderCameraButtons();
     else
@@ -115,25 +129,56 @@ void CItemPreview::RenderViewChoice()
     }
 }
 
-void CItemPreview::RenderPicture(float side)
+void CItemPreview::RenderPictures(float side)
+{
+    PictureInput input;
+    RenderPicture(side, m_texture, m_textureSize, "##PreviewPicture", m_compare ? m_compare->leftLabel.c_str() : nullptr,
+                  input);
+    if (m_compare)
+    {
+        ImGui::SameLine();
+        const bool drawn = DrawsCompare();
+        RenderPicture(side, drawn ? m_compareTexture : 0, m_compareTextureSize, "##ComparePicture",
+                      m_compare->rightLabel.c_str(), input, drawn ? nullptr : m_compare->rightMessage.c_str());
+    }
+    ApplyPictureInput(input);
+}
+
+void CItemPreview::RenderPicture(float side, std::uint32_t texture, int textureSize, const char* id, const char* label,
+                                 PictureInput& input, const char* message)
 {
     const ImVec2 corner = ImGui::GetCursorScreenPos();
     const ImVec2 farCorner(corner.x + side, corner.y + side);
+    const ImVec2 padding = ImGui::GetStyle().FramePadding;
     ImDrawList* drawList = ImGui::GetWindowDrawList();
-    void* const picture = m_texture != 0 ? mu::GetRenderer().GetTexturePointer(m_texture) : nullptr;
-    if (picture != nullptr && m_textureSize > 0 && m_showsModel)
+    void* const picture = texture != 0 ? mu::GetRenderer().GetTexturePointer(texture) : nullptr;
+    if (picture != nullptr && textureSize > 0 && m_showsModel)
         drawList->AddImage((ImTextureID)(intptr_t)picture, corner, farCorner);
     else
         drawList->AddRectFilled(corner, farCorner, PICTURE_WAITING);
     if (!m_showsModel)
-        drawList->AddText(ImVec2(corner.x + ImGui::GetStyle().FramePadding.x, corner.y + ImGui::GetStyle().FramePadding.y),
-                          ImGui::GetColorU32(NOTE_COLOR), "The client loads no model for this item.");
+        drawList->AddText(ImVec2(corner.x + padding.x, corner.y + padding.y), ImGui::GetColorU32(NOTE_COLOR),
+                          "The client loads no model for this item.");
     drawList->AddRect(corner, farCorner, PICTURE_BORDER);
     if (m_view == PreviewView::Inventory)
         RenderSlotGrid(corner, side);
+    if (message != nullptr)
+        drawList->AddText(ImGui::GetFont(), ImGui::GetFontSize(),
+                          ImVec2(corner.x + padding.x, corner.y + side * 0.5f), ImGui::GetColorU32(NOTE_COLOR), message,
+                          nullptr, side - 2.0f * padding.x);
+    if (label != nullptr && m_showsModel)
+    {
+        const ImVec2 size = ImGui::CalcTextSize(label);
+        const ImVec2 textCorner(corner.x + padding.x, corner.y + padding.y);
+        drawList->AddRectFilled(ImVec2(corner.x, corner.y),
+                                ImVec2(textCorner.x + size.x + padding.x, textCorner.y + size.y + padding.y),
+                                LABEL_BACKGROUND);
+        drawList->AddText(textCorner, LABEL_TEXT, label);
+    }
 
-    ImGui::InvisibleButton("##PreviewPicture", ImVec2(side, side));
-    HandlePictureInput();
+    ImGui::InvisibleButton(id, ImVec2(side, side));
+    input.hovered = input.hovered || ImGui::IsItemHovered();
+    input.dragging = input.dragging || (ImGui::IsItemActive() && ImGui::IsMouseDragging(ImGuiMouseButton_Left, 0.0f));
 }
 
 // The slot's cells over the inventory view, where the game draws its slot frame.
@@ -159,16 +204,17 @@ void CItemPreview::RenderSlotGrid(const ImVec2& corner, float side) const
     }
 }
 
-void CItemPreview::HandlePictureInput()
+// One camera for both pictures: dragging or zooming either turns both.
+void CItemPreview::ApplyPictureInput(const PictureInput& input)
 {
     const ImGuiIO& io = ImGui::GetIO();
-    m_pointerInSlot = ImGui::IsItemHovered();
-    m_dragging = ImGui::IsItemActive() && ImGui::IsMouseDragging(ImGuiMouseButton_Left, 0.0f);
+    m_pointerInSlot = input.hovered;
+    m_dragging = input.dragging;
     if (!UsesOrbit(m_view))
         return;
     if (m_dragging)
         m_orbit = Preview::Dragged(m_orbit, io.MouseDelta.x, io.MouseDelta.y);
-    if (ImGui::IsItemHovered() && io.MouseWheel != 0.0f)
+    if (input.hovered && io.MouseWheel != 0.0f)
         m_orbit = Preview::Zoomed(m_orbit, io.MouseWheel);
     if (m_autoTurn && !m_dragging)
         m_orbit = Preview::Turned(m_orbit, io.DeltaTime);
@@ -236,9 +282,10 @@ void CItemPreview::RenderEquippedControls(int filterClass)
 
 void CItemPreview::PrepareIfChanged()
 {
-    if (m_hasPrepared && m_subject == m_prepared)
+    if (m_hasPrepared && m_subject == m_prepared && !m_modelsChanged)
         return;
     const bool newCamera = !m_hasPrepared || NeedsNewCamera(m_prepared, m_subject);
+    m_modelsChanged = false;
     m_frame = m_scene.Prepare(m_subject);
     if (newCamera)
         m_orbit = Preview::Facing(m_frame.towardCamera);
@@ -257,21 +304,85 @@ void CItemPreview::RenderPending()
     }
     m_requested = false;
     m_framesNotShown = 0;
+    if (!DrawsCompare() && m_hasComparePrepared)
+    {
+        m_compareScene.Release(); // its character may wear a copy that is about to go
+        m_hasComparePrepared = false;
+    }
+    if (!DrawsCompare() && m_compareTexture != 0 && ++m_framesWithoutCompare >= FRAMES_BEFORE_RELEASE)
+        ReleaseCompare();
     if (!mu::GetRenderer().IsFrameActive() || m_subject.itemType < 0)
         return;
 
     PrepareIfChanged();
+    if (DrawsCompare())
+        PrepareCompareIfChanged();
     KeepPinnedOrbit();
-    const int size = m_wantedSize;
-    const std::uint32_t texture = mu::GetRenderer().BeginOffscreenCapture(m_texture, size, size);
-    if (texture == 0)
+    const SubjectFrame frame = DrawsCompare() ? SharedFrame() : m_frame;
+    if (!DrawPicture(m_scene, m_texture, m_textureSize, frame))
         return;
-    const ScopedOffscreenCapture endCapture;
-    m_texture = texture;
-    m_textureSize = size;
-    const Preview::View camera = Preview::OrbitView(m_frame.center, m_frame.radius, m_orbit, 1.0f);
-    m_scene.Draw(m_subject, camera, size, m_pointerInSlot);
+    if (DrawsCompare())
+        DrawComparePicture(frame);
     m_drawnVersion = m_renderedVersion;
+}
+
+bool CItemPreview::DrawPicture(CItemPreviewScene& scene, std::uint32_t& texture, int& textureSize,
+                               const SubjectFrame& frame)
+{
+    const int size = m_wantedSize;
+    const std::uint32_t target = mu::GetRenderer().BeginOffscreenCapture(texture, size, size);
+    if (target == 0)
+        return false;
+    const ScopedOffscreenCapture endCapture;
+    texture = target;
+    textureSize = size;
+    const Preview::View camera = Preview::OrbitView(frame.center, frame.radius, m_orbit, 1.0f);
+    scene.Draw(m_subject, camera, size, m_pointerInSlot);
+    return true;
+}
+
+// The game's characters animate on worker threads that read Models[]; they must be
+// done before a copy is swapped in.
+void CItemPreview::PrepareCompareIfChanged()
+{
+    m_framesWithoutCompare = 0;
+    if (m_hasComparePrepared && m_comparePrepared == m_subject && m_compareGeneration == m_compare->generation &&
+        !m_compareModelsChanged)
+        return;
+    m_compareModelsChanged = false;
+    WaitCharactersAnimation();
+    const Editor::Assets::HotReload::ScopedModelSwap swap(m_compare->copies);
+    m_compareFrame = m_compareScene.Prepare(m_subject);
+    m_comparePrepared = m_subject;
+    m_compareGeneration = m_compare->generation;
+    m_hasComparePrepared = true;
+}
+
+// Both pictures look at the client's item from the same place, far enough for the
+// bigger of the two: a candidate that is larger or moved shows as such.
+SubjectFrame CItemPreview::SharedFrame() const
+{
+    SubjectFrame frame = m_frame;
+    frame.radius = std::max(m_frame.radius, m_compareFrame.radius);
+    return frame;
+}
+
+void CItemPreview::DrawComparePicture(const SubjectFrame& frame)
+{
+    WaitCharactersAnimation();
+    const Editor::Assets::HotReload::ScopedModelSwap swap(m_compare->copies);
+    DrawPicture(m_compareScene, m_compareTexture, m_compareTextureSize, frame);
+}
+
+void CItemPreview::ReleaseCompare()
+{
+    if (m_compareTexture != 0)
+        mu::GetRenderer().ReleaseTexture(m_compareTexture);
+    m_compareTexture = 0;
+    m_compareTextureSize = 0;
+    m_compareScene.Release();
+    m_hasComparePrepared = false;
+    m_framesWithoutCompare = 0;
 }
 
 // A scripted orbit wins over the framing PrepareIfChanged() gives a new subject,
@@ -360,6 +471,12 @@ void CItemPreview::SetTargetSize(int pixels)
     Changed();
 }
 
+void CItemPreview::ModelsChanged()
+{
+    m_modelsChanged = true;
+    m_compareModelsChanged = true;
+}
+
 void CItemPreview::Release()
 {
     if (m_texture != 0)
@@ -368,6 +485,7 @@ void CItemPreview::Release()
     m_textureSize = 0;
     m_scene.Release();
     m_hasPrepared = false;
+    ReleaseCompare();
 }
 
 #endif // _EDITOR

@@ -160,6 +160,12 @@ public:
     // stays. Call it between frames: the frame being recorded may still draw the
     // old image.
     bool ReloadImage(GLuint uiBitmapIndex, const std::wstring& filename, GLuint uiFilter, GLuint uiWrapMode);
+
+    // Editor A/B compare (Item Editor, side by side): loads `filename` into a new
+    // index even when another index already holds that file, so a second copy of a
+    // model never shares, or follows a reload of, the textures of the model the
+    // game shows. BITMAP_UNKNOWN when the file cannot be loaded.
+    GLuint LoadSeparateImage(const std::wstring& filename, GLuint uiFilter, GLuint uiWrapMode);
 #endif
 
 protected:

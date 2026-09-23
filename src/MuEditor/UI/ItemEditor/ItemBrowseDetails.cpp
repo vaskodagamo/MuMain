@@ -5,6 +5,7 @@
 #include "ItemBrowseDetails.h"
 
 #include "ConceptsPanel.h"
+#include "ItemAbCompare.h"
 #include "ItemOwnerActions.h"
 #include "ItemPreview.h"
 
@@ -123,9 +124,12 @@ void RenderItemDetails(const Items::BrowseRow& row, const std::string& catalogNo
     ImGui::TextUnformatted(row.name.empty() ? NO_NAME : row.name.c_str());
     ImGui::SameLine();
     ImGui::TextColored(NOTE_COLOR, "%s (type %d)", row.key.c_str(), row.type);
+    if (row.catalog != nullptr)
+        g_ItemAbCompare.PassCompareToPreview(*row.catalog);
     g_ItemPreview.Render(row, filterClass, filterStage);
     if (row.catalog != nullptr && catalog != nullptr)
     {
+        g_ItemAbCompare.Render(*row.catalog, *catalog);
         RenderOwnerActions(*row.catalog, *catalog);
         g_ConceptsPanel.Render(*row.catalog, *catalog);
     }

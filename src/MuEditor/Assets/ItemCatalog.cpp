@@ -51,6 +51,7 @@ ItemModel ParseModel(const json& entry)
     ItemModel model;
     model.role = Text(entry, "role");
     model.className = Text(entry, "class");
+    model.modelConstant = Text(entry, "model");
     model.condition = Text(entry, "condition");
     model.bmd = Text(entry, "bmd");
     model.exists = Bool(entry, "exists", true);

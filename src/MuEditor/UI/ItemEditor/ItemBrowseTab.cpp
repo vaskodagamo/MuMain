@@ -5,6 +5,7 @@
 #include "ItemBrowseTab.h"
 
 #include "ConceptLibrary.h"
+#include "ItemAbCompare.h"
 #include "ItemBrowseDetails.h"
 #include "ItemBrowseSelection.h"
 #include "ItemRequestWatch.h"
@@ -29,6 +30,10 @@ using Editor::Items::SortKey;
 // Layout, in pixels at 100% editor UI scale.
 constexpr float FILTER_PANEL_WIDTH = 235.0f;
 constexpr float DETAILS_PANEL_WIDTH = 460.0f; // room for the 3D preview
+// Two previews side by side (A/B compare), each as big as the single one; the item
+// list keeps at least MIN_LIST_WIDTH.
+constexpr float SIDE_BY_SIDE_DETAILS_WIDTH = 2.0f * DETAILS_PANEL_WIDTH;
+constexpr float MIN_LIST_WIDTH = 360.0f;
 constexpr float LIST_THUMB_SIZE = 40.0f;
 constexpr float GRID_TILE_SIZE = 112.0f;
 constexpr float CLASS_BUTTON_WIDTH = 46.0f;
@@ -252,7 +257,7 @@ void CItemBrowseTab::Render(int& selectedType)
     g_ObjectThumbnail.BeginFrame();
 
     const float filterWidth = Scaled(FILTER_PANEL_WIDTH);
-    const float detailsWidth = Scaled(DETAILS_PANEL_WIDTH);
+    const float detailsWidth = DetailsWidth(filterWidth);
     ImGui::BeginChild("BrowseFilters", ImVec2(filterWidth, 0.0f), ImGuiChildFlags_Borders);
     RenderFilterPanel();
     ImGui::EndChild();
@@ -275,6 +280,14 @@ void CItemBrowseTab::Render(int& selectedType)
     RenderDetailsPanel(selectedType);
     ImGui::EndChild();
     m_scrollToSelected = false;
+}
+
+float CItemBrowseTab::DetailsWidth(float filterWidth) const
+{
+    if (!g_ItemAbCompare.IsSideBySide())
+        return Scaled(DETAILS_PANEL_WIDTH);
+    const float room = ImGui::GetContentRegionAvail().x - filterWidth - Scaled(MIN_LIST_WIDTH);
+    return std::clamp(room, Scaled(DETAILS_PANEL_WIDTH), Scaled(SIDE_BY_SIDE_DETAILS_WIDTH));
 }
 
 void CItemBrowseTab::RenderFilterPanel()

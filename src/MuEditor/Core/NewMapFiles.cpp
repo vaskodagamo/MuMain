@@ -100,7 +100,7 @@ bool Create(const NewMap::NewMapRequest& request, bool dryRun, CreateResult& res
         return false;
     if (!dryRun)
     {
-        if (!NewMap::WriteNewMap(gameRoot, repoRoot, Editor::Files::Timestamp(), result.plan, result.written, error))
+        if (!NewMap::WriteNewMap(gameRoot, repoRoot, Editor::Files::BackupStamp(), result.plan, result.written, error))
             return false;
         World::MapNames::Forget(request.map);
         Log("[MapEditor] Created map " + std::to_string(request.map) + " (" + request.name + ") in Data/World" +

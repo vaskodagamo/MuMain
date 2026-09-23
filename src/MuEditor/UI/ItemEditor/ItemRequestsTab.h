@@ -16,6 +16,7 @@
 // claimed), accept it or reject it with notes (delivered: owner-decision.json),
 // file a follow-up after a rejection, open its folder or validate it; each change
 // shows the git commands that hand it on. The editor never commits or pushes.
+// Compare shows a delivered item side by side with the checkout's files in Browse.
 class CItemRequestsTab
 {
 public:
@@ -30,7 +31,8 @@ private:
                    const Editor::Assets::ItemCatalog* catalog);
     void RenderSelected(bool& showInBrowse, const Editor::Assets::ItemCatalog* catalog);
     void RenderWithdraw(const Editor::Assets::ItemRequestSummary& request);
-    void RenderVerdict(const Editor::Assets::ItemRequestSummary& request);
+    void RenderVerdict(const Editor::Assets::ItemRequestSummary& request, bool& showInBrowse);
+    void RenderCompare(const Editor::Assets::ItemRequestSummary& request, bool& showInBrowse);
     void RenderFollowUp(const Editor::Assets::ItemRequestSummary& request, bool& showInBrowse,
                         const Editor::Assets::ItemCatalog* catalog);
     void RenderResult();
