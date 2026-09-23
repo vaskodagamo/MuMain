@@ -36,6 +36,10 @@ public:
     {
         m_bShowMapEditor = true;
     }
+    void ShowItemEditor()
+    {
+        m_bShowItemEditor = true;
+    }
     bool IsHoveringUI() const { return m_bHoveringUI; }
     void SetHoveringUI(bool hovering) { m_bHoveringUI = hovering; }
 
