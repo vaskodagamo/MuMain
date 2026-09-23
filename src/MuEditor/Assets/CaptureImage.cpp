@@ -84,6 +84,28 @@ mu::FramePixels DownscaleToWidth(const mu::FramePixels& frame, std::uint32_t max
     return out;
 }
 
+mu::FramePixels SideBySide(const mu::FramePixels& left, const mu::FramePixels& right)
+{
+    if (!IsValid(left) || !IsValid(right))
+        return {};
+    mu::FramePixels out;
+    out.width = left.width + right.width;
+    out.height = std::max(left.height, right.height);
+    out.rgb.assign(static_cast<std::size_t>(out.width) * out.height * RGB_BYTES, 0);
+    const auto copyRows = [&](const mu::FramePixels& part, std::uint32_t offsetX) {
+        const std::size_t rowBytes = static_cast<std::size_t>(part.width) * RGB_BYTES;
+        for (std::uint32_t y = 0; y < part.height; ++y)
+        {
+            const std::uint8_t* source = part.rgb.data() + y * rowBytes;
+            std::uint8_t* target = out.rgb.data() + (static_cast<std::size_t>(y) * out.width + offsetX) * RGB_BYTES;
+            std::copy(source, source + rowBytes, target);
+        }
+    };
+    copyRows(left, 0);
+    copyRows(right, left.width);
+    return out;
+}
+
 std::vector<std::uint8_t> EncodeJpeg(const mu::FramePixels& frame, int quality)
 {
     if (!IsValid(frame))

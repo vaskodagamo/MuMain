@@ -18,6 +18,10 @@ constexpr int CAPTURE_JPEG_QUALITY = 90;
 // output pixel is the average of the source pixels it covers.
 mu::FramePixels DownscaleToWidth(const mu::FramePixels& frame, std::uint32_t maxWidth);
 
+// `left` and `right` next to each other on one frame (an A/B sheet), top-aligned;
+// the lower one leaves black below it. Empty when either frame is empty.
+mu::FramePixels SideBySide(const mu::FramePixels& left, const mu::FramePixels& right);
+
 // Baseline JPEG of a top-down RGB frame; empty when the frame is empty or the
 // encoder fails.
 std::vector<std::uint8_t> EncodeJpeg(const mu::FramePixels& frame, int quality);

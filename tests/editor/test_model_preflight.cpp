@@ -440,3 +440,71 @@ TEST_CASE("A/B variants: the original files are missing, stale or ready")
     WriteText(manifest, "not json");
     CHECK(CheckVariant(repo, AssetVariant::Original, 1) == VariantState::Missing);
 }
+
+TEST_CASE("model textures: each from the first folder that holds it")
+{
+    TempTree tree("mu_editor_preflight_folders");
+    const fs::path candidate = tree.Root() / "candidate";
+    const fs::path current = tree.Root() / "Item";
+    WriteBytes(candidate / "tree.OZJ", BuildOzj(32, 32));
+    WriteBytes(current / "tree.OZJ", BuildOzj(16, 16));
+    WriteBytes(current / "leaf.OZT", BuildOzt(2, 2, 32, 2, 16));
+    std::vector<std::string> problems;
+    const std::vector<TextureFile> textures = CheckModelTextures(
+        std::vector<fs::path>{candidate, current}, ModelSummary{3, 0, 0, {"tree.jpg", "leaf.tga", "gone.jpg"}},
+        EngineLimits(), problems);
+    REQUIRE(textures.size() == 3);
+    CHECK(textures[0].container == candidate / "tree.OZJ");
+    CHECK(textures[0].width == 32);
+    CHECK(textures[1].container == current / "leaf.OZT");
+    REQUIRE(problems.size() == 1);
+    CHECK(problems[0].find("gone.OZJ is missing in") != std::string::npos);
+    CHECK(problems[0].find(" or ") != std::string::npos); // names both folders
+}
+
+TEST_CASE("A/B variants: the item editor's versions and its original files")
+{
+    const fs::path repo = fs::path("repo");
+    CHECK(std::string(VariantName(AssetVariant::AsBuilt)) == "as built");
+    CHECK(std::string(VariantName(AssetVariant::Candidate)) == "candidate");
+    CHECK(VariantDataRoot(repo, AssetVariant::AsBuilt).empty());
+    CHECK(VariantDataRoot(repo, AssetVariant::Candidate).empty());
+    const fs::path checkout = fs::path("/work") / "My Repo";
+    const std::string script =
+        Editor::Text::PathToUtf8((checkout / "tools" / "world_editor" / "materialize_variant.py").make_preferred());
+#ifdef _WIN32
+    CHECK(MaterializeItemsCommand(checkout) == "py -3 \"" + script + "\" original --items");
+#else
+    CHECK(MaterializeItemsCommand(checkout) == "python3 \"" + script + "\" original --items");
+#endif
+
+    TempTree tree("mu_editor_item_originals");
+    const fs::path manifest = tree.Root() / "out" / "ab" / "original" / "items-manifest.json";
+    const std::vector<std::pair<std::string, std::string>> originals = {
+        {"src/bin/Data/Item/Sword01.bmd", "aa"}, {"src/bin/Data/Player/HelmMale01.bmd", "bb"}};
+    CHECK(CheckItemOriginals(tree.Root(), originals) == VariantState::Missing);
+    WriteText(manifest, R"({"schema": "mu-ab-variant/1", "domain": "items", "models": {
+        "Data/Item/Sword01.bmd": {"sha256": "aa"}, "Data/Player/HelmMale01.bmd": {"sha256": "bb"}}})");
+    CHECK(CheckItemOriginals(tree.Root(), originals) == VariantState::Ready);
+    CHECK(CheckItemOriginals(tree.Root(), {{"src/bin/Data/Item/Sword01.bmd", "cc"}}) == VariantState::OutOfDate);
+    CHECK(CheckItemOriginals(tree.Root(), {{"src/bin/Data/Item/Axe01.bmd", "aa"}}) == VariantState::OutOfDate);
+    // A world run's manifest.json next to it is another file.
+    CHECK(CheckVariant(tree.Root(), AssetVariant::Original, 1) == VariantState::Missing);
+}
+
+TEST_CASE("A/B sheet: two pictures next to each other")
+{
+    mu::FramePixels left;
+    left.width = 2;
+    left.height = 1;
+    left.rgb = {1, 1, 1, 2, 2, 2};
+    mu::FramePixels right;
+    right.width = 1;
+    right.height = 2;
+    right.rgb = {7, 7, 7, 8, 8, 8};
+    const mu::FramePixels sheet = Editor::Capture::SideBySide(left, right);
+    CHECK(sheet.width == 3);
+    CHECK(sheet.height == 2);
+    CHECK(sheet.rgb == std::vector<std::uint8_t>{1, 1, 1, 2, 2, 2, 7, 7, 7, 0, 0, 0, 0, 0, 0, 8, 8, 8});
+    CHECK(Editor::Capture::SideBySide(left, mu::FramePixels{}).rgb.empty());
+}

@@ -11,8 +11,10 @@
 #include <vector>
 
 // Loads a model (Models[type]) and its textures again from a folder while the
-// client runs: the Assets tab switches a model between its current and original
-// files (A/B compare) and picks up files that changed on disk.
+// client runs: the Map Editor's Assets tab and the Item Editor's A/B compare
+// switch a model between its current, original (and for items: as built or a
+// candidate's) files and pick up files that changed on disk. ModelCopy.h loads a
+// second copy next to the one the client shows, for side-by-side pictures.
 //
 // - Only models in an allowed range are reloaded: the map's world objects always,
 //   other blocks of Models[] (items) once an editor allows them with AllowRange.
@@ -24,7 +26,10 @@
 //   BMD header, mesh, vertex and bone limits, each texture file and its size) and
 //   refused with a message, instead of reaching the loaders' fatal paths.
 // - A texture keeps its bitmap index when the model had a texture of the same
-//   name, so the models that share it show the new image too.
+//   name, so the models that share it show the new image too. A texture in one of
+//   the engine's own numbered slots (hair, capes, event items) is never replaced:
+//   the model takes the slot again when the new file has the same bytes, else an
+//   index of its own that goes away when it is switched back.
 namespace Editor::Assets::HotReload
 {
 // A block of Models[] the reload may replace, and how the game loads its textures.
@@ -52,7 +57,10 @@ struct Request
     int type = -1;         // model type in an allowed range
     std::string modelName; // for messages
     AssetVariant variant = AssetVariant::Current;
-    std::filesystem::path bmdFile; // absolute; the textures are read from the same folder
+    std::filesystem::path bmdFile; // absolute
+    // Where the textures are read from: each from the first folder that holds its
+    // file. Empty: the BMD's folder.
+    std::vector<std::filesystem::path> textureFolders;
 };
 
 struct Outcome
@@ -61,6 +69,9 @@ struct Outcome
     bool loaded = false;
     std::string message; // what was loaded, or why nothing changed
 };
+
+// The allowed range `type` is in; null when none is.
+const ModelRange* FindRange(int type);
 
 // True when `type` is in an allowed range and loaded (for world objects: by this map).
 bool CanReload(int type);
@@ -75,8 +86,9 @@ std::size_t PendingCount();
 // of each frame. Requests for world objects queued on another map are dropped.
 void RunPending();
 
-// Results since the last call, oldest first.
-std::vector<Outcome> TakeOutcomes();
+// The results for models in `range` since the last call, oldest first (each
+// editor takes those of the models it switches).
+std::vector<Outcome> TakeOutcomes(const ModelRange& range);
 
 // The variant the last reload of `type` loaded, while the engine still shows that
 // load; empty when the model is as the map loaded it (or the map loaded it again).

@@ -5,11 +5,16 @@
 #include <filesystem>
 #include <optional>
 #include <string>
+#include <utility>
+#include <vector>
 
-// The two versions of a world's art the Assets tab switches between: the
+// The versions of the art the editors' A/B compare switches between: the
 // checkout's current files (<repo>/src/bin/Data) and the originals from before
 // the art rebuild, which tools/world_editor/materialize_variant.py writes from git
-// into <repo>/out/ab/original/Data with the same layout and a manifest.json.
+// into <repo>/out/ab/original/Data with the same layout and a manifest.json (world
+// runs) or items-manifest.json (--items runs). The Item Editor also shows what the
+// build copied next to the game (as built) and candidates (a Codex delivery, a
+// pilot variant, any folder).
 // File system only; unit-tested in tests/editor/test_model_preflight.cpp.
 namespace Editor::Assets
 {
@@ -17,12 +22,15 @@ enum class AssetVariant
 {
     Current,
     Original,
+    AsBuilt,   // the game's own Data folder, which the last build copied from src/bin/Data
+    Candidate, // files from outside the data tree: a delivery, a pilot variant, a folder
 };
 
-// "current" or "original", as the UI and the script name them.
+// "current", "original", "as built" or "candidate", as the UI and the script name them.
 const char* VariantName(AssetVariant variant);
 
-// <repo>/src/bin/Data or <repo>/out/ab/original/Data.
+// <repo>/src/bin/Data or <repo>/out/ab/original/Data; empty for the variants that
+// are not in the repository (as built, candidate).
 std::filesystem::path VariantDataRoot(const std::filesystem::path& repoRoot, AssetVariant variant);
 
 // A catalog path such as src/bin/Data/Object1/Tree01.bmd inside the variant
@@ -45,6 +53,16 @@ enum class VariantState
 // Reads the variant's manifest.json and compares its catalog SHA-256 with the
 // world's catalog.json. Reads and hashes files: call it on demand, not every frame.
 VariantState CheckVariant(const std::filesystem::path& repoRoot, AssetVariant variant, int world);
+
+// The command that builds the item originals (materialize_variant.py original --items).
+std::string MaterializeItemsCommand(const std::filesystem::path& repoRoot);
+
+// Whether out/ab/original holds the item originals: Missing without its
+// items-manifest.json, OutOfDate when a model of `originals` (catalog BMD path ->
+// the catalog's original SHA-256) is not in it with that SHA-256. Reads the
+// manifest: call it on demand, not every frame.
+VariantState CheckItemOriginals(const std::filesystem::path& repoRoot,
+                                const std::vector<std::pair<std::string, std::string>>& originals);
 } // namespace Editor::Assets
 
 #endif // _EDITOR

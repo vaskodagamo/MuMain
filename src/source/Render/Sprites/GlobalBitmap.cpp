@@ -663,6 +663,17 @@ bool CGlobalBitmap::ReloadImage(GLuint uiBitmapIndex, const std::wstring& filena
     }
     return true;
 }
+
+GLuint CGlobalBitmap::LoadSeparateImage(const std::wstring& filename, GLuint uiFilter, GLuint uiWrapMode)
+{
+    const GLuint uiNewTextureIndex = GenerateTextureIndex();
+    if (!LoadImage(uiNewTextureIndex, filename, uiFilter, uiWrapMode))
+    {
+        return BITMAP_UNKNOWN;
+    }
+    m_listNonamedIndex.push_back(uiNewTextureIndex);
+    return uiNewTextureIndex;
+}
 #endif // _EDITOR
 
 void CGlobalBitmap::UnloadAllImages()
