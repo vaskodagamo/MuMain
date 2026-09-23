@@ -94,7 +94,8 @@ std::streambuf::int_type ConsoleStreamBuf::overflow(int_type c)
         // If we hit a newline, flush the buffer
         if (c == '\n')
         {
-            std::lock_guard<std::mutex> lock(g_consoleMutex);
+            // No lock here: LogGame takes g_consoleMutex itself, and taking it twice
+            // hung the process on the first line written to std::cout/std::cerr.
 
             // Remove trailing newline for our buffer
             std::string line = m_buffer;

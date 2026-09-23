@@ -999,6 +999,42 @@ parallel. Reload of a non-world range is untested until I6 allows one.
 
 **Open / next:** Owner review of PRs #22 and #23; continue the Dungeon static inventory with actual-placement context. The latest triage found no coherent next 3–5 asset production batch among Object05/07/08/09/10/11/14; keep Object09's animated Object12 clearance dependency explicit.
 
+## 2026-09-23 - Item editor I1: Item Editor on the Mac, offline --items (Claude Opus 5.5)
+**Goal:** Milestone I1 of `ITEM_EDITOR_PLAN.md`.
+
+**Done:** portable Item Editor paths, saves mirrored into the repository with a backup,
+`--editor --items`, byte-preserving save of the item table in the layout it was loaded from,
+29-byte name limit for the legacy layout, console `std::cout` hang fixed, `ITEM_EDITOR.md`.
+
+**Verified:** `editor_item_table_tests` (four shipped tables byte-identical, rename changes one
+record + checksum); 343/343 editor-build tests, 342/342 player-build tests; scripted in-client
+run (search, columns, rename, save, no-change save, copy, exports), screenshots.
+
+**Open / next:** hand test by the owner; I3 browse tab. Item stats of 13-121/125/127 are
+corrupted in the shipped file (long names spill into later fields).
+## 2026-09-23 — Merged review checkpoints and portable Lorencia evidence (ASTRA / Codex)
+
+**Goal:** Continue the environment remake after the user merged PR #12, keeping owner-fork checkpoints current and reviewable.
+
+**Done:** Pulled owner-fork main into the isolated integration worktree after the user's merge; main is now `0cc611bc`. PRs #12, #13, and #16–#24 are merged. Preserved portable, hash-bound Blender-imported contexts for the HouseEtc stack, south gate, and siege wall after identifying stale workstation-only image links. Independent challenge review still supports the existing Lorencia retention decisions; the 22 accepted replacements plus 84 justified retentions represent coverage of 106 assets, not 106 remakes.
+
+**Verified:** The 52 files in the portable masonry evidence package match its SHA-256 manifest. The independent review revalidated 29 model/texture appearances, all 17 selected placement transforms and model types, and exact old/current composition bounds. It found no additional placed-scale defect or production batch. This is selective offline evidence; newly changed game assets still need client verification.
+
+**Open / next:** Object44 has one bounded skeleton-silhouette prototype in progress on `codex/dungeon-remains44`, with `bons.OZJ`, `wood01.OZJ`, and neighboring models frozen. Independently review actual reduced/normal placement views before accepting it. Continue the Dungeon inventory and publish focused, ready-for-review PRs against `vaskodagamo/MuMain` as checkpoints pass.
+
+## 2026-09-23 - Item editor I2: item catalog, tiers, request contract (Claude Opus 5.5)
+**Goal:** Milestone I2 of `ITEM_EDITOR_PLAN.md`.
+
+**Done:** `tools/item_editor/` (item table decoder, model table generator, BMD facts, tiers,
+OpenMU export, catalog builder), `assets-work/Items/` (catalog, OpenMU export, tiers/assignments
+files, request README/schema/validator).
+
+**Verified:** 56 Python tests, registered in ctest; catalog `--check`; OpenMU export from the
+local database (read-only, no credentials).
+
+**Open / next:** I3 browse tab reads the catalog; I5 writes requests in this contract. Engine
+check for `ItemSetType` "no set" = 0 vs `0xFF`.
+
 ## 2026-09-23 - Item art baseline study (Codex)
 **Goal:** Inventory the item and player armor BMD families, create comparable offline "before" renders, and record a style/rework baseline without modifying game assets.
 

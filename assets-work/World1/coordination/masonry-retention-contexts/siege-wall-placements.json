@@ -1,0 +1,137 @@
+{
+  "status": "OFFLINE BLENDER PLACEMENT REVIEW; NOT CLIENT EVIDENCE",
+  "coordinate_anchor": [
+    11250.0,
+    12250.0,
+    164.99996948242188
+  ],
+  "objects": [
+    {
+      "name": "StoneMuWall01",
+      "placement_index": 0,
+      "position": [
+        11300.0,
+        12800.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        990.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        113.0,
+        128.0
+      ],
+      "world_record_indices": [
+        1431
+      ]
+    },
+    {
+      "name": "StoneMuWall02",
+      "placement_index": 5,
+      "position": [
+        11250.0,
+        12450.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        990.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        112.5,
+        124.5
+      ],
+      "world_record_indices": [
+        1406
+      ]
+    },
+    {
+      "name": "StoneMuWall02",
+      "placement_index": 6,
+      "position": [
+        11250.0,
+        11750.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1350.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        112.5,
+        117.5
+      ],
+      "world_record_indices": [
+        1411
+      ]
+    },
+    {
+      "name": "StoneMuWall03",
+      "placement_index": 5,
+      "position": [
+        11250.0,
+        11950.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        990.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        112.5,
+        119.5
+      ],
+      "world_record_indices": [
+        1407
+      ]
+    },
+    {
+      "name": "StoneMuWall04",
+      "placement_index": 0,
+      "position": [
+        11250.0,
+        12250.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        990.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        112.5,
+        122.5
+      ],
+      "world_record_indices": [
+        1408
+      ]
+    }
+  ],
+  "placement_source": "Unchanged World1 EncTerrain1.obj, decoded by coordination inventory",
+  "caveat": "Only owned geometry shown. Original terrain height, lighting, collision and other buildings omitted.",
+  "join_checks": "Actual World1 position/rotation/scale retained; camera identical before/after",
+  "camera_bounds_from_original_evaluated_meshes": [
+    [
+      -147.3950958251953,
+      -549.9852905273438,
+      -174.17349243164062
+    ],
+    [
+      169.3925323486328,
+      850.063720703125,
+      623.5741577148438
+    ]
+  ],
+  "old_placement_sha256": "91c05c6593ab4c31b7edf0d3e87ddb0e20d9a48db1ad470286b0da4ffd5530c1",
+  "source_revision": "0cc611bc9165a8f856db88e2bd0f4fe049bcef90"
+}

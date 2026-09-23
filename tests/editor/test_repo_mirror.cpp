@@ -183,3 +183,17 @@ TEST_CASE("Files compare by their bytes [editor][saves]")
     CHECK_FALSE(SameFileContents(tree.Root() / "a", tree.Root() / "d"));
     CHECK_FALSE(SameFileContents(tree.Root() / "a", tree.Root() / "missing"));
 }
+
+TEST_CASE("A save path takes the letter case of the files on disk [editor][saves]")
+{
+    TempTree tree("spelling");
+    WriteText(tree.Root() / "Data" / "Local" / "Eng" / "item_eng.bmd", "x");
+
+    const fs::path asked = tree.Root() / "Data" / "local" / "ENG" / "Item_Eng.bmd";
+    const fs::path onDisk = tree.Root() / "Data" / "Local" / "Eng" / "item_eng.bmd";
+    CHECK(OnDiskSpelling(asked).generic_string() == onDisk.generic_string());
+
+    const fs::path newFile = tree.Root() / "Data" / "Local" / "Eng" / "Item_S6E3.bmd";
+    CHECK(OnDiskSpelling(tree.Root() / "Data" / "LOCAL" / "Eng" / "Item_S6E3.bmd").generic_string() ==
+          newFile.generic_string());
+}

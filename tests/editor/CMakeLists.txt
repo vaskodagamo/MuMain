@@ -135,3 +135,23 @@ mu_add_test(
 )
 target_compile_definitions(editor_editing_tests PRIVATE _EDITOR)
 target_include_directories(editor_editing_tests PRIVATE ${PROJECT_SOURCE_DIR}/src/MuEditor)
+
+# The Item Editor's save of the item table (Data/Local/<lang>/Item_<lang>.bmd).
+# Saving is editor-only code in MuClient, so the test exists only in editor
+# builds. It loads the shipped tables and saves them into a temporary folder:
+# without an edit the file must come back byte for byte (layout, junk bytes,
+# checksum), with an edit only that record and the checksum may change.
+# Winmain.cpp defines globals the loader's code reaches (as in tests/engine).
+if(ENABLE_EDITOR)
+    mu_add_test(
+        NAME editor_item_table_tests
+        SOURCES
+            test_item_table_file.cpp
+            ${PROJECT_SOURCE_DIR}/src/source/App/Platform/Windows/Winmain.cpp
+        LINK_LIBS
+            MuClient
+    )
+    target_compile_definitions(editor_item_table_tests PRIVATE
+        "MU_TEST_DATA_DIR=\"${PROJECT_SOURCE_DIR}/src/bin/Data/\""
+    )
+endif()

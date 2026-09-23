@@ -5,6 +5,7 @@
 #include "ItemEditorColumns.h"
 #include "ItemEditorTable.h"
 #include "../MuEditor/UI/Console/MuEditorConsoleUI.h"
+#include "Data/DataHandler/ItemData/ItemDataHandler.h"
 #include "Data/GameData/ItemData/ItemFieldDefs.h"
 #include "I18N/All.h"
 #include "Core/Globals/_struct.h"
@@ -41,6 +42,19 @@ static std::string GetItemNameUtf8(int itemIndex)
     if (nameBuf[0] == '\0')
         return "<unnamed>";
     return nameBuf;
+}
+
+// Shortens UTF-8 `text` to at most `maxBytes` bytes without splitting a character.
+static void CutUtf8(char* text, size_t maxBytes)
+{
+    constexpr unsigned char CONTINUATION_MASK = 0xC0;
+    constexpr unsigned char CONTINUATION_BITS = 0x80;
+    if (strlen(text) <= maxBytes)
+        return;
+    size_t end = maxBytes;
+    while (end > 0 && (static_cast<unsigned char>(text[end]) & CONTINUATION_MASK) == CONTINUATION_BITS)
+        --end;
+    text[end] = '\0';
 }
 
 static void LogItemFieldChange(int itemIndex, const char* columnName, const std::string& newValue)
@@ -171,7 +185,13 @@ void CItemEditorColumns::RenderWCharArrayColumn(
     char editableBuffer[256];
     WideCharToMultiByte(CP_UTF8, 0, value, -1, editableBuffer, sizeof(editableBuffer), NULL, NULL);
 
-    if (ImGui::InputText("##input", editableBuffer, sizeof(editableBuffer)))
+    // No longer than the item file can hold (the legacy layout keeps 29 bytes), so a
+    // save never cuts a name; InputText's size counts the terminator and must hold
+    // the text. A longer loaded name (three tickets run past the legacy field) shows
+    // cut and only changes when it is edited.
+    const size_t inputSize = std::min(sizeof(editableBuffer), g_ItemDataHandler.GetMaxNameBytes() + 1);
+    CutUtf8(editableBuffer, inputSize - 1);
+    if (ImGui::InputText("##input", editableBuffer, inputSize))
     {
         MultiByteToWideChar(CP_UTF8, 0, editableBuffer, -1, value, arraySize);
         LogItemFieldChange(itemIndex, columnName, std::string(editableBuffer));

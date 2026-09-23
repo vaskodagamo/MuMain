@@ -33,6 +33,7 @@ namespace Editor::OfflineWorld
 namespace
 {
 constexpr const wchar_t* WORLD_OPTION = L"--world";
+constexpr const wchar_t* ITEMS_OPTION = L"--items"; // the Item Editor instead of the Map Editor
 constexpr wchar_t WORLD_OPTION_SEPARATOR = L'='; // "--world=3" works as well as "--world 3"
 constexpr int DECIMAL_BASE = 10;
 constexpr int NO_WORLD = 0;
@@ -41,6 +42,7 @@ constexpr int NO_WORLD = 0;
 // (gMapManager.WorldActive) from 0, and the client knows NUM_WD maps.
 constexpr int FIRST_WORLD_FOLDER = 1;
 constexpr int LAST_WORLD_FOLDER = NUM_WD;
+constexpr int ITEM_EDITOR_WORLD = 1; // --items without --world: Lorencia
 
 // Start view. The hidden hero and the camera target sit at the start point
 // (see FindStartPoint). The camera looks along the game camera's heading,
@@ -59,6 +61,7 @@ struct GroundPoint
 };
 
 int s_requestedWorld = NO_WORLD;
+bool s_itemEditor = false; // --items: open the Item Editor, not the Map Editor
 bool s_active = false;
 GroundPoint s_startPoint{MAP_CENTRE, MAP_CENTRE};
 
@@ -160,15 +163,11 @@ void PlaceHiddenHero()
     GroundPosition(s_startPoint, hero.Position);
     VectorCopy(hero.Position, hero.StartPosition);
 }
-} // namespace
 
-void ReadCommandLine(const wchar_t* commandLine)
+// The map folder number after "--world" (`value` points just past it), or
+// NO_WORLD (logged) when it is missing or out of range.
+int ReadWorldNumber(const wchar_t* value)
 {
-    const wchar_t* option = commandLine != nullptr ? wcsstr(commandLine, WORLD_OPTION) : nullptr;
-    if (option == nullptr)
-        return;
-
-    const wchar_t* value = option + wcslen(WORLD_OPTION);
     if (*value == WORLD_OPTION_SEPARATOR)
         ++value;
 
@@ -178,9 +177,32 @@ void ReadCommandLine(const wchar_t* commandLine)
     {
         Log(L"[Editor] --world needs a map folder number from " + std::to_wstring(FIRST_WORLD_FOLDER) + L" to " +
             std::to_wstring(LAST_WORLD_FOLDER) + L" (1 = Lorencia) - starting the normal login instead.");
-        return;
+        return NO_WORLD;
     }
-    s_requestedWorld = static_cast<int>(world);
+    return static_cast<int>(world);
+}
+
+// The editor window the offline world opens with.
+void ShowStartEditor()
+{
+    if (s_itemEditor)
+        g_MuEditorCore.ShowItemEditor();
+    else
+        g_MuEditorCore.ShowMapEditor();
+}
+} // namespace
+
+void ReadCommandLine(const wchar_t* commandLine)
+{
+    if (commandLine == nullptr)
+        return;
+
+    s_itemEditor = wcsstr(commandLine, ITEMS_OPTION) != nullptr;
+    const wchar_t* option = wcsstr(commandLine, WORLD_OPTION);
+    if (option != nullptr)
+        s_requestedWorld = ReadWorldNumber(option + wcslen(WORLD_OPTION));
+    else if (s_itemEditor)
+        s_requestedWorld = ITEM_EDITOR_WORLD;
 }
 
 bool TryEnter()
@@ -205,9 +227,11 @@ bool TryEnter()
     s_startPoint = FindStartPoint();
     PlaceHiddenHero();
     ResetCamera();
-    g_MuEditorCore.ShowMapEditor();
+    ShowStartEditor();
 
-    Log(L"[Editor] Opened World" + std::to_wstring(world) + L" offline: no server, no login, free-fly camera.");
+    const std::wstring withEditor = s_itemEditor ? L" with the Item Editor" : L"";
+    Log(L"[Editor] Opened World" + std::to_wstring(world) + L" offline" + withEditor +
+        L": no server, no login, free-fly camera.");
     return true;
 }
 

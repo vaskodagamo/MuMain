@@ -3,6 +3,7 @@
 #ifdef _EDITOR
 
 #include <algorithm>
+#include <cctype>
 #include <fstream>
 #include <iterator>
 #include <optional>
@@ -93,6 +94,37 @@ bool BackUp(const fs::path& repoFile, const fs::path& backupFile, std::string& e
     return CopyOver(repoFile, backupFile, error);
 }
 
+std::string Lowercase(std::string text)
+{
+    std::transform(text.begin(), text.end(), text.begin(),
+                   [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+    return text;
+}
+
+// The entry of `dir` whose name matches `element` without regard to ASCII letter
+// case: the exact spelling first, else the first entry that matches; `element`
+// itself when there is none.
+fs::path EntrySpelling(const fs::path& dir, const fs::path& element)
+{
+    const fs::path listed = dir.empty() ? fs::path(".") : dir;
+    std::error_code ec;
+    fs::directory_iterator entries(listed, ec);
+    if (ec)
+        return element;
+
+    const std::string wanted = Lowercase(PathToUtf8(element));
+    std::optional<fs::path> match;
+    for (const fs::directory_entry& entry : entries)
+    {
+        const fs::path name = entry.path().filename();
+        if (name == element)
+            return element;
+        if (!match && Lowercase(PathToUtf8(name)) == wanted)
+            match = name;
+    }
+    return match.value_or(element);
+}
+
 bool ReadChunk(std::ifstream& stream, std::vector<char>& buffer, std::streamsize& got)
 {
     stream.read(buffer.data(), static_cast<std::streamsize>(buffer.size()));
@@ -151,6 +183,17 @@ fs::path RepoBackupFile(const fs::path& repoRoot, const std::string& stamp, cons
 fs::path RepoExportDir(const fs::path& repoRoot)
 {
     return repoRoot / OUT_FOLDER / EXPORT_FOLDER;
+}
+
+fs::path OnDiskSpelling(const fs::path& path)
+{
+    fs::path spelled = path.root_path();
+    for (const fs::path& element : path.relative_path())
+    {
+        const bool special = element == "." || element == PARENT_ELEMENT;
+        spelled /= special ? element : EntrySpelling(spelled, element);
+    }
+    return spelled;
 }
 
 MirrorOutcome MirrorIntoRepo(const fs::path& runtimeFile, const fs::path& dataRelative, const fs::path& repoRoot,

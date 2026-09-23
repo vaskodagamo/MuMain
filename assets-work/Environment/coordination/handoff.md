@@ -1,24 +1,20 @@
 # Current environment remake handoff — 2026-09-23
 
-The overall goal remains active. Lorencia passed its independent final artistic/offline gate at `bb641d04`; this closed its 22-replacement/84-retention assessment, while new client verification is pending. Main includes Dungeon replacements Object28, Object29, Object01 and Object48. Retention PRs #17–#20 have merged. PRs #22 and #23 remain open for review; new client verification is pending.
+The overall goal remains active. The owner-fork main is `0cc611bc`; I explicitly pulled it into the isolated integration worktree. The primary checkout still contains unrelated user edits and was left untouched. Lorencia's independent offline gate records 22 replacements plus 84 justified retentions across 106 models; new client verification is pending. A fresh current-hash and visual challenge found no additional justified Lorencia batch. The three masonry retention contexts are regenerated as portable, hash-bound evidence in `assets-work/World1/coordination/masonry-retention-contexts/`.
 
-## Current pull requests
+Four Dungeon replacements are merged: Object28, Object29, Object01 and Object48. Retention PRs #17–#20 and #22 are merged; they cover Objects49/50, 51, 37, 42/43 and 45–47. PR #23 is merged; Objects06/13/15 retain their unchanged baselines after rejected geometry studies. No game files changed in these retention PRs.
 
-PRs #17–#20 are merged and retain Objects49/50, Object51, Object37, and Objects42/43.
+## Active production
 
-- PR #18 (merged): retain Object51 after the rejected bevel study.
-- PR #19 (merged): retain Object37 after six actual corridor placements.
-- PR #20 (merged): retain unchanged Object42/43 fire props after independent review.
-- PR #22: Object45–47 baseline retention after individual and actual-cluster review; ready for review.
-- PR #23: reject the proposed Object06/13/15 replacements and retain current BMDs; independently reviewed and ready for review.
+Furniture is preparing one bounded geometry prototype for Object44's exposed skeletal silhouette on `codex/dungeon-remains44`, from `0cc611bc`. Object44 alone is writable; `bons.OZJ` and `wood01.OZJ` are frozen. The goal is broad shape improvement in actual placements, not additional small detail. If reduced/normal placement views do not show a clear gain, retain the baseline and publish the rejection/evidence.
 
-## Active studies and next queue
+Read-only candidate checks found no coherent 3–5 asset remodeling batch in Objects16–20, Objects19/20, Objects31/55/56, or Objects32/33/35/39/44. Their scoped reports and previews remain in `/tmp` while triage continues; they are not yet repository evidence. Effects, animated models, hidden markers and interactive content remain excluded or specially classified in `next-dungeon-brief.md`.
 
-Architecture's Object06/13/15 support/collar study found too little reduced-scale improvement to justify its candidates; independent review agreed, and the original assets remain unchanged. Furniture's merged Objects42/43 package preserves fire meshes, texture and runtime anchors. The independent static triage of Objects05/07/08/09/10/11/14 did not identify a coherent 3–5 asset production batch: Object05's isolated surface issue is small/partly occluded in context, Object09 overlaps animated Object12 and needs all-frame clearance before any geometry work, and the remaining models already read clearly at actual scale. Continue with documented context and branch evidence; do not claim client verification.
+## Current evidence and validation limits
 
-## Active checkout
+Lorencia's fresh audit confirmed Object1 game files are unchanged since the offline gate and checked current export hashes and selected assemblies. Three older masonry image references pointed to removed worktree paths; their regenerated current-main evidence will be committed with relative paths and exact placement provenance. All new environment changes remain client-pending. Do not describe offline renders as client evidence.
 
-Dungeon production branches start from owner-fork main `1256aeed`. Keep the primary checkout's unrelated user edits untouched. Use Blender's official Python importer/exporter for any future candidate; game assets and textures remain unchanged in the current retention PRs. Open focused PRs when each evidence package passes verification; never merge main for the user.
+Use Blender's official Python importer/exporter and preserve original model-name bytes, bindings, actions, UVs, normals, contacts, and placement transforms. Open focused, non-draft PRs on `vaskodagamo/MuMain` only after validation and independent review. Never push upstream, force-push, or merge main for the user.
 
 ---
 

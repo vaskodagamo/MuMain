@@ -1,0 +1,40 @@
+{
+  "decision": "Fresh actual-placement evidence supports continued baseline retention; no clear placed-scale production defect demonstrated.",
+  "revision": "0cc611bc9165a8f856db88e2bd0f4fe049bcef90",
+  "method": "Official mu_bmd_import with ASCII-only action manifest parsing adapter, configured Blender5.2.2/SourceTools3.4.3. Shared StaticBatch01 diffuse review renderer. Fresh imports, no geometry modifications.",
+  "verification": "All29 BMD/texture reference appearances match current Git bytes. All17 exact placement transforms AND model types matched independently decoded current World1. All3 evaluated bounds match retained old composition bounds exactly (delta0).",
+  "compositions": {
+    "house-stack": "Exact old2 records HouseEtc01 local30/31; original anchor,2.2 camera scale,1440x840. Readable repeated heraldic panels and continuous stack seam.",
+    "south-gate": "Exact old10 records within original1050-radius selection about StoneMuWall01 local1; original camera and bounds. Narrow terminals, shield repetition, gate and adjoining annex read coherently.",
+    "siege-wall": "Exact old5 records within original650-radius selection about StoneMuWall04 local0; original camera and bounds. Main intentionally reproduces legacy upper-bar cropping; current-fit adds uncropped version. Mortar/timber distinguish clearly from walls and gate."
+  },
+  "limits": [
+    "Selective legacy masonry modules only; no terrain, surrounding unselected buildings, dynamic lighting, collisions, client or whole-map validation.",
+    "Reverse and fit views are new supplemental views; main views reproduce legacy composition, not claimed pixel-identical old images.",
+    "Reduced resolution is an offline readability cue, not calibrated client camera.",
+    "Coarse painted relief remains visible close up; retention is based on modular placed role, not failed studies or inability to edit."
+  ],
+  "portable_replay": "python3 replay.py; set MU_REVIEW_REPO to repository location; MU_BLENDER and MU_BMDCONV optional. Legacy selection JSON retained locally so old branch is not needed to replay. Configured SourceTools env paths in replay.py.",
+  "tool_source_hashes": {
+    "tools/blender/mu_bmd_import.py": "ad41bc6f4a13df1ee4ac03d28f4bc71155a6bec768c467542333c6784c972c17",
+    "assets-work/World1/StaticBatch01/review_scene.py": "25c2b5f8518bf54eb93d396214e64d697ffe230622d1fbea4b041e62a987a750",
+    "assets-work/World1/coordination/dependency-map.json": "a7b4b8ae544231698d06ee20b91593c7c5212b52e974135a0507055e04f651b8"
+  },
+  "images": {
+    "house-stack-current.png": "e64a6e0ac283b6772de2b72f4074fdd9101c3ccc225afd2a14035b70945fa0f5",
+    "siege-wall-current-reverse.png": "f1e039941834bcd8892b88fade8d527ef19a844ec91944874fd86c1fb0668cc6",
+    "south-gate-current-fit-small.png": "c0c68c5a7cee83e09bfc456bf6224d3985ee9b85e0bbfc6107988c5c359467df",
+    "house-stack-current-fit.png": "c658c7edbc36848d55272085a87677539e89d717854ac4795d1252a49c7f0009",
+    "south-gate-current-fit.png": "c3fbb9b8da642c0db4dd3f4799606bdab783e6534fc608211400199a591f63b9",
+    "siege-wall-current-fit.png": "25a06b17928c06fe5450009357d7904f14956f8a842c6b348248beffc98d308b",
+    "south-gate-current-reverse.png": "d30929618197129f5b0ff76d0ddf6ced858047e3d30661e32ec49d881d4015f8",
+    "south-gate-current-small.png": "f50265e48d813dae30dbe6bfea0325421628729f9a426ac4002e404eef317451",
+    "house-stack-current-small.png": "b7a2d0070be8a42744af86ddf54e988dc30835354cf3423c071a6d7eb80cdc87",
+    "south-gate-current.png": "b6c5e5eac0484aa8f39fadcf36db0479c6fa54e50e44553c6f392d286f7b9fbb",
+    "siege-wall-current-fit-small.png": "503c27417d98b60913dc9317c4b19b8437091f5127d29d7cfc98bc4678bda874",
+    "siege-wall-current-small.png": "5a4d4ad63b6ce270ea5584ed5a08485b4a9421ab69ff56e12e70127ed52badd4",
+    "siege-wall-current.png": "b4d90297bb94a9cad5a265a5cdb468b22e4feff5fc3f4753a3f5d262e69a8635",
+    "house-stack-current-fit-small.png": "e6da98130b66a44558df37b26b01a1a56815a23197201ef3afc54936294139cc",
+    "house-stack-current-reverse.png": "0804e83d716a15d580fbc1ab3d8948ddd1e609207e73fb82779f5aa5e51797fe"
+  }
+}

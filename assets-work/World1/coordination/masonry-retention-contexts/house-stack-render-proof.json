@@ -1,0 +1,37 @@
+{
+  "actual_bounds": [
+    [
+      -89.67413330078125,
+      -68.51544189453125,
+      -4.340451240539551
+    ],
+    [
+      79.58647155761719,
+      79.39750671386719,
+      278.33587646484375
+    ]
+  ],
+  "legacy_camera_bounds": [
+    [
+      -89.67413330078125,
+      -68.51544189453125,
+      -4.340451240539551
+    ],
+    [
+      79.58647155761719,
+      79.39750671386719,
+      278.33587646484375
+    ]
+  ],
+  "maximum_bounds_delta": 0.0,
+  "main_camera": "Legacy direction(1.35,-2,1.3), legacy bounds, orthographic factor2.2 stack/1.4 others,1440x840. Shared24sample diffuse renderer.",
+  "reverse_camera": "New supplemental positive-elevation reverse view, not an old composition.",
+  "limits": "Offline current baseline only, exact selected legacy placements. No terrain, collision, client lighting, other scene objects or effects. No candidate geometry.",
+  "images": {
+    "house-stack-current.png": "e64a6e0ac283b6772de2b72f4074fdd9101c3ccc225afd2a14035b70945fa0f5",
+    "house-stack-current-fit.png": "c658c7edbc36848d55272085a87677539e89d717854ac4795d1252a49c7f0009",
+    "house-stack-current-small.png": "b7a2d0070be8a42744af86ddf54e988dc30835354cf3423c071a6d7eb80cdc87",
+    "house-stack-current-fit-small.png": "e6da98130b66a44558df37b26b01a1a56815a23197201ef3afc54936294139cc",
+    "house-stack-current-reverse.png": "0804e83d716a15d580fbc1ab3d8948ddd1e609207e73fb82779f5aa5e51797fe"
+  }
+}
