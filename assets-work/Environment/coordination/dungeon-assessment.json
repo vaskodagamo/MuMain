@@ -37,12 +37,16 @@
       "deep_wall02.jpg"
     ],
     "owner": "architecture",
-    "status": "art direction independently accepted; final evidence/package pending",
+    "status": "accepted replacement",
     "client_verified": false,
     "branch": "codex/dungeon-walls",
     "deliverables": "assets-work/World2/Walls01",
-    "evidence": "assets-work/Environment/coordination/wall01-independent-review.json",
-    "independent_review_bmd_sha256": "aea82532ebb824c2aac1cbbe277135ad96a7379f3f9a615a6a1b9ccfcae1ee01"
+    "evidence": "assets-work/World2/Walls01/Object01/independent-review.json",
+    "independent_review_bmd_sha256": "aea82532ebb824c2aac1cbbe277135ad96a7379f3f9a615a6a1b9ccfcae1ee01",
+    "commits": [
+      "81562d69",
+      "c9a34462"
+    ]
   },
   {
     "model": "Object02",
@@ -67,7 +71,7 @@
       "deep_wall01.jpg",
       "deep_wall02.jpg"
     ],
-    "owner": "architecture",
+    "owner": null,
     "status": "retained baseline after independent visual review",
     "client_verified": false,
     "branch": "codex/dungeon-walls",
@@ -84,8 +88,8 @@
       "deep_wall01.jpg",
       "deep_wall03.jpg"
     ],
-    "owner": "furniture",
-    "status": "retained baseline after independent visual review; geometry studies rejected",
+    "owner": null,
+    "status": "retained baseline after independent visual review; both geometry candidates rejected",
     "client_verified": false,
     "branch": "codex/dungeon-pier",
     "deliverables": "assets-work/World2/Pier01",

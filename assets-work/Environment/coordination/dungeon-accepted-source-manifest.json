@@ -1,0 +1,28 @@
+{
+  "baseline": "7b808473",
+  "integrated_revision": "c9a34462",
+  "accepted": {
+    "src/bin/Data/Object2/Object28.bmd": {
+      "source_blend": "assets-work/World2/Pottery01/Object28/source.blend",
+      "source_sha256": "9185071d01bc531d30ef2596e7c7e85e3a1f7161b2c84f2da7fc0d5221bf23cc",
+      "official_export": "assets-work/World2/Pottery01/Object28/exports/Object28.bmd",
+      "export_sha256": "167441ae9389aafe70e9785214b7a6302db7fadeabdb213c18f94f8b4bf80919",
+      "integrated_sha256": "167441ae9389aafe70e9785214b7a6302db7fadeabdb213c18f94f8b4bf80919"
+    },
+    "src/bin/Data/Object2/Object29.bmd": {
+      "source_blend": "assets-work/World2/Pottery01/Object29/source.blend",
+      "source_sha256": "a7bf314c16c6b0db59a81588bdfa3e0edba0596ca8ab4c15c153f68439f68ed1",
+      "official_export": "assets-work/World2/Pottery01/Object29/exports/Object29.bmd",
+      "export_sha256": "43dee7e498d24b3aeab99ab3bf8e2ab3dd9faf6a7bb5c78799e7d337d0182891",
+      "integrated_sha256": "43dee7e498d24b3aeab99ab3bf8e2ab3dd9faf6a7bb5c78799e7d337d0182891"
+    },
+    "src/bin/Data/Object2/Object01.bmd": {
+      "source_blend": "assets-work/World2/Walls01/Object01/source.blend",
+      "source_sha256": "25c91027c6c5c7cf59067cd26f355ff136a064b058c684c19792ea8072b87bb6",
+      "official_export": "assets-work/World2/Walls01/Object01/exports/Object01.bmd",
+      "export_sha256": "aea82532ebb824c2aac1cbbe277135ad96a7379f3f9a615a6a1b9ccfcae1ee01",
+      "integrated_sha256": "aea82532ebb824c2aac1cbbe277135ad96a7379f3f9a615a6a1b9ccfcae1ee01"
+    }
+  },
+  "client_verified": false
+}

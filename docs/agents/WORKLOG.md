@@ -460,3 +460,8 @@ Lorencia passed artistic/offline gate in separate draft PR12 (d3ce9acf); new cli
 ### 2026-09-23 — Dungeon pottery acceptance and next architecture batches
 
 Integrated worker 15a1a4c4 as 6d0323d7: Object28 and Object29 ceramic forms accepted after independent exported-art and engine-contract review. Exact game scope is those two BMDs; all textures frozen and all 63 model dependencies resolve. Original Object30 and coffin Object21/22 retained on individual visual grounds; coffin studies remain separate at 6cd41d24. Packed sources, comparison assemblies and complete review evidence retained. New client checks pending. Walls01 (Object01/03) and Pier01 (Object04) now have disjoint ownership; Blender Python API production continues with frozen materials. Primary checkout and shared runtime untouched.
+
+
+### 2026-09-23 — Dungeon wall crown integrated; pier retained
+
+Integrated focused worker commits 81562d69 as c9a34462 for Object01 after independent review accepted the final64-triangle crown chamfer; source/export/integrated hashes match. The dragon plaque, all end faces, textures, original metadata and 1,262 bounds remain protected. Object03’s four-niche baseline and Object04’s carved pier are retained after independent visual review; pier candidates, complete consumer analysis and evidence are committed for future reference. Root combined scope check reports exactly three accepted Dungeon game BMDs and all63 Object2 texture dependencies resolve. New client checks remain pending. Next read-only queue Object45–48 comprises510 bone-remains placements and frozen shared bons.OZJ. Primary checkout/runtime remain untouched.
