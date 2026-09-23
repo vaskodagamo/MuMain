@@ -1,68 +1,175 @@
 {
- "schema": "mu-item-concept-prices/1",
- "source": "the owner's OpenAI pricing page (2026-09-23) and the coordinator's token table for the gpt-image-2.5 models (2026-09-23)",
- "currency": "USD",
- "notes": [
-  "per_image: the price of one output image by size and quality; the API bills tokens, these rows are the pricing page's summary.",
-  "A model without a per_image row is estimated from output_tokens x token price and flagged as token-estimated.",
-  "A size without its own row is estimated from the row with the same pixel count, else the 1024x1024 row scaled by pixel count, and flagged.",
-  "reference_image_tokens_estimate: input image tokens of one square reference of reference_image_size px (gpt-image-1 rule: 194 tile tokens + 4160 high-fidelity tokens), scaled by pixel area for smaller references (--ref-size). Undocumented for the gpt-image-2 and 2.5 models; an assumption, always flagged. Compare with the usage of a real run.",
-  "input_fidelity: null means the field is not sent. gpt-image-2 rejects or ignores it and it is undocumented for 2.5; gpt-image-1, 1.5 and 1-mini accept \"high\" or \"low\".",
-  "The Batch API (50% discount) is not supported for the gpt-image-2.5 models and is not used by this tool."
- ],
- "default_preset": "explore",
- "presets": {
-  "explore": {"model": "gpt-image-2.5-flare", "quality": "medium", "variants": 3, "hints": "same", "ref_size": 512},
-  "final": {"model": "gpt-image-2.5-sunburst", "quality": "high", "variants": 1, "hints": "same", "ref_size": 1024}
- },
- "reference_image_tokens_estimate": 4354,
- "reference_image_size": 1024,
- "text_chars_per_token_estimate": 4,
- "models": {
-  "gpt-image-2.5-flare": {
-   "token_prices_per_1m": {"text_in": 5.0, "image_in": 8.0, "image_out": 30.0},
-   "output_tokens": {"1024x1024": {"low": 196, "medium": 439, "high": 1756, "xhigh": 3122, "max": 7024}},
-   "qualities": ["low", "medium", "high", "xhigh", "max"],
-   "transparent_background": true,
-   "input_fidelity": null
+  "schema": "mu-item-concept-prices/1",
+  "source": "the owner's OpenAI pricing page (2026-09-23) and the coordinator's token table for the gpt-image-2.5 models (2026-09-23)",
+  "currency": "USD",
+  "notes": [
+    "per_image: the price of one output image by size and quality; the API bills tokens, these rows are the pricing page's summary.",
+    "A model without a per_image row is estimated from output_tokens x token price and flagged as token-estimated.",
+    "A size without its own row is estimated from the row with the same pixel count, else the 1024x1024 row scaled by pixel count, and flagged.",
+    "input_fidelity: null means the field is not sent. gpt-image-2 rejects or ignores it and it is undocumented for 2.5; gpt-image-1, 1.5 and 1-mini accept \"high\" or \"low\".",
+    "The Batch API (50% discount) is not supported for the gpt-image-2.5 models and is not used by this tool.",
+    "reference_image_tokens_estimate: measured 2026-09-23 on gpt-image-2.5-flare: a 512 px reference = 3072 input image tokens, billed once per request whatever n is (n=3 gave 1317 = 3 x 439 output tokens). Other sizes are scaled by pixel area from that, which over-estimates 1024 px references (unmeasured); still flagged.",
+    "text_chars_per_token_estimate: measured 2026-09-23: prompts of 1972 and 2181 characters were billed 1284 and 1425 text tokens (about 1.5 characters per token)."
+  ],
+  "default_preset": "explore",
+  "presets": {
+    "explore": {
+      "model": "gpt-image-2.5-flare",
+      "quality": "medium",
+      "variants": 3,
+      "hints": "same",
+      "ref_size": 512
+    },
+    "final": {
+      "model": "gpt-image-2.5-sunburst",
+      "quality": "high",
+      "variants": 1,
+      "hints": "same",
+      "ref_size": 1024
+    }
   },
-  "gpt-image-2.5-sunburst": {
-   "token_prices_per_1m": {"text_in": 5.0, "image_in": 8.0, "image_out": 30.0},
-   "output_tokens": {"1024x1024": {"low": 196, "medium": 439, "high": 1756, "xhigh": 3122, "max": 7024}},
-   "qualities": ["low", "medium", "high", "xhigh", "max"],
-   "transparent_background": true,
-   "input_fidelity": null
-  },
-  "gpt-image-2": {
-   "token_prices_per_1m": {"text_in": 5.0, "image_in": 8.0, "image_out": 30.0},
-   "per_image": {
-    "1024x1024": {"low": 0.006, "medium": 0.053, "high": 0.211},
-    "1024x1536": {"low": 0.005, "medium": 0.041, "high": 0.165}
-   },
-   "qualities": ["low", "medium", "high"],
-   "transparent_background": true,
-   "input_fidelity": null
-  },
-  "gpt-image-1.5": {
-   "token_prices_per_1m": {"text_in": 5.0, "image_in": 8.0, "image_out": 32.0},
-   "per_image": {"1024x1024": {"low": 0.009, "medium": 0.034, "high": 0.133}},
-   "qualities": ["low", "medium", "high"],
-   "transparent_background": true,
-   "input_fidelity": null
-  },
-  "gpt-image-1": {
-   "token_prices_per_1m": {"text_in": 5.0, "image_in": 10.0, "image_out": 40.0},
-   "per_image": {"1024x1024": {"low": 0.011, "medium": 0.042, "high": 0.167}},
-   "qualities": ["low", "medium", "high"],
-   "transparent_background": true,
-   "input_fidelity": null
-  },
-  "gpt-image-1-mini": {
-   "token_prices_per_1m": {"text_in": 2.0, "image_in": 2.5, "image_out": 8.0},
-   "per_image": {"1024x1024": {"low": 0.005, "medium": 0.011, "high": 0.036}},
-   "qualities": ["low", "medium", "high"],
-   "transparent_background": true,
-   "input_fidelity": null
+  "reference_image_tokens_estimate": 3072,
+  "reference_image_size": 512,
+  "text_chars_per_token_estimate": 1.5,
+  "models": {
+    "gpt-image-2.5-flare": {
+      "token_prices_per_1m": {
+        "text_in": 5.0,
+        "image_in": 8.0,
+        "image_out": 30.0
+      },
+      "output_tokens": {
+        "1024x1024": {
+          "low": 196,
+          "medium": 439,
+          "high": 1756,
+          "xhigh": 3122,
+          "max": 7024
+        }
+      },
+      "qualities": [
+        "low",
+        "medium",
+        "high",
+        "xhigh",
+        "max"
+      ],
+      "transparent_background": true,
+      "input_fidelity": null
+    },
+    "gpt-image-2.5-sunburst": {
+      "token_prices_per_1m": {
+        "text_in": 5.0,
+        "image_in": 8.0,
+        "image_out": 30.0
+      },
+      "output_tokens": {
+        "1024x1024": {
+          "low": 196,
+          "medium": 439,
+          "high": 1756,
+          "xhigh": 3122,
+          "max": 7024
+        }
+      },
+      "qualities": [
+        "low",
+        "medium",
+        "high",
+        "xhigh",
+        "max"
+      ],
+      "transparent_background": true,
+      "input_fidelity": null
+    },
+    "gpt-image-2": {
+      "token_prices_per_1m": {
+        "text_in": 5.0,
+        "image_in": 8.0,
+        "image_out": 30.0
+      },
+      "per_image": {
+        "1024x1024": {
+          "low": 0.006,
+          "medium": 0.053,
+          "high": 0.211
+        },
+        "1024x1536": {
+          "low": 0.005,
+          "medium": 0.041,
+          "high": 0.165
+        }
+      },
+      "qualities": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "transparent_background": true,
+      "input_fidelity": null
+    },
+    "gpt-image-1.5": {
+      "token_prices_per_1m": {
+        "text_in": 5.0,
+        "image_in": 8.0,
+        "image_out": 32.0
+      },
+      "per_image": {
+        "1024x1024": {
+          "low": 0.009,
+          "medium": 0.034,
+          "high": 0.133
+        }
+      },
+      "qualities": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "transparent_background": true,
+      "input_fidelity": null
+    },
+    "gpt-image-1": {
+      "token_prices_per_1m": {
+        "text_in": 5.0,
+        "image_in": 10.0,
+        "image_out": 40.0
+      },
+      "per_image": {
+        "1024x1024": {
+          "low": 0.011,
+          "medium": 0.042,
+          "high": 0.167
+        }
+      },
+      "qualities": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "transparent_background": true,
+      "input_fidelity": null
+    },
+    "gpt-image-1-mini": {
+      "token_prices_per_1m": {
+        "text_in": 2.0,
+        "image_in": 2.5,
+        "image_out": 8.0
+      },
+      "per_image": {
+        "1024x1024": {
+          "low": 0.005,
+          "medium": 0.011,
+          "high": 0.036
+        }
+      },
+      "qualities": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "transparent_background": true,
+      "input_fidelity": null
+    }
   }
- }
 }

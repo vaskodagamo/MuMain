@@ -118,17 +118,17 @@ GPT Image 2 $0.006 / $0.053 / $0.211 (1024x1536: $0.005 / $0.041 / $0.165), GPT 
 $0.009 / $0.034 / $0.133, GPT Image 1 $0.011 / $0.042 / $0.167, GPT Image 1 Mini
 $0.005 / $0.011 / $0.036. The 2.5 models have no per-image price: their estimate is output tokens
 (1024x1024: low 196, medium 439, high 1756, xhigh 3122, max 7024) at $30 per million, and is
-flagged. A request also pays for its text prompt ($5 per million tokens, $2 for mini; about
-500 tokens) and the reference image as input tokens ($8 per million for the 2 / 2.5 models). The
-reference's token count is **an assumption** (the documented gpt-image-1 rule, 4354 tokens for
-1024 px, scaled by pixel area for smaller `--ref-size`); the first real run's `usage` shows the
-true number, compare with `plan --batch`. At 2.5 medium the reference costs more than an image,
-so the explore preset uploads it at 512 px and asks for all variants in one request. The Batch
-API discount does not apply to the 2.5 models and is not used.
+flagged. A request also pays for its text prompt ($5 per million tokens, $2 for mini) and the
+reference image as input tokens ($8 per million for the 2 / 2.5 models).
 
-`plan --study-top 10 --variants 3` (30 images, explore reference 512 px) estimates about $0.51
-with the explore preset, $1.70 with `--model gpt-image-2 --quality medium`, $6.44 with
-`gpt-image-2` `high` (refused by the default $5 cap), $0.37 with `gpt-image-1-mini` `medium`.
+**Measured on the first real run (2026-09-23, gpt-image-2.5-flare, medium, n=3, 512 px
+reference, study top 10):** $0.706 for 30 images, $0.07 per item. Per request: the reference was
+3072 input image tokens, billed **once** for all three variants; the prompt was about 1300 text
+tokens (about 1.5 characters per token); the output was 1317 tokens = 3 x 439, exactly as
+estimated. `image_prices.json` now uses these numbers; a 1024 px reference is still unmeasured
+and estimated by area from the 512 px one (an over-estimate). Uploading the reference at 512 px
+and asking for all variants in one request keeps the reference, which costs more than an image
+at medium, to one charge per item. The Batch API discount does not apply to the 2.5 models.
 
 Speed depends on the organisation's usage tier: at Tier 1 image models allow about 5 images per
 minute. The tool retries 429, 5xx and timeouts with exponential backoff and jitter and follows the

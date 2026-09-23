@@ -132,9 +132,10 @@ class Costs(unittest.TestCase):
     def test_reference_and_text_parts_and_size_scaling(self):
         full = concept_cost.estimate_request(PRICES, 'gpt-image-2.5-flare', '1024x1024', 'low', 1, 400, 1, 1024)
         half = concept_cost.estimate_request(PRICES, 'gpt-image-2.5-flare', '1024x1024', 'low', 1, 400, 1, 512)
-        self.assertAlmostEqual(full['parts']['reference'], 4354 * 8 / 1e6)
-        self.assertAlmostEqual(half['parts']['reference'], full['parts']['reference'] / 4)
-        self.assertAlmostEqual(full['parts']['text'], 100 * 5 / 1e6)
+        # Measured on 2026-09-23: a 512 px reference is 3072 tokens; other sizes scale by area.
+        self.assertAlmostEqual(half['parts']['reference'], 3072 * 8 / 1e6)
+        self.assertAlmostEqual(full['parts']['reference'], half['parts']['reference'] * 4)
+        self.assertAlmostEqual(full['parts']['text'], 400 / 1.5 * 5 / 1e6)
         wide = concept_cost.estimate_request(PRICES, 'gpt-image-2', '1536x1024', 'high', 1, 0, 0, 1024)
         self.assertAlmostEqual(wide['parts']['output'], 0.165)
         self.assertIn(concept_cost.FLAG_SIZE_SCALED, wide['flags'])
