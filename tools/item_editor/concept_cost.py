@@ -125,11 +125,20 @@ def actual_cost(prices, model, usage):
     return {'parts': parts, 'total': sum(parts.values())}
 
 
-def cap_problems(image_count, total_cost, max_images, max_cost):
-    """Reasons the estimate is over a hard cap (empty when it is within both)."""
-    problems = []
+CAP_IMAGES = 'max_images'
+CAP_COST = 'max_cost'
+
+
+def cap_reasons(image_count, total_cost, max_images, max_cost):
+    """[(code, text)] of the hard caps the estimate is over (empty when it is within both)."""
+    reasons = []
     if image_count > max_images:
-        problems.append(f'{image_count} images exceed --max-images {max_images}')
+        reasons.append((CAP_IMAGES, f'{image_count} images exceed --max-images {max_images}'))
     if total_cost > max_cost:
-        problems.append(f'estimated ${total_cost:.2f} exceeds --max-cost ${max_cost:.2f}')
-    return problems
+        reasons.append((CAP_COST, f'estimated ${total_cost:.2f} exceeds --max-cost ${max_cost:.2f}'))
+    return reasons
+
+
+def cap_problems(image_count, total_cost, max_images, max_cost):
+    """Texts of cap_reasons()."""
+    return [text for _, text in cap_reasons(image_count, total_cost, max_images, max_cost)]

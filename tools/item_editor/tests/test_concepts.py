@@ -24,6 +24,7 @@ sys.path.insert(0, str(TOOLS))
 
 import concept_batch  # noqa: E402
 import concept_cost  # noqa: E402
+import concept_key  # noqa: E402
 import concept_output  # noqa: E402
 import concept_prompt  # noqa: E402
 import concept_select  # noqa: E402
@@ -40,6 +41,11 @@ def png_bytes(width, height, rgb=(128, 128, 128)):
     header = struct.pack('>IIBBBBB', width, height, 8, 2, 0, 0, 0)
     return (b'\x89PNG\r\n\x1a\n' + chunk(b'IHDR', header) + chunk(b'IDAT', zlib.compress(row * height))
             + chunk(b'IEND', b''))
+
+
+def no_keychain(arguments):
+    """An injected `security` runner that never finds the item (tests must not touch the real Keychain)."""
+    return mock.Mock(returncode=concept_key.ITEM_NOT_FOUND_EXIT, stdout='', stderr='')
 
 
 def settings_args(**overrides):
@@ -203,11 +209,11 @@ class Redaction(unittest.TestCase):
         self.assertNotIn('DoNotLeak', openai_images.scrub(f'Incorrect API key provided: {FAKE_KEY[:12]}***6789'))
         self.assertNotIn(FAKE_KEY, openai_images.scrub(f'x {FAKE_KEY} y', FAKE_KEY))
 
-    def test_key_only_from_env_and_no_plain_http_to_remote_hosts(self):
-        with mock.patch.dict(os.environ, {}, clear=True):
-            self.assertRaises(openai_images.ApiError, openai_images.api_key_from_env)
-        with mock.patch.dict(os.environ, {'OPENAI_API_KEY': FAKE_KEY}):
-            self.assertEqual(openai_images.api_key_from_env(), FAKE_KEY)
+    def test_key_from_env_first_and_no_plain_http_to_remote_hosts(self):
+        self.assertRaises(concept_key.NoKeyError, concept_key.api_key, {}, no_keychain, 'linux')
+        self.assertEqual(concept_key.api_key({'OPENAI_API_KEY': FAKE_KEY}, no_keychain), FAKE_KEY)
+        self.assertNotIn('DoNotLeak', openai_images.scrub('a risk-free sk-DoNotLeak0123 note'))
+        self.assertIn('risk-free', openai_images.scrub('a risk-free note'))
         self.assertRaises(openai_images.ApiError, openai_images.check_api_base, 'http://example.com/v1')
         self.assertEqual(openai_images.check_api_base('http://127.0.0.1:8080/v1/'), 'http://127.0.0.1:8080/v1')
 
@@ -227,11 +233,17 @@ class Backoff(unittest.TestCase):
 # --- mock server ---------------------------------------------------------------------------------
 
 class MockImages:
-    """A local stand-in for POST /v1/images/edits: scripted failures, then the documented shape."""
+    """A local stand-in for POST /v1/images/edits: scripted failures, then the documented shape.
 
-    def __init__(self, failures=(), images=3):
+    With a `gate` (threading.Event) every reply waits until the gate opens (a request in flight).
+    """
+
+    GATE_TIMEOUT_S = 30
+
+    def __init__(self, failures=(), images=3, gate=None):
         self.failures = list(failures)
         self.images = images
+        self.gate = gate
         self.requests = []
         self.lock = threading.Lock()
         mock_state = self
@@ -242,6 +254,8 @@ class MockImages:
                 with mock_state.lock:
                     mock_state.requests.append({'path': self.path, 'headers': dict(self.headers), 'body': body})
                     failure = mock_state.failures.pop(0) if mock_state.failures else None
+                if mock_state.gate is not None:
+                    mock_state.gate.wait(mock_state.GATE_TIMEOUT_S)
                 if failure:
                     return self.reply(*failure)
                 return self.reply(200, mock_state.success(body), {'x-request-id': 'req_mock_1'})
@@ -332,7 +346,7 @@ class CommandLine(unittest.TestCase):
     def main(self, *argv, env=None):
         out = io.StringIO()
         with mock.patch.dict(os.environ, env or {}, clear=True), contextlib.redirect_stdout(out), \
-                contextlib.redirect_stderr(out):
+                contextlib.redirect_stderr(out), mock.patch.object(concept_key, 'run_security', no_keychain):
             code = concepts.main(list(argv) + ['--out-dir', str(self.tmp), '--refs-dir', str(self.refs)])
         return code, out.getvalue()
 
@@ -354,11 +368,11 @@ class CommandLine(unittest.TestCase):
 
     def test_run_needs_a_reference_and_a_key(self):
         code, out = self.main('run', '--keys', '6-0', '--yes', env={'OPENAI_API_KEY': FAKE_KEY})
-        self.assertEqual(code, concepts.EXIT_ERROR)
+        self.assertEqual(code, concepts.EXIT_USAGE)
         self.assertIn('no reference image for 6-0', out)
         code, out = self.main('run', '--keys', '0-2', '--yes')
-        self.assertEqual(code, concepts.EXIT_ERROR)
-        self.assertIn('OPENAI_API_KEY is not set', out)
+        self.assertEqual(code, concepts.EXIT_NO_KEY)
+        self.assertIn('no API key: set OPENAI_API_KEY', out)
 
     def test_full_run_writes_the_batch_and_never_the_key(self):
         server = MockImages([rate_limited('0')])

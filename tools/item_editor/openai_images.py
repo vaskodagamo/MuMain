@@ -6,8 +6,8 @@ The response carries `data[i].b64_json`, `usage` and the `x-request-id` header.
 Docs: https://developers.openai.com/api/reference/resources/images/methods/edit
       https://developers.openai.com/api/docs/guides/image-generation
 
-Security: the API key comes only from the OPENAI_API_KEY environment variable and only ever goes
-into the Authorization header. Every text this module hands back (errors, log records) is passed
+Security: the API key (concept_key.py: $OPENAI_API_KEY or the macOS Keychain) only ever goes into
+the Authorization header. Every text this module hands back (errors, log records) is passed
 through scrub(), which removes the key and anything that looks like one; headers are only ever
 shown through redact_headers().
 """
@@ -26,7 +26,6 @@ import urllib.error
 import urllib.request
 import uuid
 
-API_KEY_ENV = 'OPENAI_API_KEY'
 API_BASE = 'https://api.openai.com/v1'
 EDITS_PATH = '/images/edits'
 IMAGE_FIELD = 'image[]'
@@ -36,7 +35,7 @@ LOOPBACK_HOSTS = {'127.0.0.1', 'localhost', '::1'}
 REQUEST_ID_HEADER = 'x-request-id'
 AUTH_HEADER = 'Authorization'
 REDACTED = '[redacted]'
-KEY_LIKE = re.compile(r'sk-[A-Za-z0-9_\-*.]{3,}')
+KEY_LIKE = re.compile(r'(?<![A-Za-z0-9])sk-[A-Za-z0-9_\-*.]{3,}')
 RETRY_STATUSES = {408, 409, 429, 500, 502, 503, 504}
 NO_RETRY_CODES = {'insufficient_quota', 'billing_hard_limit_reached'}
 DEFAULT_TIMEOUT = 300.0
@@ -56,11 +55,8 @@ class ApiError(RuntimeError):
         self.request_id = request_id
 
 
-def api_key_from_env():
-    key = os.environ.get(API_KEY_ENV, '').strip()
-    if not key:
-        raise ApiError(f'{API_KEY_ENV} is not set; export it in your shell (see assets-work/Items/concepts/README.md)')
-    return key
+class RequestCancelled(ApiError):
+    """The run was cancelled before this request (or its next attempt) was sent."""
 
 
 def check_api_base(api_base):
@@ -180,12 +176,22 @@ def is_certificate_error(error):
     return isinstance(reason, ssl.SSLCertVerificationError)
 
 
+def never_cancelled():
+    return False
+
+
 class ImagesClient:
-    """Posts edit requests with retries. `opener` and `sleep` are injectable for tests."""
+    """Posts edit requests with retries. `opener` and `sleep` are injectable for tests.
+
+    `cancelled` (a callable) is checked before every attempt: once it returns True no further
+    request is sent and RequestCancelled is raised. A request already on the wire finishes.
+    """
 
     def __init__(self, api_key, api_base=API_BASE, timeout=DEFAULT_TIMEOUT, attempts=DEFAULT_ATTEMPTS,
-                 log=None, opener=default_opener, sleep=time.sleep, rng=random.random):
+                 log=None, opener=default_opener, sleep=time.sleep, rng=random.random,
+                 cancelled=never_cancelled):
         self._key = api_key
+        self._cancelled = cancelled
         self._base = check_api_base(api_base)
         self._timeout = timeout
         self._attempts = attempts
@@ -210,6 +216,8 @@ class ImagesClient:
 
     def _post(self, path, body, content_type, tag):
         for attempt in range(1, self._attempts + 1):
+            if self._cancelled():
+                raise RequestCancelled('cancelled before the request was sent')
             try:
                 with self._open(self._request(path, body, content_type), timeout=self._timeout) as response:
                     request_id = response.headers.get(REQUEST_ID_HEADER)
@@ -233,7 +241,7 @@ class ImagesClient:
         if not retryable or attempt == self._attempts:
             raise ApiError(f'HTTP {error.code}: {message}', error.code, request_id)
         retry_after = parse_retry_after(error.headers.get('Retry-After') if error.headers else None)
-        return self._delay(attempt, retry_after, tag)
+        return self._delay(attempt, retry_after, tag, f'HTTP {error.code}: {message}')
 
     def _network_failure(self, error, attempt, tag):
         message = scrub(error, self._key)
@@ -244,10 +252,10 @@ class ImagesClient:
                            'or run Python\'s "Install Certificates.command".')
         if attempt == self._attempts:
             raise ApiError(f'network error: {message}')
-        return self._delay(attempt, None, tag)
+        return self._delay(attempt, None, tag, f'network error: {message}')
 
-    def _delay(self, attempt, retry_after, tag):
+    def _delay(self, attempt, retry_after, tag, reason):
         delay = retry_delay(attempt, retry_after, self._rng)
         self._log({'event': 'retry', 'tag': tag, 'attempt': attempt, 'delay_s': round(delay, 2),
-                   'retry_after': retry_after})
+                   'retry_after': retry_after, 'reason': reason})
         return delay
