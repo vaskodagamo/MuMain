@@ -14,13 +14,15 @@
 // until the user has picked a file, cancelled, or the dialog failed.
 namespace Editor::Files
 {
-// The Map Editor actions that ask the user for a file. Each has its own
-// result slot, so a pending dialog never receives another action's answer.
+// The editor actions that ask the user for a file (the Map Editor's imports and
+// the Item Editor's reference images). Each has its own result slot, so a
+// pending dialog never receives another action's answer.
 enum class FilePickRequest
 {
-    TextureImage,  // T. Browse "Upload image...":            .jpg/.jpeg/.ozj
-    MinimapTga,    // Minimap "Convert a .tga to mini_map.OZT": .tga
-    ServerBaseAtt, // Attribute "Load server base .att...":   .att
+    TextureImage,   // T. Browse "Upload image...":            .jpg/.jpeg/.ozj
+    MinimapTga,     // Minimap "Convert a .tga to mini_map.OZT": .tga
+    ServerBaseAtt,  // Attribute "Load server base .att...":   .att
+    ReferenceImage, // Item Editor, Ask Codex "Add image...":  .jpg/.jpeg
     Count
 };
 

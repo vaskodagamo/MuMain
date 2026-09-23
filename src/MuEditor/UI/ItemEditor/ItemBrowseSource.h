@@ -6,6 +6,7 @@
 #include "Assets/ItemCatalog.h"
 
 #include <filesystem>
+#include <map>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -25,9 +26,11 @@ std::vector<Items::BrowseRow> BuildBrowseRows(const Assets::ItemCatalog* catalog
 // SHA-256 of the checkout's files by repository path ("src/bin/Data/Item/Sword01.bmd").
 using DigestCache = std::unordered_map<std::string, std::string>;
 
-// Sets each row's status from the catalog and the files under `repoRoot`,
-// hashing a file only the first time `digests` sees it.
-void ApplyStatuses(std::vector<Items::BrowseRow>& rows, const std::filesystem::path& repoRoot, DigestCache& digests);
+// Sets each row's status from the files under `repoRoot` (hashing a file only the
+// first time `digests` sees it) and the requests per item key as the requests
+// folder has them (`scannedRequests`; null: the catalog's lists).
+void ApplyStatuses(std::vector<Items::BrowseRow>& rows, const std::filesystem::path& repoRoot, DigestCache& digests,
+                   const std::map<std::string, std::vector<Assets::RequestRef>>* scannedRequests);
 } // namespace Editor::ItemEditor
 
 #endif // _EDITOR

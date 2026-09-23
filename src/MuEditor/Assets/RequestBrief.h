@@ -4,7 +4,21 @@
 
 #include "RegenRequest.h"
 
+#include <sstream>
 #include <string>
+#include <vector>
+
+// Markdown pieces every brief.md uses (the world briefs here, the item briefs in
+// ItemRequestBrief.h).
+namespace Editor::Assets::BriefText
+{
+// A link from brief.md (assets-work/<domain>/requests/<id>/) to a repository path.
+std::string RepoLink(const std::string& repoPath);
+// `text` as inline code.
+std::string Code(const std::string& text);
+// One "- item" line per entry, or "- (none)".
+void BulletList(std::ostringstream& out, const std::vector<std::string>& items);
+} // namespace Editor::Assets::BriefText
 
 namespace Editor::Assets
 {

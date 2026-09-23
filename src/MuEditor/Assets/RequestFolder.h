@@ -26,6 +26,19 @@ std::vector<std::string> ExistingRequestIds(const std::filesystem::path& repoRoo
 std::set<std::string> TakenModelNames(const std::filesystem::path& repoRoot, const RequestDomain& domain,
                                       const Catalog& catalog);
 
+// One file of a new request folder: where it goes inside the folder
+// ("captures/01-front.jpg", '/' between folders) and its bytes.
+struct RequestFile
+{
+    std::string relativePath;
+    std::string bytes;
+};
+
+// Creates `folder`, which must not exist yet, with `files` in it. On failure
+// nothing is left behind (the folder is removed again) and `error` says why.
+bool WriteNewRequestFolder(const std::filesystem::path& folder, const std::vector<RequestFile>& files,
+                           std::string& error);
+
 // Writes request.json, brief.md and, when `jpeg` is not empty, the draft's first
 // capture into a new folder RequestsDir(draft.domain)/<draft.id>. Refuses to touch a folder
 // that exists already. On failure nothing is left behind and `error` says why.

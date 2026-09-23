@@ -73,5 +73,20 @@ class CommittedCatalog(unittest.TestCase):
                          'catalog.json is out of date; run tools/item_editor/build_item_catalog.py')
 
 
+    def test_check_ignores_request_status(self):
+        with_request = json.loads(json.dumps(self.catalog))
+        key = next(iter(with_request['items']))
+        with_request['items'][key]['requests'] = [{'id': 'x', 'status': 'open', 'assigned_to': None}]
+        with_request['requests'] = [{'id': 'x', 'status': 'open', 'items': [key]}]
+        with_request.setdefault('counts', {})['requests'] = 1
+        with_request.setdefault('generated_from', []).append(build_item_catalog.REQUEST_SOURCE)
+        self.assertEqual(build_item_catalog.without_requests(with_request),
+                         build_item_catalog.without_requests(self.catalog))
+        changed = json.loads(json.dumps(with_request))
+        changed['items'][key]['name'] = 'Changed'
+        self.assertNotEqual(build_item_catalog.without_requests(changed),
+                            build_item_catalog.without_requests(self.catalog))
+
+
 if __name__ == '__main__':
     unittest.main()
