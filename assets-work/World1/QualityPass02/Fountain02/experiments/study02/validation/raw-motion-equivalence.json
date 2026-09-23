@@ -1,0 +1,124 @@
+{
+  "status": "PASS",
+  "raw_tail_byte_identical": false,
+  "baseline_raw_motion_sha256": "a8de5916cf57c22abb5b60e8bc888352e7dc962931d541df044a1d84a9a68098",
+  "final_raw_motion_sha256": "f5f7b2038bc1d03039187d66c7133670eb57424c029ba71491aaacf0d46f566d",
+  "maximum_raw_float_delta": 4.57763671875e-05,
+  "raw_float_components": 1386,
+  "action_metadata": [
+    [
+      21,
+      0,
+      ""
+    ]
+  ],
+  "frames": [
+    {
+      "frame": 0,
+      "raw_world_matrix_delta": 3.0517578125e-05,
+      "raw_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 1,
+      "raw_world_matrix_delta": 3.0517578125e-05,
+      "raw_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 2,
+      "raw_world_matrix_delta": 3.0517578125e-05,
+      "raw_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 3,
+      "raw_world_matrix_delta": 3.0517578125e-05,
+      "raw_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 4,
+      "raw_world_matrix_delta": 3.0517578125e-05,
+      "raw_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 5,
+      "raw_world_matrix_delta": 3.0517578125e-05,
+      "raw_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 6,
+      "raw_world_matrix_delta": 3.0517578125e-05,
+      "raw_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 7,
+      "raw_world_matrix_delta": 4.57763671875e-05,
+      "raw_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 8,
+      "raw_world_matrix_delta": 3.0517578125e-05,
+      "raw_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 9,
+      "raw_world_matrix_delta": 4.57763671875e-05,
+      "raw_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 10,
+      "raw_world_matrix_delta": 3.0517578125e-05,
+      "raw_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 11,
+      "raw_world_matrix_delta": 3.0517578125e-05,
+      "raw_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 12,
+      "raw_world_matrix_delta": 3.0517578125e-05,
+      "raw_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 13,
+      "raw_world_matrix_delta": 3.0517578125e-05,
+      "raw_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 14,
+      "raw_world_matrix_delta": 3.0517578125e-05,
+      "raw_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 15,
+      "raw_world_matrix_delta": 3.0517578125e-05,
+      "raw_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 16,
+      "raw_world_matrix_delta": 3.0517578125e-05,
+      "raw_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 17,
+      "raw_world_matrix_delta": 3.0517578125e-05,
+      "raw_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 18,
+      "raw_world_matrix_delta": 3.0517578125e-05,
+      "raw_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 19,
+      "raw_world_matrix_delta": 3.0517578125e-05,
+      "raw_posed_bounds_delta": 0.0
+    },
+    {
+      "frame": 20,
+      "raw_world_matrix_delta": 3.0517578125e-05,
+      "raw_posed_bounds_delta": 0.0
+    }
+  ],
+  "local_component_tolerance": 0.0001,
+  "note": "Direct official export measured against existing static-validator local-motion precision .0001. Raw byte identity and float drift are reported separately, never claimed equivalent to exact baseline bytes."
+}

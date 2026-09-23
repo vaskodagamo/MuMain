@@ -1,0 +1,62 @@
+{
+  "Waterspout01": {
+    "sha256": "7e3c5e39d74227a3ac88dce45ec6da2573b0d7738d85384fbfdb5251069a9e83",
+    "source_blend": "/Users/lukasmac/Documents/claude-test-mumain/MuMain/assets-work/World1/Statues01/Waterspout01/source.blend",
+    "source_blend_sha256": "609f5bcdbd7ed80b1aff97565af3a94302be0c0a52cdee7e12824dfcac0eec3f",
+    "image": "/Users/lukasmac/Documents/claude-test-mumain/MuMain/assets-work/World1/coordination/final-inspection/Waterspout01/final-offline.png",
+    "image_sha256": "b77890ae1488e79e9d2a9064d304097fc788cb873402c93157444057e2b92c67",
+    "provenance_all_current_match": true,
+    "game_files": {
+      "src/bin/Data/Object1/Waterspout01.bmd": "7e3c5e39d74227a3ac88dce45ec6da2573b0d7738d85384fbfdb5251069a9e83",
+      "src/bin/Data/Object1/stone_statue02.OZJ": "e1d4f7b95afae6c9936eb117a71592e94322b041efafa887bcdf6d731e4a630b",
+      "src/bin/Data/Object1/reagon_waterspout.OZJ": "0da0208475dd23f3838e39615ff562ddec46a5f094c198b7c1e481443135b67d",
+      "src/bin/Data/Object1/ston01.OZJ": "593c4ec54ab68801d842b15f2b397b02918526d85190b613c875106110d33784",
+      "src/bin/Data/Object1/ston02.OZJ": "09d1dbbbc7672fe05d82a89a115bee1ec538e615b3f39e93b9e244e7cd61d151"
+    },
+    "info": "model /Users/lukasmac/Documents/claude-test-mumain/MuMain/src/bin/Data/Object1/Waterspout01.bmd\n  name field: Data2\\Object1\\waterspout.smd  version: 10\n  meshes: 4  bones: 11  actions: 1  triangles: 639\n  bounds (bind pose): min -199.06 -199.74 -0.14  max 199.23 198.55 311.20  size 398.30 398.30 311.34\n  mesh 0: triangles=72 vertices=60 normals=36 uvs=29 texture=stone_statue02.jpg\n  mesh 1: triangles=417 vertices=232 normals=209 uvs=224 texture=reagon_waterspout.jpg\n  mesh 2: triangles=60 vertices=36 normals=36 uvs=39 texture=ston01.jpg\n  mesh 3: triangles=90 vertices=66 normals=66 uvs=66 texture=ston02.jpg\n  bone 0: \"OilTank01\" parent=-1\n  bone 1: \"Box04\" parent=-1\n  bone 2: \"Box01\" parent=1\n  bone 3: \"Box02\" parent=2\n  bone 4: \"Box03\" parent=3\n  bone 5: \"QuadPatch01\" parent=1\n  bone 6: \"Box05\" parent=-1\n  bone 7: \"Box06\" parent=6\n  bone 8: \"Box07\" parent=7\n  bone 9: \"Box08\" parent=8\n  bone 10: \"QuadPatch02\" parent=6\n  action 0: keys=21 lock=0\n",
+    "placements": [
+      {
+        "position": [
+          14100.0,
+          12800.0,
+          165.00003051757812
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          -270.0
+        ],
+        "scale": 1.0,
+        "tile": [
+          141.0,
+          128.0
+        ]
+      }
+    ],
+    "raw_normal_bindings": {
+      "file": "/Users/lukasmac/Documents/claude-test-mumain/MuMain/src/bin/Data/Object1/Waterspout01.bmd",
+      "mesh_bindings": [
+        {
+          "mesh": 0,
+          "material": "stone_statue02.jpg",
+          "vertex_to_normal_node_mismatch_corner_counts": {}
+        },
+        {
+          "mesh": 1,
+          "material": "reagon_waterspout.jpg",
+          "vertex_to_normal_node_mismatch_corner_counts": {}
+        },
+        {
+          "mesh": 2,
+          "material": "ston01.jpg",
+          "vertex_to_normal_node_mismatch_corner_counts": {}
+        },
+        {
+          "mesh": 3,
+          "material": "ston02.jpg",
+          "vertex_to_normal_node_mismatch_corner_counts": {}
+        }
+      ]
+    }
+  }
+}

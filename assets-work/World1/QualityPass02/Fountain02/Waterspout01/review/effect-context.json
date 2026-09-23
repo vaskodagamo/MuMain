@@ -1,0 +1,17 @@
+{
+  "kind": "OFFLINE APPROXIMATION, NOT CLIENT",
+  "frames": [
+    0,
+    10,
+    20
+  ],
+  "water_material": "ston02.jpg",
+  "mesh": 3,
+  "additive_strength": 1,
+  "V_offsets": [
+    0,
+    -0.5,
+    -0.95
+  ],
+  "limitations": "Illustrative UV offsets; engine scroll uses WorldTime independently from animation. Engine particles are not simulated; their actual bone anchors and offset envelopes are validated across21frames in attachments.json."
+}

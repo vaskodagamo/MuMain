@@ -1,0 +1,6 @@
+{
+  "status": "ART_REVISE",
+  "reason": "Material more coherent but torso remains too dark; matched neutral/unlit diagnostics retained. Geometry2 plus painting01 has export/reimport only; full final validation pending.",
+  "source_sha256": "becdc74e85081e0992eaddef623fdd671882d8e607ce9c7160347b49a8e74f67",
+  "BMD_sha256": "366d0fc591b50a269b6ac573d2493eee7572e88d5e3e1ef8c5c2c1fa1196c5df"
+}

@@ -1,0 +1,33 @@
+{
+  "status": "PASS",
+  "bounds_before": [
+    [
+      -199.06,
+      -199.74,
+      -0.14
+    ],
+    [
+      199.23,
+      198.55,
+      311.2
+    ]
+  ],
+  "bounds_after": [
+    [
+      -199.06,
+      -199.74,
+      -0.14
+    ],
+    [
+      199.23,
+      198.55,
+      311.2
+    ]
+  ],
+  "skeleton_actions": "EQUIVALENT",
+  "full_comparison": "DIFFERENT",
+  "sha256": "366d0fc591b50a269b6ac573d2493eee7572e88d5e3e1ef8c5c2c1fa1196c5df",
+  "textures_frozen": 3,
+  "edited_atlas": "reagon_waterspout.OZJ; protected basin/filter-margin decoded pixels exact",
+  "client_verified": false
+}

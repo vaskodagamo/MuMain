@@ -1,0 +1,6 @@
+{
+  "kind": "OFFLINE DIAGNOSTIC NOT CLIENT",
+  "unlit": "Direct diffuse texels, no geometric shading or lighting",
+  "neutral": "Same standard sun, original review_scene neutral ambient .32/.36/.40 vs customary dark-background ambient .055/.065/.075",
+  "intent": "Separate painted readability from shadow. Baseline/candidate settings exactly matched; cannot substitute for original shaded and placement evidence."
+}

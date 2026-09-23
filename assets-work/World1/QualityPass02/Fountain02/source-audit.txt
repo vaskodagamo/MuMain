@@ -1,0 +1,5 @@
+00:00.596  blend            | Read blend: "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Fountain02/Waterspout01/source.blend"
+Waterspout01 every authored corner + individual root extents/contact PASS
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:49:19)
+
+Blender quit
