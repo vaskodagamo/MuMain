@@ -3,16 +3,19 @@
 #ifdef _EDITOR
 
 #include "MuItemEditorUI.h"
+#include "ItemBrowseTab.h"
 #include "ItemEditorTable.h"
 #include "ItemEditorActions.h"
 #include "ItemEditorPopups.h"
 #include "Data/GameData/ItemData/ItemFieldMetadata.h"
 #include "../MuEditor/Config/MuEditorConfig.h"
+#include "../MuEditor/Core/ItemStudio.h"
 #include "../MuEditor/Core/MuEditorCore.h"
+#include "../MuEditor/UI/Common/MuEditorUI.h"
 #include "I18N/All.h"
+#include "Assets/EditorText.h"
 #include "imgui.h"
 #include <algorithm>
-#include <cctype>
 #include <fstream>
 #ifdef _WIN32
 #include <direct.h>
@@ -22,10 +25,23 @@
 #include "imgui_internal.h"
 #include "../MuEditor/UI/Console/MuEditorConsoleUI.h"
 
+namespace
+{
+// The floating window's size (first use, and when it leaves the studio's full-window layout).
+constexpr float FLOATING_WIDTH = 1500.0f;
+constexpr float FLOATING_HEIGHT = 760.0f;
+constexpr float FLOATING_MARGIN = 20.0f;
+constexpr float MIN_WIDTH = 400.0f;
+constexpr float MIN_HEIGHT = 300.0f;
+} // namespace
+
 CMuItemEditorUI::CMuItemEditorUI()
     : m_selectedRow(-1)
+    , m_activeTab(Tab::None)
+    , m_wasDocked(false)
     , m_bFreezeColumns(false)
     , m_pTable(nullptr)
+    , m_pBrowse(std::make_unique<CItemBrowseTab>())
 {
     memset(m_szItemSearchBuffer, 0, sizeof(m_szItemSearchBuffer));
     m_pTable = new CItemEditorTable();
@@ -89,49 +105,12 @@ void CMuItemEditorUI::Render(bool& showEditor)
     if (!ItemAttribute)
         return;
 
-    // Constants for layout
-    constexpr float TOOLBAR_HEIGHT = 40.0f;
-    constexpr float CONSOLE_HEIGHT = 200.0f;
-
-    ImGuiIO& io = ImGui::GetIO();
-
-    // Calculate available space between toolbar and console
-    float availableTop = TOOLBAR_HEIGHT;
-    float availableBottom = io.DisplaySize.y - CONSOLE_HEIGHT;
-    float availableHeight = availableBottom - availableTop;
-
-    // Set initial window size and constraints
-    ImGui::SetNextWindowSizeConstraints(
-        ImVec2(400, 300),  // Min size
-        ImVec2(io.DisplaySize.x, availableHeight)  // Max size
-    );
-
-    ImGuiWindowFlags flags = ImGuiWindowFlags_NoCollapse;
+    const bool docked = Editor::ItemStudio::DocksItemEditor();
+    const ImGuiWindowFlags flags = PlaceWindow(docked);
     if (ImGui::Begin(I18N::Editor::ItemEditor, &showEditor, flags))
     {
-        // Clamp window position to stay within bounds
-        ImVec2 windowPos = ImGui::GetWindowPos();
-        ImVec2 windowSize = ImGui::GetWindowSize();
-
-        // Clamp to keep window between toolbar and console
-        if (windowPos.y < availableTop)
-        {
-            ImGui::SetWindowPos(ImVec2(windowPos.x, availableTop));
-        }
-        if (windowPos.y + windowSize.y > availableBottom)
-        {
-            ImGui::SetWindowPos(ImVec2(windowPos.x, availableBottom - windowSize.y));
-        }
-
-        // Clamp horizontally to stay within screen bounds
-        if (windowPos.x < 0)
-        {
-            ImGui::SetWindowPos(ImVec2(0, windowPos.y));
-        }
-        if (windowPos.x + windowSize.x > io.DisplaySize.x)
-        {
-            ImGui::SetWindowPos(ImVec2(io.DisplaySize.x - windowSize.x, windowPos.y));
-        }
+        if (!docked)
+            KeepWindowBetweenToolbarAndConsole();
 
         // Check if hovering this window OR any popup
         bool isHovering = ImGui::IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows | ImGuiHoveredFlags_AllowWhenBlockedByPopup) ||
@@ -143,31 +122,101 @@ void CMuItemEditorUI::Render(bool& showEditor)
             g_MuEditorCore.SetHoveringUI(true);
         }
 
-        // Render action buttons (Save, Export S6E3, Export CSV)
-        CItemEditorActions::RenderAllButtons();;
-        ImGui::Separator();
-        
-        RenderSearchBar();
-        ImGui::SameLine();
-        RenderColumnVisibilityMenu();
-        ImGui::SameLine();
-        ImGui::Checkbox(I18N::Editor::FreezeIndexName, &m_bFreezeColumns);
-        ImGui::Separator();
-
-        // Convert search to lowercase for case-insensitive search
-        std::string searchLower = m_szItemSearchBuffer;
-        std::transform(searchLower.begin(), searchLower.end(), searchLower.begin(), ::tolower);
-
-        // Render the item table
-        if (m_pTable)
-        {
-            m_pTable->Render(searchLower, m_columnVisibility, m_selectedRow, m_bFreezeColumns);
-        }
+        RenderTabs();
 
         // Render all popups
         CItemEditorPopups::RenderAll();
     }
     ImGui::End();
+}
+
+int CMuItemEditorUI::PlaceWindow(bool docked)
+{
+    ImGuiIO& io = ImGui::GetIO();
+    const float top = g_MuEditorUI.ToolbarHeight();
+    const float consoleHeight = g_MuEditorCore.IsShowingConsole() ? CMuEditorConsoleUI::HEIGHT : 0.0f;
+    const float bottom = io.DisplaySize.y - consoleHeight;
+    const bool leftStudio = m_wasDocked && !docked;
+    m_wasDocked = docked;
+
+    if (docked)
+    {
+        // Fills the client area under the toolbar and follows window resizes; the
+        // other editors' windows open on top of it.
+        ImGui::SetNextWindowPos(ImVec2(0.0f, top), ImGuiCond_Always);
+        ImGui::SetNextWindowSize(ImVec2(io.DisplaySize.x, bottom - top), ImGuiCond_Always);
+        return ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse |
+               ImGuiWindowFlags_NoBringToFrontOnFocus;
+    }
+
+    // A window the map shows around: the first time, and when the Map Editor opens in the studio.
+    const ImGuiCond placement = leftStudio ? ImGuiCond_Always : ImGuiCond_FirstUseEver;
+    ImGui::SetNextWindowPos(ImVec2(FLOATING_MARGIN, top + FLOATING_MARGIN), placement);
+    ImGui::SetNextWindowSize(ImVec2(FLOATING_WIDTH, FLOATING_HEIGHT), placement);
+    ImGui::SetNextWindowSizeConstraints(ImVec2(MIN_WIDTH, MIN_HEIGHT), ImVec2(io.DisplaySize.x, bottom - top));
+    return ImGuiWindowFlags_NoCollapse;
+}
+
+void CMuItemEditorUI::KeepWindowBetweenToolbarAndConsole()
+{
+    ImGuiIO& io = ImGui::GetIO();
+    const float availableTop = g_MuEditorUI.ToolbarHeight();
+    const float availableBottom = io.DisplaySize.y - CMuEditorConsoleUI::HEIGHT;
+    const ImVec2 windowPos = ImGui::GetWindowPos();
+    const ImVec2 windowSize = ImGui::GetWindowSize();
+
+    if (windowPos.y < availableTop)
+        ImGui::SetWindowPos(ImVec2(windowPos.x, availableTop));
+    if (windowPos.y + windowSize.y > availableBottom)
+        ImGui::SetWindowPos(ImVec2(windowPos.x, availableBottom - windowSize.y));
+    if (windowPos.x < 0)
+        ImGui::SetWindowPos(ImVec2(0, windowPos.y));
+    if (windowPos.x + windowSize.x > io.DisplaySize.x)
+        ImGui::SetWindowPos(ImVec2(io.DisplaySize.x - windowSize.x, windowPos.y));
+}
+
+void CMuItemEditorUI::RenderTabs()
+{
+    if (!ImGui::BeginTabBar("ItemEditorTabs"))
+        return;
+    if (ImGui::BeginTabItem("Browse"))
+    {
+        if (m_activeTab != Tab::Browse)
+            m_pBrowse->OnShown();
+        m_activeTab = Tab::Browse;
+        m_pBrowse->Render(m_selectedRow);
+        ImGui::EndTabItem();
+    }
+    if (ImGui::BeginTabItem("Stats table"))
+    {
+        if (m_activeTab != Tab::StatsTable && m_selectedRow >= 0)
+            CItemEditorTable::RequestScrollToIndex(m_selectedRow); // the item picked in Browse
+        m_activeTab = Tab::StatsTable;
+        RenderStatsTable();
+        ImGui::EndTabItem();
+    }
+    ImGui::EndTabBar();
+}
+
+void CMuItemEditorUI::RenderStatsTable()
+{
+    // Render action buttons (Save, Export S6E3, Export CSV)
+    CItemEditorActions::RenderAllButtons();
+    ImGui::Separator();
+
+    RenderSearchBar();
+    ImGui::SameLine();
+    RenderColumnVisibilityMenu();
+    ImGui::SameLine();
+    ImGui::Checkbox(I18N::Editor::FreezeIndexName, &m_bFreezeColumns);
+    ImGui::Separator();
+
+    // Any letter case, also outside A-Z (Editor::Text::FoldCase).
+    const std::string searchFolded = Editor::Text::FoldCase(m_szItemSearchBuffer);
+    if (m_pTable)
+    {
+        m_pTable->Render(searchFolded, m_columnVisibility, m_selectedRow, m_bFreezeColumns);
+    }
 }
 
 void CMuItemEditorUI::RenderSearchBar()

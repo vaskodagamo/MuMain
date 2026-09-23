@@ -10,6 +10,9 @@ public:
     void RenderToolbar(bool& editorEnabled, bool& showItemEditor, bool& showSkillEditor, bool& showDevEditor, bool& showMapEditor, bool& showConsole);
     void RenderCenterViewport();
 
+    // The toolbar's height in pixels at the current editor UI scale.
+    float ToolbarHeight() const;
+
 private:
     CMuEditorUI() = default;
     ~CMuEditorUI() = default;

@@ -10,11 +10,17 @@
 #include "I18N/All.h"
 #include "Core/Globals/_struct.h"
 #include "Core/Globals/_define.h"
+#include "Assets/EditorText.h"
 #include "imgui.h"
 #include <algorithm>
 #include <sstream>
 
 extern ITEM_ATTRIBUTE* ItemAttribute;
+
+namespace
+{
+constexpr float SCROLL_TARGET_RATIO = 0.3f; // a row scrolled to sits in the upper third
+}
 
 // Static member initialization
 int CItemEditorTable::s_scrollToIndex = -1;
@@ -22,6 +28,19 @@ int CItemEditorTable::s_scrollToIndex = -1;
 void CItemEditorTable::RequestScrollToIndex(int index)
 {
     s_scrollToIndex = index;
+}
+
+int CItemEditorTable::TakeScrollRequest(int& selectedRow)
+{
+    const int item = s_scrollToIndex;
+    s_scrollToIndex = -1;
+    if (item < 0)
+        return -1;
+    const auto found = std::find(m_filteredItems.begin(), m_filteredItems.end(), item);
+    if (found == m_filteredItems.end())
+        return -1; // hidden by the search
+    selectedRow = item;
+    return static_cast<int>(found - m_filteredItems.begin());
 }
 
 void CItemEditorTable::InvalidateFilter()
@@ -91,13 +110,8 @@ void CItemEditorTable::Render(
 
             if (nameBuffer[0] == '\0') continue;
 
-            if (searchFilter.length() > 0)
-            {
-                std::string nameLower = nameBuffer;
-                std::transform(nameLower.begin(), nameLower.end(), nameLower.begin(), ::tolower);
-                if (nameLower.find(searchFilter) == std::string::npos)
-                    continue;
-            }
+            if (searchFilter.length() > 0 && Editor::Text::FoldCase(nameBuffer).find(searchFilter) == std::string::npos)
+                continue;
 
             m_filteredItems.push_back(i);
         }
@@ -156,21 +170,12 @@ void CItemEditorTable::Render(
     ImGuiListClipper clipper;
     clipper.Begin((int)m_filteredItems.size());
 
-    // Handle scroll request
-    if (s_scrollToIndex >= 0)
+    // Handle scroll request: the clipper lays the requested row out even when it is
+    // off screen, and the loop scrolls to it once its real position is known.
+    const int scrollRow = TakeScrollRequest(selectedRow);
+    if (scrollRow >= 0)
     {
-        // Find the row index in filtered items
-        for (int row = 0; row < (int)m_filteredItems.size(); row++)
-        {
-            if (m_filteredItems[row] == s_scrollToIndex)
-            {
-                // Force the clipper to include this row and scroll to it
-                ImGui::SetScrollY(ImGui::GetTextLineHeightWithSpacing() * (row + 1)); // +1 for header
-                selectedRow = s_scrollToIndex;
-                break;
-            }
-        }
-        s_scrollToIndex = -1; // Reset
+        clipper.IncludeItemByIndex(scrollRow);
     }
 
     while (clipper.Step())
@@ -179,6 +184,10 @@ void CItemEditorTable::Render(
         {
             int i = m_filteredItems[row];
             ImGui::TableNextRow();
+            if (row == scrollRow)
+            {
+                ImGui::SetScrollHereY(SCROLL_TARGET_RATIO);
+            }
 
             if (selectedRow == i)
             {

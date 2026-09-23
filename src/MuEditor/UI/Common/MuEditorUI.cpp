@@ -30,6 +30,11 @@ CMuEditorUI& CMuEditorUI::GetInstance()
     return instance;
 }
 
+float CMuEditorUI::ToolbarHeight() const
+{
+    return TOOLBAR_HEIGHT * g_MuEditorCore.GetUIScale();
+}
+
 void CMuEditorUI::RenderToolbar(bool& editorEnabled, bool& showItemEditor, bool& showSkillEditor, bool& showDevEditor, bool& showMapEditor, bool& showConsole)
 {
     if (editorEnabled)
@@ -120,7 +125,7 @@ void CMuEditorUI::RenderToolbarOpen(bool& editorEnabled)
 void CMuEditorUI::RenderToolbarFull(bool& editorEnabled, bool& showItemEditor, bool& showSkillEditor, bool& showDevEditor, bool& showMapEditor, bool& showConsole)
 {
     const float uiScale = g_MuEditorCore.GetUIScale();
-    ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x, TOOLBAR_HEIGHT * uiScale), ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x, ToolbarHeight()), ImGuiCond_Always);
     ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
 
     ImGuiWindowFlags flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize |

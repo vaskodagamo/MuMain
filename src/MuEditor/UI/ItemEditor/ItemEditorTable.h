@@ -17,7 +17,7 @@ public:
     CItemEditorTable();
     ~CItemEditorTable();
 
-    // Main render function
+    // Main render function. `searchFilter` is folded with Editor::Text::FoldCase.
     void Render(const std::string& searchFilter,
                 std::map<std::string, bool>& columnVisibility,
                 int& selectedRow,
@@ -30,6 +30,9 @@ public:
     void InvalidateFilter();
 
 private:
+    // The filtered row of a pending RequestScrollToIndex() (which it selects), or -1.
+    int TakeScrollRequest(int& selectedRow);
+
     // Filter state
     std::vector<int> m_filteredItems;
     std::string m_lastSearchFilter;
