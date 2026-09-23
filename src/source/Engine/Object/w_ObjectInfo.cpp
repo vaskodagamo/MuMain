@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "Engine/Object/w_ObjectInfo.h"
+#include "Engine/Object/WorldObjectFile.h"
 
 void CInterpolateContainer::GetCurrentValue(vec3_t& v3Out, float fCurrentRate, VEC_INTERPOLATES& vecInterpolates)
 {
@@ -84,6 +85,7 @@ OBJECT::~OBJECT()
 
 void OBJECT::Initialize()
 {
+    SaveOrder = Engine::Object::WorldObjectFile::NO_SAVE_ORDER;
     m_bpcroom = false;
     Live = false;
     bBillBoard = false;

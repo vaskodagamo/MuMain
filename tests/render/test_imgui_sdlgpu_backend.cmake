@@ -9,6 +9,7 @@ file(READ "${MU_SOURCE_DIR}/MuEditor/Core/MuEditorCore.h" editor_header)
 file(READ "${MU_SOURCE_DIR}/MuEditor/Core/MuEditorCore.cpp" editor_source)
 file(READ "${MU_SOURCE_DIR}/source/App/Platform/Windows/Winmain.cpp" app_source)
 file(READ "${MU_SOURCE_DIR}/source/Render/Renderer/MuRendererSDLGpu.cpp" renderer_source)
+file(READ "${MU_SOURCE_DIR}/source/Render/Renderer/SdlGpuEditorOverlayPipeline.cpp" overlay_pipeline_source)
 file(READ "${MU_SOURCE_DIR}/source/Scenes/SceneManager.cpp" scene_manager_source)
 file(READ "${MU_SOURCE_DIR}/source/Scenes/LoadingScene.cpp" loading_scene_source)
 
@@ -119,6 +120,7 @@ strip_cpp_comments(editor_header editor_header_code)
 strip_cpp_comments(editor_source editor_code)
 strip_cpp_comments(app_source app_code)
 strip_cpp_comments(renderer_source renderer_code)
+strip_cpp_comments(overlay_pipeline_source overlay_pipeline_code)
 strip_cpp_comments(scene_manager_source scene_manager_code)
 strip_cpp_comments(loading_scene_source loading_scene_code)
 
@@ -221,8 +223,31 @@ if(backend_draw_position EQUAL -1 OR draw_consumed_position EQUAL -1
     message(FATAL_ERROR "Editor render hook must consume then clear current-frame draw data")
 endif()
 require_match(editor_draw
-    "ImGui_ImplSDLGPU3_RenderDrawData[ \t\r\n]*\\([ \t\r\n]*ImGui::GetDrawData[ \t\r\n]*\\(\\)[ \t]*,[ \t\r\n]*commandBuffer[ \t]*,[ \t\r\n]*renderPass[ \t\r\n]*\\)[ \t]*;"
-    "render hook draws current ImGui data in the engine render pass")
+    "ImGui_ImplSDLGPU3_RenderDrawData[ \t\r\n]*\\([ \t\r\n]*ImGui::GetDrawData[ \t\r\n]*\\(\\)[ \t]*,[ \t\r\n]*commandBuffer[ \t]*,[ \t\r\n]*renderPass[ \t]*,[ \t\r\n]*mu::GetEditorOverlayPipeline[ \t\r\n]*\\(\\)[ \t\r\n]*\\)[ \t]*;"
+    "render hook draws current ImGui data in the engine render pass with the renderer's depth-aware pipeline")
+
+# The engine render pass has a depth attachment, so the pipeline ImGui draws with
+# inside it must declare that attachment (Metal API validation aborts otherwise)
+# while leaving the world's depth untouched.
+require_match(overlay_pipeline_code
+    "target_info\\.has_depth_stencil_target[ \t]*=[ \t]*true[ \t]*;"
+    "editor overlay pipeline declares the engine pass's depth attachment")
+require_match(overlay_pipeline_code
+    "target_info\\.depth_stencil_format[ \t]*=[ \t]*formats\\.depthStencil[ \t]*;"
+    "editor overlay pipeline takes the depth format of the pass it is drawn in")
+require_match(overlay_pipeline_code "enable_depth_test[ \t]*=[ \t]*false[ \t]*;"
+    "editor overlay pipeline does not depth-test")
+require_match(overlay_pipeline_code "enable_depth_write[ \t]*=[ \t]*false[ \t]*;"
+    "editor overlay pipeline does not write depth")
+strip_editor_sections(overlay_pipeline_code overlay_pipeline_editor_off_code)
+foreach(symbol IN ITEMS "imgui_impl_sdlgpu3_shaders.h" "SDL_CreateGPUGraphicsPipeline")
+    forbid_symbol(overlay_pipeline_editor_off_code "${symbol}")
+endforeach()
+require_match(renderer_code
+    "Render::EditorOverlay::PassTargetFormats[ \t]+formats[ \t]*\\{[^}]*k_DepthFormat[ \t\r\n]*\\}"
+    "renderer builds the editor overlay pipeline for the main pass depth format")
+require_match(renderer_code "depthInfo\\.format[ \t]*=[ \t]*k_DepthFormat[ \t]*;"
+    "main pass depth texture uses the depth format the editor overlay pipeline is built for")
 
 string(FIND "${editor_code}" "void CMuEditorCore::Shutdown()" editor_shutdown_start)
 string(FIND "${editor_code}" "void CMuEditorCore::Update()" editor_shutdown_end)
@@ -394,7 +419,10 @@ foreach(symbol IN ITEMS
         "PreparePendingEditorDrawData"
         "g_MuEditorCore"
         "ImGui_ImplSDLGPU3_PrepareDrawData"
-        "ImGui_ImplSDLGPU3_RenderDrawData")
+        "ImGui_ImplSDLGPU3_RenderDrawData"
+        "SdlGpuEditorOverlayPipeline.h"
+        "GetEditorOverlayPipeline"
+        "s_editorOverlayPipeline")
     forbid_symbol(renderer_editor_off_code "${symbol}")
 endforeach()
 

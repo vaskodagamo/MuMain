@@ -1,5 +1,6 @@
 #include "Render/Renderer/GLCompatShim.h"
 
+#include "Render/Renderer/LineTopology.h"
 #include "Render/Renderer/MuRenderer.h"
 
 #include <algorithm>
@@ -23,6 +24,8 @@ constexpr MUCompatGLenum kGLStencilTest = 0x0B90;
 constexpr MUCompatGLenum kGLQuads = 0x0007;
 constexpr MUCompatGLenum kGLTriangles = 0x0004;
 constexpr MUCompatGLenum kGLLines = 0x0001;
+constexpr MUCompatGLenum kGLLineLoop = 0x0002;
+constexpr MUCompatGLenum kGLLineStrip = 0x0003;
 constexpr MUCompatGLenum kGLTriangleFan = 0x0006;
 constexpr MUCompatGLenum kGLQuadStrip = 0x0008;
 constexpr MUCompatGLenum kGLModelViewMatrix = 0x0BA6;
@@ -65,6 +68,9 @@ bool s_alphaTest = false;
 bool s_cullFace = false;
 bool s_fog = false;
 bool s_stencil = false;
+// glLineWidth, in pixels as in OpenGL (whose default is 1).
+constexpr float kDefaultLineWidth = 1.0f;
+float s_lineWidth = kDefaultLineWidth;
 
 [[nodiscard]] std::uint8_t ByteFromFloat(float value)
 {
@@ -122,6 +128,27 @@ void SubmitQuads()
         s_renderVertices[output++] = {quad[3].x, quad[3].y, quad[3].z, 0.f, 0.f, 1.f, quad[3].u, quad[3].v, quad[3].color};
     }
     mu::GetRenderer().RenderQuad3D(s_renderVertices, s_texture2D ? s_boundTexture : 0u);
+}
+
+void AppendLineVertex(std::size_t index)
+{
+    const ImmediateVertex& v = s_vertices[index];
+    s_renderVertices.push_back({v.x, v.y, v.z, 0.0f, 0.0f, 1.0f, v.u, v.v, v.color});
+}
+
+// Every line mode is drawn as screen-space lines s_lineWidth pixels wide, facing the
+// camera and untextured (see IMuRenderer::RenderScreenLines); LINE_STRIP and
+// LINE_LOOP are broken into their segments first.
+void SubmitLines(Render::Topology::LineMode mode)
+{
+    s_renderVertices.clear();
+    Render::Topology::ForEachLineSegment(mode, s_vertices.size(),
+                                         [](std::size_t first, std::size_t second)
+                                         {
+                                             AppendLineVertex(first);
+                                             AppendLineVertex(second);
+                                         });
+    mu::GetRenderer().RenderScreenLines(s_renderVertices, s_lineWidth);
 }
 
 void SubmitTriangleFan()
@@ -208,14 +235,15 @@ void mu_glEnd()
     case kGLTriangles:
         SubmitTriangles(s_vertices);
         break;
-    case kGLLines: {
-        std::vector<mu::Vertex3D> lines;
-        lines.reserve(s_vertices.size());
-        for (const ImmediateVertex& v : s_vertices)
-            lines.push_back({v.x, v.y, v.z, 0.0f, 0.0f, 1.0f, v.u, v.v, v.color});
-        mu::GetRenderer().RenderLines(lines, s_texture2D ? s_boundTexture : 0u);
+    case kGLLines:
+        SubmitLines(Render::Topology::LineMode::Lines);
         break;
-    }
+    case kGLLineStrip:
+        SubmitLines(Render::Topology::LineMode::LineStrip);
+        break;
+    case kGLLineLoop:
+        SubmitLines(Render::Topology::LineMode::LineLoop);
+        break;
     case kGLTriangleFan:
         SubmitTriangleFan();
         break;
@@ -309,7 +337,10 @@ void mu_glGetIntegerv(MUCompatGLenum, MUCompatGLint* data)
     }
 }
 void mu_glViewport(MUCompatGLint x, MUCompatGLint y, MUCompatGLsizei width, MUCompatGLsizei height) { mu::GetRenderer().SetViewport(x, y, width, height); }
-void mu_glLineWidth(MUCompatGLfloat) {}
+void mu_glLineWidth(MUCompatGLfloat width)
+{
+    s_lineWidth = width > 0.0f ? width : kDefaultLineWidth;
+}
 void mu_glBindTexture(MUCompatGLenum, MUCompatGLuint texture) { s_boundTexture = texture; mu::GetRenderer().BindTexture(static_cast<int>(texture)); }
 void mu_glGenTextures(MUCompatGLsizei n, MUCompatGLuint* textures)
 {

@@ -40,6 +40,7 @@
 #ifdef _EDITOR
 #include "Camera/FrustumRenderer.h"
 #include "Camera/CameraDebugLog.h"
+#include "../MuEditor/Core/OfflineWorld.h"
 #endif
 
 // External declarations
@@ -219,6 +220,11 @@ static void UpdateUIAndInput()
 {
     if (g_Camera.TopViewEnable || LoadingWorld >= 30)
         return;
+#ifdef _EDITOR
+    // A map opened offline has no hero, character data or server: the game HUD stays off.
+    if (Editor::OfflineWorld::IsActive())
+        return;
+#endif
 
     if (UI::Scaling::BottomHudContainsWindowPoint(WindowWidth, WindowHeight,
                                                   g_fWindowMouseX, g_fWindowMouseY))
@@ -605,6 +611,11 @@ static void RenderGameWorld(BYTE& byWaterMap, int width, int height)
  */
 static void RenderMainSceneUI()
 {
+#ifdef _EDITOR
+    // A map opened offline has no hero, character data or server: the game HUD stays off.
+    if (Editor::OfflineWorld::IsActive())
+        return;
+#endif
     Input::Selection::SelectObjects();
     BeginBitmap();
     RenderObjectDescription();
@@ -700,14 +711,15 @@ bool RenderMainScene()
     RenderGameWorld(byWaterMap, width, height);
 
 #ifdef _EDITOR
-    // Render spectated camera frustum wireframe when in FreeFly mode - but not
-    // during the map editor's top-down minimap capture, which wants a clean shot.
+    // Render spectated camera frustum wireframe when in FreeFly mode while it is
+    // the camera that culls the world - but not during the map editor's top-down
+    // minimap capture, which wants a clean shot.
     extern bool g_bMapEditorFullTerrain;
     CameraMode cameraMode = CameraManager::Instance().GetCurrentMode();
     if (cameraMode == CameraMode::FreeFly && !g_bMapEditorFullTerrain)
     {
         ICamera* spectated = CameraManager::Instance().GetSpectatedCamera();
-        if (spectated)
+        if (spectated && CameraManager::Instance().GetFreeFlyCullingCamera() == spectated)
             RenderFrustumWireframe(spectated->GetFrustum());
     }
 #endif
