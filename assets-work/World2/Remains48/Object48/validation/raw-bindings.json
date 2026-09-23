@@ -1,0 +1,10 @@
+{
+  "file": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-remains48/assets-work/World2/Remains48/Object48/exports/Object48.bmd",
+  "mesh_bindings": [
+    {
+      "mesh": 0,
+      "material": "bons.jpg",
+      "vertex_to_normal_node_mismatch_corner_counts": {}
+    }
+  ]
+}

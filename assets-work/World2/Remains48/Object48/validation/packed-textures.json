@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "images": [
+    {
+      "texture": "bons.jpg",
+      "size": [
+        128,
+        128
+      ],
+      "packed_payload_sha256": "c572edc9528f9955e282635dbe668847829f3c6e4b6b16a6849b4f1ff68dce80"
+    }
+  ],
+  "reference_collection": "REF_ORIGINAL hidden and retained"
+}
