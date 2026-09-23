@@ -450,3 +450,8 @@ hotkeys/selection/cooldown/disabled overlays, item models and counts, localized
 tooltips, HiDPI and real gameplay readability remain pending. Shared skill-slot
 art also requires MU Helper and pet-window review. All previews are offline
 mockups, not client screenshots.
+
+
+## 2026-09-23 — Start Dungeon static production
+
+Lorencia passed artistic/offline gate in separate draft PR12 (d3ce9acf); new client checks pending. Created focused main-based Dungeon integration and reused the two owned artist worktrees on new branches. PotteryObject28/29/30 and coffinObject21/22 are in production with all shared textures frozen; raw CP949 model names have a verified official-pipeline roundtrip. No Dungeon replacement accepted yet. See assets-work/Environment/coordination/handoff.md for exact ownership and next steps. Primary checkout/runtime untouched.

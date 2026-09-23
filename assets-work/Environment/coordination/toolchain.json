@@ -1,0 +1,14 @@
+{
+  "blender": "5.2.2 LTS",
+  "blender_build": "d13f752e3b9c",
+  "download": "https://download.blender.org/release/Blender5.2/blender-5.2.2-macos-arm64.dmg",
+  "dmg_sha256": "dc4125399b8bfefe283cc1624d6cfc7809d1cac20ace51072127eb371f31f210",
+  "source_tools_version": "3.4.3",
+  "source_tools_commit": "3d5fd9bf681547d86fa369715a0e8dd6013edcb7",
+  "binary": "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/Blender.app/Contents/MacOS/Blender",
+  "env": {
+    "BLENDER_USER_SCRIPTS": "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts",
+    "BLENDER_USER_CONFIG": "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/config"
+  },
+  "execution": "Headless Blender Python API. Full access active on coordinator after user resumed; existing subagents retained earlier sandbox context, so coordinator launches their reproducible Blender pipelines without approval prompts."
+}
