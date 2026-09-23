@@ -42,6 +42,10 @@
 
 // DevEditor function declarations
 #ifdef _EDITOR
+#include "Render/Renderer/QuadTopology.h"
+#include "Render/Terrain/TerrainBrushOutline.h"
+#include "Render/Terrain/TerrainOverlayState.h"
+
 extern "C" bool DevEditor_ShouldShowTileGrid();
 extern "C" void DevEditor_GetDefaultTrapezoidMultipliers(float* outNearMul, float* outFarMul);
 // Returns true + fills outputs when the Orbital override is active (in MAIN_SCENE).
@@ -457,23 +461,35 @@ bool SaveTerrainMapping(wchar_t* FileName, int iMapNumber)
     }
 #endif// BATTLE_CASTLE
 */
+// A cell's normal is the sum of the unit normals of its two triangles (so it is
+// up to 2 long, and CreateTerrainLight's dot product relies on that length). It
+// is rebuilt from zero each time: adding onto the previous value made every
+// recompute (the next map's load, a Map Editor sculpt or undo, an earthquake)
+// grow the normals and wash out the slope shading until the client restarted.
+static void ComputeTerrainNormal(int x, int y)
+{
+    int Index = TERRAIN_INDEX(x, y);
+    vec3_t v1, v2, v3, v4;
+    Vector((x * TERRAIN_SCALE), (y * TERRAIN_SCALE), BackTerrainHeight[TERRAIN_INDEX_REPEAT(x, y)], v4);
+    Vector(((x + 1) * TERRAIN_SCALE), (y * TERRAIN_SCALE), BackTerrainHeight[TERRAIN_INDEX_REPEAT((x + 1), y)], v1);
+    Vector(((x + 1) * TERRAIN_SCALE), ((y + 1) * TERRAIN_SCALE),
+           BackTerrainHeight[TERRAIN_INDEX_REPEAT((x + 1), (y + 1))], v2);
+    Vector((x * TERRAIN_SCALE), ((y + 1) * TERRAIN_SCALE), BackTerrainHeight[TERRAIN_INDEX_REPEAT(x, (y + 1))], v3);
+    vec3_t face_normal;
+    Vector(0.f, 0.f, 0.f, TerrainNormal[Index]);
+    FaceNormalize(v1, v2, v3, face_normal);
+    VectorAdd(TerrainNormal[Index], face_normal, TerrainNormal[Index]);
+    FaceNormalize(v3, v4, v1, face_normal);
+    VectorAdd(TerrainNormal[Index], face_normal, TerrainNormal[Index]);
+}
+
 void CreateTerrainNormal()
 {
     for (int y = 0; y < TERRAIN_SIZE; y++)
     {
         for (int x = 0; x < TERRAIN_SIZE; x++)
         {
-            int Index = TERRAIN_INDEX(x, y);
-            vec3_t v1, v2, v3, v4;
-            Vector((x * TERRAIN_SCALE), (y * TERRAIN_SCALE), BackTerrainHeight[TERRAIN_INDEX_REPEAT(x, y)], v4);
-            Vector(((x + 1) * TERRAIN_SCALE), (y * TERRAIN_SCALE), BackTerrainHeight[TERRAIN_INDEX_REPEAT((x + 1), y)], v1);
-            Vector(((x + 1) * TERRAIN_SCALE), ((y + 1) * TERRAIN_SCALE), BackTerrainHeight[TERRAIN_INDEX_REPEAT((x + 1), (y + 1))], v2);
-            Vector((x * TERRAIN_SCALE), ((y + 1) * TERRAIN_SCALE), BackTerrainHeight[TERRAIN_INDEX_REPEAT(x, (y + 1))], v3);
-            vec3_t face_normal;
-            FaceNormalize(v1, v2, v3, face_normal);
-            VectorAdd(TerrainNormal[Index], face_normal, TerrainNormal[Index]);
-            FaceNormalize(v3, v4, v1, face_normal);
-            VectorAdd(TerrainNormal[Index], face_normal, TerrainNormal[Index]);
+            ComputeTerrainNormal(x, y);
         }
     }
 }
@@ -487,24 +503,31 @@ void CreateTerrainNormal_Part(int xi, int yi)
     {
         for (int x = xi - 4; x < xi + 4; x++)
         {
-            int Index = TERRAIN_INDEX(x, y);
-            vec3_t v1, v2, v3, v4;
-            Vector((x * TERRAIN_SCALE), (y * TERRAIN_SCALE), BackTerrainHeight[TERRAIN_INDEX_REPEAT(x, y)], v4);
-            Vector(((x + 1) * TERRAIN_SCALE), (y * TERRAIN_SCALE), BackTerrainHeight[TERRAIN_INDEX_REPEAT((x + 1), y)], v1);
-            Vector(((x + 1) * TERRAIN_SCALE), ((y + 1) * TERRAIN_SCALE), BackTerrainHeight[TERRAIN_INDEX_REPEAT((x + 1), (y + 1))], v2);
-            Vector((x * TERRAIN_SCALE), ((y + 1) * TERRAIN_SCALE), BackTerrainHeight[TERRAIN_INDEX_REPEAT(x, (y + 1))], v3);
-            vec3_t face_normal;
-            FaceNormalize(v1, v2, v3, face_normal);
-            VectorAdd(TerrainNormal[Index], face_normal, TerrainNormal[Index]);
-            FaceNormalize(v3, v4, v1, face_normal);
-            VectorAdd(TerrainNormal[Index], face_normal, TerrainNormal[Index]);
+            ComputeTerrainNormal(x, y);
         }
     }
 }
 
-void CreateTerrainLight()
+// Rebuilds the normals of the cells from (minX, minY) to (maxX, maxY), both included.
+// Coordinates outside the map wrap around as the normals' own height lookups do, so a
+// rectangle grown by one cell past an edge also refreshes the cells on the far side
+// whose normals read the heights along that edge.
+void CreateTerrainNormal_Rect(int minX, int minY, int maxX, int maxY)
 {
-    vec3_t Light;
+    maxX = std::min(maxX, minX + TERRAIN_SIZE - 1);
+    maxY = std::min(maxY, minY + TERRAIN_SIZE - 1);
+    for (int y = minY; y <= maxY; y++)
+    {
+        for (int x = minX; x <= maxX; x++)
+        {
+            ComputeTerrainNormal(x & TERRAIN_SIZE_MASK, y & TERRAIN_SIZE_MASK);
+        }
+    }
+}
+
+// The direction the ground is lit from (Battle Castle has its own).
+static void TerrainLightDirection(vec3_t Light)
+{
     if (gMapManager.InBattleCastle())
     {
         Vector(0.5f, -1.f, 1.f, Light);
@@ -513,20 +536,49 @@ void CreateTerrainLight()
     {
         Vector(0.5f, -0.5f, 0.5f, Light);
     }
+}
+
+// A cell's lit colour: the painted light map times how much its normal faces the light.
+static void ComputeTerrainLight(int x, int y, const vec3_t Light)
+{
+    int Index = TERRAIN_INDEX(x, y);
+    float Luminosity = DotProduct(TerrainNormal[Index], Light) + 0.5f;
+    if (Luminosity < 0.f)
+        Luminosity = 0.f;
+    else if (Luminosity > 1.f)
+        Luminosity = 1.f;
+    for (int i = 0; i < 3; i++)
+    {
+        BackTerrainLight[Index][i] = TerrainLight[Index][i] * Luminosity;
+    }
+}
+
+void CreateTerrainLight()
+{
+    vec3_t Light;
+    TerrainLightDirection(Light);
     for (int y = 0; y < TERRAIN_SIZE; y++)
     {
         for (int x = 0; x < TERRAIN_SIZE; x++)
         {
-            int Index = TERRAIN_INDEX(x, y);
-            float Luminosity = DotProduct(TerrainNormal[Index], Light) + 0.5f;
-            if (Luminosity < 0.f)
-                Luminosity = 0.f;
-            else if (Luminosity > 1.f)
-                Luminosity = 1.f;
-            for (int i = 0; i < 3; i++)
-            {
-                BackTerrainLight[Index][i] = TerrainLight[Index][i] * Luminosity;
-            }
+            ComputeTerrainLight(x, y, Light);
+        }
+    }
+}
+
+// Rebuilds the lit colour of the cells from (minX, minY) to (maxX, maxY), both included,
+// exactly as CreateTerrainLight does for them; outside the map they wrap around.
+void CreateTerrainLight_Rect(int minX, int minY, int maxX, int maxY)
+{
+    vec3_t Light;
+    TerrainLightDirection(Light);
+    maxX = std::min(maxX, minX + TERRAIN_SIZE - 1);
+    maxY = std::min(maxY, minY + TERRAIN_SIZE - 1);
+    for (int y = minY; y <= maxY; y++)
+    {
+        for (int x = minX; x <= maxX; x++)
+        {
+            ComputeTerrainLight(x & TERRAIN_SIZE_MASK, y & TERRAIN_SIZE_MASK, Light);
         }
     }
 }
@@ -2073,11 +2125,12 @@ void CreateFrustrum2D(vec3_t Position)
         )
     {
 #ifdef _EDITOR
-        // FreeFly spectator: use spectated camera's pre-computed Frustum hull
+        // FreeFly: use the culling camera's pre-computed Frustum hull (the
+        // spectated game camera, or FreeFly itself while the editor drives it)
         if (currentMode == CameraMode::FreeFly)
         {
-            ICamera* spectated = CameraManager::Instance().GetSpectatedCamera();
-            const ICamera* cam = spectated ? spectated : CameraManager::Instance().GetActiveCamera();
+            const ICamera* cullingCamera = CameraManager::Instance().GetFreeFlyCullingCamera();
+            const ICamera* cam = cullingCamera ? cullingCamera : CameraManager::Instance().GetActiveCamera();
             if (cam)
             {
                 const Frustum& frustum = cam->GetFrustum();
@@ -2358,14 +2411,15 @@ void CreateFrustrum(float xAspect, float yAspect, vec3_t position)
     CreateFrustrum2D(position);
 
 #ifdef _EDITOR
-    // In FreeFly spectator mode, override 3D frustum planes with spectated camera's
-    // so TestFrustrum() (used by items/effects) culls based on spectated camera
+    // In FreeFly mode, override 3D frustum planes with the culling camera's (the
+    // spectated game camera, or FreeFly itself while the editor drives it) so
+    // TestFrustrum() (used by items/effects) culls like the terrain and objects
     if (CameraManager::Instance().GetCurrentMode() == CameraMode::FreeFly)
     {
-        ICamera* spectated = CameraManager::Instance().GetSpectatedCamera();
-        if (spectated)
+        const ICamera* cullingCamera = CameraManager::Instance().GetFreeFlyCullingCamera();
+        if (cullingCamera)
         {
-            const Frustum& frustum = spectated->GetFrustum();
+            const Frustum& frustum = cullingCamera->GetFrustum();
             const Frustum::Plane* planes = frustum.GetPlanes();
             // Planes [0-3] = 4 side planes (same order as legacy)
             for (int i = 0; i < 4; i++)
@@ -2434,6 +2488,9 @@ namespace
     }
 } // namespace
 
+// Width on screen of the editor's debug volumes (cull spheres, pick boxes).
+static constexpr float DEBUG_VOLUME_LINE_WIDTH_PIXELS = 1.5f;
+
 /**
  * @brief Renders a wireframe sphere for debugging culling volumes
  * @param center Center position of the sphere in world space
@@ -2455,7 +2512,7 @@ void RenderDebugSphere(const vec3_t center, float radius, float r, float g, floa
 
     const bool restoreDepthTest = !DepthTestEnable;
     EnableDepthTest();
-    mu::GetRenderer().RenderLines(vertices, 0u);
+    mu::GetRenderer().RenderScreenLines(vertices, DEBUG_VOLUME_LINE_WIDTH_PIXELS);
     if (restoreDepthTest)
         DisableDepthTest();
 }
@@ -2490,7 +2547,7 @@ void RenderDebugBox(const vec3_t origin, float sizeX, float sizeY, float sizeZ, 
 
     const bool restoreDepthTest = !DepthTestEnable;
     EnableDepthTest();
-    mu::GetRenderer().RenderLines(vertices, 0u);
+    mu::GetRenderer().RenderScreenLines(vertices, DEBUG_VOLUME_LINE_WIDTH_PIXELS);
     if (restoreDepthTest)
         DisableDepthTest();
 }
@@ -2931,6 +2988,7 @@ static void AppendTileGridCell(std::vector<mu::Vertex3D>& vertices, float xf, fl
 static void RenderTileGridDebug()
 {
     constexpr std::uint32_t gridColor = 0x6600FFFFu;
+    constexpr float gridLineWidthPixels = 1.0f;
     thread_local std::vector<mu::Vertex3D> vertices;
     vertices.clear();
 
@@ -2961,7 +3019,7 @@ static void RenderTileGridDebug()
     }
 
     if (!vertices.empty())
-        mu::GetRenderer().RenderLines(vertices, 0u);
+        mu::GetRenderer().RenderScreenLines(vertices, gridLineWidthPixels);
 }
 
 // Set by the Map Editor's Attribute tab: tint each tile by its TerrainWall bits so
@@ -2981,16 +3039,8 @@ static void AttributeTileColour(WORD attr, float& r, float& g, float& b, float& 
 
 static void RenderAttributeOverlay()
 {
-    // Same push/pop discipline as RenderTileGridDebug: whatever renders after us
-    // inherits the state we leave behind.
-    glPushAttrib(GL_ENABLE_BIT | GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glDisable(GL_TEXTURE_2D);
-    glDisable(GL_LIGHTING);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glDepthMask(GL_FALSE);   // tint on top of terrain, don't write depth
-
-    glBegin(GL_QUADS);
+    thread_local std::vector<mu::Vertex3D> quads;
+    quads.clear();
     int byi = FrustrumBoundMinY;
     auto byf = (float)byi;
     for (; byi <= FrustrumBoundMaxY; byi += 4, byf += 4.f)
@@ -3028,24 +3078,29 @@ static void RenderAttributeOverlay()
 
                     float r, g, b, a;
                     AttributeTileColour(TerrainWall[TERRAIN_INDEX(xi, yi)], r, g, b, a);
-                    glColor4f(r, g, b, a);
+                    const std::uint32_t colour = mu::PackABGR(r, g, b, a);
 
                     const float sx = xf * TERRAIN_SCALE;
                     const float sy = yf * TERRAIN_SCALE;
                     const float lift = 3.0f;   // sit just above the ground to avoid z-fighting
-                    glVertex3f(sx, sy, blockHeight[i][j] + lift);
-                    glVertex3f(sx + TERRAIN_SCALE, sy, blockHeight[i][j + 1] + lift);
-                    glVertex3f(sx + TERRAIN_SCALE, sy + TERRAIN_SCALE, blockHeight[i + 1][j + 1] + lift);
-                    glVertex3f(sx, sy + TERRAIN_SCALE, blockHeight[i + 1][j] + lift);
+                    quads.push_back({sx, sy, blockHeight[i][j] + lift, 0.f, 0.f, 1.f, 0.f, 0.f, colour});
+                    quads.push_back(
+                        {sx + TERRAIN_SCALE, sy, blockHeight[i][j + 1] + lift, 0.f, 0.f, 1.f, 0.f, 0.f, colour});
+                    quads.push_back({sx + TERRAIN_SCALE, sy + TERRAIN_SCALE, blockHeight[i + 1][j + 1] + lift, 0.f, 0.f,
+                                     1.f, 0.f, 0.f, colour});
+                    quads.push_back(
+                        {sx, sy + TERRAIN_SCALE, blockHeight[i + 1][j] + lift, 0.f, 0.f, 1.f, 0.f, 0.f, colour});
                 }
             }
         }
     }
-    glEnd();
 
-    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-    glDepthMask(GL_TRUE);
-    glPopAttrib();
+    // Tint on top of the terrain without writing depth; the caller's state comes back after.
+    // A wide view has far more tiles than one draw holds.
+    const TerrainOverlayState overlayState;
+    Render::Topology::ForEachQuadBatch(std::span<const mu::Vertex3D>(quads), Render::Topology::MAX_QUADS_PER_DRAW,
+                                       [](std::span<const mu::Vertex3D> batch)
+                                       { mu::GetRenderer().RenderQuad3D(batch, 0u); });
 }
 
 // Set by the Map Editor's Texture tab while painting is enabled: the brush's tile
@@ -3056,59 +3111,57 @@ bool g_bMapEditorBrushHighlight = false;
 int  g_MapEditorBrushMinX = 0, g_MapEditorBrushMinY = 0;
 int  g_MapEditorBrushMaxX = 0, g_MapEditorBrushMaxY = 0;
 
+static void AppendBrushHighlightTile(std::vector<mu::Vertex3D>& quads, int xi, int yi, float lift, std::uint32_t colour)
+{
+    const float sx = (float)xi * TERRAIN_SCALE;
+    const float sy = (float)yi * TERRAIN_SCALE;
+    const float ex = sx + TERRAIN_SCALE;
+    const float ey = sy + TERRAIN_SCALE;
+    quads.push_back({sx, sy, RequestTerrainHeight(sx, sy) + lift, 0.f, 0.f, 1.f, 0.f, 0.f, colour});
+    quads.push_back({ex, sy, RequestTerrainHeight(ex, sy) + lift, 0.f, 0.f, 1.f, 0.f, 0.f, colour});
+    quads.push_back({ex, ey, RequestTerrainHeight(ex, ey) + lift, 0.f, 0.f, 1.f, 0.f, 0.f, colour});
+    quads.push_back({sx, ey, RequestTerrainHeight(sx, ey) + lift, 0.f, 0.f, 1.f, 0.f, 0.f, colour});
+}
+
 static void RenderBrushHighlight()
 {
-    // Same push/pop discipline as RenderAttributeOverlay.
-    glPushAttrib(GL_ENABLE_BIT | GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_LINE_BIT);
-    glDisable(GL_TEXTURE_2D);
-    glDisable(GL_LIGHTING);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glDepthMask(GL_FALSE);   // tint on top of terrain, don't write depth
-
     const float lift = 3.5f;   // a hair above the attribute overlay's lift to avoid z-fighting with it
+    const std::uint32_t fillColour = mu::PackABGR(1.0f, 0.95f, 0.25f, 0.28f);
+    const std::uint32_t outlineColour = mu::PackABGR(1.0f, 0.95f, 0.15f, 0.9f);
+    constexpr float outlineWidthPixels = 2.5f;
+
+    // The rectangle the next click paints, clipped to the map as the brush is.
+    const int minX = std::max(g_MapEditorBrushMinX, 0);
+    const int minY = std::max(g_MapEditorBrushMinY, 0);
+    const int maxX = std::min(g_MapEditorBrushMaxX, TERRAIN_SIZE - 1);
+    const int maxY = std::min(g_MapEditorBrushMaxY, TERRAIN_SIZE - 1);
+    if (maxX < minX || maxY < minY)
+        return;
 
     // Translucent fill over every tile the next click would paint.
-    glColor4f(1.0f, 0.95f, 0.25f, 0.28f);
-    glBegin(GL_QUADS);
-    for (int yi = g_MapEditorBrushMinY; yi <= g_MapEditorBrushMaxY; ++yi)
-    {
-        for (int xi = g_MapEditorBrushMinX; xi <= g_MapEditorBrushMaxX; ++xi)
-        {
-            if (xi < 0 || yi < 0 || xi >= TERRAIN_SIZE || yi >= TERRAIN_SIZE)
-                continue;
-            const float sx = (float)xi * TERRAIN_SCALE;
-            const float sy = (float)yi * TERRAIN_SCALE;
-            glVertex3f(sx, sy, RequestTerrainHeight(sx, sy) + lift);
-            glVertex3f(sx + TERRAIN_SCALE, sy, RequestTerrainHeight(sx + TERRAIN_SCALE, sy) + lift);
-            glVertex3f(sx + TERRAIN_SCALE, sy + TERRAIN_SCALE,
-                       RequestTerrainHeight(sx + TERRAIN_SCALE, sy + TERRAIN_SCALE) + lift);
-            glVertex3f(sx, sy + TERRAIN_SCALE, RequestTerrainHeight(sx, sy + TERRAIN_SCALE) + lift);
-        }
-    }
-    glEnd();
+    thread_local std::vector<mu::Vertex3D> quads;
+    quads.clear();
+    for (int yi = minY; yi <= maxY; ++yi)
+        for (int xi = minX; xi <= maxX; ++xi)
+            AppendBrushHighlightTile(quads, xi, yi, lift, fillColour);
 
-    // Bright outline around the whole rectangle so the footprint reads clearly at
-    // a glance, matching the "select the paint rectangle on the ground" request.
-    glLineWidth(2.5f);
-    glColor4f(1.0f, 0.95f, 0.15f, 0.9f);
-    glBegin(GL_LINE_LOOP);
-    {
-        const float x0 = (float)g_MapEditorBrushMinX * TERRAIN_SCALE;
-        const float y0 = (float)g_MapEditorBrushMinY * TERRAIN_SCALE;
-        const float x1 = (float)(g_MapEditorBrushMaxX + 1) * TERRAIN_SCALE;
-        const float y1 = (float)(g_MapEditorBrushMaxY + 1) * TERRAIN_SCALE;
-        glVertex3f(x0, y0, RequestTerrainHeight(x0, y0) + lift);
-        glVertex3f(x1, y0, RequestTerrainHeight(x1, y0) + lift);
-        glVertex3f(x1, y1, RequestTerrainHeight(x1, y1) + lift);
-        glVertex3f(x0, y1, RequestTerrainHeight(x0, y1) + lift);
-    }
-    glEnd();
+    // Bright outline around the whole rectangle, following the ground, so the footprint
+    // reads clearly at a glance.
+    const float x0 = (float)minX * TERRAIN_SCALE;
+    const float y0 = (float)minY * TERRAIN_SCALE;
+    const float x1 = (float)(maxX + 1) * TERRAIN_SCALE;
+    const float y1 = (float)(maxY + 1) * TERRAIN_SCALE;
+    thread_local std::vector<mu::Vertex3D> outline;
+    outline.clear();
+    Render::Terrain::BrushOutline::AppendGroundLine(outline, x0, y0, x1, y0, lift, outlineColour);
+    Render::Terrain::BrushOutline::AppendGroundLine(outline, x1, y0, x1, y1, lift, outlineColour);
+    Render::Terrain::BrushOutline::AppendGroundLine(outline, x1, y1, x0, y1, lift, outlineColour);
+    Render::Terrain::BrushOutline::AppendGroundLine(outline, x0, y1, x0, y0, lift, outlineColour);
 
-    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-    glLineWidth(1.0f);
-    glDepthMask(GL_TRUE);
-    glPopAttrib();
+    // Tint on top of the terrain without writing depth; the caller's state comes back after.
+    const TerrainOverlayState overlayState;
+    mu::GetRenderer().RenderQuad3D(quads, 0u);
+    mu::GetRenderer().RenderScreenLines(outline, outlineWidthPixels);
 }
 #endif
 
@@ -3159,6 +3212,7 @@ void RenderTerrain(bool EditFlag)
 #ifdef _EDITOR
         if (g_bMapEditorBrushHighlight)
             RenderBrushHighlight();
+        Render::Terrain::BrushOutline::Render();
 #endif
     }
     if (!EditFlag)

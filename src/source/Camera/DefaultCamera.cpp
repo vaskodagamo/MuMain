@@ -27,6 +27,9 @@
 #include "World/MapInfra/w_MapHeaders.h"
 #include "UI/Legacy/UIManager.h"
 #include "CameraDebugLog.h"
+#ifdef _EDITOR
+#include "Core/ViewCapture.h"
+#endif
 
 // External variable declarations
 extern short g_shCameraLevel;
@@ -399,7 +402,9 @@ bool DefaultCamera::Update()
     }
 
 #ifdef _EDITOR
-    // Debug text rendering to verify camera values (editor only)
+    // Debug text rendering to verify camera values (editor only; a Map Editor
+    // view capture leaves it out)
+    if (!Editor::ViewCapture::IsCleanFrame())
     {
         g_pRenderText->SetFont(g_hFixFont);
         g_pRenderText->SetTextColor(255, 255, 0, 255);  // Yellow text

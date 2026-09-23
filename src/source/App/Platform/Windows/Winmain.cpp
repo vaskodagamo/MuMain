@@ -2,6 +2,8 @@
 ///////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "Core/Input/KeyState.h"
+#include "App/Control/ControlServer.h"
+#include "Core/Text/Utf8.h"
 #include "App/Platform/DiagnosticFrameCaptureSchedule.h"
 #include "App/Platform/DiagnosticFrameCaptureWriter.h"
 
@@ -81,6 +83,7 @@
 
 #ifdef _EDITOR
 #include "../MuEditor/Core/MuEditorCore.h"
+#include "../MuEditor/Core/OfflineWorld.h"
 #include "imgui.h"
 #include "imgui_impl_sdl3.h"
 #include "../MuEditor/Config/MuEditorConfig.h"
@@ -1502,6 +1505,12 @@ MSG MainLoop()
         // Fire any due timers. Replaces the Win32 SetTimer/WM_TIMER dispatch.
         Core::Time::FrameTimerScheduler::Instance().Tick();
 
+        // Serve the control socket, after this frame's packets have been
+        // processed so a command sees the newest game state, and before
+        // rendering so an act's step is drawn in the same frame. Does nothing
+        // when the socket was never opened.
+        App::Control::ControlServer::Instance().Poll();
+
         if (CheckRenderNextFrame())
         {
             if (g_bUseWindowMode || g_bWndActive || g_HasInactiveFpsOverride)
@@ -1800,6 +1809,10 @@ static void ShutdownRuntime(std::thread& cpuUsageRecorder)
 {
     // The recorder polls process state until Destroy is set.
     Destroy = true;
+
+    // Closes the control socket and removes its file, so a later client with
+    // the same name does not find a live-looking socket.
+    App::Control::ControlServer::Instance().Stop();
     if (cpuUsageRecorder.joinable())
     {
         cpuUsageRecorder.join();
@@ -2112,11 +2125,12 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine, int nC
     g_MuEditorCore.Initialize(g_sdlWindow);
 
     // Check for --editor command line flag
-    if (szCmdLine && wcsstr(GetCommandLineW(), L"--editor"))
+    if (wcsstr(lpszCommandLine, L"--editor"))
     {
         g_MuEditorCore.SetEnabled(true);
         fwprintf(stderr, L"[Editor] Starting in editor mode (--editor flag detected)\n");
         std::fflush(stderr);
+        Editor::OfflineWorld::ReadCommandLine(lpszCommandLine);
     }
 #endif
 
@@ -2258,6 +2272,9 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine, int nC
         SystemParametersInfo(SPI_SETSCREENSAVETIMEOUT, 300 * 60, nullptr, 0);
     }
 #endif // _WIN32
+
+    // Opened only when the launcher set the path; silent otherwise.
+    App::Control::ControlServer::Instance().Start(Core::Text::ToUtf8(lpszExeVersion));
 
     std::thread cpuUsageRecorder(RecordCpuUsage);
     const MSG msg = MainLoop();

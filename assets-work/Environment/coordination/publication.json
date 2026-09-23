@@ -1,26 +1,28 @@
 {
-  "branch": "codex/environment-remake-continuation",
-  "owner_remote": "git@github.com:vaskodagamo/MuMain.git",
-  "draft_pr": "https://github.com/vaskodagamo/MuMain/pull/12",
-  "published_checkpoint": "d3ce9acf",
-  "status": "draft, not merged",
-  "lorencia_artistic_complete": true,
-  "later_maps_started": true,
-  "client_new_assets": "pending",
-  "accepted_asset_commits": [
-    "9abdf7e8",
-    "4b0ccd02",
-    "072f77f6",
-    "7be0eaa3",
-    "5a0ad5b5",
-    "38292593",
-    "cc43c901",
-    "bb641d04"
+  "branch": "codex/dungeon-static-remake",
+  "checkpoint": "c9a34462",
+  "draft_pr": "https://github.com/vaskodagamo/MuMain/pull/13",
+  "accepted_replacements": [
+    "Object28",
+    "Object29",
+    "Object01"
   ],
-  "accepted_game_assets": 22,
-  "accepted_retained_assets": 84,
-  "remaining_production_assets": 0,
-  "accepted_texture_changes": 1,
-  "next_phase_branch": "codex/dungeon-static-remake",
-  "next_phase_worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-remake"
+  "retained": [
+    "Object21",
+    "Object22",
+    "Object30",
+    "Object03",
+    "Object04"
+  ],
+  "client_verification": "pending for all new changes",
+  "published_worker_branches": {
+    "codex/dungeon-pottery": "15a1a4c4",
+    "codex/dungeon-coffins": "6cd41d24",
+    "codex/dungeon-pier": "4199d62f",
+    "codex/dungeon-walls": "81562d69"
+  },
+  "active_batches": [
+    "Readiness02:Object45\u201348 baseline review"
+  ],
+  "lorencia_draft_pr": "https://github.com/vaskodagamo/MuMain/pull/12"
 }

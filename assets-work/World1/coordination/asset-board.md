@@ -6,7 +6,7 @@ Current integration branch: `codex/environment-remake-continuation`, worktree `/
 
 # Lorencia rebuild asset board — ASTRA coordinator — 2026-09-22
 
-Integration: `art/lorencia-rebuild` at `/Users/webproduktion3/Documents/claude-test-mumain/MuMain-lorencia-rebuild`, based on `ac0f6dd8` (contains reviewed pilot commits `2e2ed427`, `b232470c`, `8d22a912` and completed static batch). Only coordinator edits this board/shared handoff. Publication status is in [the handoff](notes.md); the integration has not been merged into main. All acceptance here is **offline only**; no assets verified in client by this task.
+Integration: `art/lorencia-rebuild` at `/Users/webproduktion3/Documents/claude-test-mumain/MuMain-lorencia-rebuild`, based on `ac0f6dd8` (contains reviewed pilot commits `2e2ed427`, `b232470c`, `8d22a912` and completed static batch). Only coordinator edits this board/shared handoff. Publication status is in [the handoff](notes.md); the integration was merged into main with PR #11 (merge commit `7b808473`, 2026-09-22). The integration worktree and the branches and worktrees in the table below are historical records; follow-up work uses [regeneration requests](../requests/README.md) and [the catalog](../catalog.json). All acceptance here is **offline only**; no assets verified in client by this task.
 
 ## Ownership and dependency policy
 

@@ -4,14 +4,18 @@
 
 #include "MuEditorCore.h"
 #include "imgui.h"
+#include "imgui_internal.h" // ImGui::ClosePopupsExceptModals
 #include "imgui_impl_sdl3.h"
 #include "imgui_impl_sdlgpu3.h"
+#include "ModelHotReload.h"
 #include "MuInputBlockerCore.h"
+#include "ViewCapture.h"
 #include "../Config/MuEditorConfig.h"
 #include "../MuEditor/UI/Common/MuEditorCenterPaneUI.h"
 #include "../MuEditor/UI/ItemEditor/MuItemEditorUI.h"
 #include "../MuEditor/UI/SkillEditor/MuSkillEditorUI.h"
 #include "../MuEditor/UI/DevEditor/DevEditorUI.h"
+#include "../MuEditor/UI/MapEditor/MapEditorShortcuts.h"
 #include "../MuEditor/UI/MapEditor/MapEditorUI.h"
 #include "../UI/Common/MuEditorUI.h"
 #include "../UI/Console/MuEditorConsoleUI.h"
@@ -22,6 +26,7 @@
 namespace mu
 {
 void QueueEditorRenderCommand();
+SDL_GPUGraphicsPipeline* GetEditorOverlayPipeline();
 }
 
 #ifndef _WIN32
@@ -108,6 +113,16 @@ bool InitializeImGuiBackends(SDL_Window* window)
 
     return true;
 }
+
+bool AnyMouseButtonDown()
+{
+    for (int button = 0; button < ImGuiMouseButton_COUNT; ++button)
+    {
+        if (ImGui::IsMouseDown(button))
+            return true;
+    }
+    return false;
+}
 }
 
 CMuEditorCore::CMuEditorCore()
@@ -124,6 +139,7 @@ CMuEditorCore::CMuEditorCore()
     , m_bPreviousFrameHoveringUI(false)
     , m_UIScale(1.0f)
     , m_bScaleDirty(false)
+    , m_pWindow(nullptr)
 {
 }
 
@@ -150,6 +166,14 @@ void CMuEditorCore::ApplyUIScale()
     style.ScaleAllSizes(m_UIScale);
 
     ImGui::GetIO().FontGlobalScale = m_UIScale;
+}
+
+void CMuEditorCore::CloseMenusOnEscape()
+{
+    // Esc in a text field first ends the typing, as in ImGui's own navigation.
+    if (!ImGui::IsKeyPressed(ImGuiKey_Escape, false) || ImGui::GetIO().WantTextInput)
+        return;
+    ImGui::ClosePopupsExceptModals();
 }
 
 CMuEditorCore::~CMuEditorCore()
@@ -287,7 +311,9 @@ void CMuEditorCore::Initialize(SDL_Window* window)
         }
     }
 #elif __APPLE__
-    // macOS: Try system fonts
+    // macOS: Try system fonts. Skip paths that don't exist (PingFang moved out of
+    // /System/Library/Fonts in newer macOS), since ImGui reports a missing font file
+    // as an error - an assert in Debug builds.
     const char* macFonts[] = {
         "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
         "/System/Library/Fonts/Helvetica.ttc",
@@ -295,7 +321,8 @@ void CMuEditorCore::Initialize(SDL_Window* window)
     };
     for (const char* fontPath : macFonts)
     {
-        if (io.Fonts->AddFontFromFileTTF(fontPath, 16.0f, &fontConfig, ranges.Data) != nullptr)
+        if (FontFileExists(fontPath) &&
+            io.Fonts->AddFontFromFileTTF(fontPath, 16.0f, &fontConfig, ranges.Data) != nullptr)
         {
             fontLoaded = true;
             break;
@@ -309,7 +336,7 @@ void CMuEditorCore::Initialize(SDL_Window* window)
         };
         for (const char* path : cjkFonts)
         {
-            if (io.Fonts->AddFontFromFileTTF(path, 16.0f, &cjkConfig, cjkRanges) != nullptr)
+            if (FontFileExists(path) && io.Fonts->AddFontFromFileTTF(path, 16.0f, &cjkConfig, cjkRanges) != nullptr)
             {
                 break;
             }
@@ -386,6 +413,7 @@ void CMuEditorCore::Initialize(SDL_Window* window)
     fflush(stderr);
 
     m_bInitialized = true;
+    m_pWindow = window;
     g_MuEditorConsoleUI.LogEditor("MU Editor initialized");
 
     // Editor config holds editor-only preferences (column visibility etc.).
@@ -417,6 +445,7 @@ void CMuEditorCore::Shutdown()
 
     m_bInitialized = false;
     m_bDrawDataReady = false;
+    m_pWindow = nullptr;
 }
 
 void CMuEditorCore::Update()
@@ -430,6 +459,10 @@ void CMuEditorCore::Update()
         ApplyUIScale();
         m_bScaleDirty = false;
     }
+
+    // Model reloads asked for in the Assets tab also run between frames: they free
+    // textures that the previous frame's draws and ImGui draw lists used.
+    Editor::Assets::HotReload::RunPending();
 
     // Only start a new frame if we haven't already
     if (!m_bFrameStarted)
@@ -446,6 +479,9 @@ void CMuEditorCore::Update()
         ImGui::NewFrame();
         m_bFrameStarted = true;
     }
+
+    // A view capture asked for in the last frame takes this one (see ViewCapture.h).
+    Editor::ViewCapture::BeginFrame();
 
     // When editor is closed, check for "Open Editor" button click (after ImGui frame started)
     if (!m_bEditorMode)
@@ -545,6 +581,37 @@ void CMuEditorCore::Update()
     }
 }
 
+void CMuEditorCore::RenderEditorWindows()
+{
+    if (!m_bEditorMode)
+    {
+        // Editor fully closed: make sure the Map Editor releases EditFlag so the
+        // game doesn't stay stuck in an edit mode.
+        g_MapEditorUI.Render(nullptr);
+        return;
+    }
+
+    // Render center pane (handles all editor windows and input blocking)
+    g_MuEditorCenterPaneUI.Render(m_bShowItemEditor, m_bShowSkillEditor);
+
+    // Render Dev Editor
+    if (m_bShowDevEditor)
+    {
+        g_DevEditorUI.Render(&m_bShowDevEditor);
+    }
+
+    // Render Map Editor. Called every frame (not gated on the show flag) so
+    // it can restore the game to normal mode the frame after it is closed;
+    // it owns EditFlag while its window is open.
+    g_MapEditorUI.Render(&m_bShowMapEditor);
+
+    // Render console (if enabled)
+    if (m_bShowConsole)
+    {
+        g_MuEditorConsoleUI.Render();
+    }
+}
+
 void CMuEditorCore::Render()
 {
     if (!m_bInitialized)
@@ -554,48 +621,31 @@ void CMuEditorCore::Render()
     if (!m_bFrameStarted)
         return;
 
-    // Reset hover state at start of frame
-    m_bHoveringUI = false;
+    // Reset hover state at start of frame. While a popup is open (and until the click that
+    // closes it is released) the mouse is the editor's: ImGui then reports no window as
+    // hovered, and that click would otherwise select, place or paint behind the window.
+    const bool popupOpen = m_bEditorMode && Editor::Shortcuts::IsPopupOpen();
+    m_bHoveringUI = m_popupMouseGuard.Update(popupOpen, AnyMouseButtonDown());
 
     // Render toolbar (handles both open and closed states)
     g_MuEditorUI.RenderToolbar(m_bEditorMode, m_bShowItemEditor, m_bShowSkillEditor, m_bShowDevEditor, m_bShowMapEditor, m_bShowConsole);
 
-    if (m_bEditorMode)
-    {
-        // Render center pane (handles all editor windows and input blocking)
-        g_MuEditorCenterPaneUI.Render(m_bShowItemEditor, m_bShowSkillEditor);
+    RenderEditorWindows();
 
-        // Render Dev Editor
-        if (m_bShowDevEditor)
-        {
-            g_DevEditorUI.Render(&m_bShowDevEditor);
-        }
-
-        // Render Map Editor. Called every frame (not gated on the show flag) so
-        // it can restore the game to normal mode the frame after it is closed;
-        // it owns EditFlag while its window is open.
-        g_MapEditorUI.Render(&m_bShowMapEditor);
-
-        // Render console (if enabled)
-        if (m_bShowConsole)
-        {
-            g_MuEditorConsoleUI.Render();
-        }
-    }
-    else
-    {
-        // Editor fully closed: make sure the Map Editor releases EditFlag so the
-        // game doesn't stay stuck in an edit mode.
-        g_MapEditorUI.Render(nullptr);
-    }
+    // After the editors, which leave Esc alone while a popup is open (Editor::Shortcuts).
+    CloseMenusOnEscape();
 
     // Store current hover state for next frame's input blocking
     m_bPreviousFrameHoveringUI = m_bHoveringUI;
 
+    // A view capture for a regeneration request takes this frame without the
+    // overlay and the game cursor (the Map Editor's Assets tab asked for it).
+    const bool captureFrame = Editor::ViewCapture::IsCleanFrame();
+
     // Control game cursor rendering via global flag
     // When hovering UI, hide game cursor; otherwise show it
     extern bool g_bRenderGameCursor;
-    g_bRenderGameCursor = !m_bHoveringUI;
+    g_bRenderGameCursor = !m_bHoveringUI && !captureFrame;
 
 #ifdef _WIN32
     // Manage Windows cursor visibility
@@ -623,8 +673,11 @@ void CMuEditorCore::Render()
     // Finalize draw data. Task 4.2 uploads and renders it inside the engine's
     // existing SDL GPU pass; starting another pass here would break ownership.
     ImGui::Render();
-    m_bDrawDataReady = true;
-    mu::QueueEditorRenderCommand();
+    if (!captureFrame)
+    {
+        m_bDrawDataReady = true;
+        mu::QueueEditorRenderCommand();
+    }
 
     // Frame is complete, reset for next frame
     m_bFrameStarted = false;
@@ -647,7 +700,8 @@ void CMuEditorCore::RenderDrawData(SDL_GPUCommandBuffer* commandBuffer, SDL_GPUR
         return;
     }
 
-    ImGui_ImplSDLGPU3_RenderDrawData(ImGui::GetDrawData(), commandBuffer, renderPass);
+    // The renderer's copy of ImGui's pipeline declares the pass's depth attachment.
+    ImGui_ImplSDLGPU3_RenderDrawData(ImGui::GetDrawData(), commandBuffer, renderPass, mu::GetEditorOverlayPipeline());
     m_bDrawDataReady = false;
 }
 

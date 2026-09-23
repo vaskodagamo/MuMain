@@ -235,4 +235,14 @@ public:
     vec3_t		m_v3PrePos2;
 
     CInterpolateContainer	m_Interpolates;
+
+public:
+    // Map Editor: where a world object goes in a saved EncTerrain{N}.obj. Objects
+    // the map file placed keep their record index, so a save without edits writes
+    // the file unchanged; the editor numbers the objects it adds after them; -1
+    // (WorldObjectFile::NO_SAVE_ORDER) for objects the game made at run time (saved
+    // last, in object-grid order). The editor's undo history also names objects by it.
+    // Only the editor build sets it, but it exists in every build so that OBJECT has
+    // one layout (tests built with _EDITOR link the player's MuClient).
+    int SaveOrder;
 };

@@ -1,0 +1,16 @@
+{
+  "decision": "RETAIN original Object21/22",
+  "baseline": "7b808473",
+  "independent_report": "assets-work/Environment/coordination/coffin-retention-review.json",
+  "study_commit": "6cd41d24",
+  "study_branch": "codex/dungeon-coffins",
+  "copied_baseline_image_sha256": {
+    "4122-4123-baseline.png": "d60cfc4f6716ec194a5d2f9b4eed7eaf653a6c1681dd464039b240f06fbaaf76",
+    "4122-4123-baseline-small.png": "3ca070998650a49547224816de2f1937406bb014b9cd7f1a6ed8fee33c9dc292",
+    "4122-4123-baseline-reverse.png": "d03c5a1853c95df1b8fa0d25065c1f9b48261c1f34849ab91f7fdf01ee0c02cb",
+    "683-685-baseline.png": "eb35ba12d01dd8a0b8b19bedeffd883535b4bfc807bcaca3ac0a3069620dd854",
+    "683-685-baseline-small.png": "b80ebb128de470c252e96a7ba2497c97a2685d98503eaa398d6b1efe3ce121d3",
+    "683-685-baseline-reverse.png": "dc236573f335e787ec52c0bfc7c4074ae57658e91637acf142aad336d2497900"
+  },
+  "client_verified": false
+}

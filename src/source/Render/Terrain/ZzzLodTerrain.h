@@ -37,6 +37,10 @@ void CreateTerrainNormal();
 void CreateTerrainLight();
 void CreateTerrainNormal_Part(int xi, int yi);
 void CreateTerrainLight_Part(int xi, int yi);
+// The cells from (minX, minY) to (maxX, maxY), both included, as the whole-map
+// versions compute them; coordinates outside the map wrap around.
+void CreateTerrainNormal_Rect(int minX, int minY, int maxX, int maxY);
+void CreateTerrainLight_Rect(int minX, int minY, int maxX, int maxY);
 
 void CreateTerrain(wchar_t* FileName, bool bNew = false);
 

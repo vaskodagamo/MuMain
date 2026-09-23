@@ -18,6 +18,30 @@ enum class QuadSpace
     return space == QuadSpace::World;
 }
 
+// The most quads the SDL GPU renderer draws from one RenderQuad2D/RenderQuad3D call (its
+// shared quad index buffer holds this many); it cuts a larger call off there.
+inline constexpr std::size_t MAX_QUADS_PER_DRAW = 4096;
+
+// Hands `vertices` (whole quads, 4 vertices each) to `submit` in consecutive runs of at
+// most `maxQuads` quads, in order, so a caller with more quads than one draw holds still
+// gets every one of them drawn.
+template <typename Vertex, typename Submit>
+void ForEachQuadBatch(std::span<const Vertex> vertices, std::size_t maxQuads, Submit&& submit)
+{
+    constexpr std::size_t verticesPerQuad = 4;
+    if (maxQuads == 0)
+    {
+        return;
+    }
+
+    const std::size_t batchVertices = maxQuads * verticesPerQuad;
+    for (std::size_t first = 0; first < vertices.size(); first += batchVertices)
+    {
+        const std::size_t count = vertices.size() - first < batchVertices ? vertices.size() - first : batchVertices;
+        submit(vertices.subspan(first, count));
+    }
+}
+
 [[nodiscard]] constexpr bool IsValidQuadVertexCount(std::size_t vertexCount)
 {
     return vertexCount % 4 == 0;

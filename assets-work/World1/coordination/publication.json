@@ -11,5 +11,8 @@
   "pr_texture_count": 84,
   "reviewed_world1_object1_bytes_unchanged": true,
   "client_verified": false,
-  "merged_into_main": false
+  "merged_into_main": true,
+  "pr_head_commit": "5b792e9f8ac63e25f8b13081eb903356a47ac8e3",
+  "merge_commit": "7b8084737e6c4e73fcbe7679b22cb0574515c676",
+  "merged_at": "2026-09-22"
 }

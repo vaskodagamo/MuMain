@@ -152,6 +152,16 @@ public:
     // bitmap itself.
     inline void RefreshCacheEntry(GLuint uiBitmapIndex) { m_BitmapCache.Remove(uiBitmapIndex); }
 
+#ifdef _EDITOR
+    // Editor hot reload (Map Editor, Assets tab): reads `filename` from disk into
+    // the index even when the index already holds a file of that name, so every
+    // model that uses the index shows the new image. The index keeps its other
+    // references and gains one; when the file cannot be loaded, the old image
+    // stays. Call it between frames: the frame being recorded may still draw the
+    // old image.
+    bool ReloadImage(GLuint uiBitmapIndex, const std::wstring& filename, GLuint uiFilter, GLuint uiWrapMode);
+#endif
+
 protected:
     GLuint GenerateTextureIndex();
     GLuint FindAvailableTextureIndex(GLuint uiSeed);

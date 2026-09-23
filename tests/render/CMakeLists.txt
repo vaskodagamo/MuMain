@@ -17,6 +17,17 @@ mu_add_test(
         test_quad_topology.cpp
 )
 
+# Camera-facing lines of a pixel width (editor overlays) and the GL line modes the
+# immediate-mode shim breaks into segments: plain math, no renderer.
+mu_add_test(
+    NAME screen_line_tests
+    SOURCES
+        test_screen_lines.cpp
+        ${CMAKE_SOURCE_DIR}/src/source/Render/Renderer/ScreenLineRibbons.cpp
+    LINK_LIBS
+        glm::glm
+)
+
 mu_add_test(
     NAME sdl_gpu_replay_state_tests
     SOURCES

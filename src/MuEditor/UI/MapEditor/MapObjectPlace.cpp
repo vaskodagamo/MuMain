@@ -7,12 +7,16 @@
 
 #include "Engine/Object/ZzzObject.h"        // CreateObject / SaveObjects / ObjectBlock
 #include "Engine/Object/w_ObjectInfo.h"     // class OBJECT (fields)
+#include "Engine/Object/WorldObjectFile.h"  // EncTerrain{N}.obj records
 #include "Render/Terrain/ZzzLodTerrain.h"   // RequestTerrainHeight / TERRAIN_SCALE
 #include "Render/Models/ZzzBMD.h"           // BMD / Models[]
 #include "Core/Globals/_enum.h"             // MODEL_WORLD_OBJECT / MAX_WORLD_OBJECTS
 #include "UI/Console/MuEditorConsoleUI.h"
 
+#include <algorithm>
 #include <cstring>
+#include <filesystem>
+#include <string>
 
 namespace Editor::ObjectPlace
 {
@@ -45,6 +49,11 @@ std::vector<ModelEntry> EnumerateModels(int /*world*/)
     return out;
 }
 
+float GroundHeightAt(float x, float y)
+{
+    return RequestTerrainHeight(x, y);
+}
+
 void ComputePlacementPosition(float x, float y, bool snap, vec3_t outPos)
 {
     float px = x;
@@ -56,28 +65,22 @@ void ComputePlacementPosition(float x, float y, bool snap, vec3_t outPos)
     }
     outPos[0] = px;
     outPos[1] = py;
-    outPos[2] = RequestTerrainHeight(px, py);
+    outPos[2] = GroundHeightAt(px, py);
 }
 
-bool Place(int type, float x, float y, float yawDeg, float scale, bool snap)
+bool Save(int world, std::string& outReport)
 {
-    vec3_t position;
-    ComputePlacementPosition(x, y, snap, position);
-    vec3_t angle = { 0.0f, 0.0f, yawDeg };
-    OBJECT* o = CreateObject(type, position, angle, scale);
-    return o != nullptr;
-}
-
-bool Save(int world)
-{
-    wchar_t fileName[128];
-    swprintf_s(fileName, L"Data\\World%d\\EncTerrain%d.obj", world, world);
-    const bool ok = SaveObjects(fileName, world);
-    g_MuEditorConsoleUI.LogEditor(ok ? "[MapEditor] Saved objects (encrypted) to EncTerrain.obj"
-                                     : "[MapEditor] SaveObjects FAILED");
-    if (ok)
-        Editor::Files::MirrorNextToExe(fileName, world);
-    return ok;
+    const std::filesystem::path fileName = Editor::Files::TerrainObjectFile(world);
+    std::wstring saveName = fileName.wstring(); // SaveObjects takes a mutable buffer
+    if (!SaveObjects(saveName.data(), world))
+    {
+        outReport = "Save FAILED: could not write " + Editor::Files::PathToUtf8(Editor::Files::AbsolutePath(fileName)) +
+                    " (see MuError.log).";
+        g_MuEditorConsoleUI.LogEditor("[MapEditor] SaveObjects FAILED");
+        return false;
+    }
+    outReport = Editor::Files::DescribeSavedFiles({Editor::Files::MirrorSavedFile(fileName)});
+    return true;
 }
 
 OBJECT* PickUnderCursor()
@@ -123,6 +126,8 @@ OBJECT* Reposition(OBJECT* o, float x, float y, float z)
     const int   type  = o->Type;
     const float scale = o->Scale;
     OBJECT* created = CreateObject(type, pos, ang, scale);
+    if (created != nullptr)
+        created->SaveOrder = o->SaveOrder;
     DeleteObject(o, &ObjectBlock[o->Block]);
     return created;
 }
@@ -133,40 +138,76 @@ void Remove(OBJECT* o)
         DeleteObject(o, &ObjectBlock[o->Block]);
 }
 
-std::vector<SavedObject> SnapshotAll()
+namespace
 {
-    std::vector<SavedObject> out;
-    for (int b = 0; b < 256; ++b)
+    bool ByYThenX(const OBJECT* a, const OBJECT* b)
     {
-        for (OBJECT* o = ObjectBlock[b].Head; o != nullptr; o = o->Next)
-        {
-            if (!o->Live)
-                continue;
-            SavedObject s;
-            s.type = o->Type;
-            s.scale = o->Scale;
-            for (int k = 0; k < 3; ++k) { s.pos[k] = o->Position[k]; s.angle[k] = o->Angle[k]; }
-            out.push_back(s);
-        }
+        if (a->Position[1] != b->Position[1])
+            return a->Position[1] < b->Position[1];
+        return a->Position[0] < b->Position[0];
     }
-    return out;
 }
 
-void RestoreAll(const std::vector<SavedObject>& snapshot)
+void ForEachLiveObject(const std::function<void(OBJECT*)>& visit)
 {
-    // Clear every current object, then re-create from the snapshot.
-    for (int b = 0; b < 256; ++b)
+    for (OBJECT_BLOCK& block : ObjectBlock)
     {
-        OBJECT_BLOCK* ob = &ObjectBlock[b];
-        while (ob->Head != nullptr)
-            DeleteObject(ob->Head, ob);
+        for (OBJECT* o = block.Head; o != nullptr; o = o->Next)
+        {
+            if (o->Live)
+                visit(o);
+        }
     }
-    for (const SavedObject& s : snapshot)
+}
+
+std::vector<OBJECT*> LiveObjectsOfType(int type)
+{
+    std::vector<OBJECT*> found;
+    ForEachLiveObject(
+        [type, &found](OBJECT* o)
+        {
+            if (o->Type == type)
+                found.push_back(o);
+        });
+    std::sort(found.begin(), found.end(), ByYThenX);
+    return found;
+}
+
+void CountLiveObjects(std::vector<int>& counts)
+{
+    std::fill(counts.begin(), counts.end(), 0);
+    ForEachLiveObject(
+        [&counts](const OBJECT* o)
+        {
+            if (o->Type < 0)
+                return;
+            if (static_cast<std::size_t>(o->Type) >= counts.size())
+                counts.resize(static_cast<std::size_t>(o->Type) + 1, 0);
+            ++counts[o->Type];
+        });
+}
+
+int FindRecordIndex(const std::filesystem::path& objFile, int type, const vec3_t position)
+{
+    std::vector<unsigned char> data = Editor::Files::ReadWholeFile(objFile);
+    if (data.empty())
+        return -1;
+    const int size = static_cast<int>(data.size());
+    std::vector<unsigned char> plain(data.size());
+    MapFileDecrypt(plain.data(), data.data(), size);
+
+    namespace ObjectFile = Engine::Object::WorldObjectFile;
+    ObjectFile::Contents contents;
+    ObjectFile::Decode(plain.data(), plain.size(), contents); // a cut-short file still yields its complete records
+    for (std::size_t i = 0; i < contents.records.size(); ++i)
     {
-        vec3_t pos = { s.pos[0], s.pos[1], s.pos[2] };
-        vec3_t ang = { s.angle[0], s.angle[1], s.angle[2] };
-        CreateObject(s.type, pos, ang, s.scale);
+        const ObjectFile::Record& record = contents.records[i];
+        const bool samePlace =
+            record.position[0] == position[0] && record.position[1] == position[1] && record.position[2] == position[2];
+        if (record.type == type && samePlace)
+            return static_cast<int>(i);
     }
+    return -1;
 }
 
 } // namespace Editor::ObjectPlace

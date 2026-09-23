@@ -17,9 +17,20 @@ def publication_status():
     if not (HERE / 'publication.json').exists():
         return 'No push or merge to main.'
     publication = read('publication.json')
+    published = (f"Published as [PR #{publication['pr_number']}]({publication['pr_url']}) against `main`, "
+                 "following explicit user authorization.")
+    if publication.get('merged_into_main'):
+        return (
+            f"{published} Merged into main on {publication['merged_at']} as merge commit "
+            f"`{publication['merge_commit'][:8]}` (PR head `{publication['pr_head_commit'][:8]}`). "
+            f"The PR changed {publication['pr_game_file_count']} Object1 files relative to its main baseline; "
+            "four tavern files were already on main. See [the exact PR path list](pr-game-files.txt). "
+            "The reviewed World1/Object1 bytes are unchanged on main. The integration branch and worktree, "
+            "and the per-batch branches and worktrees named in this handoff and on the "
+            "[asset board](asset-board.md), are historical records; start new work from `main` through "
+            "[regeneration requests](../requests/README.md).")
     return (
-        f"Published as [PR #{publication['pr_number']}]({publication['pr_url']}) against `main`, "
-        "following explicit user authorization. Not merged into main. "
+        f"{published} Not merged into main. "
         f"The PR changes {publication['pr_game_file_count']} Object1 files relative to its main baseline; "
         "four tavern files are already on main. See [the exact PR path list](pr-game-files.txt). "
         "Main's intervening changes were merged into this branch; the reviewed World1/Object1 bytes remain unchanged.")
@@ -97,7 +108,7 @@ No engine/CMake, UI, character, monster, equipment, other-map, placement/collisi
 
 ## Reproduce
 
-Run from the integration worktree explicitly. Use the bundled Python with Pillow for texture checks and image assembly, and Blender 5.2.2 for Blender scripts. `validate_integration.py`, `audit_normal_bindings.py`, Blender `audit_authored_vertices.py`, Blender `inspect_final.py`, `assemble_final.py`, `update_board.py` and `write_handoff.py` are the coordinator entry points. The cached gallery rerenders only models whose BMD or exact texture-container hashes changed. Per-batch scripts retain the production reproduction commands and pinned original revisions.
+The coordinator scripts were run from the integration worktree, which is now historical. `validate_integration.py` still compares against the pre-merge baseline `ac0f6dd8`, so on `main` its scope check also reports unrelated later changes; adapt it before relying on it there. Use the bundled Python with Pillow for texture checks and image assembly, and Blender 5.2.2 for Blender scripts. `validate_integration.py`, `audit_normal_bindings.py`, Blender `audit_authored_vertices.py`, Blender `inspect_final.py`, `assemble_final.py`, `update_board.py` and `write_handoff.py` are the coordinator entry points. The cached gallery rerenders only models whose BMD or exact texture-container hashes changed. Per-batch scripts retain the production reproduction commands and pinned original revisions.
 '''
     (HERE / 'notes.md').write_text(text)
     (HERE / 'changed-game-files.txt').write_text('\n'.join(sorted(files)) + '\n')

@@ -3,6 +3,8 @@
 #ifdef _EDITOR
 
 #include "MapObjectBrowser.h"
+#include "MapEditorFileUtil.h"
+#include "MapEditorStatusLine.h"
 #include "MapObjectImport.h"
 #include "ObjectThumbnail.h"
 
@@ -22,8 +24,6 @@ namespace fs = std::filesystem;
 
 namespace
 {
-    const wchar_t* DATA_ROOT = L"Data";
-
     // Sentinel for a preview that failed to load/render, so we don't retry it
     // every frame (which would waste the per-frame render budget forever).
     constexpr unsigned int THUMB_FAILED = 0xFFFFFFFFu;
@@ -46,10 +46,11 @@ CMapObjectBrowser& CMapObjectBrowser::GetInstance()
 void CMapObjectBrowser::ScanSourceWorlds()
 {
     m_worlds.clear();
+    const fs::path dataRoot = Editor::Files::DataDir();
     std::error_code ec;
-    if (fs::is_directory(DATA_ROOT, ec))
+    if (fs::is_directory(dataRoot, ec))
     {
-        for (const auto& entry : fs::directory_iterator(DATA_ROOT, ec))
+        for (const auto& entry : fs::directory_iterator(dataRoot, ec))
         {
             if (!entry.is_directory())
                 continue;
@@ -138,13 +139,13 @@ void CMapObjectBrowser::Render(int currentWorld, int* outImportedType)
     ImGui::BeginDisabled(!hasSel);
     if (ImGui::Button("Use selected on current map") && hasSel)
     {
-        const int type = Editor::ObjectImport::UseModelOnCurrentMap(
-            currentWorld, m_sourceWorld, m_files[m_selected]);
+        std::string written;
+        const int type =
+            Editor::ObjectImport::UseModelOnCurrentMap(currentWorld, m_sourceWorld, m_files[m_selected], written);
         if (type >= 0)
         {
             if (outImportedType) *outImportedType = type;
-            m_status = "Imported to model slot " + std::to_string(type) +
-                       " - selected for placing.";
+            m_status = "Imported to model slot " + std::to_string(type) + " - selected for placing.\n" + written;
         }
         else
         {
@@ -152,8 +153,7 @@ void CMapObjectBrowser::Render(int currentWorld, int* outImportedType)
         }
     }
     ImGui::EndDisabled();
-    if (!m_status.empty())
-        ImGui::TextColored(ImVec4(0.6f, 1.0f, 0.6f, 1.0f), "%s", m_status.c_str());
+    Editor::StatusLine::Render(m_status);
 
     ImGui::Separator();
     ImGui::Text("%d models in Object%d", (int)m_files.size(), m_sourceWorld);

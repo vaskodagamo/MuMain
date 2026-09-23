@@ -11,6 +11,9 @@
 #include "UI/Scaling/UITransform.h"
 #include "Data/GameConfig/GameConfig.h"
 #include "CameraDebugLog.h"
+#ifdef _EDITOR
+#include "Core/ViewCapture.h"
+#endif
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -457,7 +460,9 @@ bool OrbitalCamera::Update()
     }
 
 #ifdef _EDITOR
-    // Debug text rendering to verify camera values (editor only)
+    // Debug text rendering to verify camera values (editor only; a Map Editor
+    // view capture leaves it out)
+    if (!Editor::ViewCapture::IsCleanFrame())
     {
         g_pRenderText->SetFont(g_hFixFont);
         g_pRenderText->SetTextColor(255, 255, 0, 255);  // Yellow text

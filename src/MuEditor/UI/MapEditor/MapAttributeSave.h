@@ -23,9 +23,10 @@
 //      World{enum + 1} (World7) - don't mix them up.
 namespace Editor::AttrSave
 {
-    // Writes the encrypted client .att for `world` (folder number). `mapNumber` is
-    // the map id byte in the header (conventionally == world).
-    bool SaveClientAtt(int world, int mapNumber);
+    // Writes the encrypted client .att for `world` (folder number) and copies it
+    // into the repository. `mapNumber` is the map id byte in the header
+    // (conventionally == world). `outReport` gets the status-line text.
+    bool SaveClientAtt(int world, int mapNumber, std::string& outReport);
 
     // --- Server export -------------------------------------------------------
     //
@@ -40,27 +41,27 @@ namespace Editor::AttrSave
     // tiles the user actually edited this session. Everything else stays byte-for-byte
     // identical.
 
-    // Opens a file dialog for the server's current TerrainData, downloaded from the
-    // Admin Panel's "Terrain Data" field (its "Download" link).
-    bool PickServerBaseAtt(std::wstring& outPath);
-
-    // Reads + validates that base: must be exactly 65539 bytes (3-byte header + 65536
-    // attribute bytes) and plain (never the client's encrypted .att). On failure,
-    // outError explains why in plain English.
+    // Reads + validates the server's current TerrainData, downloaded from the Admin
+    // Panel's "Terrain Data" field (its "Download" link) and picked with
+    // Editor::Files::RequestOpenFile(ServerBaseAtt). It must be exactly 65539 bytes
+    // (3-byte header + 65536 attribute bytes) and plain (never the client's
+    // encrypted .att). On failure, outError explains why in plain English.
     bool LoadServerBaseAtt(const std::wstring& path, std::vector<BYTE>& outBase, std::string& outError);
 
-    // Writes the merged server file (+ a HOWTO) next to Main.exe, ready to upload.
+    // Writes the merged server file (+ a HOWTO) next to Main.exe, ready to upload,
+    // and copies both into <repo>/out/editor-exports.
     //   serverBase  - the 65539 bytes from LoadServerBaseAtt.
     //   baseline    - the 65536 client attribute bytes as of the start of the session.
     //   edited      - which tiles the user painted (65536 flags).
     // A tile is written only if it was painted AND actually differs from the baseline,
     // so an undone stroke correctly writes nothing. outChanged = tiles written.
-    // `serverMapNumber` is the world ENUM value.
+    // `serverMapNumber` is the world ENUM value. `outReport` lists the absolute
+    // paths written.
     bool SaveServerAtt(int serverMapNumber,
                        const std::vector<BYTE>& serverBase,
                        const std::vector<BYTE>& baseline,
                        const std::vector<bool>& edited,
-                       std::wstring& outPath,
+                       std::string& outReport,
                        int& outChanged);
 
     // The attribute byte of a tile as it should be persisted (strips the runtime-only

@@ -70,6 +70,8 @@ src/graphify-out/
 
 # Test caches
 .pytest_cache/
+# Python bytecode (the tools' and coordination scripts' imports)
+__pycache__/
 
 # Interrupted editor/temp files
 .!*

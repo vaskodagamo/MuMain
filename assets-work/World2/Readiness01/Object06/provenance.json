@@ -1,0 +1,13 @@
+{
+  "source": "src/bin/Data/Object2/Object06.bmd",
+  "sha256": "130a34571f79c3fd28fe5cac0a51c54a2cc3e011cba2b1e483934e7e7026be05",
+  "purpose": "Read-only baseline triage, not an accepted remake",
+  "dependencies": {
+    "src/bin/Data/Object2/Object06.bmd": "130a34571f79c3fd28fe5cac0a51c54a2cc3e011cba2b1e483934e7e7026be05",
+    "src/bin/Data/Object2/deep_wall04.OZJ": "83037896d1e2825447e840b4af780ed3608b12c5971c8369eccdfc0f4fb21505"
+  },
+  "evidence": {
+    "baseline.blend": "37fe801382fbbbd7007965b5decfb851b777dff3771784c950aa5d362447517c",
+    "baseline.png": "4dbd7e0e9b6f591c1072e1d96b9bf3034c38703527f8f3b093a9e3294b447215"
+  }
+}
