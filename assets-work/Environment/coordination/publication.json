@@ -2,10 +2,10 @@
   "branch": "codex/environment-remake-continuation",
   "owner_remote": "git@github.com:vaskodagamo/MuMain.git",
   "draft_pr": "https://github.com/vaskodagamo/MuMain/pull/12",
-  "published_checkpoint": "7929166c",
+  "published_checkpoint": "d3ce9acf",
   "status": "draft, not merged",
   "lorencia_artistic_complete": true,
-  "later_maps_started": false,
+  "later_maps_started": true,
   "client_new_assets": "pending",
   "accepted_asset_commits": [
     "9abdf7e8",
@@ -20,5 +20,7 @@
   "accepted_game_assets": 22,
   "accepted_retained_assets": 84,
   "remaining_production_assets": 0,
-  "accepted_texture_changes": 1
+  "accepted_texture_changes": 1,
+  "next_phase_branch": "codex/dungeon-static-remake",
+  "next_phase_worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-remake"
 }
