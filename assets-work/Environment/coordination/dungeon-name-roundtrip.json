@@ -1,0 +1,17 @@
+{
+  "Object28": {
+    "name_field_hex": "44617461325c4f626a656374325cc7d7bec6b8ae30312e736d64000000000000",
+    "name_exact": true,
+    "comparison": "meshes 2 vs 2, bones 1 vs 1, actions 1 vs 1, triangles 516 vs 516\nunmatched triangles: 0  max corner distance: 0.0000  max bone distance: 0.0000  differing bone names: 0\nEQUIVALENT\n"
+  },
+  "Object29": {
+    "name_field_hex": "44617461325c4f626a656374325cc7d7bec6b8ae30322e736d64000000000000",
+    "name_exact": true,
+    "comparison": "meshes 2 vs 2, bones 1 vs 1, actions 1 vs 1, triangles 78 vs 78\nunmatched triangles: 0  max corner distance: 0.0000  max bone distance: 0.0000  differing bone names: 0\nEQUIVALENT\n"
+  },
+  "Object30": {
+    "name_field_hex": "44617461325c4f626a656374325cb1fac1f8c7d7bec6b8ae30332e736d640000",
+    "name_exact": true,
+    "comparison": "meshes 2 vs 2, bones 1 vs 1, actions 1 vs 1, triangles 288 vs 288\nunmatched triangles: 0  max corner distance: 0.0000  max bone distance: 0.0000  differing bone names: 0\nEQUIVALENT\n"
+  }
+}
