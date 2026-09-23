@@ -7,9 +7,11 @@
 #include "Render/Models/ZzzBMD.h"        // BMD / Models[] / BoneTransform / RENDER_TEXTURE / OBB_t
 #include "Render/Renderer/MuRenderer.h"  // mu::GetRenderer()
 #include "UI/Console/MuEditorConsoleUI.h"
+#include "Core/ModelPose.h"
+#include "Core/ScopedOffscreenCapture.h"
+#include "Editing/PreviewCamera.h"
 
 #include <algorithm>
-#include <cmath>
 #include <cstdio>
 
 // Global bone scale the model Transform/Animation multiply by; the game sets it
@@ -18,76 +20,16 @@ extern float BoneScale;
 
 namespace
 {
-    void Normalize3(float v[3])
+    // Loads a look-at view into the current matrix.
+    void LoadLookAt(const Editor::Thumbnail::Camera& camera)
     {
-        const float len = std::sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
-        if (len > 1e-6f) { v[0] /= len; v[1] /= len; v[2] /= len; }
-    }
-
-    void Cross3(const float a[3], const float b[3], float out[3])
-    {
-        out[0] = a[1] * b[2] - a[2] * b[1];
-        out[1] = a[2] * b[0] - a[0] * b[2];
-        out[2] = a[0] * b[1] - a[1] * b[0];
-    }
-
-    float Dot3(const float a[3], const float b[3])
-    {
-        return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
-    }
-
-    // Guarantees EndOffscreenCapture() runs even if something in between throws or
-    // an early return gets added later - otherwise the capture stays "open" forever
-    // and BeginOffscreenCapture() refuses every future call, silently breaking
-    // every thumbnail after this one for the rest of the process.
-    class ScopedOffscreenCapture
-    {
-    public:
-        ~ScopedOffscreenCapture() { mu::GetRenderer().EndOffscreenCapture(); }
-    };
-
-    // Loads a look-at view (column-major) into the current matrix.
-    void LoadLookAt(const float eye[3], const float center[3], const float up[3])
-    {
-        float fwd[3] = { center[0] - eye[0], center[1] - eye[1], center[2] - eye[2] };
-        Normalize3(fwd);
-        float side[3]; Cross3(fwd, up, side); Normalize3(side);
-        float up2[3];  Cross3(side, fwd, up2);
-
-        float m[16];
-        m[0] = side[0]; m[4] = side[1]; m[8]  = side[2];  m[12] = -Dot3(side, eye);
-        m[1] = up2[0];  m[5] = up2[1];  m[9]  = up2[2];   m[13] = -Dot3(up2, eye);
-        m[2] = -fwd[0]; m[6] = -fwd[1]; m[10] = -fwd[2];  m[14] =  Dot3(fwd, eye);
-        m[3] = 0.0f;    m[7] = 0.0f;    m[11] = 0.0f;     m[15] = 1.0f;
-        mu::GetRenderer().LoadMatrix(m);
-    }
-
-    constexpr float NO_BOUND = 1e9f;
-
-    // The model's bounds in the pose BoneTransform holds, from its vertices
-    // (BMD::Transform does not return them). False for a model without vertices.
-    bool PoseBounds(const BMD& model, vec3_t boundsMin, vec3_t boundsMax)
-    {
-        Vector(NO_BOUND, NO_BOUND, NO_BOUND, boundsMin);
-        Vector(-NO_BOUND, -NO_BOUND, -NO_BOUND, boundsMax);
-        bool any = false;
-        for (int mesh = 0; mesh < model.NumMeshs; ++mesh)
-        {
-            const Mesh_t& meshData = model.Meshs[mesh];
-            for (int vertex = 0; vertex < meshData.NumVertices; ++vertex)
-            {
-                const Vertex_t& source = meshData.Vertices[vertex];
-                vec3_t position;
-                VectorTransform(source.Position, BoneTransform[source.Node], position);
-                for (int axis = 0; axis < 3; ++axis)
-                {
-                    boundsMin[axis] = std::fmin(boundsMin[axis], position[axis]);
-                    boundsMax[axis] = std::fmax(boundsMax[axis], position[axis]);
-                }
-                any = true;
-            }
-        }
-        return any;
+        Editor::Preview::View view;
+        view.eye = camera.eye;
+        view.center = camera.center;
+        view.up = camera.up;
+        float matrix[16];
+        Editor::Preview::LookAtColumnMajor(view, matrix);
+        mu::GetRenderer().LoadMatrix(matrix);
     }
 }
 
@@ -275,20 +217,16 @@ unsigned int CObjectThumbnail::RenderNow(int type, Editor::Thumbnail::Framing fr
     // Transform() leaves bbMin/bbMax as they are, so world objects are framed as
     // the fallback box (a typical object at the origin), as they always were.
     // Items are framed from their real bounds.
-    if (framing == Editor::Thumbnail::Framing::Item && !PoseBounds(*b, bbMin, bbMax))
+    if (framing == Editor::Thumbnail::Framing::Item && !Editor::ModelPose::Bounds(*b, bbMin, bbMax))
         return 0;
 
     // Frame the model from its bounding box (see Editing/ThumbnailFraming.h).
     const Editor::Thumbnail::Camera camera = Editor::Thumbnail::FrameBounds(
         {bbMin[0], bbMin[1], bbMin[2]}, {bbMax[0], bbMax[1], bbMax[2]}, framing);
-    const float eye[3] = {camera.eye.x, camera.eye.y, camera.eye.z};
-    const float center[3] = {camera.center.x, camera.center.y, camera.center.z};
-    const float up[3] = {camera.up.x, camera.up.y, camera.up.z};
-
     glMatrixMode(GL_PROJECTION); glLoadIdentity();
     gluPerspective(camera.fovDegrees, 1.0f, camera.zNear, camera.zFar);
     glMatrixMode(GL_MODELVIEW); glLoadIdentity();
-    LoadLookAt(eye, center, up);
+    LoadLookAt(camera);
 
     b->RenderBody(RENDER_TEXTURE, 1.0f, -1, 1.0f, 0.0f, 0.0f);
 

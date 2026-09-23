@@ -609,7 +609,8 @@ static void RenderGameWorld(BYTE& byWaterMap, int width, int height)
 
 /**
  * @brief Renders the 3D content of the frame: the game world, or in the editor's
- *        item studio (--editor --items) nothing but a plain backdrop.
+ *        item studio (--editor --items) nothing but a plain backdrop; in editor
+ *        builds also the Item Editor's offscreen preview.
  */
 static void RenderSceneContent(BYTE& byWaterMap, int width, int height)
 {
@@ -621,6 +622,9 @@ static void RenderSceneContent(BYTE& byWaterMap, int width, int height)
     }
 #endif
     RenderGameWorld(byWaterMap, width, height);
+#ifdef _EDITOR
+    Editor::ItemStudio::RenderAfterWorld();
+#endif
 }
 
 /**

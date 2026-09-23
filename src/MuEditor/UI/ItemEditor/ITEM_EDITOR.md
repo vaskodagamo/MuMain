@@ -1,7 +1,8 @@
 # Item Editor (MuEditor)
 
 Every item the client knows, in two tabs: **Browse** (a list or thumbnail grid you filter by class,
-family, tier and status, sorted from basic to rare, with the facts of the selected item) and
+family, tier and status, sorted from basic to rare, with a live 3D preview and the facts of the
+selected item) and
 **Stats table** (every field of `Data/Local/<lang>/Item_<lang>.bmd`, edited in place and saved into the
 game's own file). It exists only in editor builds (`ENABLE_EDITOR`), so the normal game is unaffected.
 The quick start is for the Mac; everything after it is reference. The Map Editor's guide,
@@ -28,7 +29,8 @@ The quick start is for the Mac; everything after it is reference. The Map Editor
    build folder exists. The build itself installs nothing outside the build folder.
 4. **Browse:** pick a class (**DW DK Elf MG DL SUM RF**) and its stage (for example *Dark Knight*,
    *Blade Knight*, *Blade Master*) to see only what that character can equip, a family (swords,
-   helms, wings-2, ...), and click an item: its facts appear on the right. See [Browse](#browse).
+   helms, wings-2, ...), and click an item: its 3D preview and facts appear on the right. See
+   [Browse](#browse) and [Preview](#preview).
 5. **Edit stats:** the **Stats table** tab is the table of every field; an item picked in Browse is
    selected and scrolled to there, and the other way round. See [Stats table](#stats-table).
 
@@ -47,7 +49,8 @@ back.
 
 **Why the studio still loads a map:** it skips drawing (terrain, objects, sky, weather, effects,
 fog), not loading. The Map Editor on the toolbar edits and saves the loaded map, so it needs one, and
-the hidden character the later preview will dress with items stands on a map's ground and light.
+the preview's dropped item and dressed character stand on that map's ground and light (at the start
+point, where the hidden hero waits).
 World1 is loaded once at start (about a second) and not drawn while the Item Editor fills the window.
 
 ## Browse
@@ -79,8 +82,8 @@ one family the tier order is the catalog's family order, so for example the Dark
 Short Sword, Kris, Rapier ... Knight Blade, Bone Blade, then the Divine Sword (a quest reward that
 never drops).
 
-**Right - the selected item:** name, key, a bigger thumbnail (the live 3D preview with level,
-excellent and ancient effects comes there in the next milestone), classes, required and drop level,
+**Right - the selected item:** name, key, the live 3D preview (see [Preview](#preview)), classes,
+required and drop level,
 status, family, tier (its place among the family's items and whether it drops from monsters), what
 it can be (socket, ancient set, 380 option, excellent, maximum +level), size in inventory slots,
 every model file with triangles, meshes and textures, the original commit, open requests and your
@@ -123,6 +126,72 @@ a Magic Gladiator may also use an item that both the Dark Wizard and the Dark Kn
 the MG entry is 0. The game then also checks strength, agility, energy, vitality, command and level;
 Browse filters by class and stage only. Browse and the game share this rule
 (`GameLogic::Items::CanClassEquip`, called by `IsRequireEquipItem`).
+
+## Preview
+
+The item as the game draws it - the engine's own item and character code, not a picture of the model
+- in the details panel, with four views:
+
+| View | What you see | Mouse |
+|------|--------------|-------|
+| **Turntable** | The item alone, lit like a dropped item; long items (swords, staffs, spears, bows) stand upright on their grip. | Drag to turn, wheel to zoom. |
+| **Inventory** | Exactly what the inventory shows: the game's own placement, angle and size for that item in a slot of its size (the lines are the slot's cells). | Point at it: it turns, as in the game. |
+| **Ground** | The item dropped on the map's ground (Lorencia's town square in the studio), as a player finds it. | Drag, wheel. |
+| **Equipped** | Worn by a character: see below. | Drag, wheel. |
+
+Under the picture: **Front / Side / Back** put the camera there, **Reset** frames the item again,
+**Turn** turns the view slowly by itself (on at start; any of the buttons stops it).
+
+**+level, Excellent, Ancient:** the slider sets +0..+15; the game's effects follow it (+3/+5 tints,
+the gold and chrome passes from +7, the moving shine from +9 up). **Excellent** adds the excellent
+shine (the pulsing colour), **Ancient** the ancient one; when both are on, the game shows only the
+excellent one, and so does the preview. Next to the boxes "(never in the game)" or "(no set)" says
+when the catalog knows the item cannot be excellent or ancient; the preview still shows it.
+
+**Every +level effect:** the game draws the +7..+15 effects only up to its render-level option (the
+option window's effect slider; the preview shows the current value, "4 of 4" = all). Tick the box to
+see them all whatever the option says; the option itself is not changed.
+
+**Equipped:** a character of its own (never the game's hero) wears the item the way the game puts it
+on:
+
+| Item | Worn |
+|------|------|
+| Sword, axe, mace, spear, staff | In the right hand (two-handed ones too). |
+| Shield | On the left arm. |
+| Bow | In the left hand, arrows as a quiver on the back. |
+| Crossbow | In the right hand, bolts as a quiver on the back. |
+| Arrows, bolts | The quiver on the back. |
+| Wings, capes | On the back; with wings the character floats in the flying pose, as outside a town. |
+| Helm, armour, pants, gloves, boots | With the rest of its set: the parts of the other armour groups with the same index (a set without a helm leaves the bare head). The +level and options go on every part. |
+| Pets, rings, pendants, everything else | The character without it ("worn, but not drawn on the body" / "cannot be worn"). |
+
+The character is the **class chosen in the class filter** at its stage (e.g. *DK* + *Blade Master*);
+with **All** it is the first class that may use the item, at the lowest stage that may (the line under
+the controls names it). **In a town** puts weapons on the back, as the game does in safe zones.
+Hand-held effects that the game draws as sprites (glows of some +level weapons) show too; in the
+studio also the particles.
+
+**Speed:** the preview draws every frame into one picture the size of the panel (made again only when
+the panel grows or shrinks by 64 pixels) and is freed when the Browse tab or the Item Editor is
+closed. With the preview open the studio keeps its ~75 frames per second.
+
+### Preview code
+
+| File | What it holds |
+|------|---------------|
+| `UI/ItemEditor/ItemPreview.h/.cpp` | `CItemPreview` - the panel: view choice, picture, mouse, buttons, +level/options; owns the render target and asks for one picture per frame. |
+| `UI/ItemEditor/ItemPreviewScene.h/.cpp` | `CItemPreviewScene` - draws each view through the engine (`RenderPartObject`, `RenderItem3D`, `RenderDroppedItem`, the map's `RenderTerrainTile`, sprites) into the open offscreen capture, and puts back every engine value it changes. |
+| `UI/ItemEditor/PreviewCharacter.h/.cpp` | `CPreviewCharacter` - the preview's own `CHARACTER`, dressed and drawn by `SetPlayerStop`, `MoveCharacter` and `RenderCharacter`. |
+| `Editing/PreviewCamera.h/.cpp` | Orbit, zoom, automatic turn, the upright pose of long items, look-at matrices, target sizes (pure math). |
+| `Editing/PreviewSlot.h/.cpp` | The inventory view's slot and camera numbers in the target (pure math). |
+| `Editing/PreviewOutfit.h/.cpp` | Which hand, back or body part the item goes on, the rest of an armour set, and the class to dress (pure rules). |
+| `Core/ModelPose.h/.cpp`, `Core/ScopedOffscreenCapture.h` | Shared with the thumbnails: a posed model's bounds, and closing an offscreen capture on every path. |
+
+The pure parts are unit-tested in `tests/editor/test_preview_camera.cpp` and `test_preview_outfit.cpp`.
+The scene hooks are `Editor::ItemStudio::RenderInsteadOfWorld()` (studio) and `RenderAfterWorld()`
+(map drawn), called by the main scene; the engine side shares `RenderDroppedItem` and
+`PlaceItemOnGround` with the game's own dropped items (`ZzzObject.cpp`).
 
 ## Stats table
 
@@ -188,5 +257,12 @@ executable instead (`Local/Eng/item_eng.bmd`) and Browse has no catalog;
   `item_por.bmd` / `item_spn.bmd`, and `Data/Local/Item.bmd` is an older table the game does not load.
 - **Browse reads the catalog once per start.** After rebuilding `catalog.json`, restart the editor;
   **Rescan files** only hashes the model files again.
-- **Offline there is no hero or inventory,** so an edited item cannot be seen worn yet; the preview
-  comes in a later milestone (docs/agents/ITEM_EDITOR_PLAN.md).
+- **The preview follows the loaded map.** Ground and light come from the map at the start point:
+  Lorencia's town floor in the studio, the map you opened with `--items --world N`. The Ground and
+  Equipped views therefore look different on other maps, as in the game.
+- **Some effects are not in the preview:** effects the game draws as separate world effects (joints,
+  model effects such as the flame trails of 3rd wings) and pets/mounts. With the map drawn
+  (`--items --world N`, or the Map Editor open) the particles the preview's character makes appear in
+  the map at the start point instead of in the preview.
+- **Armour on the turntable and on the ground** uses the male skeleton, as the game does for a
+  dropped part; worn armour uses the chosen class's body.

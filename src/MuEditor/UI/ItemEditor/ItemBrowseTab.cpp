@@ -25,7 +25,7 @@ using Editor::Items::SortKey;
 
 // Layout, in pixels at 100% editor UI scale.
 constexpr float FILTER_PANEL_WIDTH = 235.0f;
-constexpr float DETAILS_PANEL_WIDTH = 380.0f;
+constexpr float DETAILS_PANEL_WIDTH = 460.0f; // room for the 3D preview
 constexpr float LIST_THUMB_SIZE = 40.0f;
 constexpr float GRID_TILE_SIZE = 112.0f;
 constexpr float CLASS_BUTTON_WIDTH = 46.0f;
@@ -512,7 +512,7 @@ void CItemBrowseTab::RenderDetailsPanel(int selectedType)
         ImGui::TextColored(NOTE_COLOR, "Select an item to see its facts.");
         return;
     }
-    Editor::ItemEditor::RenderItemDetails(*row, CatalogNote());
+    Editor::ItemEditor::RenderItemDetails(*row, CatalogNote(), m_filter.baseClass, m_filter.classStage);
 }
 
 #endif // _EDITOR

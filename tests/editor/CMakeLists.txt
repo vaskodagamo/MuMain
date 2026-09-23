@@ -79,14 +79,17 @@ target_include_directories(editor_asset_request_tests PRIVATE
     ${PROJECT_SOURCE_DIR}/src/ThirdParty
 )
 
-# The Item Editor's item catalog (assets-work/Items/catalog.json) and its Browse
-# tab's filters and sort order. File-only code as well; MuClient supplies the
-# engine's class rule (GameLogic::Items::CanClassEquip) the class filter calls.
+# The Item Editor's item catalog (assets-work/Items/catalog.json), its Browse
+# tab's filters and sort order, and what the preview's character wears for an
+# item. File-only code as well; MuClient supplies the engine's class rule
+# (GameLogic::Items::CanClassEquip) the class filter and the preview call.
 mu_add_test(
     NAME editor_item_browse_tests
     SOURCES
         test_item_browse.cpp
         test_item_catalog.cpp
+        test_preview_outfit.cpp
+        ${PROJECT_SOURCE_DIR}/src/MuEditor/Editing/PreviewOutfit.cpp
         ${MU_EDITOR_ASSETS_DIR}/EditorText.cpp
         ${MU_EDITOR_ASSETS_DIR}/ItemBrowse.cpp
         ${MU_EDITOR_ASSETS_DIR}/ItemCatalog.cpp
@@ -133,7 +136,8 @@ target_include_directories(editor_model_preflight_tests PRIVATE
 
 # The Map Editor's undo history (commands, terrain strokes), object selection,
 # transform gizmo math, terrain brushes, popup mouse guard and the model
-# thumbnails' camera framing: logic without ImGui or engine state, tested
+# thumbnails' camera framing and the Item Editor preview's orbit camera and
+# inventory-slot projection: logic without ImGui or engine state, tested
 # against stand-in objects and terrain. MuClient supplies the engine's
 # AngleMatrix, which the gizmo's turns must agree with.
 set(MU_EDITOR_EDITING_DIR ${PROJECT_SOURCE_DIR}/src/MuEditor/Editing)
@@ -144,6 +148,7 @@ mu_add_test(
         test_gizmo_math.cpp
         test_object_selection.cpp
         test_popup_mouse_guard.cpp
+        test_preview_camera.cpp
         test_terrain_brush.cpp
         test_thumbnail_framing.cpp
         ${MU_EDITOR_EDITING_DIR}/CommandStack.cpp
@@ -154,6 +159,8 @@ mu_add_test(
         ${MU_EDITOR_EDITING_DIR}/ObjectSelection.cpp
         ${MU_EDITOR_EDITING_DIR}/ObjectTransform.cpp
         ${MU_EDITOR_EDITING_DIR}/PopupMouseGuard.cpp
+        ${MU_EDITOR_EDITING_DIR}/PreviewCamera.cpp
+        ${MU_EDITOR_EDITING_DIR}/PreviewSlot.cpp
         ${MU_EDITOR_EDITING_DIR}/SurfaceBrush.cpp
         ${MU_EDITOR_EDITING_DIR}/TerrainBrush.cpp
         ${MU_EDITOR_EDITING_DIR}/TerrainPatchCommand.cpp
