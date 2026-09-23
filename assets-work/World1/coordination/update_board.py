@@ -52,11 +52,23 @@ def row(name, model):
     return f'| {name} — {identity} | {model["type"]}; {len(placements)}; first ({first}) | `{model["path"]}` | {dependencies} | {owner}; `{branch}`; `{worktree}` | {status} | {evidence} |'
 
 
+def integration_status():
+    """Merge state for the header, read from publication.json like write_handoff.py does."""
+    path = HERE / 'publication.json'
+    publication = json.loads(path.read_text()) if path.exists() else {}
+    if not publication.get('merged_into_main'):
+        return 'the integration has not been merged into main.'
+    return (f"the integration was merged into main with PR #{publication['pr_number']} (merge commit "
+            f"`{publication['merge_commit'][:8]}`, {publication['merged_at']}). The integration worktree and the "
+            "branches and worktrees in the table below are historical records; follow-up work uses "
+            "[regeneration requests](../requests/README.md) and [the catalog](../catalog.json).")
+
+
 def main():
     data = json.loads((HERE / 'dependency-map.json').read_text())
     text = '''# Lorencia rebuild asset board — ASTRA coordinator — 2026-09-22
 
-Integration: `art/lorencia-rebuild` at `/Users/webproduktion3/Documents/claude-test-mumain/MuMain-lorencia-rebuild`, based on `ac0f6dd8` (contains reviewed pilot commits `2e2ed427`, `b232470c`, `8d22a912` and completed static batch). Only coordinator edits this board/shared handoff. Publication status is in [the handoff](notes.md); the integration has not been merged into main. All acceptance here is **offline only**; no assets verified in client by this task.
+Integration: `art/lorencia-rebuild` at `/Users/webproduktion3/Documents/claude-test-mumain/MuMain-lorencia-rebuild`, based on `ac0f6dd8` (contains reviewed pilot commits `2e2ed427`, `b232470c`, `8d22a912` and completed static batch). Only coordinator edits this board/shared handoff. Publication status is in [the handoff](notes.md); ''' + integration_status() + ''' All acceptance here is **offline only**; no assets verified in client by this task.
 
 ## Ownership and dependency policy
 
