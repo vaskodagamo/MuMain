@@ -1,0 +1,8 @@
+model /Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-hearths/assets-work/World2/FireProps01/Object42/exports/Object42.bmd
+  name field: Data2\Object2\º®µî.smd  version: 12
+  meshes: 2  bones: 1  actions: 1  triangles: 44
+  bounds (bind pose): min -18.36 -36.70 177.30  max 17.45 2.59 231.73  size 35.80 39.29 54.43
+  mesh 0: triangles=32 vertices=25 normals=33 uvs=22 texture=wood01.jpg
+  mesh 1: triangles=12 vertices=9 normals=9 uvs=9 texture=fire0a.jpg
+  bone 0: "Box03" parent=-1
+  action 0: keys=1 lock=0
