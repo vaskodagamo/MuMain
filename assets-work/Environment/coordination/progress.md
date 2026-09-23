@@ -1,21 +1,17 @@
-## Next Dungeon family — baseline triage only
+# Dungeon environment production — current status, 2026-09-23
 
-Read-only baseline renders now cover Object45–48 and a six-object actual Object47/48 debris cluster. These are confirmed static skeletal remains: 510 total placements, one root and one one-key action per model. All four use frozen `bons.OZJ`, whose nine consumers require a full visual scope review before any texture edit. Objects45/46 share raw index topology but have different posed bounds and raw bone names; no reuse is established. No owner or remake has been assigned. See `assets-work/World2/Readiness02/notes.md`, provenance JSON and hash-bound images. Next step is close actual-scene visual review and candidate value decision after active wall/pier review.
+Lorencia is separately accepted offline at d3ce9acf in draft PR12. The user reports the earlier Lorencia baseline working in game; new changes still need their own client verification.
 
-## Current checkpoint — 2026-09-23
+The focused Dungeon PR is [#13](https://github.com/vaskodagamo/MuMain/pull/13), branch `codex/dungeon-static-remake` at checkpoint 3e0196c3. Object28 and Object29 pottery are the only Dungeon game replacements integrated to date. They use more rounded shoulders and true ceramic lips, with interiors, broken fragments, materials and all placement contacts preserved. Independent technical/art review passed; offline dependency validation covers all63 Object2 models. New client verification is pending.
 
-Dungeon pottery is independently accepted and integrated at 6d0323d7: Object28 and Object29 have rounder ceramic shoulders and modeled lips, with original interiors, bases and broken pieces preserved. Object30 remains unchanged on its own visual merits. Both original coffins, Object21 and Object22, are retained after candidate studies failed to demonstrate sufficient artistic improvement. These are two replacements and three individually justified retained assets, not full Dungeon coverage. All new client checks are pending.
+Both coffin models Object21/22, Object30 broken pot, Object03 niche pillar and Object04 carved pier are individually retained on their visual merits after candidate inspection. Their attempted replacements are not counted. Object03 and Object04 report distinct baselines and checks; `Pier01` contains packed original references, official exports, two fully audited rejected geometry studies, three rejected registration studies, consumer masks and matching placement views. Worker study commit4199d62f is integrated as evidence only; no Object04 game BMD or texture changed.
 
-Accepted worker commit: 15a1a4c4 on codex/dungeon-pottery. Coffin study-only commit: 6cd41d24 on codex/dungeon-coffins; it is not integrated. Reports: pottery-final-review.json, coffin-retention-review.json and pottery-integration-validation.json. The integrated check resolves all 63 Object2 model dependencies and confirms exactly two changed game files. Original textures remain unchanged.
+Object01’s 64-triangle central crown chamfer is independently accepted at exact exported BMD hash `aea82532ebb824c2aac1cbbe277135ad96a7379f3f9a615a6a1b9ccfcae1ee01`. It adds a coherent, correctly textured broad stone edge plane with6 triangles while preserving its plaque, all module ends, bounds, normal/action and1262 placement contracts. This is a bounded visual refinement, not a full wall remake. Artist is completing original/wire/source/provenance package before integration. Object03 is separately retained as its existing four-niche tapered variant.
 
-Active production:
+Next family Object45–48 now has official-imported read-only renders, exact model/texture provenance and a six-placement Object47/48 cluster. The family covers510 placements and uses frozen `bons.OZJ` shared by nine consumers. No candidate or owner is assigned pending closer scene assessment.
 
-| Family | Owned BMDs | Artist branch / worktree | Objective |
-|---|---|---|---|
-| Walls01 | Object2/Object01 and Object03 | architecture; codex/dungeon-walls; MuMain-q02-architecture | Purposeful stone crown and niche construction with exact modular ends and carved panels |
-| Pier01 | Object2/Object04 | furniture; codex/dungeon-pier; MuMain-q02-furniture | Readable curved creature relief while preserving pillar, caps, backing and placement contacts |
+Currently pending final delivery: Object01 source and wireframe completeness, worker commits/pushes for final wall package, focused integration validation and PR update. No runtime Data/game client is touched, and no new client result is claimed. See `assets-work/Environment/coordination/` and the matching `assets-work/World2/` evidence directories. The overall static environment goal remains in progress.
 
-All shared textures stay frozen. Workers retain source, official export, full contract checks and matching actual-placement renders; independent acceptance precedes sequential integration. Next: review wall/pier baselines, build purposeful candidates, validate and assess exported comparisons. The broader Dungeon inventory still requires scope and visual assessment. Lorencia remains separately accepted offline at d3ce9acf in draft PR12; user-reported client evidence applies only to the earlier baseline.
 
 ## Historical phase-opening record
 

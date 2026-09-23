@@ -37,10 +37,12 @@
       "deep_wall02.jpg"
     ],
     "owner": "architecture",
-    "status": "in progress",
+    "status": "art direction independently accepted; final evidence/package pending",
     "client_verified": false,
     "branch": "codex/dungeon-walls",
-    "deliverables": "assets-work/World2/Walls01"
+    "deliverables": "assets-work/World2/Walls01",
+    "evidence": "assets-work/Environment/coordination/wall01-independent-review.json",
+    "independent_review_bmd_sha256": "aea82532ebb824c2aac1cbbe277135ad96a7379f3f9a615a6a1b9ccfcae1ee01"
   },
   {
     "model": "Object02",
@@ -66,10 +68,11 @@
       "deep_wall02.jpg"
     ],
     "owner": "architecture",
-    "status": "in progress",
+    "status": "retained baseline after independent visual review",
     "client_verified": false,
     "branch": "codex/dungeon-walls",
-    "deliverables": "assets-work/World2/Walls01"
+    "deliverables": "assets-work/World2/Walls01",
+    "evidence": "assets-work/Environment/coordination/object03-retention-review.json"
   },
   {
     "model": "Object04",
@@ -82,10 +85,11 @@
       "deep_wall03.jpg"
     ],
     "owner": "furniture",
-    "status": "in progress",
+    "status": "retained baseline after independent visual review; geometry studies rejected",
     "client_verified": false,
     "branch": "codex/dungeon-pier",
-    "deliverables": "assets-work/World2/Pier01"
+    "deliverables": "assets-work/World2/Pier01",
+    "evidence": "assets-work/Environment/coordination/pier-retention-review.json"
   },
   {
     "model": "Object05",
@@ -668,8 +672,9 @@
       "bons.jpg"
     ],
     "owner": null,
-    "status": "unclaimed; scope and visual assessment pending",
-    "client_verified": false
+    "status": "static remains baseline preview complete; visual assessment pending",
+    "client_verified": false,
+    "evidence": "assets-work/World2/Readiness02/notes.md"
   },
   {
     "model": "Object46",
@@ -681,8 +686,9 @@
       "bons.jpg"
     ],
     "owner": null,
-    "status": "unclaimed; scope and visual assessment pending",
-    "client_verified": false
+    "status": "static remains baseline preview complete; visual assessment pending",
+    "client_verified": false,
+    "evidence": "assets-work/World2/Readiness02/notes.md"
   },
   {
     "model": "Object47",
@@ -694,8 +700,9 @@
       "bons.jpg"
     ],
     "owner": null,
-    "status": "unclaimed; scope and visual assessment pending",
-    "client_verified": false
+    "status": "static remains baseline preview complete; visual assessment pending",
+    "client_verified": false,
+    "evidence": "assets-work/World2/Readiness02/notes.md"
   },
   {
     "model": "Object48",
@@ -707,8 +714,9 @@
       "bons.jpg"
     ],
     "owner": null,
-    "status": "unclaimed; scope and visual assessment pending",
-    "client_verified": false
+    "status": "static remains baseline preview complete; visual assessment pending",
+    "client_verified": false,
+    "evidence": "assets-work/World2/Readiness02/notes.md"
   },
   {
     "model": "Object49",
