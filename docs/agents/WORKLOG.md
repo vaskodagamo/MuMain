@@ -973,3 +973,18 @@ buttons by hand; Windows/Linux builds untested.
 **Done:** Refreshed an isolated worktree from owner-fork main after PR #12 merged. Integrated the reviewed Object48 BMD and recorded export, placement, texture and converter evidence. Updated current assessment: Lorencia remains artistically unfinished despite first-pass 22-replacement and 84-retention counts.
 **Verified:** The integrated BMD matches the reviewed export hash; the official converter validates its static and animation SMDs; the frozen texture container passes; all 63 Object2 models resolve their texture dependencies. Exactly one Object2 game path changes in this branch. Client and runtime verification remain pending.
 **Open / next:** Opened [PR #16](https://github.com/vaskodagamo/MuMain/pull/16), ready for review and mergeable against main. Resume production with a Lorencia quality batch from refreshed main.
+
+## 2026-09-23 - Item editor I0: shared request/save/reload code (Claude Opus 5.5)
+**Goal:** Milestone I0 of `ITEM_EDITOR_PLAN.md`: make the Map Editor's request, repo-mirror and
+hot-reload code usable by a second editor without changing the Map Editor.
+
+**Done:** `RequestDomain` for request folders, branches, schema and protected paths
+(`WorldRequestDomain` for maps); `Core/RepoMirror` and `Core/EditorFiles` moved out of
+`UI/MapEditor`; `HotReload::ModelRange`/`AllowRange`. Details in the plan's Status list.
+
+**Verified:** golden dump of `request.json` + `brief.md` byte-identical before/after; 340/340
+tests (`macos-arm64-mueditor`), editor tests in `macos-arm64`; offline Lorencia run with a frame
+capture.
+
+**Open / next:** I1 (Item Editor on the Mac + `--items`) and I2 (item catalog tools) can start in
+parallel. Reload of a non-world range is untested until I6 allows one.

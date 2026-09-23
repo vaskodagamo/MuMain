@@ -1,7 +1,7 @@
 #include <doctest.h>
 
 #include "TempTree.h"
-#include "UI/MapEditor/MapEditorRepoMirror.h"
+#include "Core/RepoMirror.h"
 
 #include <filesystem>
 #include <string>

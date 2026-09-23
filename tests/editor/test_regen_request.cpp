@@ -274,11 +274,11 @@ TEST_CASE("A request folder is written once and never half [editor][requests]")
     fs::path folder;
     std::string error;
     REQUIRE(WriteRequestFolder(repo, draft, jpeg, folder, error));
-    CHECK(folder == RequestsDir(repo, 1) / ID);
+    CHECK(folder == RequestsDir(repo, WorldRequestDomain(1, "Lorencia")) / ID);
     CHECK(ReadText(folder / "request.json") == BuildRequestJson(draft));
     CHECK(ReadText(folder / "brief.md") == BuildBrief(draft));
     CHECK(ReadText(folder / "captures" / "01-current.jpg").size() == jpeg.size());
-    CHECK(ExistingRequestIds(repo, 1) == std::vector<std::string>{ID});
+    CHECK(ExistingRequestIds(repo, WorldRequestDomain(1, "Lorencia")) == std::vector<std::string>{ID});
 
     CHECK_FALSE(WriteRequestFolder(repo, draft, jpeg, folder, error)); // exists already
     CHECK_FALSE(error.empty());
@@ -286,7 +286,7 @@ TEST_CASE("A request folder is written once and never half [editor][requests]")
     RequestDraft other = draft;
     other.id = "2026-09-23-sign01-other";
     CHECK_FALSE(WriteRequestFolder(repo, other, {}, folder, error)); // capture without image
-    CHECK_FALSE(fs::exists(RequestsDir(repo, 1) / other.id));
+    CHECK_FALSE(fs::exists(RequestsDir(repo, WorldRequestDomain(1, "Lorencia")) / other.id));
 }
 
 TEST_CASE("Names a new variant must avoid come from the catalog, the data and requests [editor][requests]")
@@ -294,14 +294,70 @@ TEST_CASE("Names a new variant must avoid come from the catalog, the data and re
     TempTree tree("mu-request-names");
     const fs::path repo = tree.Root();
     WriteText(repo / "src" / "bin" / "Data" / "Object1" / "Sign05.bmd", "bmd");
-    WriteText(RequestsDir(repo, 1) / "2026-09-22-sign01-broken" / "request.json",
+    WriteText(RequestsDir(repo, WorldRequestDomain(1, "Lorencia")) / "2026-09-22-sign01-broken" / "request.json",
               R"({"change": {"new_model": "Sign04"}})");
     Catalog catalog;
     catalog.models.push_back(Sign01());
 
-    const std::set<std::string> taken = TakenModelNames(repo, 1, catalog);
+    const std::set<std::string> taken = TakenModelNames(repo, WorldRequestDomain(1, "Lorencia"), catalog);
     CHECK(taken.contains("sign01"));
     CHECK(taken.contains("sign04"));
     CHECK(taken.contains("sign05"));
     CHECK(NextVariantName("Sign01", taken) == "Sign02");
+}
+
+
+TEST_CASE("A domain outside a map files its requests in its own folder and branches [editor][requests]")
+{
+    RequestDomain items;
+    items.assetsFolder = "Items";
+    items.branchWord = "item";
+    items.modelDataDirs = {"Item", "Player"};
+    items.protectedPaths = {"src/source/"};
+    items.schema = "mu-item-regen-request/1";
+    items.filedBy = "item editor";
+    RequestDraft draft = SignDraft(RequestKind::Repaint);
+    draft.domain = items;
+
+    const json request = json::parse(BuildRequestJson(draft));
+    CHECK(request["schema"] == "mu-item-regen-request/1");
+    CHECK_FALSE(request.contains("world"));
+    CHECK(request["author"] == "owner (item editor)");
+    CHECK(request["status_history"][0]["by"] == "item editor");
+    CHECK(request["constraints"]["protected_paths"] == json::array({"src/source/"}));
+    CHECK(request["evidence"]["captures"][0]["file"] ==
+          std::string("assets-work/Items/requests/") + ID + "/captures/01-current.jpg");
+    CHECK(request["handoff"]["branch"] == "codex/item-req-sign01-readable-board");
+    CHECK(request["handoff"]["deliver_to"] == std::string("assets-work/Items/requests/") + ID + "/delivery/");
+
+    const std::string brief = BuildBrief(draft);
+    CHECK(brief.find("from the item editor") != std::string::npos);
+    const std::string validate = "`python3 assets-work/Items/requests/validate_request.py assets-work/Items/requests/";
+    CHECK(brief.find(validate + ID + "`") != std::string::npos);
+
+    TempTree tree("mu-request-domain");
+    const fs::path repo = tree.Root();
+    WriteText(repo / "src" / "bin" / "Data" / "Item" / "Sword01.bmd", "bmd");
+    WriteText(repo / "src" / "bin" / "Data" / "Player" / "HelmMale01.bmd", "bmd");
+    WriteText(repo / "src" / "bin" / "Data" / "Object1" / "Tree01.bmd", "bmd");
+    const std::set<std::string> taken = TakenModelNames(repo, items, Catalog{});
+    CHECK(taken == std::set<std::string>{"helmmale01", "sword01"});
+
+    fs::path folder;
+    std::string error;
+    REQUIRE(WriteRequestFolder(repo, draft, {0xFF, 0xD8, 0xFF, 0xD9}, folder, error));
+    CHECK(folder == repo / "assets-work" / "Items" / "requests" / ID);
+    CHECK(ExistingRequestIds(repo, items) == std::vector<std::string>{ID});
+}
+
+TEST_CASE("The world domain keeps the Map Editor's paths and branch names [editor][requests]")
+{
+    const RequestDomain world = WorldRequestDomain(2, "Dungeon");
+    CHECK(world.assetsFolder == "World2");
+    CHECK(world.branchWord == "dungeon");
+    CHECK(world.world == 2);
+    CHECK(world.modelDataDirs == std::vector<std::string>{"Object2"});
+    CHECK(world.protectedPaths.front() == "src/bin/Data/World2/");
+    CHECK(world.schema == "mu-regen-request/1");
+    CHECK(RequestFolderPath(world, "x") == "assets-work/World2/requests/x");
 }
