@@ -1056,6 +1056,28 @@ validation clean, ~75 fps with 959 items.
 
 **Open / next:** hand test by the owner; I4 preview (level/excellent/ancient, equipped).
 
+## 2026-09-23 - Item style pilot: Axe01, Shield01 and Wing01 (Codex)
+**Goal:** Prepare faithful A and bolder B offline style variants for three item attachment types so the owner can choose an art direction before mass rework.
+
+**Done:** Created six editable Blender sources, exported BMDs and matching 256×256 game texture containers, before/A/B study-camera renders, per-item comparison sheets and an owner review README under `assets-work/Items/pilot/`. Preserved the original model paths, one-mesh layout, attachment bounds/transforms, bone order and action key counts. Pulled and fast-forwarded to `origin/main` at `6f93a708` before finalizing the pilot.
+
+**Verified:** `bmdconv validate` passed for all six mesh and action exports; `bmdconv compare` ran against each original and confirmed matching mesh/skeleton/action structure and bone motion (geometry differences are intentional); all six texture containers passed `mu_texture.py check`. All variants are below 1500 triangles and use 256×256 maps. Nothing was installed under `src/bin/Data`; no client check was performed.
+
+**Open / next:** Owner review and per-item A/B selection. Route chosen assets through the item editor request flow, then verify equipped placement and in-client materials before acceptance.
+
+## 2026-09-23 - Item editor I4: live 3D preview (Claude Opus 5.5)
+**Goal:** Milestone I4 of `ITEM_EDITOR_PLAN.md`.
+
+**Done:** turntable, inventory, ground and equipped views with +level, excellent and ancient,
+drawn by the game's own code on a preview character of its own; `RenderDroppedItem` /
+`PlaceItemOnGround` shared with the game (same behaviour).
+
+**Verified:** 382/382 editor-build and 381/381 player-build tests; scripted in-client run with
+screenshots of every acceptance view; Metal validation clean; ~75 fps.
+
+**Open / next:** owner hand test; compare the inventory slot scale and sword stance with the game;
+I5 needs a texture readback for clean captures.
+
 ## 2026-09-23 - Item concept image tool (Claude Opus 5.5)
 **Goal:** Owner's idea: generate 2-3 concept variants for 10-20 items in parallel through the
 OpenAI Images API, pick the best, and hand the pick to Codex for Blender modeling.

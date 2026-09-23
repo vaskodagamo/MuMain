@@ -1,0 +1,9 @@
+$ /Applications/Blender.app/Contents/MacOS/Blender -b /Users/webproduktion3/Documents/claude-test-mumain/MuMain-items-style-pilot/assets-work/Items/pilot/Axe01/A/source.blend --python /tmp/mu_style_pilot/inspect_source.py -- Axe01
+
+00:00.657  blend            | Read blend: "/Users/webproduktion3/Documents/claude-test-mumain/MuMain-items-style-pilot/assets-work/Items/pilot/Axe01/A/source.blend"
+PILOT_SOURCE_JSON {"model": "Axe01", "candidate_mesh_objects": 1, "mesh_name": "Axe01", "vertices": 187, "polygons": 358, "triangles": 358, "bounds_min": [-2.2660000324249268, -93.89399719238281, -22.250999450683594], "bounds_max": [3.2219998836517334, 13.3149995803833, 5.646999835968018], "location": [0.0, 0.0, 0.0], "scale": [1.0, 1.0, 1.0], "rotation_euler": [0.0, 0.0, 0.0], "materials": ["Axes02.jpg"], "uv_layers": ["UVMap"], "max_vertex_group_assignments": 1, "bone_order_metadata": ["Box06"], "bone_count": 1, "action_meta": {"Axe01_a00": {"index": 0, "lock": false}}, "active_action": "Axe01_skeleton", "active_action_frame_range": [0.0, 0.0]}
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:49:19)
+
+Blender quit
+
+exit_code=0

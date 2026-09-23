@@ -6,13 +6,15 @@
 
 #include <string>
 
-// The right-hand panel of the Item Editor's Browse tab: everything known about
-// the selected item, with the area where the 3D preview will go.
+// The right-hand panel of the Item Editor's Browse tab: the selected item's 3D
+// preview (ItemPreview) and everything known about it.
 namespace Editor::ItemEditor
 {
 // `catalogNote` says why catalog facts are missing (no checkout, no catalog, the
-// item is not in it); empty when the row has its catalog entry.
-void RenderItemDetails(const Items::BrowseRow& row, const std::string& catalogNote);
+// item is not in it); empty when the row has its catalog entry. `filterClass` and
+// `filterStage` are the Browse class filter; the preview dresses that class.
+void RenderItemDetails(const Items::BrowseRow& row, const std::string& catalogNote, int filterClass,
+                       int filterStage);
 } // namespace Editor::ItemEditor
 
 #endif // _EDITOR

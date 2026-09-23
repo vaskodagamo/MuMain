@@ -314,6 +314,36 @@ Status:
     the catalog's requests, so rebuild the catalog after filing.
   - Found, not changed: Map Editor object thumbnails always use a fallback frame (the engine
     never fills the model bounds they read).
+- **I4 done (2026-09-23).** Live 3D preview in the Browse details panel; usage in
+  `ITEM_EDITOR.md`.
+  - Views: **Turntable** (drag, wheel, auto-turn, Front/Side/Back/Reset), **Inventory** (the
+    game's `RenderItem3D` placement in a slot of the item's size; turns on hover as in game),
+    **Ground** (dropped on the loaded map's terrain, through the game's own drop code),
+    **Equipped** (on a preview character of its own, never the hero: weapons in hand or on the
+    back in a town, shields, bows with quiver, wings, the item's whole armour set).
+  - Look: +0..+15, Excellent, Ancient (labelled when the catalog says the item can never be),
+    and "every +level effect" regardless of the game's effect option (the option is not
+    changed). The character uses the Browse class filter's class and stage, else the item's
+    first allowed class.
+  - One offscreen target, remade only when the panel grows or shrinks by 64 px, freed 3 frames
+    after the preview is hidden. Files: `UI/ItemEditor/ItemPreview*`, `PreviewCharacter`,
+    `Editing/Preview{Camera,Slot,Outfit}` (unit-tested), `Core/ModelPose`,
+    `Core/ScopedOffscreenCapture.h`.
+  - Player build, same behaviour: the per-item body of `RenderItems` is now
+    `RenderDroppedItem` and the landing step of `MoveItems` is `PlaceItemOnGround`, so the
+    preview reuses them; one editor-only hook in `MainScene.cpp`.
+  - Checked: 382/382 editor-build and 381/381 player-build tests; scripted in-client run with
+    screenshots (Sword of Destruction 0-16 at +0/+9/+13 excellent in turntable and inventory,
+    ground, Wings of Dragon on a Blade Knight from behind, Dragon Armor set at +11, Dragon
+    Shield, Silver Bow with quiver), `MTL_DEBUG_LAYER=1` clean, ~75 fps, `--world 1` unchanged.
+  - Not drawn: world joints and model effects (e.g. third-wing trails), pets and mounts. With
+    the map drawn, the preview character's particles appear at the map's start point. To check
+    against the game: the sword's idle stance, and the inventory slot scale (the sword reaches
+    past its 1x4 outline).
+  - For I5: `g_ItemPreview.Texture()` is a clean image, but the renderer has no texture
+    readback yet (add an editor-only one, or crop a `ViewCapture` frame); scripted captures need
+    setters for view, orbit, level and flags. For I6: a second preview scene and target in the
+    same pass gives side by side; call `g_ItemPreview.Release()` after a model hot reload.
 - **Concept images (added by the owner, 2026-09-23; built the same day).** Before Codex models an
   item, `tools/item_editor/concepts.py` generates concept art through the OpenAI Images API
   (`/v1/images/edits` with the item's current render as reference), the owner picks one, and the

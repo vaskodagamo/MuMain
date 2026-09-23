@@ -1,0 +1,11 @@
+$ /Users/webproduktion3/Documents/claude-test-mumain/MuMain/out/build/macos-arm64/tools/bmdconv/Release/bmdconv info /Users/webproduktion3/Documents/claude-test-mumain/MuMain-items-style-pilot/assets-work/Items/pilot/Axe01/B/Axe01.bmd
+
+model /Users/webproduktion3/Documents/claude-test-mumain/MuMain-items-style-pilot/assets-work/Items/pilot/Axe01/B/Axe01.bmd
+  name field: Data2\Item\Axe\axe02.smd  version: 12
+  meshes: 1  bones: 1  actions: 1  triangles: 402
+  bounds (bind pose): min -2.27 -93.89 -22.25  max 3.22 13.31 5.65  size 5.49 107.21 27.90
+  mesh 0: triangles=402 vertices=211 normals=154 uvs=180 texture=Axes02.jpg
+  bone 0: "Box06" parent=-1
+  action 0: keys=1 lock=0
+
+exit_code=0

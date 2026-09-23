@@ -1,0 +1,238 @@
+{
+  "model": "Wing01",
+  "variant": "B",
+  "source_commit": "6f93a708",
+  "original_bmd": "src/bin/Data/Item/Wing01.bmd",
+  "original_sha256": "acd9941f628824aa7cfb1d4716c63487e4e6bd0334705757df2beb828004d15c",
+  "exported_bmd": "Wing01.bmd",
+  "exported_bmd_sha256": "840664fc60cbc09b48da3e5aedaa30c49584c67c373b6341bbcf642443d28017",
+  "textures": [
+    {
+      "source_image": "elfin_wing.jpg",
+      "source_image_sha256": "24454e003de6e65d24d38960ea01cbc65322920ddb4cc610eac3c4500ae5c49a",
+      "game_file": "elfin_wing.OZJ",
+      "game_file_sha256": "790527864e553066726c19269fe94f7bc0717bbf1fa837b5887aeba9f5cff862",
+      "size_px": [
+        256,
+        256
+      ]
+    }
+  ],
+  "original": {
+    "triangle_count": 16,
+    "mesh_count": 1,
+    "bone_count": 11,
+    "action_count": 1,
+    "action_key_counts": [
+      7
+    ],
+    "bounds_bind_pose": {
+      "min": [
+        -93.32,
+        3.38,
+        -58.41
+      ],
+      "max": [
+        93.46,
+        8.21,
+        58.55
+      ],
+      "size": [
+        186.78,
+        4.82,
+        116.96
+      ]
+    },
+    "texture_names": [
+      "elfin_wing.jpg"
+    ]
+  },
+  "export": {
+    "mesh_count": 1,
+    "bone_count": 11,
+    "action_count": 1,
+    "triangle_count": 380,
+    "bone_order": [
+      [
+        0,
+        "Line01",
+        -1
+      ],
+      [
+        1,
+        "Bone01",
+        -1
+      ],
+      [
+        2,
+        "Bone02",
+        1
+      ],
+      [
+        3,
+        "Bone03",
+        2
+      ],
+      [
+        4,
+        "Bone04",
+        1
+      ],
+      [
+        5,
+        "Bone05",
+        4
+      ],
+      [
+        6,
+        "Bone06",
+        1
+      ],
+      [
+        7,
+        "Bone07",
+        6
+      ],
+      [
+        8,
+        "Bone08",
+        1
+      ],
+      [
+        9,
+        "Bone09",
+        8
+      ],
+      [
+        10,
+        "Box02",
+        1
+      ]
+    ],
+    "action_key_counts": [
+      7
+    ],
+    "texture_names": [
+      "elfin_wing.jpg"
+    ],
+    "bounds": {
+      "min": [
+        -93.32,
+        3.38,
+        -58.41
+      ],
+      "max": [
+        93.46,
+        8.21,
+        58.55
+      ]
+    },
+    "texture_name": "elfin_wing.jpg"
+  },
+  "source_blend": {
+    "model": "Wing01",
+    "candidate_mesh_objects": 1,
+    "mesh_name": "Wing01",
+    "vertices": 209,
+    "polygons": 380,
+    "triangles": 380,
+    "bounds_min": [
+      -93.3219985961914,
+      3.384000062942505,
+      -58.40700149536133
+    ],
+    "bounds_max": [
+      93.45500183105469,
+      8.206000328063965,
+      58.55400085449219
+    ],
+    "location": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "scale": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "rotation_euler": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "materials": [
+      "elfin_wing.jpg"
+    ],
+    "uv_layers": [
+      "UVMap"
+    ],
+    "max_vertex_group_assignments": 1,
+    "bone_order_metadata": [
+      "Line01",
+      "Bone01",
+      "Bone02",
+      "Bone03",
+      "Bone04",
+      "Bone05",
+      "Bone06",
+      "Bone07",
+      "Bone08",
+      "Bone09",
+      "Box02"
+    ],
+    "bone_count": 11,
+    "action_meta": {
+      "Wing01_a00": {
+        "index": 0,
+        "lock": false
+      }
+    },
+    "active_action": "Wing01_skeleton",
+    "active_action_frame_range": [
+      0.0,
+      6.0
+    ]
+  },
+  "checks": {
+    "bmdconv_validate_mesh": {
+      "command": "/Users/webproduktion3/Documents/claude-test-mumain/MuMain/out/build/macos-arm64/tools/bmdconv/Release/bmdconv validate /private/var/folders/8p/y7qf5mcn3zz__8r7hssc53x40000gn/T/mu_export_j7i6k1gv/Wing01_mu_export.smd",
+      "exit_code": 0,
+      "output": "/private/var/folders/8p/y7qf5mcn3zz__8r7hssc53x40000gn/T/mu_export_j7i6k1gv/Wing01_mu_export.smd: bones=11 frames=1 triangles=380 materials=1\nOK"
+    },
+    "bmdconv_validate_animation": {
+      "command": "/Users/webproduktion3/Documents/claude-test-mumain/MuMain/out/build/macos-arm64/tools/bmdconv/Release/bmdconv validate /private/var/folders/8p/y7qf5mcn3zz__8r7hssc53x40000gn/T/mu_export_j7i6k1gv/anims/Wing01_a00.smd --animation",
+      "exit_code": 0,
+      "output": "/private/var/folders/8p/y7qf5mcn3zz__8r7hssc53x40000gn/T/mu_export_j7i6k1gv/anims/Wing01_a00.smd: bones=11 frames=7 triangles=0 materials=0\nOK"
+    },
+    "bmdconv_compare": {
+      "command": "/Users/webproduktion3/Documents/claude-test-mumain/MuMain/out/build/macos-arm64/tools/bmdconv/Release/bmdconv compare /Users/webproduktion3/Documents/claude-test-mumain/MuMain-items-style-pilot/src/bin/Data/Item/Wing01.bmd /Users/webproduktion3/Documents/claude-test-mumain/MuMain-items-style-pilot/assets-work/Items/pilot/Wing01/B/Wing01.bmd",
+      "exit_code": 2,
+      "output": "meshes 1 vs 1, bones 11 vs 11, actions 1 vs 1, triangles 16 vs 380\nunmatched triangles: 16  max corner distance: 0.0000  max bone distance: 0.0000  differing bone names: 0\nDIFFERENT"
+    },
+    "bmdconv_info": {
+      "command": "/Users/webproduktion3/Documents/claude-test-mumain/MuMain/out/build/macos-arm64/tools/bmdconv/Release/bmdconv info /Users/webproduktion3/Documents/claude-test-mumain/MuMain-items-style-pilot/assets-work/Items/pilot/Wing01/B/Wing01.bmd",
+      "exit_code": 0,
+      "output": "model /Users/webproduktion3/Documents/claude-test-mumain/MuMain-items-style-pilot/assets-work/Items/pilot/Wing01/B/Wing01.bmd\n  name field: Data2\\Item\\Wing\\elfin_wing.smd  version: 12\n  meshes: 1  bones: 11  actions: 1  triangles: 380\n  bounds (bind pose): min -93.32 3.38 -58.41  max 93.46 8.21 58.55  size 186.78 4.82 116.96\n  mesh 0: triangles=380 vertices=209 normals=102 uvs=160 texture=elfin_wing.jpg\n  bone 0: \"Line01\" parent=-1\n  bone 1: \"Bone01\" parent=-1\n  bone 2: \"Bone02\" parent=1\n  bone 3: \"Bone03\" parent=2\n  bone 4: \"Bone04\" parent=1\n  bone 5: \"Bone05\" parent=4\n  bone 6: \"Bone06\" parent=1\n  bone 7: \"Bone07\" parent=6\n  bone 8: \"Bone08\" parent=1\n  bone 9: \"Bone09\" parent=8\n  bone 10: \"Box02\" parent=1\n  action 0: keys=7 lock=0"
+    },
+    "mu_texture_check": {
+      "command": "python3 /Users/webproduktion3/Documents/claude-test-mumain/MuMain-items-style-pilot/tools/mu_texture.py check /Users/webproduktion3/Documents/claude-test-mumain/MuMain-items-style-pilot/assets-work/Items/pilot/Wing01/B/elfin_wing.OZJ",
+      "exit_code": 0,
+      "output": "OK /Users/webproduktion3/Documents/claude-test-mumain/MuMain-items-style-pilot/assets-work/Items/pilot/Wing01/B/elfin_wing.OZJ"
+    },
+    "triangle_budget_passed": true,
+    "texture_dimensions_power_of_two_max_1024": true,
+    "texture_is_256x256": true,
+    "mesh_count_preserved": true,
+    "texture_names_and_suffixes_preserved": true,
+    "bone_order_names_and_parents_match": true,
+    "action_count_and_key_counts_match": true,
+    "bone_motion_matches_within_0_0001_and_no_name_diffs": true,
+    "bind_bounds_preserved_within_0_02_due_to_bmdconv_precision": true,
+    "source_bounds_preserved_within_0_006": true,
+    "source_transform_identity": true,
+    "source_has_uvs_and_one_bone_assignment_max": true
+  },
+  "comparison_interpretation": "DIFFERENT is expected because the pilot intentionally remodels geometry; the compare report confirms equal mesh, bone and action counts and zero bone motion/name difference.",
+  "overall_required_checks_passed": true
+}

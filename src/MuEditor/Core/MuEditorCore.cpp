@@ -12,6 +12,7 @@
 #include "ViewCapture.h"
 #include "../Config/MuEditorConfig.h"
 #include "../MuEditor/UI/Common/MuEditorCenterPaneUI.h"
+#include "../MuEditor/UI/ItemEditor/ItemPreview.h"
 #include "../MuEditor/UI/ItemEditor/MuItemEditorUI.h"
 #include "../MuEditor/UI/SkillEditor/MuSkillEditorUI.h"
 #include "../MuEditor/UI/DevEditor/DevEditorUI.h"
@@ -437,6 +438,9 @@ void CMuEditorCore::Shutdown()
 
     // Save skill editor preferences before shutting down
     g_MuSkillEditorUI.SaveColumnPreferences();
+
+    // The Item Editor preview's render target and character, while the renderer and engine still run.
+    g_ItemPreview.Release();
 
     mu::WaitForSDLGpuIdle();
     ImGui_ImplSDLGPU3_Shutdown();
