@@ -7,23 +7,28 @@ Per item, `--variants N` images are made:
   hints distinct  one request per variant, each with its own "## variant <i>" hint of
                   concept_prompt.md (v1 faithful refresh, v2 stronger silhouette, v3 more ornate)
 
+A refine batch (concept_refine.py) starts from one earlier variant per item: its settings default
+to the parent batch's (explicit flags still win) and every request attaches two images.
+
 batch.json ("mu-item-concept-batch/1") holds the settings, every item with its requests (prompt,
-n, variant numbers, estimate) and, after a run, each request's result (request id, usage, actual
-cost, error).
+n, variant numbers, estimate, the attached images and, for a refine, the parent) and, after a
+run, each request's result (request id, usage, actual cost, error).
 """
 
 from pathlib import Path
 import datetime
 import json
+import os
 import re
 
 import concept_cost
+import concept_output
 import concept_prompt
 import openai_images
 
 SCHEMA = 'mu-item-concept-batch/1'
 BATCH_FILE = 'batch.json'
-REFERENCE_COUNT = 1
+REFERENCE_FILE = concept_output.REFERENCE_FILE
 OUTPUT_FORMAT = 'png'
 SHEET_SIZE = '1536x1024'
 SINGLE_SIZE = '1024x1024'
@@ -39,24 +44,40 @@ class BatchError(ValueError):
     pass
 
 
+PRESET_FIELDS = ('model', 'quality', 'variants', 'hints', 'ref_size')
+VIEW_FIELDS = ('sheet', 'size', 'background')
+
+
 def preset_value(args, preset, name):
     value = getattr(args, name, None)
     return preset[name] if value is None else value
 
 
-def resolve_settings(args, prices, sections):
-    """Model, quality, size, ... from the preset and the explicit flags."""
-    preset_name = args.preset or prices['default_preset']
-    preset = prices['presets'][preset_name]
+def base_preset(args, prices, inherited):
+    """(name, values): the explicit --preset, else the inherited settings, else the default preset."""
+    if args.preset or not inherited:
+        name = args.preset or prices['default_preset']
+        return name, prices['presets'][name]
+    return inherited.get('preset'), {name: inherited[name] for name in PRESET_FIELDS}
+
+
+def resolve_settings(args, prices, sections, inherited=None):
+    """Model, quality, size, ... from the preset (or the inherited settings) and the explicit flags.
+
+    The view (sheet, size, background) of `inherited` always carries over unless a flag sets it.
+    """
+    preset_name, preset = base_preset(args, prices, inherited)
+    view = {name: inherited[name] for name in VIEW_FIELDS} if inherited else {}
+    sheet = bool(args.sheet or view.get('sheet'))
     model = preset_value(args, preset, 'model')
     config = concept_cost.model_config(prices, model)
     single_background = BACKGROUND_SINGLE if config['transparent_background'] else BACKGROUND_SHEET
     settings = {
         'preset': preset_name, 'model': model, 'quality': preset_value(args, preset, 'quality'),
         'variants': preset_value(args, preset, 'variants'), 'hints': preset_value(args, preset, 'hints'),
-        'ref_size': preset_value(args, preset, 'ref_size'), 'sheet': bool(args.sheet),
-        'size': args.size or (SHEET_SIZE if args.sheet else SINGLE_SIZE),
-        'background': args.background or (BACKGROUND_SHEET if args.sheet else single_background),
+        'ref_size': preset_value(args, preset, 'ref_size'), 'sheet': sheet,
+        'size': args.size or view.get('size') or (SHEET_SIZE if sheet else SINGLE_SIZE),
+        'background': args.background or view.get('background') or (BACKGROUND_SHEET if sheet else single_background),
         'output_format': OUTPUT_FORMAT, 'input_fidelity': config['input_fidelity'],
     }
     check_settings(settings, config, sections)
@@ -104,17 +125,31 @@ def request_groups(settings):
     return [(concept_prompt.HINTS_SAME, numbers[i:i + step]) for i in range(0, len(numbers), step)]
 
 
+def view_of(settings):
+    return concept_prompt.VIEW_SHEET if settings['sheet'] else concept_prompt.VIEW_SINGLE
+
+
+def make_request(number, hint, variants, prompt, settings, prices, images=(REFERENCE_FILE,)):
+    """One request record; `images` are the files of <batch>/<key>/ it attaches, in order."""
+    estimate = concept_cost.estimate_request(prices, settings['model'], settings['size'], settings['quality'],
+                                             len(variants), len(prompt), len(images), settings['ref_size'])
+    return {'id': f'r{number}', 'hint': hint, 'prompt': prompt, 'n': len(variants), 'variants': variants,
+            'images': list(images), 'estimate': estimate, 'result': None}
+
+
+def request_images(request):
+    """The attached files of a request (batches before refine only had the reference)."""
+    return request.get('images') or [REFERENCE_FILE]
+
+
 def plan_subject(subject, settings, prices, template, notes):
     sections, style = template
-    view = concept_prompt.VIEW_SHEET if settings['sheet'] else concept_prompt.VIEW_SINGLE
     note = note_for(notes, subject)
     requests = []
     for hint, variants in request_groups(settings):
-        prompt = concept_prompt.build_prompt(sections, style, subject, view, settings['hints'], hint, note)
-        estimate = concept_cost.estimate_request(prices, settings['model'], settings['size'], settings['quality'],
-                                                 len(variants), len(prompt), REFERENCE_COUNT, settings['ref_size'])
-        requests.append({'id': f'r{len(requests) + 1}', 'hint': hint, 'prompt': prompt, 'n': len(variants),
-                         'variants': variants, 'estimate': estimate, 'result': None})
+        prompt = concept_prompt.build_prompt(sections, style, subject, view_of(settings), settings['hints'], hint,
+                                             note)
+        requests.append(make_request(len(requests) + 1, hint, variants, prompt, settings, prices))
     return dict(subject, note=note, requests=requests)
 
 
@@ -142,9 +177,13 @@ def batch_id(slug, now=None):
     return f'{now.strftime(BATCH_TIME_FORMAT)}-{slugify(slug)}'
 
 
-def new_batch(batch, settings, subjects, now=None):
+KIND_GENERATE = 'generate'
+KIND_REFINE = 'refine'
+
+
+def new_batch(batch, settings, subjects, now=None, kind=KIND_GENERATE):
     now = now or datetime.datetime.now().astimezone()
-    return {'schema': SCHEMA, 'batch': batch, 'created': now.isoformat(timespec='seconds'),
+    return {'schema': SCHEMA, 'batch': batch, 'kind': kind, 'created': now.isoformat(timespec='seconds'),
             'settings': settings, 'subjects': subjects}
 
 
@@ -158,7 +197,14 @@ def load_batch(batch_dir):
     return batch
 
 
-def save_batch(batch_dir, batch):
-    path = Path(batch_dir) / BATCH_FILE
-    path.write_text(json.dumps(batch, indent=1) + '\n', encoding='utf-8')
+def write_json_atomic(path, value):
+    """Write JSON through a temporary file and a rename: readers never see half a file."""
+    path = Path(path)
+    temporary = path.with_name(f'.{path.name}.tmp')
+    temporary.write_text(json.dumps(value, indent=1) + '\n', encoding='utf-8')
+    os.replace(temporary, path)
     return path
+
+
+def save_batch(batch_dir, batch):
+    return write_json_atomic(Path(batch_dir) / BATCH_FILE, batch)

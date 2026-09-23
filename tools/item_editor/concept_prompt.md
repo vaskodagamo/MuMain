@@ -12,6 +12,11 @@ A prompt is built from these sections, in this order, separated by blank lines:
    `## variant 1`, `## variant 2`, ... with `--hints distinct` (one request per variant)
 5. `## note`, only when the owner passed `--note`
 
+A refine (`run --from <batch>/<key>/<variant> --note "comment"`, a new round from one earlier
+concept) uses `## refine` (with the comment as `$note`), then the family section and the view
+section; no `## base`, no variant hint. It attaches two images: first the concept to revise, then
+the item's current in-game model.
+
 Placeholders (`$name`): `$name` item name, `$keys` catalog keys, `$family` family label,
 `$tier` 1..7, `$tier_role` (e.g. "Heroic / gilded"), `$palette` the tier's colours,
 `$materials` the study's material rules, `$note` the owner's note. Write `$$` for a literal `$`.
@@ -99,3 +104,12 @@ Variation: more ornate within the tier - richer trim, engraving and accents that
 ## note
 
 Owner's note: $note
+
+## refine
+
+A revision round of game-ready concept art for one item of a fantasy MMORPG with low-poly models (at most 1500 triangles, one hand-painted diffuse texture): "$name", a $family, tier $tier of 7 ($tier_role).
+The first attached image is the concept to revise. The second attached image is the item's current in-game model; use it only for the proportions.
+Revise the attached concept: $note
+Keep everything else as in the first image: the same design, colours and materials, the same view and camera angle, the same background, lighting and hand-painted style. Keep the proportions constraints of the item: silhouette, length-to-width ratio, grip or attachment point and orientation stay as in the in-game model, so it still fits the same model origin, hand position and inventory slot.
+Tier palette ($tier_role): $palette.
+No text, letters, logos, watermarks, signatures, frames, hands, characters or scenery; show only the item.
