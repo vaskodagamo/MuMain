@@ -67,15 +67,24 @@ std::vector<Items::BrowseRow> BuildBrowseRows(const Assets::ItemCatalog* catalog
     return rows;
 }
 
-void ApplyStatuses(std::vector<Items::BrowseRow>& rows, const std::filesystem::path& repoRoot, DigestCache& digests)
+void ApplyStatuses(std::vector<Items::BrowseRow>& rows, const std::filesystem::path& repoRoot, DigestCache& digests,
+                   const std::map<std::string, std::vector<Assets::RequestRef>>* scannedRequests)
 {
     const auto currentSha256 = [&](const std::string& bmd) -> std::string
     { return DigestOf(repoRoot, bmd, digests); };
+    const std::vector<Assets::RequestRef> noRequests;
     for (Items::BrowseRow& row : rows)
     {
         if (row.catalog == nullptr || repoRoot.empty())
             continue;
-        row.status = Items::ComputeStatus(*row.catalog, currentSha256);
+        if (scannedRequests == nullptr)
+        {
+            row.status = Items::ComputeStatus(*row.catalog, currentSha256);
+            continue;
+        }
+        const auto requests = scannedRequests->find(row.key);
+        row.status = Items::ComputeStatus(*row.catalog, currentSha256,
+                                          requests != scannedRequests->end() ? requests->second : noRequests);
     }
 }
 } // namespace Editor::ItemEditor

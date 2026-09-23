@@ -5,6 +5,7 @@
 #include "ItemBrowseTab.h"
 
 #include "ItemBrowseDetails.h"
+#include "ItemRequestWatch.h"
 #include "ItemThumbnailView.h"
 
 #include "Assets/EditorText.h"
@@ -34,7 +35,8 @@ constexpr float STATUS_DOT_RADIUS = 5.0f;
 constexpr float NAME_COLUMN_WEIGHT = 3.0f;
 constexpr float CLASSES_COLUMN_WEIGHT = 2.0f;
 constexpr int LIST_COLUMN_COUNT = 8;
-constexpr float KEY_COLUMN_WIDTH = 56.0f; // "13-127"
+constexpr float KEY_COLUMN_WIDTH = 56.0f;     // "13-127"
+constexpr float STATUS_COLUMN_WIDTH = 95.0f;  // a dot and "delivered"
 constexpr float SORT_COMBO_WIDTH = 170.0f;
 constexpr float SCROLL_TARGET_RATIO = 0.3f; // a selected item scrolled to sits in the upper third
 constexpr float TIER_DRAG_SPEED = 0.05f;    // tiers per pixel of mouse drag
@@ -62,6 +64,7 @@ const StatusChoice STATUS_CHOICES[] = {
     {"original", ItemStatus::Original},
     {"changed", ItemStatus::Changed},
     {"at Codex", ItemStatus::AtCodex},
+    {"delivered", ItemStatus::Delivered},
     {"unknown", ItemStatus::Unknown},
 };
 
@@ -80,6 +83,7 @@ constexpr ImU32 STATUS_COLORS[] = {
     IM_COL32(90, 200, 110, 255),  // original
     IM_COL32(240, 170, 60, 255),  // changed
     IM_COL32(90, 150, 255, 255),  // at Codex
+    IM_COL32(200, 120, 255, 255), // delivered
     IM_COL32(120, 120, 120, 255), // unknown
 };
 constexpr ImVec4 NOTE_COLOR{0.75f, 0.75f, 0.75f, 1.0f};
@@ -153,6 +157,12 @@ void CItemBrowseTab::EnsureCatalog()
     }
 }
 
+const Editor::Assets::ItemCatalog* CItemBrowseTab::Catalog()
+{
+    EnsureCatalog();
+    return m_load.catalog ? &*m_load.catalog : nullptr;
+}
+
 std::string CItemBrowseTab::CatalogNote() const
 {
     if (!m_repoNote.empty())
@@ -173,7 +183,10 @@ void CItemBrowseTab::RebuildRows()
 
 void CItemBrowseTab::RefreshStatuses()
 {
-    Editor::ItemEditor::ApplyStatuses(m_rows, Editor::Files::RepoRoot().root, m_digests);
+    const bool scanned = !g_ItemRequestWatch.RequestsDir().empty();
+    Editor::ItemEditor::ApplyStatuses(m_rows, Editor::Files::RepoRoot().root, m_digests,
+                                      scanned ? &g_ItemRequestWatch.ByItem() : nullptr);
+    m_requestsVersion = g_ItemRequestWatch.Version();
 }
 
 void CItemBrowseTab::UpdateShown()
@@ -207,6 +220,11 @@ void CItemBrowseTab::Render(int& selectedType)
     EnsureCatalog();
     if (!m_rowsBuilt)
         RebuildRows();
+    if (m_requestsVersion != g_ItemRequestWatch.Version())
+    {
+        RefreshStatuses(); // a request was filed, withdrawn or delivered
+        m_shownDirty = true;
+    }
     if (selectedType != m_lastSelected)
     {
         m_lastSelected = selectedType; // picked in the Stats table
@@ -375,7 +393,7 @@ void CItemBrowseTab::RenderList(int& selectedType)
 {
     constexpr ImGuiTableFlags flags = ImGuiTableFlags_RowBg | ImGuiTableFlags_BordersInnerV |
                                       ImGuiTableFlags_ScrollY | ImGuiTableFlags_Resizable;
-    if (!ImGui::BeginTable("BrowseList", LIST_COLUMN_COUNT, flags))
+    if (!ImGui::BeginTable("ItemBrowseList", LIST_COLUMN_COUNT, flags))
         return;
     const float thumbSize = Scaled(LIST_THUMB_SIZE);
     ImGui::TableSetupScrollFreeze(0, 1);
@@ -386,7 +404,7 @@ void CItemBrowseTab::RenderList(int& selectedType)
     ImGui::TableSetupColumn("Drop lvl", ImGuiTableColumnFlags_WidthFixed);
     ImGui::TableSetupColumn("Req lvl", ImGuiTableColumnFlags_WidthFixed);
     ImGui::TableSetupColumn("Classes", ImGuiTableColumnFlags_WidthStretch, CLASSES_COLUMN_WEIGHT);
-    ImGui::TableSetupColumn("Status", ImGuiTableColumnFlags_WidthFixed);
+    ImGui::TableSetupColumn("Status", ImGuiTableColumnFlags_WidthFixed, Scaled(STATUS_COLUMN_WIDTH));
     ImGui::TableHeadersRow();
 
     ImGuiListClipper clipper;
@@ -512,7 +530,8 @@ void CItemBrowseTab::RenderDetailsPanel(int selectedType)
         ImGui::TextColored(NOTE_COLOR, "Select an item to see its facts.");
         return;
     }
-    Editor::ItemEditor::RenderItemDetails(*row, CatalogNote(), m_filter.baseClass, m_filter.classStage);
+    const Editor::Assets::ItemCatalog* catalog = m_load.catalog ? &*m_load.catalog : nullptr;
+    Editor::ItemEditor::RenderItemDetails(*row, CatalogNote(), m_filter.baseClass, m_filter.classStage, catalog);
 }
 
 #endif // _EDITOR

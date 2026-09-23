@@ -6,6 +6,7 @@
 #include "JsonFields.h"
 
 #include <algorithm>
+#include <cstdlib>
 #include <fstream>
 #include <iterator>
 
@@ -27,6 +28,9 @@ constexpr const char* ITEM_CATALOG_SCHEMA = "mu-item-catalog/1";
 constexpr const char* ASSETS_FOLDER = "assets-work";
 constexpr const char* ITEMS_FOLDER = "Items";
 constexpr const char* CATALOG_FILE_NAME = "catalog.json";
+constexpr const char* CLIENT_REVIEW_FILE_NAME = "client-review.json";
+constexpr const char* CONCEPTS_FOLDER = "concepts";
+constexpr const char* CONCEPT_FILE_NAME = "concept.jpg";
 
 // The catalog's class keys in RequireClass order.
 constexpr const char* CLASS_KEYS[ITEM_CLASS_COUNT] = {"dw", "dk", "elf", "mg", "dl", "sum", "rf"};
@@ -105,6 +109,24 @@ std::optional<ClientReview> ParseClientReview(const json& entry)
     return ClientReview{Text(*it, "verdict"), Text(*it, "note"), Text(*it, "date")};
 }
 
+void ParseArmourSet(const json& entry, ItemCatalogEntry& item)
+{
+    const auto set = entry.find("armour_set");
+    if (set == entry.end() || !set->is_object())
+        return;
+    item.armourSet = Int(*set, "index", 0);
+    item.armourSetParts = Json::TextList(*set, "parts");
+}
+
+std::map<std::string, std::vector<std::string>> ParseSharedWith(const json& entry)
+{
+    std::map<std::string, std::vector<std::string>> shared;
+    const json& sharedWith = Member(entry, "shared_with");
+    for (const auto& [container, consumers] : sharedWith.items())
+        shared[container] = Json::TextList(sharedWith, container.c_str());
+    return shared;
+}
+
 ItemCatalogEntry ParseItem(const json& entry)
 {
     ItemCatalogEntry item;
@@ -125,6 +147,8 @@ ItemCatalogEntry ParseItem(const json& entry)
     for (const json& request : Array(entry, "requests"))
         item.requests.push_back({Text(request, "id"), Text(request, "status"), Text(request, "assigned_to")});
     item.clientReview = ParseClientReview(entry);
+    ParseArmourSet(entry, item);
+    item.sharedWith = ParseSharedWith(entry);
     return item;
 }
 } // namespace
@@ -136,6 +160,17 @@ const ItemCatalogEntry* ItemCatalog::FindByType(int type) const
     return it != items.end() && it->Type() == type ? &*it : nullptr;
 }
 
+const ItemCatalogEntry* ItemCatalog::FindByKey(const std::string& key) const
+{
+    const std::size_t dash = key.find('-');
+    if (dash == std::string::npos)
+        return nullptr;
+    const int group = std::atoi(key.substr(0, dash).c_str());
+    const int index = std::atoi(key.substr(dash + 1).c_str());
+    const ItemCatalogEntry* item = FindByType(group * ITEMS_PER_GROUP + index);
+    return item != nullptr && item->key == key ? item : nullptr;
+}
+
 fs::path ItemAssetsDir(const fs::path& repoRoot)
 {
     return repoRoot / ASSETS_FOLDER / ITEMS_FOLDER;
@@ -144,6 +179,16 @@ fs::path ItemAssetsDir(const fs::path& repoRoot)
 fs::path ItemCatalogFile(const fs::path& repoRoot)
 {
     return ItemAssetsDir(repoRoot) / CATALOG_FILE_NAME;
+}
+
+fs::path ItemClientReviewFile(const fs::path& repoRoot)
+{
+    return ItemAssetsDir(repoRoot) / CLIENT_REVIEW_FILE_NAME;
+}
+
+fs::path ItemConceptImage(const fs::path& repoRoot, const std::string& key)
+{
+    return ItemAssetsDir(repoRoot) / CONCEPTS_FOLDER / Editor::Text::Utf8Path(key) / CONCEPT_FILE_NAME;
 }
 
 bool ParseItemCatalog(const std::string& text, ItemCatalog& out, std::string& error)

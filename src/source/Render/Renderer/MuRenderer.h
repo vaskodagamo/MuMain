@@ -407,6 +407,18 @@ public:
     // scratch model slot for a different file) must wait for this to go false
     // first, or the eventual replay reads a freed texture/sampler.
     [[nodiscard]] virtual bool HasPendingOffscreenCaptures() const { return false; }
+
+    // Reads back an offscreen capture texture (from BeginOffscreenCapture) as it is
+    // at the end of the next frame the renderer submits, after that frame's
+    // captures were replayed into it - e.g. the Item Editor's clean preview
+    // captures. One request at a time: false while another one is pending or not
+    // yet consumed, and for unknown textures.
+    [[nodiscard]] virtual bool RequestTexturePixels(std::uint32_t /*textureId*/) { return false; }
+    // True until the requested frame was read back (or the read-back failed).
+    [[nodiscard]] virtual bool IsTexturePixelsPending() const { return false; }
+    // The requested pixels (top-down RGB) once read back; false while pending and
+    // after a failure (then IsTexturePixelsPending() is false as well).
+    [[nodiscard]] virtual bool ConsumeTexturePixels(FramePixels& /*pixels*/) { return false; }
 #endif // _EDITOR
 
     // -----------------------------------------------------------------------

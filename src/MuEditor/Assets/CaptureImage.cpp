@@ -13,6 +13,7 @@ namespace
 {
 constexpr std::size_t RGB_BYTES = 3;
 
+// Frees a turbojpeg compressor or decompressor handle.
 struct CompressorFree
 {
     void operator()(void* handle) const
@@ -102,6 +103,45 @@ std::vector<std::uint8_t> EncodeJpeg(const mu::FramePixels& frame, int quality)
         return {};
     jpeg.resize(jpegSize);
     return jpeg;
+}
+bool DecodeJpeg(const std::vector<std::uint8_t>& jpeg, mu::FramePixels& frame)
+{
+    frame = {};
+    Compressor decompressor(tjInitDecompress());
+    if (!decompressor || jpeg.empty())
+        return false;
+    unsigned char* bytes = const_cast<unsigned char*>(jpeg.data());
+    const auto size = static_cast<unsigned long>(jpeg.size());
+    int width = 0;
+    int height = 0;
+    int subsampling = 0;
+    int colorspace = 0;
+    if (tjDecompressHeader3(decompressor.get(), bytes, size, &width, &height, &subsampling, &colorspace) != 0 ||
+        width <= 0 || height <= 0)
+        return false;
+    std::vector<std::uint8_t> rgb(static_cast<std::size_t>(width) * height * RGB_BYTES);
+    if (tjDecompress2(decompressor.get(), bytes, size, rgb.data(), width, 0, height, TJPF_RGB, 0) != 0)
+        return false;
+    frame.width = static_cast<std::uint32_t>(width);
+    frame.height = static_cast<std::uint32_t>(height);
+    frame.rgb = std::move(rgb);
+    return true;
+}
+
+std::vector<std::uint8_t> ToRgba(const mu::FramePixels& frame)
+{
+    constexpr std::size_t RGBA_BYTES = 4;
+    constexpr std::uint8_t OPAQUE = 255;
+    if (!IsValid(frame))
+        return {};
+    const std::size_t pixels = static_cast<std::size_t>(frame.width) * frame.height;
+    std::vector<std::uint8_t> rgba(pixels * RGBA_BYTES);
+    for (std::size_t i = 0; i < pixels; ++i)
+    {
+        std::copy_n(frame.rgb.data() + i * RGB_BYTES, RGB_BYTES, rgba.data() + i * RGBA_BYTES);
+        rgba[i * RGBA_BYTES + RGB_BYTES] = OPAQUE;
+    }
+    return rgba;
 }
 } // namespace Editor::Capture
 

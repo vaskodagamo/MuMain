@@ -7,6 +7,7 @@
 #include "Assets/ItemBrowse.h"
 #include "Assets/ItemCatalog.h"
 
+#include <cstdint>
 #include <map>
 #include <string>
 #include <vector>
@@ -20,6 +21,9 @@ class CItemBrowseTab
 public:
     // Draws the tab. `selectedType` is the Item Editor's selected item (-1: none).
     void Render(int& selectedType);
+
+    // The item catalog (null without a checkout or catalog.json).
+    const Editor::Assets::ItemCatalog* Catalog();
 
     // The tab was switched to: re-read the client table (the Stats table may have
     // changed names or classes) and scroll to the selected item.
@@ -56,6 +60,7 @@ private:
     std::map<std::string, int> m_familyCounts;
     Editor::ItemEditor::DigestCache m_digests;
     bool m_rowsBuilt = false;
+    std::uint64_t m_requestsVersion = 0; // the request scan the statuses come from
     bool m_shownDirty = true;
 
     Editor::Items::BrowseFilter m_filter;

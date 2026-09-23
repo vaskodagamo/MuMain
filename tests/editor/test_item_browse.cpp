@@ -13,6 +13,7 @@ using namespace Editor::Items;
 using Editor::Assets::ItemCatalog;
 using Editor::Assets::ItemCatalogEntry;
 using Editor::Assets::ItemModel;
+using Editor::Assets::RequestRef;
 
 namespace
 {
@@ -207,7 +208,7 @@ TEST_CASE("family counts follow every filter but the family [editor][items]")
     CHECK(CountFamilies(fixture.rows, filter) == std::map<std::string, int>{{"swords", 4}});
 }
 
-TEST_CASE("status: at Codex, then changed, then original [editor][items]")
+TEST_CASE("status: delivered, at Codex, then changed, then original [editor][items]")
 {
     ItemCatalogEntry item = Entry(0, "swords", 1, 1, 1);
     ItemModel model;
@@ -224,10 +225,26 @@ TEST_CASE("status: at Codex, then changed, then original [editor][items]")
     files.clear(); // a missing file is a change too
     CHECK(ComputeStatus(item, sha) == ItemStatus::Changed);
 
-    item.requests.push_back({"2026-09-23-0-0-upscale", "delivered", "codex-1"});
+    item.requests.push_back({"2026-09-23-0-0-upscale", "open", ""});
     CHECK(ComputeStatus(item, sha) == ItemStatus::AtCodex);
+    item.requests[0].status = "delivered";
+    CHECK(ComputeStatus(item, sha) == ItemStatus::Delivered);
     item.requests[0].status = "accepted";
     CHECK(ComputeStatus(item, sha) == ItemStatus::Changed);
+}
+
+TEST_CASE("status: the scanned requests folder wins over the catalog's list [editor][items]")
+{
+    ItemCatalogEntry item = Entry(0, "swords", 1, 1, 1);
+    item.requests.push_back({"2026-09-23-0-0-upscale", "open", ""}); // stale: withdrawn since
+    const auto sha = [](const std::string&) { return std::string(); };
+
+    const std::vector<RequestRef> scanned = {{"2026-09-23-0-0-upscale", "withdrawn", ""},
+                                             {"2026-09-24-0-0-repaint", "claimed", "codex-2"}};
+    CHECK(ComputeStatus(item, sha, scanned) == ItemStatus::AtCodex);
+    CHECK(ComputeStatus(item, sha, {scanned[0]}) == ItemStatus::Original);
+    CHECK(ComputeStatus(item, sha, {}) == ItemStatus::Original);
+    CHECK(std::string(StatusLabel(ItemStatus::Delivered)) == "delivered");
 }
 
 TEST_CASE("class stages and the class summary [editor][items]")

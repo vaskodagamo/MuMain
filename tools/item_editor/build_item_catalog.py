@@ -395,6 +395,21 @@ def consumer_sort_key(consumer):
     return (0, *sort_key(consumer), '')
 
 
+REQUEST_SOURCE = 'assets-work/Items/requests/*/request.json'
+
+
+def without_requests(doc):
+    """The catalog without what it copies from the request folders (for --check)."""
+    doc = json.loads(json.dumps(doc))
+    doc.pop('requests', None)
+    doc.get('counts', {}).pop('requests', None)
+    if isinstance(doc.get('generated_from'), list):
+        doc['generated_from'] = [source for source in doc['generated_from'] if source != REQUEST_SOURCE]
+    for entry in doc.get('items', {}).values():
+        entry.pop('requests', None)
+    return doc
+
+
 def document(entries, table, models, openmu, requests, other_models, table_path):
     missing_models = sorted({m['bmd'] for e in entries.values() for m in e['models'] if not m['exists']})
     missing_textures = sorted({f'{m["bmd"]}: {name}' for e in entries.values() for m in e['models']
@@ -412,7 +427,7 @@ def document(entries, table, models, openmu, requests, other_models, table_path)
         if optional.exists():
             generated_from.append(relative(optional))
     if requests:
-        generated_from.append('assets-work/Items/requests/*/request.json')
+        generated_from.append(REQUEST_SOURCE)
     return {
         'schema': SCHEMA,
         'generated_by': 'tools/item_editor/build_item_catalog.py',
@@ -461,11 +476,17 @@ def main(argv=None):
         print(f'warning: {path} differs from HEAD; its original.revision describes the committed file')
     if args.check:
         current = args.output.read_text(encoding='utf-8') if args.output.exists() else ''
-        if current != text:
-            print(f'{relative(args.output)} is out of date; run tools/item_editor/build_item_catalog.py')
-            return 1
-        print(f'{relative(args.output)} is current')
-        return 0
+        if current == text:
+            print(f'{relative(args.output)} is current')
+            return 0
+        if current and without_requests(json.loads(current)) == without_requests(doc):
+            # Filing, claiming or deciding a request must not fail the build's tests: the Item
+            # Editor reads live request status from the folders; a rebuild refreshes the copy here.
+            print(f'{relative(args.output)} is current apart from request status; '
+                  'run tools/item_editor/build_item_catalog.py to refresh it')
+            return 0
+        print(f'{relative(args.output)} is out of date; run tools/item_editor/build_item_catalog.py')
+        return 1
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(text, encoding='utf-8')
     print(f'wrote {relative(args.output)} ({len(text) // 1024} KiB): {json.dumps(doc["counts"])}')

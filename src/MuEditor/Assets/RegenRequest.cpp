@@ -18,11 +18,14 @@ namespace
 {
 constexpr const char* WORLD_SCHEMA = "mu-regen-request/1";
 constexpr const char* WORLD_FILED_BY = "world editor";
+constexpr const char* ITEM_SCHEMA = "mu-item-regen-request/1";
+constexpr const char* ITEM_FILED_BY = "item editor";
+constexpr const char* ITEM_ASSETS_FOLDER = "Items";
+constexpr const char* ITEM_BRANCH_WORD = "item";
 constexpr const char* ASSETS_FOLDER = "assets-work/";
 constexpr const char* REQUESTS_FOLDER = "/requests";
 constexpr const char* STATUS_OPEN = "open";
 constexpr const char* CAPTURE_VARIANT = "current";
-constexpr const char* FORK_REPOSITORY = "vaskodagamo/MuMain";
 constexpr const char* BRANCH_PREFIX = "codex/";
 constexpr const char* WORKTREE_PREFIX = "../MuMain-";
 constexpr const char* REQUEST_BRANCH_WORD = "-req-";
@@ -49,7 +52,35 @@ std::vector<std::string> WorldProtectedPaths(const std::string& worldFolder)
     };
 }
 
+// The example list of assets-work/Items/requests/README.md.
+std::vector<std::string> ItemProtectedPaths()
+{
+    return {
+        "src/source/",
+        "src/MuEditor/",
+        "src/CMakeLists.txt",
+        "CMakeLists.txt",
+        "CMakePresets.json",
+        "cmake/",
+        "assets-work/Items/catalog.json",
+        "assets-work/Items/tiers.json",
+        "assets-work/Items/assignments.json",
+        "docs/agents/HANDOFF.md",
+    };
+}
 } // namespace
+
+RequestDomain ItemRequestDomain()
+{
+    RequestDomain domain;
+    domain.assetsFolder = ITEM_ASSETS_FOLDER;
+    domain.branchWord = ITEM_BRANCH_WORD;
+    domain.modelDataDirs = {"Item", "Player"};
+    domain.protectedPaths = ItemProtectedPaths();
+    domain.schema = ITEM_SCHEMA;
+    domain.filedBy = ITEM_FILED_BY;
+    return domain;
+}
 
 RequestDomain WorldRequestDomain(int world, const std::string& worldName)
 {
@@ -217,12 +248,11 @@ ordered_json EvidenceJson(const RequestDraft& draft)
 
 ordered_json HandoffJson(const RequestDraft& draft)
 {
-    const std::string name = draft.domain.branchWord + REQUEST_BRANCH_WORD + RequestName(draft.id);
     ordered_json json;
-    json["repo"] = FORK_REPOSITORY;
-    json["branch"] = BRANCH_PREFIX + name;
-    json["worktree"] = WORKTREE_PREFIX + name;
-    json["deliver_to"] = RequestFolderPath(draft.domain, draft.id) + DELIVERY_FOLDER;
+    json["repo"] = REQUEST_REPOSITORY;
+    json["branch"] = RequestBranch(draft.domain, draft.id);
+    json["worktree"] = RequestWorktree(draft.domain, draft.id);
+    json["deliver_to"] = RequestDeliveryPath(draft.domain, draft.id);
     json["push_allowed"] = draft.input.pushAllowed;
     json["claimed_by"] = nullptr;
     json["claimed_at"] = nullptr;
@@ -274,6 +304,21 @@ std::string RequestFolderPath(const RequestDomain& domain, const std::string& id
 std::string CapturePath(const RequestDomain& domain, const std::string& id, const std::string& fileName)
 {
     return RequestFolderPath(domain, id) + CAPTURES_FOLDER + fileName;
+}
+
+std::string RequestBranch(const RequestDomain& domain, const std::string& id)
+{
+    return BRANCH_PREFIX + domain.branchWord + REQUEST_BRANCH_WORD + RequestName(id);
+}
+
+std::string RequestWorktree(const RequestDomain& domain, const std::string& id)
+{
+    return WORKTREE_PREFIX + domain.branchWord + REQUEST_BRANCH_WORD + RequestName(id);
+}
+
+std::string RequestDeliveryPath(const RequestDomain& domain, const std::string& id)
+{
+    return RequestFolderPath(domain, id) + DELIVERY_FOLDER;
 }
 
 RequestScope ComputeScope(RequestKind kind, const std::vector<RequestTarget>& targets)

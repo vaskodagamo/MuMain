@@ -345,6 +345,31 @@ Status:
     readback yet (add an editor-only one, or crop a `ViewCapture` frame); scripted captures need
     setters for view, orbit, level and flags. For I6: a second preview scene and target in the
     same pass gives side by side; call `g_ItemPreview.Release()` after a model hot reload.
+- **I5 done (2026-09-23).** Ask Codex from the Item Editor; usage in `ITEM_EDITOR.md`.
+  - **Captures:** an editor-only read-back of an offscreen texture (`RequestTexturePixels`, SDL_gpu
+    is the only backend; it shares one download helper with the full-frame read-back, player
+    build unchanged). `ItemCaptureRun` takes 8-9 clean 1024 px JPEGs in about a second (front,
+    side, back, three-quarter, inventory, equipped, +0/+9/+13 excellent) and restores the owner's
+    preview settings.
+  - **Ask Codex dialog:** kind (set preselected for armour), priority, summary, change / keep /
+    avoid, push allowed, captures, the picked concept as `captures/ref-concept.jpg`, extra
+    reference images; warnings (HEAD not on origin, model differs from the catalog, open request
+    exists); writes the folder atomically (`ItemRequestDomain()`, `Assets/ItemRequest*`), runs
+    `validate_request.py` in the background and shows the git commands to copy. It never commits
+    or pushes.
+  - **Verdicts** (Looks good / Needs work -> `client-review.json`), **Requests tab** (live scan of
+    `assets-work/Items/requests/` every 1.5 s; Withdraw, Accept / Reject with notes ->
+    `owner-decision.json`, Re-file superseding a rejected request), live "at Codex" / "delivered"
+    in Browse. The Map Editor's request output is unchanged (shared folder/brief/JSON helpers).
+  - `build_item_catalog.py --check` ignores request status, so filing a request no longer makes
+    the tools tests fail until the catalog is rebuilt.
+  - Checked: 395/395 editor-build and 394/394 player-build tests, 87 tools tests; scripted
+    in-client run: Short Sword upscale and Small Shield redesign with a concept filed and
+    validated, Requests tab, withdraw, simulated delivery accepted / rejected / re-filed, verdicts,
+    armour opens as a set, Metal validation clean, `--world 1` unchanged. Not driven: the Add
+    image file dialog; no real delivery validated yet.
+  - Known: front/back captures show swords and shields edge-on (the preview's buttons); the
+    owner's decision must be committed on the worker's branch (the dialog shows the push).
 - **Concept images (added by the owner, 2026-09-23; built the same day).** Before Codex models an
   item, `tools/item_editor/concepts.py` generates concept art through the OpenAI Images API
   (`/v1/images/edits` with the item's current render as reference), the owner picks one, and the

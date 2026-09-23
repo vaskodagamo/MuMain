@@ -5,6 +5,9 @@
 #include "MuItemEditorUI.h"
 #include "ItemBrowseTab.h"
 #include "ItemEditorTable.h"
+#include "ItemRequestDialog.h"
+#include "ItemRequestWatch.h"
+#include "ItemRequestsTab.h"
 #include "ItemEditorActions.h"
 #include "ItemEditorPopups.h"
 #include "Data/GameData/ItemData/ItemFieldMetadata.h"
@@ -38,10 +41,12 @@ constexpr float MIN_HEIGHT = 300.0f;
 CMuItemEditorUI::CMuItemEditorUI()
     : m_selectedRow(-1)
     , m_activeTab(Tab::None)
+    , m_showBrowse(false)
     , m_wasDocked(false)
     , m_bFreezeColumns(false)
     , m_pTable(nullptr)
     , m_pBrowse(std::make_unique<CItemBrowseTab>())
+    , m_pRequests(std::make_unique<CItemRequestsTab>())
 {
     memset(m_szItemSearchBuffer, 0, sizeof(m_szItemSearchBuffer));
     m_pTable = new CItemEditorTable();
@@ -122,7 +127,10 @@ void CMuItemEditorUI::Render(bool& showEditor)
             g_MuEditorCore.SetHoveringUI(true);
         }
 
+        g_ItemRequestWatch.Update();
         RenderTabs();
+        // After the tabs: a running capture reads the preview Browse drew this frame.
+        g_ItemRequestDialog.Render();
 
         // Render all popups
         CItemEditorPopups::RenderAll();
@@ -179,7 +187,9 @@ void CMuItemEditorUI::RenderTabs()
 {
     if (!ImGui::BeginTabBar("ItemEditorTabs"))
         return;
-    if (ImGui::BeginTabItem("Browse"))
+    const ImGuiTabItemFlags browseFlags = m_showBrowse ? ImGuiTabItemFlags_SetSelected : ImGuiTabItemFlags_None;
+    m_showBrowse = false;
+    if (ImGui::BeginTabItem("Browse", nullptr, browseFlags))
     {
         if (m_activeTab != Tab::Browse)
             m_pBrowse->OnShown();
@@ -193,6 +203,12 @@ void CMuItemEditorUI::RenderTabs()
             CItemEditorTable::RequestScrollToIndex(m_selectedRow); // the item picked in Browse
         m_activeTab = Tab::StatsTable;
         RenderStatsTable();
+        ImGui::EndTabItem();
+    }
+    if (ImGui::BeginTabItem("Requests"))
+    {
+        m_activeTab = Tab::Requests;
+        m_pRequests->Render(m_selectedRow, m_showBrowse, m_pBrowse->Catalog());
         ImGui::EndTabItem();
     }
     ImGui::EndTabBar();

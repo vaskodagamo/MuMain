@@ -132,6 +132,38 @@ std::set<std::string> TakenModelNames(const fs::path& repoRoot, const RequestDom
     return taken;
 }
 
+bool WriteNewRequestFolder(const fs::path& folder, const std::vector<RequestFile>& files, std::string& error)
+{
+    std::error_code ec;
+    if (fs::exists(folder, ec))
+    {
+        error = Editor::Text::PathToUtf8(folder) + " exists already";
+        return false;
+    }
+    fs::create_directories(folder, ec);
+    if (ec)
+    {
+        error = "cannot create " + Editor::Text::PathToUtf8(folder) + ": " + ec.message();
+        return false;
+    }
+
+    FolderRollback rollback(folder);
+    for (const RequestFile& file : files)
+    {
+        const fs::path path = folder / Editor::Text::Utf8Path(file.relativePath);
+        fs::create_directories(path.parent_path(), ec);
+        if (ec)
+        {
+            error = "cannot create " + Editor::Text::PathToUtf8(path.parent_path()) + ": " + ec.message();
+            return false;
+        }
+        if (!WriteText(path, file.bytes, error))
+            return false;
+    }
+    rollback.Keep();
+    return true;
+}
+
 bool WriteRequestFolder(const fs::path& repoRoot, const RequestDraft& draft, const std::vector<std::uint8_t>& jpeg,
                         fs::path& folder, std::string& error)
 {
@@ -141,29 +173,13 @@ bool WriteRequestFolder(const fs::path& repoRoot, const RequestDraft& draft, con
         error = "the capture and its image do not match";
         return false;
     }
-    std::error_code ec;
-    if (fs::exists(folder, ec))
-    {
-        error = Editor::Text::PathToUtf8(folder) + " exists already";
-        return false;
-    }
-    const fs::path captures = folder / CAPTURES_FOLDER;
-    fs::create_directories(jpeg.empty() ? folder : captures, ec);
-    if (ec)
-    {
-        error = "cannot create " + Editor::Text::PathToUtf8(folder) + ": " + ec.message();
-        return false;
-    }
-
-    FolderRollback rollback(folder);
-    if (!jpeg.empty() && !WriteBytes(captures / draft.captures.front().fileName, jpeg.data(), jpeg.size(), error))
-        return false;
-    if (!WriteText(folder / BRIEF_FILE, BuildBrief(draft), error))
-        return false;
-    if (!WriteText(folder / REQUEST_FILE, BuildRequestJson(draft), error))
-        return false;
-    rollback.Keep();
-    return true;
+    std::vector<RequestFile> files;
+    if (!jpeg.empty())
+        files.push_back({std::string(CAPTURES_FOLDER) + "/" + draft.captures.front().fileName,
+                         std::string(jpeg.begin(), jpeg.end())});
+    files.push_back({BRIEF_FILE, BuildBrief(draft)});
+    files.push_back({REQUEST_FILE, BuildRequestJson(draft)});
+    return WriteNewRequestFolder(folder, files, error);
 }
 } // namespace Editor::Assets
 
