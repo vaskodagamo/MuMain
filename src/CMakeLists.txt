@@ -514,6 +514,9 @@ target_include_directories(MuClient PUBLIC
   # stb_truetype backs the portable GDI text rasterizer (issue #462).
   "${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/stb"
   $<$<BOOL:${ENABLE_EDITOR}>:${CMAKE_CURRENT_SOURCE_DIR}/MuEditor>
+  # nlohmann/json (single-header json.hpp) for the editor's asset catalog and
+  # regeneration requests; the player build does not use it.
+  $<$<BOOL:${ENABLE_EDITOR}>:${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty>
 )
 
 set_source_files_properties(
