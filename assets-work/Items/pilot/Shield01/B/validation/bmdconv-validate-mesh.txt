@@ -1,0 +1,6 @@
+$ /Users/webproduktion3/Documents/claude-test-mumain/MuMain/out/build/macos-arm64/tools/bmdconv/Release/bmdconv validate /private/var/folders/8p/y7qf5mcn3zz__8r7hssc53x40000gn/T/mu_export_0gvei4pc/Shield01_mu_export.smd
+
+/private/var/folders/8p/y7qf5mcn3zz__8r7hssc53x40000gn/T/mu_export_0gvei4pc/Shield01_mu_export.smd: bones=1 frames=1 triangles=560 materials=1
+OK
+
+exit_code=0
