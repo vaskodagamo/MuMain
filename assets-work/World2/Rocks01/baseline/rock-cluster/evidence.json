@@ -1,0 +1,151 @@
+{
+  "kind": "OFFLINE_ACTUAL_PLACEMENT_STATIC_ASSEMBLY",
+  "members": [
+    [
+      "Object49",
+      {
+        "index": 435,
+        "position": [
+          2250.0,
+          7500.0,
+          178.30697631835938
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": 2.5599985122680664
+      }
+    ],
+    [
+      "Object50",
+      {
+        "index": 436,
+        "position": [
+          2500.0,
+          7600.0,
+          205.36729431152344
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": 3.979997158050537
+      }
+    ],
+    [
+      "Object50",
+      {
+        "index": 437,
+        "position": [
+          2300.0,
+          7600.0,
+          185.48300170898438
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          180.0
+        ],
+        "scale": 4.1999969482421875
+      }
+    ],
+    [
+      "Object49",
+      {
+        "index": 450,
+        "position": [
+          2242.694580078125,
+          7186.2578125,
+          215.3343505859375
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          420.0
+        ],
+        "scale": 2.1199989318847656
+      }
+    ],
+    [
+      "Object50",
+      {
+        "index": 453,
+        "position": [
+          2792.21044921875,
+          7647.36279296875,
+          163.0811767578125
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          60.0
+        ],
+        "scale": 4.219996929168701
+      }
+    ]
+  ],
+  "sources": {
+    "Object49": {
+      "source": "src/bin/Data/Object2/Object49.bmd",
+      "sha256": "5f0d7b50389c225c83db9752ed1d29dfa72b4c16ef1623709f415b91b719e91d",
+      "dependencies": {
+        "src/bin/Data/Object2/Object49.bmd": "5f0d7b50389c225c83db9752ed1d29dfa72b4c16ef1623709f415b91b719e91d",
+        "src/bin/Data/Object2/TileRock01.OZJ": "f15e66b577b29c6e9ba33aeb886db9bd8a1c0717ae8aeab359ec550b5dbe2d15"
+      },
+      "purpose": "Read-only baseline triage, not an accepted remake",
+      "evidence": {
+        "baseline.blend": "6d6684c2c894741d6bcaee73ba103cbfb18afd6e545c0b25cb90afdf4f0cedde",
+        "baseline.png": "34e2bb181f6939d43612d2b614567045af913e69dfdb50a49abf7a33ddaba5cb"
+      },
+      "supplemental_evidence": {
+        "individual/baseline-front.png": "0bfa47e191a69501c7bbc260fd99d9093bd0ababb4c21d0b3708b3c62f179a8b",
+        "individual/baseline-reduced.png": "98176612bbe5435496901798eb828581206e2d5ae538edfef03e57840e3d8b63",
+        "individual/baseline-reverse.png": "e99569964ecc3f813ec849b6d2e8e723e95b48062ddda00f22dbdd0f046c7d40"
+      }
+    },
+    "Object50": {
+      "source": "src/bin/Data/Object2/Object50.bmd",
+      "sha256": "80cfa7ae09e231800fce049eac73f199a4c86d8b139b179b9013f4ae2dc45a4b",
+      "dependencies": {
+        "src/bin/Data/Object2/Object50.bmd": "80cfa7ae09e231800fce049eac73f199a4c86d8b139b179b9013f4ae2dc45a4b",
+        "src/bin/Data/Object2/TileRock01.OZJ": "f15e66b577b29c6e9ba33aeb886db9bd8a1c0717ae8aeab359ec550b5dbe2d15"
+      },
+      "purpose": "Read-only baseline triage, not an accepted remake",
+      "evidence": {
+        "baseline.blend": "d901b012aab9f616bb07d2a2d3c6f5f308b54c707955e8badc29da9c81687058",
+        "baseline.png": "2c3cf36c63340191964a20c7509e279139ce14849924536c9a58bd2d8bfd3650"
+      },
+      "supplemental_evidence": {
+        "individual/baseline-front.png": "bba028c8d4d6f785d968cab15ded47a554ab51bfdcf9683487f49bd243b481f1",
+        "individual/baseline-reduced.png": "3a7871ee5e39a2134006bc43ac7f626444e384a958c37137e287b090afb795f3",
+        "individual/baseline-reverse.png": "2b1910ed2fdcf9c223246be3b6e959c4cd990f3894166a0de5a8b96745b25d3e"
+      }
+    }
+  },
+  "anchor": [
+    2250.0,
+    7500.0,
+    178.30697631835938
+  ],
+  "bounds": [
+    [
+      -123.8619384765625,
+      -413.1320495605469,
+      -15.974004745483398
+    ],
+    [
+      691.7908325195312,
+      284.3522033691406,
+      413.5547180175781
+    ]
+  ],
+  "images": {
+    "baseline-reverse.png": "166af73f56cc47edcad3273840ebaee777a82345e84fe24ce1d22429b6b084c8",
+    "baseline.png": "8f9a13c7f1779bd9a694895c72475ca615732f5c5ab1a47f707c0eb0b3d5c23e",
+    "baseline-small.png": "da268102256e1ee9c1b2fc8f15de2246b26b2775a2ea9671dd0e61d250bcf23f"
+  },
+  "note": "Actual Dungeon map placements using unchanged official baseline BMDs; no terrain or client."
+}
