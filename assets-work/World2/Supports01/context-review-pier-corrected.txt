@@ -1,0 +1,32 @@
+00:02.902  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-supports/assets-work/World2/Supports01/context/pier-support/current.png'
+00:03.218  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-supports/assets-work/World2/Supports01/context/pier-support/current-small.png'
+00:05.277  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-supports/assets-work/World2/Supports01/context/pier-support/current-reverse.png'
+00:07.332  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-supports/assets-work/World2/Supports01/context/pier-support/candidate.png'
+00:07.628  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-supports/assets-work/World2/Supports01/context/pier-support/candidate-small.png'
+00:09.635  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-supports/assets-work/World2/Supports01/context/pier-support/candidate-reverse.png'
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:49:19)
+
+Blender quit
+Error in bpy.app.handlers.load_post[2]:
+Traceback (most recent call last):
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 206, in _onLoad
+    State.update_scene()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 194, in update_scene
+    make_export_list(scene)
+    ~~~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/blender-user/scripts/addons/io_scene_valvesource/utils.py", line 602, in make_export_list
+    scene.vs.export_list.clear()
+    ^^^^^^^^
+AttributeError: 'Scene' object has no attribute 'vs'
+Traceback (most recent call last):
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/Blender.app/Contents/Resources/5.2/scripts/modules/bpy/utils/__init__.py", line 225, in _unregister_module_call
+    unregister()
+    ~~~~~~~~~~^^
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/Blender.app/Contents/Resources/5.2/scripts/startup/bl_operators/__init__.py", line 84, in unregister
+    copy_global_transform.unregister()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/lukasmac/Documents/claude-test-mumain/astra-tools/Blender.app/Contents/Resources/5.2/scripts/startup/bl_operators/copy_global_transform.py", line 823, in unregister
+    bpy.app.handlers.load_post.remove(_on_blendfile_load_post)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: list.remove(x): x not in list

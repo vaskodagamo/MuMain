@@ -1,0 +1,80 @@
+{
+  "open-trim-run": {
+    "dependencies": [
+      {
+        "path": "src/bin/Data/Object2/Object15.bmd",
+        "previous": "8cef1f8cd8061020debb3cf108183ddbe79fe29be577caee0e2e11d28fdee957",
+        "current": "8cef1f8cd8061020debb3cf108183ddbe79fe29be577caee0e2e11d28fdee957",
+        "changed": false
+      },
+      {
+        "path": "src/bin/Data/Object2/deep_wall04.OZJ",
+        "previous": "83037896d1e2825447e840b4af780ed3608b12c5971c8369eccdfc0f4fb21505",
+        "current": "83037896d1e2825447e840b4af780ed3608b12c5971c8369eccdfc0f4fb21505",
+        "changed": false
+      }
+    ],
+    "refreshed_current_imports": true,
+    "placements_sha256": "44ebac903e533baedb259c7d3c120910b7e8e331ae66a441ddfcfb0a496ba28b"
+  },
+  "pier-support": {
+    "dependencies": [
+      {
+        "path": "src/bin/Data/Object2/Object04.bmd",
+        "previous": "e0df1c4477e02bb37d59155dbf56a5f1f7bacaa064bb34568ce738de07c8ae1f",
+        "current": "e0df1c4477e02bb37d59155dbf56a5f1f7bacaa064bb34568ce738de07c8ae1f",
+        "changed": false
+      },
+      {
+        "path": "src/bin/Data/Object2/deep_wall01.OZJ",
+        "previous": "78379458cc441ce547c482f20656e13f6672fd565c39373865de7fb9ebb9504a",
+        "current": "78379458cc441ce547c482f20656e13f6672fd565c39373865de7fb9ebb9504a",
+        "changed": false
+      },
+      {
+        "path": "src/bin/Data/Object2/deep_wall03.OZJ",
+        "previous": "dee54424992a14b93c9732599c4190c164932c7f98708e9aa21ca03a21f63168",
+        "current": "dee54424992a14b93c9732599c4190c164932c7f98708e9aa21ca03a21f63168",
+        "changed": false
+      },
+      {
+        "path": "src/bin/Data/Object2/Object06.bmd",
+        "previous": "130a34571f79c3fd28fe5cac0a51c54a2cc3e011cba2b1e483934e7e7026be05",
+        "current": "130a34571f79c3fd28fe5cac0a51c54a2cc3e011cba2b1e483934e7e7026be05",
+        "changed": false
+      },
+      {
+        "path": "src/bin/Data/Object2/deep_wall04.OZJ",
+        "previous": "83037896d1e2825447e840b4af780ed3608b12c5971c8369eccdfc0f4fb21505",
+        "current": "83037896d1e2825447e840b4af780ed3608b12c5971c8369eccdfc0f4fb21505",
+        "changed": false
+      }
+    ],
+    "refreshed_current_imports": true,
+    "placements_sha256": "6764642d094cea9b8beb22861af83471e3486c88b1bc70e9a712681525678dea"
+  },
+  "stepped-supports": {
+    "dependencies": [
+      {
+        "path": "src/bin/Data/Object2/Object13.bmd",
+        "previous": "54b586f03b7a79071018bf02907d577dc06237ba66f1d83706c7ca29f3f80dd2",
+        "current": "54b586f03b7a79071018bf02907d577dc06237ba66f1d83706c7ca29f3f80dd2",
+        "changed": false
+      },
+      {
+        "path": "src/bin/Data/Object2/deep_wall04.OZJ",
+        "previous": "83037896d1e2825447e840b4af780ed3608b12c5971c8369eccdfc0f4fb21505",
+        "current": "83037896d1e2825447e840b4af780ed3608b12c5971c8369eccdfc0f4fb21505",
+        "changed": false
+      },
+      {
+        "path": "src/bin/Data/Object2/deep_wall01.OZJ",
+        "previous": "78379458cc441ce547c482f20656e13f6672fd565c39373865de7fb9ebb9504a",
+        "current": "78379458cc441ce547c482f20656e13f6672fd565c39373865de7fb9ebb9504a",
+        "changed": false
+      }
+    ],
+    "refreshed_current_imports": true,
+    "placements_sha256": "3f8bf10f0b51d6ab601cff396f325d267e4a8c76e04528c2827ef580f0529bc1"
+  }
+}

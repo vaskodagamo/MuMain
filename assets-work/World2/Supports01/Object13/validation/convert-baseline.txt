@@ -1,0 +1,3 @@
+wrote /Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-supports/assets-work/World2/Supports01/Object13/validation/baseline/Object13.smd
+wrote /Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-supports/assets-work/World2/Supports01/Object13/validation/baseline/Object13_a00.smd
+wrote /Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-supports/assets-work/World2/Supports01/Object13/validation/baseline/Object13.actions.txt

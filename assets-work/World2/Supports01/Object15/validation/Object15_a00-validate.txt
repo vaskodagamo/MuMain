@@ -1,0 +1,2 @@
+/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-supports/assets-work/World2/Supports01/Object15/validation/new/Object15_a00.smd: bones=1 frames=1 triangles=0 materials=0
+OK

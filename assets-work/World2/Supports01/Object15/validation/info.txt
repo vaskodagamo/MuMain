@@ -1,0 +1,7 @@
+model /Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-supports/assets-work/World2/Supports01/Object15/exports/Object15.bmd
+  name field: Data2\Object2\ºóµ¹´Ù¸®.smd  version: 12
+  meshes: 1  bones: 1  actions: 1  triangles: 27
+  bounds (bind pose): min -58.82 -59.20 -17.18  max 58.79 59.00 -0.13  size 117.61 118.20 17.05
+  mesh 0: triangles=27 vertices=20 normals=24 uvs=33 texture=deep_wall04.jpg
+  bone 0: "Box13" parent=-1
+  action 0: keys=1 lock=0
