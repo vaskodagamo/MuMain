@@ -3,6 +3,10 @@
 #ifdef _EDITOR
 
 #include "MuItemEditorUI.h"
+#include "ConceptGenerateDialog.h"
+#include "ConceptLibrary.h"
+#include "ConceptRefineDialog.h"
+#include "ConceptsPanel.h"
 #include "ItemBrowseTab.h"
 #include "ItemEditorTable.h"
 #include "ItemRequestDialog.h"
@@ -128,9 +132,13 @@ void CMuItemEditorUI::Render(bool& showEditor)
         }
 
         g_ItemRequestWatch.Update();
+        g_ConceptLibrary.Update();
         RenderTabs();
         // After the tabs: a running capture reads the preview Browse drew this frame.
         g_ItemRequestDialog.Render();
+        g_ConceptsPanel.RenderPopups();
+        g_ConceptGenerateDialog.Render();
+        g_ConceptRefineDialog.Render();
 
         // Render all popups
         CItemEditorPopups::RenderAll();

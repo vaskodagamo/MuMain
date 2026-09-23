@@ -6,6 +6,7 @@
 
 #include "Assets/ItemBrowse.h"
 #include "Assets/ItemCatalog.h"
+#include "Editing/ItemSelection.h"
 
 #include <cstdint>
 #include <map>
@@ -15,7 +16,9 @@
 // The Item Editor's Browse tab: every item as a list or a thumbnail grid,
 // filtered by class and stage (the engine's equip rule), family, tier, status
 // and name, sorted basic -> rare or by another key, with the selected item's
-// facts on the right. The selection is shared with the Stats table tab.
+// facts on the right. Several items can be selected (Cmd/Ctrl-click, Shift-click,
+// the check boxes) for "Generate concepts (N)..."; the primary one, shown on the
+// right, is shared with the Stats table tab.
 class CItemBrowseTab
 {
 public:
@@ -48,7 +51,10 @@ private:
     void RenderGrid(int& selectedType);
     void RenderGridTile(const Editor::Items::BrowseRow& row, int& selectedType, float tileSize);
     void RenderDetailsPanel(int selectedType);
-    void Select(int type, int& selectedType);
+    void RenderConceptBadge(const Editor::Items::BrowseRow& row) const;
+    // A click on an item's row or tile, with the keyboard's Cmd/Ctrl and Shift.
+    void Click(int type, int& selectedType);
+    void ToggleSelected(int type, int& selectedType);
 
     bool m_catalogLoaded = false;
     Editor::Assets::ItemCatalogLoad m_load;
@@ -57,6 +63,7 @@ private:
 
     std::vector<Editor::Items::BrowseRow> m_rows;
     std::vector<int> m_shown; // indices into m_rows
+    std::vector<int> m_shownTypes; // the item types of m_shown, in the same order
     std::map<std::string, int> m_familyCounts;
     Editor::ItemEditor::DigestCache m_digests;
     bool m_rowsBuilt = false;
@@ -71,6 +78,7 @@ private:
     int m_statusChoice = 0; // index into the status choices (0 = any)
     bool m_gridView = false;
 
+    Editor::Editing::ItemSelection m_selection;
     int m_lastSelected = -1;
     bool m_scrollToSelected = false;
 };

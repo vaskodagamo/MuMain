@@ -594,7 +594,8 @@ void CItemRequestDialog::Create()
     }
     const ItemCatalogEntry& item = m_targets.front().item;
     const bool canBeExcellent = item.badges.excellent;
-    m_capture.Start(item.Type(), Editor::Preview::PlanItemCaptures(canBeExcellent),
+    const float faceYaw = Editor::Preview::FaceYawDegrees(item.group);
+    m_capture.Start(item.Type(), Editor::Preview::PlanItemCaptures(canBeExcellent, faceYaw),
                     m_headCommit.substr(0, SHORT_SHA_CHARS));
     m_stage = Stage::Capturing;
 }

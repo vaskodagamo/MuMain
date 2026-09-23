@@ -144,6 +144,29 @@ target_include_directories(editor_item_request_tests PRIVATE
     ${PROJECT_SOURCE_DIR}/src/ThirdParty
 )
 
+# The Item Editor's concept images: the concepts.py command lines, its plan and
+# list answers, the run's JSON Lines events as a job's state, and Browse's
+# multi-selection. File-only code; nothing starts Python or talks to the API.
+mu_add_test(
+    NAME editor_item_concepts_tests
+    SOURCES
+        test_item_concepts.cpp
+        ${PROJECT_SOURCE_DIR}/src/MuEditor/Editing/ItemSelection.cpp
+        ${MU_EDITOR_ASSETS_DIR}/ConceptCommands.cpp
+        ${MU_EDITOR_ASSETS_DIR}/ConceptJobState.cpp
+        ${MU_EDITOR_ASSETS_DIR}/ConceptListing.cpp
+        ${MU_EDITOR_ASSETS_DIR}/ConceptPlan.cpp
+        ${MU_EDITOR_ASSETS_DIR}/EditorText.cpp
+        ${MU_EDITOR_ASSETS_DIR}/JsonFields.cpp
+    LINK_LIBS
+        MuClient
+)
+target_compile_definitions(editor_item_concepts_tests PRIVATE _EDITOR)
+target_include_directories(editor_item_concepts_tests PRIVATE
+    ${PROJECT_SOURCE_DIR}/src/MuEditor
+    ${PROJECT_SOURCE_DIR}/src/ThirdParty
+)
+
 # The world editor's A/B compare checks a model and its textures before the
 # running client loads them in place of the one it shows, and finds the
 # original files built by tools/world_editor/materialize_variant.py. File-only

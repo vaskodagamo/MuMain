@@ -45,6 +45,12 @@ int Int(const json& object, const char* key, int fallback)
     return it != object.end() && it->is_number_integer() ? it->get<int>() : fallback;
 }
 
+double Number(const json& object, const char* key, double fallback)
+{
+    const auto it = object.find(key);
+    return it != object.end() && it->is_number() ? it->get<double>() : fallback;
+}
+
 bool Bool(const json& object, const char* key, bool fallback)
 {
     const auto it = object.find(key);

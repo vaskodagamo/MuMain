@@ -658,8 +658,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     break;
     case WM_SETCURSOR:
 #ifdef _EDITOR
-        // Over editor UI (any editor window, the Open Editor button) let Windows show
-        // the cursor; otherwise hide it for the game cursor
+        // Over editor UI (any editor window, the Open Editor button, the item studio) let
+        // Windows show the cursor; otherwise hide it for the game cursor
         if (g_MuEditorCore.WantsOsCursor())
         {
             // Let Windows cursor show - don't hide it

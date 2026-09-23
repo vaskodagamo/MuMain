@@ -2,7 +2,7 @@
 
 Every item the client knows, in three tabs: **Browse** (a list or thumbnail grid you filter by class,
 family, tier and status, sorted from basic to rare, with a live 3D preview and the facts of the
-selected item, your verdict on it and **Ask Codex...**), **Stats table** (every field of
+selected item, its concept images, your verdict on it and **Ask Codex...**), **Stats table** (every field of
 `Data/Local/<lang>/Item_<lang>.bmd`, edited in place and saved into the game's own file) and
 **Requests** (every item request you filed for the art builder, with its status, and your withdraw /
 accept / reject). It exists only in editor builds (`ENABLE_EDITOR`), so the normal game is unaffected.
@@ -28,15 +28,28 @@ The quick start is for the Mac; everything after it is reference. The Map Editor
    stays in the build folder). You can also copy it into `/Applications`: a copy that is not next to
    `Main.app` starts the `Main.app` of the build that made it, so it keeps working as long as that
    build folder exists. The build itself installs nothing outside the build folder.
-4. **Browse:** pick a class (**DW DK Elf MG DL SUM RF**) and its stage (for example *Dark Knight*,
+4. **New look, step by step** (see [Concepts](#concepts)):
+   1. **Select** the items in Browse: click one, **Cmd-click** more (Ctrl-click off the Mac),
+      **Shift-click** a range, or tick the boxes.
+   2. **Generate concepts (N)...** above the list: choose *explore* (3 cheap variants per item) or
+      *final*, add notes, and read the estimate. Nothing is spent until **Generate for $X** (the
+      exact amount the tool estimated); the run goes on in the **Concepts job** window.
+   3. **Pick** the variant you like in the item's **Concepts** section (under the preview), or
+      **Refine with comment...** a variant for a new round from it.
+   4. **Ask Codex with it...** opens the request dialog with the picked concept attached.
+5. **Browse:** pick a class (**DW DK Elf MG DL SUM RF**) and its stage (for example *Dark Knight*,
    *Blade Knight*, *Blade Master*) to see only what that character can equip, a family (swords,
    helms, wings-2, ...), and click an item: its 3D preview and facts appear on the right. See
    [Browse](#browse) and [Preview](#preview).
-5. **Edit stats:** the **Stats table** tab is the table of every field; an item picked in Browse is
+6. **Edit stats:** the **Stats table** tab is the table of every field; an item picked in Browse is
    selected and scrolled to there, and the other way round. See [Stats table](#stats-table).
-6. **Ask Codex:** under the preview, **Ask Codex...** files a request for the art builder to upscale,
+7. **Ask Codex:** under the preview, **Ask Codex...** files a request for the art builder to upscale,
    repaint, remodel or redesign the item, with clean captures of the preview; commit and push the
    folder it writes. The **Requests** tab follows it from there. See [Ask Codex](#ask-codex).
+8. **Screen:** **Full screen** on the toolbar (or **Cmd+Ctrl+F**; **F11** on Windows and Linux) fills
+   the display, **Window** goes back. **- 125% +** sets the size of all editor text and buttons. Both
+   are remembered for the next start (`MuEditor/MuEditor.ini`); the first start on a display at least
+   1440 points high (a 1440p or 5K screen) uses 125%, else 100%.
 
 The other editors stay on the toolbar. Opening the **Map Editor** from the studio shows the map
 (Lorencia) and turns the Item Editor into a normal window; closing the Map Editor brings the studio
@@ -70,9 +83,17 @@ World1 is loaded once at start (about a second) and not drawn while the Item Edi
   duplicates and a few tickets).
 - **Family:** swords, axes, ..., potions, with how many items of each pass the other filters.
 
-**Middle - the items.** **List** shows a thumbnail, name, key (`group-index`), tier, drop level,
-required level, the classes that may use it (class and lowest stage, e.g. `DK 2`) and the status;
-**Grid** shows bigger thumbnails with tier and name. The sort choice and **Ascending/Descending** are
+**Middle - the items.** **List** shows a check box, a thumbnail, name, key (`group-index`), tier, drop
+level, required level, the classes that may use it (class and lowest stage, e.g. `DK 2`), the status
+and the concepts (`picked`, or how many concept images it has); **Grid** shows bigger thumbnails with
+tier and name, the concepts in the tile's corner and a check box on selected or pointed-at tiles.
+
+**Selecting several items:** a click selects one item; **Cmd-click** (Ctrl-click on Windows and
+Linux) or its check box adds or removes one; **Shift-click** selects the range from the item clicked
+before. The bar above the list shows how many are selected, a chip per item (click it to take the
+item out), **Select all shown** (the items the filters show), **Clear**, and **Generate concepts
+(N)...**. The details panel on the right shows the item clicked last; it stays there after **Clear**.
+Items the filters hide stay selected. The sort choice and **Ascending/Descending** are
 above it:
 
 | Sort | Order |
@@ -86,13 +107,12 @@ one family the tier order is the catalog's family order, so for example the Dark
 Short Sword, Kris, Rapier ... Knight Blade, Bone Blade, then the Divine Sword (a quest reward that
 never drops).
 
-**Right - the selected item:** name, key, the live 3D preview (see [Preview](#preview)), classes,
-required and drop level,
-status, family, tier (its place among the family's items and whether it drops from monsters), what
-it can be (socket, ancient set, 380 option, excellent, maximum +level), size in inventory slots,
-your verdict (**Looks good** / **Needs work**), the item's open requests and **Ask Codex...** (see
-[Ask Codex](#ask-codex)), then every model file with triangles, meshes and textures and the original
-commit.
+**Right - the selected item:** name, key, the live 3D preview (see [Preview](#preview)), your verdict
+(**Looks good** / **Needs work**), the item's open requests and **Ask Codex...** (see
+[Ask Codex](#ask-codex)), its **Concepts** (see [Concepts](#concepts)), classes, required and drop
+level, status, family, tier (its place among the family's items and whether it drops from monsters),
+what it can be (socket, ancient set, 380 option, excellent, maximum +level), size in inventory slots,
+then every model file with triangles, meshes and textures and the original commit.
 
 **Thumbnails** are rendered from the loaded model the first time a row is shown (six per frame) and
 kept; long items lie corner to corner, flat ones show their broad side. Armour parts load from
@@ -148,7 +168,8 @@ The item as the game draws it - the engine's own item and character code, not a 
 | **Ground** | The item dropped on the map's ground (Lorencia's town square in the studio), as a player finds it. | Drag, wheel. |
 | **Equipped** | Worn by a character: see below. | Drag, wheel. |
 
-Under the picture: **Front / Side / Back** put the camera there, **Reset** frames the item again,
+Under the picture: **Front / Side / Back** put the camera there (front is the item's broad face: the
+flat of a blade or a shield's face, the front of armour and wings), **Reset** frames the item again,
 **Turn** turns the view slowly by itself (on at start; any of the buttons stops it).
 
 **+level, Excellent, Ancient:** the slider sets +0..+15; the game's effects follow it (+3/+5 tints,
@@ -202,6 +223,68 @@ The scene hooks are `Editor::ItemStudio::RenderInsteadOfWorld()` (studio) and `R
 (map drawn), called by the main scene; the engine side shares `RenderDroppedItem` and
 `PlaceItemOnGround` with the game's own dropped items (`ZzzObject.cpp`).
 
+## Concepts
+
+Concept images are pictures of a new design for an item, made by the OpenAI Images API from the item's
+current look (its reference render). You pick one, and the pick goes with the request to Codex, who
+models it. The editor drives `tools/item_editor/concepts.py` (usage and prices in
+[`assets-work/Items/concepts/README.md`](../../../../assets-work/Items/concepts/README.md)); it never asks
+for, stores or shows the API key: the tool reads it from the macOS Keychain (or `OPENAI_API_KEY`), and
+the dialogs only say whether one was found and where.
+
+### Generate concepts (N)...
+
+For the items selected in Browse (or **Generate concepts for this item...** in the Concepts section):
+
+| Setting | Meaning |
+|---------|---------|
+| **explore** / **final** | The presets of `tools/item_editor/image_prices.json`: explore is a faster model at medium quality, 3 images per item (about 7 cents per item); final is the best model at high quality, 1 image. |
+| **Variants per item** | How many images per item (the preset's number to start with). |
+| **Turnaround sheet** | Front and side view of the item on one 1536 x 1024 image. |
+| **Note for every item** / **Note for this item** | Added to the prompt (what to change, style, colours). |
+
+The dialog runs `concepts.py plan` (a dry run: nothing is sent, nothing is paid) whenever a setting
+changes and shows per item whether its reference render exists and what it costs, then the total split
+into text prompt, reference image and output images, the caps (at most 30 images and $5 per run), the
+API key status, and why the tool would refuse. Items without a reference render: **Render missing
+references (N)** renders them offline with Blender (free), then the estimate updates. **Generate for $X**
+is enabled only when the tool would run; it starts the run in the background and closes the dialog.
+
+### Concepts job
+
+The **Concepts job** window follows the run (it stays when the dialog closes, also with the Item Editor
+closed; one job at a time): per item *waiting*, *generating*, *retry in N s* (rate limit or a server
+error; the tool waits and tries again), *done (3 images)* or *failed* with the error.
+
+- **Cancel** starts no new request; requests already sent finish (they are paid for) and their images
+  are kept. The window says "cancelling" until they are back.
+- **Resume** after a cancel, or after failed requests, sends only the missing images of the same batch.
+- At the end: the estimate and the **actual** cost from the API's usage (of the requests this run sent).
+  **Open contact sheet** shows the batch's `sheet.html`.
+- If another `concepts.py` run holds the batch (for example one started in a terminal), the job ends
+  with "busy" and nothing is sent.
+
+### The Concepts section
+
+Under the preview of the selected item: the **current look** (the reference render), the **picked**
+concept, and every variant of every batch, newest batch first. A refine round names the variant it
+came from and your comment under each image. Click an image to see it big (**Zoom**, **Fit**).
+
+| Button | What it does |
+|--------|--------------|
+| **Pick** | Makes the variant the item's concept: `assets-work/Items/concepts/<key>/concept.jpg` (commit that folder to keep it). Browse shows "picked". |
+| **Unpick** | Removes the pick. |
+| **Refine...** / **Refine with comment...** | A new round from this variant: write what should change, check the estimate, **Refine for $X**. The new variants remember their parent. |
+| **Discard** / **Undiscard** | Hides a variant you do not want (no image is deleted); **Show discarded** shows them again. |
+| **Ask Codex with it...** / **Ask Codex with this concept...** | Picks the variant if needed and opens Ask Codex, which attaches the pick as `captures/ref-concept.jpg`. |
+
+An armour set shares one concept, filed under its body armour; the spell books that share one texture
+share one concept too. Batches live in `out/item-concepts/` (never committed).
+
+**Testing without spending:** with `MU_OPENAI_API_BASE=http://127.0.0.1:<port>/v1` in the editor's
+environment, runs go to a local test server instead of OpenAI (only `http://127.0.0.1` and `localhost`
+are accepted); the dialogs then say "Test mode".
+
 ## Ask Codex
 
 **Ask Codex...** (under the selected item's preview in Browse) asks the art builder (Codex, following
@@ -219,13 +302,14 @@ names. The contract Codex works to is
 3. **Codex may push its branch and open a PR** records your permission for that worker branch (never a
    merge); off by default.
 4. **Include captures** (on): the editor takes pictures of the preview for Codex, without any editor
-   panel or text: the turntable from the front, side, back and three-quarter, the inventory slot, the
+   panel or text: the turntable from the front (the broad face: a blade's flat, a shield's face, the
+   front of armour and wings), side, back and three-quarter, the inventory slot, the
    item worn by a character (when it is drawn on the body), and +0 / +9 / +13 excellent (when the item
    can be excellent; else +9 and +13). They are 1024 x 1024 JPEGs, named `captures/01-front.jpg`,
    `02-side.jpg`, ... The preview runs through them in about a second (the dialog shows the progress) and
    then goes back to your view, level and options.
 5. **Reference images:** the item's picked concept (`assets-work/Items/concepts/<key>/concept.jpg`, from
-   `tools/item_editor/concepts.py pick`) is shown as a thumbnail and included as
+   **Pick** in the [Concepts](#concepts) section) is shown as a thumbnail and included as
    `captures/ref-concept.jpg` unless you untick it. **Add image...** adds any JPEG as `ref-01.jpg`,
    `ref-02.jpg`, ... (wider than 1920 pixels: scaled down).
 6. **Scope** lists the files Codex may replace and the textures it must leave alone because other items
@@ -322,6 +406,8 @@ to keep in play must be made in OpenMU too (admin panel, Items).
 | **Export as S6E3** | `Data/Local/<lang>/Item_S6E3.bmd`, copy in `out/editor-exports/` | The table in the legacy S6E3 layout for other tools; the game does not read it. |
 | **Export as CSV** | `Data/Local/<lang>/Item.csv`, copy in `out/editor-exports/` | UTF-8 with BOM, one row per named item, field names as in the code. |
 | Column choice | `MuEditor/MuEditor.ini`, section `[ColumnVisibility]` | Next to the executable. |
+| UI size, full screen | `MuEditor/MuEditor.ini`, `[General]` `UIScale`, `StudioFullscreen` | Written when you press - / + or switch full screen. |
+| Concept batches | `out/item-concepts/<batch>/`, reference renders in `out/item-concepts/refs/` | Not in git. |
 | Logs | `MuError.log`, `MuEditor/MuEditor_YYYYMMDD.log` | The start (`[Editor] Opened the Item Editor studio ...`), the save's paths and the changed fields. |
 
 Without a checkout above the game folder (a copied `Main.app`), a save keeps a copy next to the
@@ -354,5 +440,7 @@ executable instead (`Local/Eng/item_eng.bmd`) and Browse has no catalog;
   model effects such as the flame trails of 3rd wings) and pets/mounts. With the map drawn
   (`--items --world N`, or the Map Editor open) the particles the preview's character makes appear in
   the map at the start point instead of in the preview.
+- **The pointer in the studio** is the system's arrow everywhere (over the preview too); the game's own
+  cursor is drawn only when the map is shown without the studio (`--world N`).
 - **Armour on the turntable and on the ground** uses the male skeleton, as the game does for a
   dropped part; worn armour uses the chosen class's body.

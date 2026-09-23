@@ -370,6 +370,28 @@ Status:
     image file dialog; no real delivery validated yet.
   - Known: front/back captures show swords and shields edge-on (the preview's buttons); the
     owner's decision must be committed on the worker's branch (the dialog shows the push).
+- **I5b done (2026-09-23).** Concept images inside the Item Editor; usage in `ITEM_EDITOR.md`.
+  - Backend (PR #34): `concepts.py` key from `$OPENAI_API_KEY` or the macOS Keychain, Python 3.9,
+    JSON protocol v1 (`--json`, `--json-progress`, exit codes), SIGTERM cancel + resume, locks,
+    `list` / `discard`, refine from a variant (`run --from <batch>/<key>/vN --note ...`).
+  - Editor: multi-select in Browse (Cmd/Shift-click, checkboxes, chips) and a Concept column;
+    **Generate concepts (N)...** with preset, variants, turnaround sheet, notes per item, missing
+    reference renders, the real `plan` estimate and the key's source, "Generate for $X" only when
+    the tool would not refuse; a background job window (progress, retry, Cancel, Resume, actual
+    vs estimated cost); a **Concepts** section in the details (every variant by batch, big view,
+    Pick / Unpick, Refine with comment, Discard / Undiscard, lineage); the picked concept shows
+    in Ask Codex, and "Ask Codex with this concept...". `Core/ChildProcess` runs the tool
+    (argument lists, no shell); the editor never touches the key.
+  - Owner fixes: the system pointer stays visible in the studio (the game cursor was drawn under
+    the panels; the Map Editor has the same issue over its panels, not changed); **Full screen**
+    button + Cmd+Ctrl+F (F11 elsewhere), remembered; UI scale remembered, 125% the first time on
+    a large window; the "front" capture shows the broad face.
+  - Checked: 408/408 editor-build and 407/407 player-build tests, 114 tools tests (also with
+    the launcher's python and a Finder-like environment); scripted in-client run against a local
+    fake OpenAI server (no spending): generate, progress, cancel, resume, the owner's real Small
+    Shield variants, pick, Ask Codex thumbnail, refine lineage, discard; full screen, scale across
+    a restart, `--world 1`, Metal validation. Not verified: real spending, a real rate-limit or
+    quota error, Windows (Cancel may end the tool at once there).
 - **Concept images (added by the owner, 2026-09-23; built the same day).** Before Codex models an
   item, `tools/item_editor/concepts.py` generates concept art through the OpenAI Images API
   (`/v1/images/edits` with the item's current render as reference), the owner picks one, and the
