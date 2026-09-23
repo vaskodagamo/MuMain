@@ -35,6 +35,12 @@ CellRect MoveFieldToward(const FloatField& field, const BrushCircle& circle, con
 // as the corner itself.
 CellRect SmoothField(const FloatField& field, const BrushCircle& circle, float rate);
 
+// The same three with a brush of any shape: each corner by its weight in `mask`
+// (edit scripts). They return the mask's rectangle clipped to the field.
+CellRect AddToField(const FloatField& field, const WeightMask& mask, const float* amount);
+CellRect MoveFieldToward(const FloatField& field, const WeightMask& mask, const float* target, float rate);
+CellRect SmoothField(const FloatField& field, const WeightMask& mask, float rate);
+
 // Keeps every value inside `rect` within [low, high].
 void ClampField(const FloatField& field, const CellRect& rect, float low, float high);
 } // namespace Editor::Editing

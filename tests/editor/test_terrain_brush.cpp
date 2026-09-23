@@ -299,3 +299,94 @@ TEST_CASE("A group of edits is one step: undone newest first, redone oldest firs
     none.push_back(nullptr);
     CHECK(GroupEdits("Raise ground", std::move(none)) == nullptr);
 }
+
+namespace
+{
+// The weights of `circle` as a mask of any shape would hand them over.
+WeightMask MaskOf(const BrushCircle& circle)
+{
+    WeightMask mask;
+    mask.rect = Footprint(circle, MAP_SIZE, MAP_SIZE);
+    for (int y = mask.rect.minY; y <= mask.rect.maxY; ++y)
+    {
+        for (int x = mask.rect.minX; x <= mask.rect.maxX; ++x)
+            mask.weights.push_back(SoftWeight(circle, x, y, CellAnchor::Corner));
+    }
+    return mask;
+}
+} // namespace
+
+TEST_CASE("A weight mask reads 0 outside its rectangle [editor][brush]")
+{
+    WeightMask mask;
+    mask.rect = CellRect{10, 20, 11, 21};
+    mask.weights = {0.1f, 0.2f, 0.3f, 0.4f};
+    CHECK(mask.At(10, 20) == doctest::Approx(0.1f));
+    CHECK(mask.At(11, 21) == doctest::Approx(0.4f));
+    CHECK(mask.At(9, 20) == 0.0f);
+    CHECK(mask.At(10, 22) == 0.0f);
+    CHECK(WeightMask{}.At(0, 0) == 0.0f);
+}
+
+TEST_CASE("Mask brushes act exactly as the round brushes with the same weights [editor][brush]")
+{
+    const BrushCircle circle{100.3f, 80.6f, 4.5f};
+    const WeightMask mask = MaskOf(circle);
+    const float amount = 12.0f;
+    const float target = 40.0f;
+
+    TestField byCircle(10.0f);
+    TestField byMask(10.0f);
+    for (int y = 70; y < 92; ++y)
+        for (int x = 90; x < 112; ++x)
+            byCircle.At(x, y) = byMask.At(x, y) = static_cast<float>((x * 7 + y * 3) % 23);
+
+    AddToField(byCircle.field, circle, &amount);
+    AddToField(byMask.field, mask, &amount);
+    MoveFieldToward(byCircle.field, circle, &target, 0.5f);
+    MoveFieldToward(byMask.field, mask, &target, 0.5f);
+    SmoothField(byCircle.field, circle, 1.0f);
+    SmoothField(byMask.field, mask, 1.0f);
+    CHECK(byCircle.values == byMask.values);
+
+    TestOverlay overlayCircle;
+    TestOverlay overlayMask;
+    PaintOverlay(overlayCircle.layer, circle, 7, 0.8f, 0.6f);
+    PaintOverlay(overlayMask.layer, mask, 7, 0.8f, 0.6f);
+    EraseOverlay(overlayCircle.layer, circle, 0.3f);
+    EraseOverlay(overlayMask.layer, mask, 0.3f);
+    CHECK(overlayCircle.alpha == overlayMask.alpha);
+    // The round brush gives its slot to every empty corner of its square; a mask only to
+    // the first corners of tiles it reaches. Elsewhere the slots agree.
+    for (int y = 0; y < MAP_SIZE; ++y)
+    {
+        for (int x = 0; x < MAP_SIZE; ++x)
+        {
+            const std::size_t i = Index(x, y);
+            if (overlayCircle.tiles[i] == overlayMask.tiles[i])
+                continue;
+            CHECK(overlayMask.tiles[i] == NO_OVERLAY_TILE);
+            CHECK(overlayMask.alpha[i] == 0.0f);
+            CHECK(mask.At(x + 1, y) == 0.0f);
+            CHECK(mask.At(x, y + 1) == 0.0f);
+            CHECK(mask.At(x + 1, y + 1) == 0.0f);
+        }
+    }
+}
+
+TEST_CASE("A mask road gives its overlay slot only to the tiles along it [editor][brush]")
+{
+    // A thin diagonal line of weights from (10, 10) to (60, 60).
+    WeightMask mask;
+    mask.rect = CellRect{10, 10, 60, 60};
+    for (int y = 10; y <= 60; ++y)
+        for (int x = 10; x <= 60; ++x)
+            mask.weights.push_back(x == y ? 1.0f : 0.0f);
+    TestOverlay overlay;
+    PaintOverlay(overlay.layer, mask, 3, 1.0f, 1.0f);
+    CHECK(overlay.tiles[Index(30, 30)] == 3);
+    CHECK(overlay.alpha[Index(30, 30)] == 1.0f);
+    CHECK(overlay.tiles[Index(29, 30)] == 3); // the tile (29, 30) reaches corner (30, 30)
+    CHECK(overlay.alpha[Index(29, 30)] == 0.0f);
+    CHECK(overlay.tiles[Index(50, 20)] == NO_OVERLAY_TILE); // far from the line, inside its rectangle
+}

@@ -19,20 +19,46 @@ float* ValueAt(const FloatField& field, int x, int y)
     return field.data + cell * static_cast<std::size_t>(field.channels);
 }
 
-// Calls apply(values, weight) for each corner of `circle` with a weight above 0.
-template <typename Apply> CellRect ForEachWeighted(const FloatField& field, const BrushCircle& circle, Apply apply)
+// Calls apply(x, y, values, weight) for each corner of `rect` whose weightAt(x, y) is
+// above 0; returns `rect`.
+template <typename WeightAt, typename Apply>
+CellRect ForEachWeighted(const FloatField& field, const CellRect& rect, WeightAt weightAt, Apply apply)
 {
-    const CellRect rect = Footprint(circle, field.width, field.height);
     for (int y = rect.minY; y <= rect.maxY; ++y)
     {
         for (int x = rect.minX; x <= rect.maxX; ++x)
         {
-            const float weight = SoftWeight(circle, x, y, CellAnchor::Corner);
+            const float weight = weightAt(x, y);
             if (weight > 0.0f)
                 apply(x, y, ValueAt(field, x, y), weight);
         }
     }
     return rect;
+}
+
+// Where a round brush acts, and how strongly.
+struct CircleWeights
+{
+    const BrushCircle& circle;
+    float operator()(int x, int y) const
+    {
+        return SoftWeight(circle, x, y, CellAnchor::Corner);
+    }
+};
+
+// Where a brush of any shape acts, and how strongly.
+struct MaskWeights
+{
+    const WeightMask& mask;
+    float operator()(int x, int y) const
+    {
+        return mask.At(x, y);
+    }
+};
+
+CellRect MaskRect(const FloatField& field, const WeightMask& mask)
+{
+    return Grow(mask.rect, 0, field.width, field.height);
 }
 
 // The values of `rect` grown by one corner on every side (clipped), row by row.
@@ -76,11 +102,11 @@ float KernelAverage(const Snapshot& snapshot, int channels, int x, int y, int c)
         SnapshotValue(snapshot, channels, x, y + 1, c, x, y);
     return sum / KERNEL_POINTS;
 }
-} // namespace
 
-CellRect AddToField(const FloatField& field, const BrushCircle& circle, const float* amount)
+template <typename WeightAt>
+CellRect Add(const FloatField& field, const CellRect& rect, WeightAt weightAt, const float* amount)
 {
-    return ForEachWeighted(field, circle,
+    return ForEachWeighted(field, rect, weightAt,
                            [&field, amount](int, int, float* values, float weight)
                            {
                                for (int c = 0; c < field.channels; ++c)
@@ -88,10 +114,11 @@ CellRect AddToField(const FloatField& field, const BrushCircle& circle, const fl
                            });
 }
 
-CellRect MoveFieldToward(const FloatField& field, const BrushCircle& circle, const float* target, float rate)
+template <typename WeightAt>
+CellRect MoveToward(const FloatField& field, const CellRect& rect, WeightAt weightAt, const float* target, float rate)
 {
     const float clampedRate = std::clamp(rate, 0.0f, 1.0f);
-    return ForEachWeighted(field, circle,
+    return ForEachWeighted(field, rect, weightAt,
                            [&field, target, clampedRate](int, int, float* values, float weight)
                            {
                                for (int c = 0; c < field.channels; ++c)
@@ -99,16 +126,16 @@ CellRect MoveFieldToward(const FloatField& field, const BrushCircle& circle, con
                            });
 }
 
-CellRect SmoothField(const FloatField& field, const BrushCircle& circle, float rate)
+template <typename WeightAt>
+CellRect Smooth(const FloatField& field, const CellRect& rect, WeightAt weightAt, float rate)
 {
     thread_local Snapshot snapshot;
-    const CellRect footprint = Footprint(circle, field.width, field.height);
-    if (footprint.IsEmpty())
-        return footprint;
-    Capture(field, footprint, snapshot);
+    if (rect.IsEmpty())
+        return rect;
+    Capture(field, rect, snapshot);
 
     const float clampedRate = std::clamp(rate, 0.0f, 1.0f);
-    return ForEachWeighted(field, circle,
+    return ForEachWeighted(field, rect, weightAt,
                            [&field, clampedRate](int x, int y, float* values, float weight)
                            {
                                for (int c = 0; c < field.channels; ++c)
@@ -117,6 +144,37 @@ CellRect SmoothField(const FloatField& field, const BrushCircle& circle, float r
                                    values[c] += (average - values[c]) * clampedRate * weight;
                                }
                            });
+}
+} // namespace
+
+CellRect AddToField(const FloatField& field, const BrushCircle& circle, const float* amount)
+{
+    return Add(field, Footprint(circle, field.width, field.height), CircleWeights{circle}, amount);
+}
+
+CellRect MoveFieldToward(const FloatField& field, const BrushCircle& circle, const float* target, float rate)
+{
+    return MoveToward(field, Footprint(circle, field.width, field.height), CircleWeights{circle}, target, rate);
+}
+
+CellRect SmoothField(const FloatField& field, const BrushCircle& circle, float rate)
+{
+    return Smooth(field, Footprint(circle, field.width, field.height), CircleWeights{circle}, rate);
+}
+
+CellRect AddToField(const FloatField& field, const WeightMask& mask, const float* amount)
+{
+    return Add(field, MaskRect(field, mask), MaskWeights{mask}, amount);
+}
+
+CellRect MoveFieldToward(const FloatField& field, const WeightMask& mask, const float* target, float rate)
+{
+    return MoveToward(field, MaskRect(field, mask), MaskWeights{mask}, target, rate);
+}
+
+CellRect SmoothField(const FloatField& field, const WeightMask& mask, float rate)
+{
+    return Smooth(field, MaskRect(field, mask), MaskWeights{mask}, rate);
 }
 
 void ClampField(const FloatField& field, const CellRect& rect, float low, float high)

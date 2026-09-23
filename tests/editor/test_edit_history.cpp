@@ -161,6 +161,23 @@ TEST_CASE("CommandStack undoes and redoes in order and names the next step [edit
                                           "redo Move 3 objects"});
 }
 
+TEST_CASE("CommandStack lists every step's label, undo oldest first and redo next first [editor][history]")
+{
+    std::vector<std::string> log;
+    CommandStack stack;
+    CHECK(stack.UndoLabels().empty());
+    CHECK(stack.RedoLabels().empty());
+    stack.Push(std::make_unique<CountingCommand>("Hill", log));
+    stack.Push(std::make_unique<CountingCommand>("Road", log));
+    stack.Push(std::make_unique<CountingCommand>("Trees", log));
+    CHECK(stack.UndoLabels() == std::vector<std::string>{"Hill", "Road", "Trees"});
+    stack.Undo();
+    stack.Undo();
+    CHECK(stack.UndoLabels() == std::vector<std::string>{"Hill"});
+    CHECK(stack.RedoLabels() == std::vector<std::string>{"Road", "Trees"});
+    CHECK(stack.RedoLabels().front() == stack.RedoLabel());
+}
+
 TEST_CASE("CommandStack drops the redo side when a new step is pushed [editor][history]")
 {
     std::vector<std::string> log;

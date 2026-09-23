@@ -44,6 +44,10 @@ public:
     // Label of the command the next Undo / Redo applies; empty when there is none.
     const std::string& UndoLabel() const;
     const std::string& RedoLabel() const;
+    // Every step's label: the undo steps oldest first (the last is the next Undo), the
+    // redo steps next first.
+    std::vector<std::string> UndoLabels() const;
+    std::vector<std::string> RedoLabels() const;
 
     std::size_t UndoCount() const;
     std::size_t RedoCount() const;
