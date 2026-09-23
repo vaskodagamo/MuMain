@@ -89,6 +89,13 @@ struct ItemCatalogEntry
     std::string originalSha256;
     std::vector<RequestRef> requests;
     std::optional<ClientReview> clientReview;
+    // Armour parts (groups 7-11): the index of their set and the keys of every part
+    // of it (this one included); none for other items.
+    std::optional<int> armourSet;
+    std::vector<std::string> armourSetParts;
+    // Texture container -> the other consumers that use it too: item keys, and
+    // other:<MODEL_...> for models that are not items.
+    std::map<std::string, std::vector<std::string>> sharedWith;
 
     int Type() const { return group * ITEMS_PER_GROUP + index; }
 };
@@ -99,10 +106,15 @@ struct ItemCatalog
     std::map<std::string, int> familyCounts;
 
     const ItemCatalogEntry* FindByType(int type) const;
+    const ItemCatalogEntry* FindByKey(const std::string& key) const;
 };
 
 std::filesystem::path ItemAssetsDir(const std::filesystem::path& repoRoot);
 std::filesystem::path ItemCatalogFile(const std::filesystem::path& repoRoot);
+// The owner's verdicts (Looks good / Needs work), keyed by item key; see ClientReview.h.
+std::filesystem::path ItemClientReviewFile(const std::filesystem::path& repoRoot);
+// The owner's picked concept image of an item (tools/item_editor/concepts.py pick).
+std::filesystem::path ItemConceptImage(const std::filesystem::path& repoRoot, const std::string& key);
 
 // Parses catalog.json text. Returns false and fills `error` when it is not an
 // item catalog the editor understands.

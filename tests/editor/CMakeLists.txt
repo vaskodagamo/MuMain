@@ -106,6 +106,44 @@ target_include_directories(editor_item_browse_tests PRIVATE
     ${PROJECT_SOURCE_DIR}/src/ThirdParty
 )
 
+# The Item Editor's item requests (assets-work/Items/requests): request.json and
+# brief.md from catalog facts, the folder with captures and reference images,
+# the requests scan, the owner's withdraw / accept / reject files and the capture
+# plan. File-only code; with python3 the written folders also go through the
+# contract's validate_request.py. MuClient supplies OpenSSL and turbojpeg.
+mu_add_test(
+    NAME editor_item_request_tests
+    SOURCES
+        test_item_request.cpp
+        ${PROJECT_SOURCE_DIR}/src/MuEditor/Editing/ItemCapturePlan.cpp
+        ${MU_EDITOR_ASSETS_DIR}/AssetCatalog.cpp
+        ${MU_EDITOR_ASSETS_DIR}/CaptureImage.cpp
+        ${MU_EDITOR_ASSETS_DIR}/EditorText.cpp
+        ${MU_EDITOR_ASSETS_DIR}/FileDigest.cpp
+        ${MU_EDITOR_ASSETS_DIR}/GitCheckout.cpp
+        ${MU_EDITOR_ASSETS_DIR}/ItemCatalog.cpp
+        ${MU_EDITOR_ASSETS_DIR}/ItemRequest.cpp
+        ${MU_EDITOR_ASSETS_DIR}/ItemRequestBrief.cpp
+        ${MU_EDITOR_ASSETS_DIR}/ItemRequestDecision.cpp
+        ${MU_EDITOR_ASSETS_DIR}/ItemRequestFolder.cpp
+        ${MU_EDITOR_ASSETS_DIR}/ItemRequestScan.cpp
+        ${MU_EDITOR_ASSETS_DIR}/JsonFields.cpp
+        ${MU_EDITOR_ASSETS_DIR}/RegenRequest.cpp
+        ${MU_EDITOR_ASSETS_DIR}/RequestBrief.cpp
+        ${MU_EDITOR_ASSETS_DIR}/RequestFolder.cpp
+        ${MU_EDITOR_ASSETS_DIR}/RequestNaming.cpp
+    LINK_LIBS
+        MuClient
+)
+target_compile_definitions(editor_item_request_tests PRIVATE
+    _EDITOR
+    "MU_REPO_ROOT=\"${PROJECT_SOURCE_DIR}\""
+)
+target_include_directories(editor_item_request_tests PRIVATE
+    ${PROJECT_SOURCE_DIR}/src/MuEditor
+    ${PROJECT_SOURCE_DIR}/src/ThirdParty
+)
+
 # The world editor's A/B compare checks a model and its textures before the
 # running client loads them in place of the one it shows, and finds the
 # original files built by tools/world_editor/materialize_variant.py. File-only
