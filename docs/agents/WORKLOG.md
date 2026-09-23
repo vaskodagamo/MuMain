@@ -998,3 +998,12 @@ parallel. Reload of a non-world range is untested until I6 allows one.
 **Verified:** Pulled owner-fork main at `1256aeed` after those merges. Object45–47 source BMDs, shared `bons.OZJ`, packed Blender scenes and rendered previews are hash-bound; six exact Object47/Object48 cluster records match the main placement manifest. PR #20 independently passed 181 evidence-hash checks and all 120 placement records; its protected raw fire meshes and anchors remain unchanged. PR #23 independent review checked 218 evidence hashes and 446 placements. Lorencia's final offline gate remains `bb641d04`: 22 replacements and 84 retentions cover all 106 in-scope assets. New client verification remains pending.
 
 **Open / next:** Owner review of PRs #22 and #23; continue the Dungeon static inventory with actual-placement context. The latest triage found no coherent next 3–5 asset production batch among Object05/07/08/09/10/11/14; keep Object09's animated Object12 clearance dependency explicit.
+
+## 2026-09-23 - Item art baseline study (Codex)
+**Goal:** Inventory the item and player armor BMD families, create comparable offline "before" renders, and record a style/rework baseline without modifying game assets.
+
+**Done:** Added `assets-work/Items/study/baseline.json`, README, collection/UV/finalization scripts and 13 fixed-camera previews for seven gear families, three wing generations and three five-part armor sets. The inventory covers 207 Item-folder models and 463 Player armor-part models, with bmdconv structure, texture sizes/sharing and a model-level UV review screen. Recorded family scores, 20 model/set rework targets, a tier palette and geometry/texture budgets, and risks for shared textures, origins, mesh order and armor compatibility. Updated the Blender importer to skip action-manifest parsing when `--no-anims` is requested so legacy non-UTF-8 manifests do not block static imports.
+
+**Verified:** `bmdconv info` completed for 670/670 scoped models; 0 unresolved texture references; 131 shared texture files recorded. UV conversion completed for all 670 models. Blender imported the 25 representative BMD parts and rendered all 13 previews at 1024×1024, orthographic scale 360, model scale 1.0. Checked representative PNG output visually. No files under `src/` changed.
+
+**Open / next:** Offline baseline only; review candidates and palettes with the owner, and use the running client to verify pivots, equipped placement, alpha and glow before accepting any future item rework. PR opened against `main` on `vaskodagamo/MuMain`; not merged.
