@@ -1,0 +1,63 @@
+{
+  "status": "OFFLINE BLENDER PLACEMENT REVIEW; NOT CLIENT EVIDENCE",
+  "coordinate_anchor": [
+    5550.0,
+    6450.0,
+    172.695556640625
+  ],
+  "objects": [
+    {
+      "name": "HouseEtc01",
+      "placement_index": 30,
+      "position": [
+        5550.0,
+        6450.0,
+        172.695556640625
+      ],
+      "rotation": [
+        -5.0,
+        0.0,
+        4020.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        55.5,
+        64.5
+      ]
+    },
+    {
+      "name": "HouseEtc01",
+      "placement_index": 31,
+      "position": [
+        5538.7099609375,
+        6455.55615234375,
+        310.1477355957031
+      ],
+      "rotation": [
+        -5.0,
+        0.0,
+        4020.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        55.387099609375,
+        64.5555615234375
+      ]
+    }
+  ],
+  "placement_source": "Unchanged World1 EncTerrain1.obj, decoded by coordination inventory",
+  "caveat": "Only owned geometry shown. Original terrain height, lighting, collision and other buildings omitted.",
+  "join_checks": "Actual World1 position/rotation/scale retained; camera identical before/after",
+  "camera_bounds_from_original_evaluated_meshes": [
+    [
+      -89.67413330078125,
+      -68.51544189453125,
+      -4.340451240539551
+    ],
+    [
+      79.58647155761719,
+      79.39750671386719,
+      278.33587646484375
+    ]
+  ]
+}
