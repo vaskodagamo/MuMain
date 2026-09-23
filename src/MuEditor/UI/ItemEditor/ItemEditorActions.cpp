@@ -3,6 +3,7 @@
 #ifdef _EDITOR
 
 #include "ItemEditorActions.h"
+#include "ItemEditorFiles.h"
 #include "Data/DataHandler/ItemData/ItemDataHandler.h"
 #include "Data/GameData/ItemData/ItemFieldMetadata.h"
 #include "../MuEditor/UI/Console/MuEditorConsoleUI.h"
@@ -10,9 +11,7 @@
 #include "imgui.h"
 #include <string>
 #include <sstream>
-#include "../Console/MuEditorConsoleUI.h"
-
-extern std::wstring g_strSelectedML;
+#include <filesystem>
 
 // ===== HELPER FUNCTIONS =====
 
@@ -122,6 +121,87 @@ std::string CItemEditorActions::ExportItemCombined(int itemIndex, ITEM_ATTRIBUTE
     return ExportItemToReadable(itemIndex, item) + "\n" + ExportItemToCSV(itemIndex, item);
 }
 
+// ===== SAVE AND EXPORT =====
+
+std::string CItemEditorActions::s_status;
+
+namespace
+{
+// Status line of an export: where it went, and its copy in <repo>/out/editor-exports.
+std::string DescribeExport(const std::filesystem::path& file)
+{
+    std::string text = "Exported " + Editor::Files::PathToUtf8(file.filename()) +
+                       "\n  game:   " + Editor::Files::PathToUtf8(Editor::Files::AbsolutePath(file));
+    const std::filesystem::path copy = Editor::Files::CopyToRepoExports(file);
+    if (!copy.empty())
+        text += "\n  repo:   " + Editor::Files::PathToUtf8(copy);
+    return text;
+}
+} // namespace
+
+void CItemEditorActions::SaveItemTable()
+{
+    const std::filesystem::path file = Editor::Files::ItemTableFile();
+    std::wstring fileName = file.wstring();
+    std::string changeLog;
+    if (g_ItemDataHandler.Save(fileName.data(), &changeLog))
+    {
+        // Log change details first, then save completion message
+        g_MuEditorConsoleUI.LogEditor(changeLog);
+        g_MuEditorConsoleUI.LogEditor("=== SAVE COMPLETED ===");
+        s_status = Editor::Files::DescribeSavedFiles({Editor::Files::MirrorSavedFile(file)});
+        ImGui::OpenPopup("Save Success");
+        return;
+    }
+
+    if (changeLog.find("No changes") != std::string::npos)
+    {
+        g_MuEditorConsoleUI.LogEditor(changeLog);
+        s_status = "No changes to save in " + Editor::Files::PathToUtf8(file.filename());
+        return;
+    }
+
+    g_MuEditorConsoleUI.LogEditor(I18N::Editor::FailedToSaveItems);
+    s_status = "Could not write " + Editor::Files::PathToUtf8(Editor::Files::AbsolutePath(file));
+    ImGui::OpenPopup("Save Failed");
+}
+
+void CItemEditorActions::ExportLegacyTable()
+{
+    const std::filesystem::path file = Editor::Files::ItemLegacyExportFile();
+    std::wstring fileName = file.wstring();
+    if (!g_ItemDataHandler.ExportAsS6E3(fileName.data()))
+    {
+        g_MuEditorConsoleUI.LogEditor(I18N::Editor::FailedToExportAsS6E3Format);
+        s_status = "Could not write " + Editor::Files::PathToUtf8(Editor::Files::AbsolutePath(file));
+        ImGui::OpenPopup("Export S6E3 Failed");
+        return;
+    }
+
+    g_MuEditorConsoleUI.LogEditor("Exported items as S6E3 legacy format: " +
+                                  Editor::Files::PathToUtf8(Editor::Files::AbsolutePath(file)));
+    s_status = DescribeExport(file);
+    ImGui::OpenPopup("Export S6E3 Success");
+}
+
+void CItemEditorActions::ExportCsv()
+{
+    const std::filesystem::path file = Editor::Files::ItemCsvExportFile();
+    std::wstring fileName = file.wstring();
+    if (!g_ItemDataHandler.ExportToCsv(fileName.data()))
+    {
+        g_MuEditorConsoleUI.LogEditor(I18N::Editor::FailedToExportAsCSV);
+        s_status = "Could not write " + Editor::Files::PathToUtf8(Editor::Files::AbsolutePath(file));
+        ImGui::OpenPopup("Export CSV Failed");
+        return;
+    }
+
+    g_MuEditorConsoleUI.LogEditor("Exported items as CSV: " +
+                                  Editor::Files::PathToUtf8(Editor::Files::AbsolutePath(file)));
+    s_status = DescribeExport(file);
+    ImGui::OpenPopup("Export CSV Success");
+}
+
 // ===== BUTTON RENDERING =====
 
 void CItemEditorActions::RenderSaveButton()
@@ -131,30 +211,7 @@ void CItemEditorActions::RenderSaveButton()
 
     if (ImGui::Button(I18N::Editor::SaveItems))
     {
-        wchar_t fileName[256];
-        swprintf_s(fileName, _countof(fileName), L"Data\\Local\\%ls\\Item_%ls.bmd", g_strSelectedML.c_str(), g_strSelectedML.c_str());
-
-        std::string changeLog;
-        if (g_ItemDataHandler.Save(fileName, &changeLog))
-        {
-            // Log change details first, then save completion message
-            g_MuEditorConsoleUI.LogEditor(changeLog);
-            g_MuEditorConsoleUI.LogEditor("=== SAVE COMPLETED ===");
-            ImGui::OpenPopup("Save Success");
-        }
-        else
-        {
-            // Check if it failed due to no changes
-            if (!changeLog.empty() && changeLog.find("No changes") != std::string::npos)
-            {
-                g_MuEditorConsoleUI.LogEditor(changeLog);
-            }
-            else
-            {
-                g_MuEditorConsoleUI.LogEditor(I18N::Editor::FailedToSaveItems);
-                ImGui::OpenPopup("Save Failed");
-            }
-        }
+        SaveItemTable();
     }
 
     ImGui::PopStyleColor(2);
@@ -167,20 +224,7 @@ void CItemEditorActions::RenderExportS6E3Button()
 
     if (ImGui::Button(I18N::Editor::ExportAsS6E3))
     {
-        wchar_t fileName[256];
-        swprintf_s(fileName, _countof(fileName), L"Data\\Local\\%ls\\Item_S6E3.bmd", g_strSelectedML.c_str());
-
-        if (g_ItemDataHandler.ExportAsS6E3(fileName))
-        {
-            std::string filename_str = "Item_" + std::string(g_strSelectedML.begin(), g_strSelectedML.end()) + "_S6E3.bmd";
-            g_MuEditorConsoleUI.LogEditor("Exported items as S6E3 legacy format: " + filename_str);
-            ImGui::OpenPopup("Export S6E3 Success");
-        }
-        else
-        {
-            g_MuEditorConsoleUI.LogEditor(I18N::Editor::FailedToExportAsS6E3Format);
-            ImGui::OpenPopup("Export S6E3 Failed");
-        }
+        ExportLegacyTable();
     }
 
     ImGui::PopStyleColor(2);
@@ -193,23 +237,17 @@ void CItemEditorActions::RenderExportCSVButton()
 
     if (ImGui::Button(I18N::Editor::ExportAsCSV))
     {
-        wchar_t csvFileName[256];
-        swprintf_s(csvFileName, _countof(csvFileName), L"Data\\Local\\%ls\\Item.csv", g_strSelectedML.c_str());
-
-        if (g_ItemDataHandler.ExportToCsv(csvFileName))
-        {
-            std::string filename_str = "Item_" + std::string(g_strSelectedML.begin(), g_strSelectedML.end()) + "_export.csv";
-            g_MuEditorConsoleUI.LogEditor("Exported items as CSV: " + filename_str);
-            ImGui::OpenPopup("Export CSV Success");
-        }
-        else
-        {
-            g_MuEditorConsoleUI.LogEditor(I18N::Editor::FailedToExportAsCSV);
-            ImGui::OpenPopup("Export CSV Failed");
-        }
+        ExportCsv();
     }
 
     ImGui::PopStyleColor(2);
+}
+
+void CItemEditorActions::RenderStatus()
+{
+    if (s_status.empty())
+        return;
+    ImGui::TextWrapped("%s", s_status.c_str());
 }
 
 void CItemEditorActions::RenderAllButtons()
@@ -219,6 +257,7 @@ void CItemEditorActions::RenderAllButtons()
     RenderExportS6E3Button();
     ImGui::SameLine();
     RenderExportCSVButton();
+    RenderStatus();
 }
 
 #endif // _EDITOR
