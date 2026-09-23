@@ -36,9 +36,11 @@
       "deep_wall01.jpg",
       "deep_wall02.jpg"
     ],
-    "owner": null,
-    "status": "unclaimed; scope and visual assessment pending",
-    "client_verified": false
+    "owner": "architecture",
+    "status": "in progress",
+    "client_verified": false,
+    "branch": "codex/dungeon-walls",
+    "deliverables": "assets-work/World2/Walls01"
   },
   {
     "model": "Object02",
@@ -63,9 +65,11 @@
       "deep_wall01.jpg",
       "deep_wall02.jpg"
     ],
-    "owner": null,
-    "status": "unclaimed; scope and visual assessment pending",
-    "client_verified": false
+    "owner": "architecture",
+    "status": "in progress",
+    "client_verified": false,
+    "branch": "codex/dungeon-walls",
+    "deliverables": "assets-work/World2/Walls01"
   },
   {
     "model": "Object04",
@@ -77,9 +81,11 @@
       "deep_wall01.jpg",
       "deep_wall03.jpg"
     ],
-    "owner": null,
-    "status": "unclaimed; scope and visual assessment pending",
-    "client_verified": false
+    "owner": "furniture",
+    "status": "in progress",
+    "client_verified": false,
+    "branch": "codex/dungeon-pier",
+    "deliverables": "assets-work/World2/Pier01"
   },
   {
     "model": "Object05",
@@ -319,8 +325,9 @@
       "wood01.jpg"
     ],
     "owner": "architecture",
-    "status": "in progress",
-    "client_verified": false
+    "status": "retained after independent visual review",
+    "client_verified": false,
+    "evidence": "assets-work/Environment/coordination/coffin-retention-review.json"
   },
   {
     "model": "Object22",
@@ -332,8 +339,9 @@
       "wood01.jpg"
     ],
     "owner": "architecture",
-    "status": "in progress",
-    "client_verified": false
+    "status": "retained after independent visual review",
+    "client_verified": false,
+    "evidence": "assets-work/Environment/coordination/coffin-retention-review.json"
   },
   {
     "model": "Object23",
@@ -416,8 +424,13 @@
       "deep_wall04.jpg"
     ],
     "owner": "furniture",
-    "status": "in progress",
-    "client_verified": false
+    "status": "accepted replacement",
+    "client_verified": false,
+    "commits": [
+      "15a1a4c4",
+      "6d0323d7"
+    ],
+    "evidence": "assets-work/World2/Pottery01/independent-final-review.json"
   },
   {
     "model": "Object29",
@@ -430,8 +443,13 @@
       "deep_wall04.jpg"
     ],
     "owner": "furniture",
-    "status": "in progress",
-    "client_verified": false
+    "status": "accepted replacement",
+    "client_verified": false,
+    "commits": [
+      "15a1a4c4",
+      "6d0323d7"
+    ],
+    "evidence": "assets-work/World2/Pottery01/independent-final-review.json"
   },
   {
     "model": "Object30",
@@ -444,8 +462,9 @@
       "deep_wall04.jpg"
     ],
     "owner": "furniture",
-    "status": "in progress",
-    "client_verified": false
+    "status": "retained after independent visual review",
+    "client_verified": false,
+    "evidence": "assets-work/Environment/coordination/pottery-final-review.json"
   },
   {
     "model": "Object31",

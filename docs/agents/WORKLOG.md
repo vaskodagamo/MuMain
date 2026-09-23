@@ -455,3 +455,8 @@ mockups, not client screenshots.
 ## 2026-09-23 — Start Dungeon static production
 
 Lorencia passed artistic/offline gate in separate draft PR12 (d3ce9acf); new client checks pending. Created focused main-based Dungeon integration and reused the two owned artist worktrees on new branches. PotteryObject28/29/30 and coffinObject21/22 are in production with all shared textures frozen; raw CP949 model names have a verified official-pipeline roundtrip. No Dungeon replacement accepted yet. See assets-work/Environment/coordination/handoff.md for exact ownership and next steps. Primary checkout/runtime untouched.
+
+
+### 2026-09-23 — Dungeon pottery acceptance and next architecture batches
+
+Integrated worker 15a1a4c4 as 6d0323d7: Object28 and Object29 ceramic forms accepted after independent exported-art and engine-contract review. Exact game scope is those two BMDs; all textures frozen and all 63 model dependencies resolve. Original Object30 and coffin Object21/22 retained on individual visual grounds; coffin studies remain separate at 6cd41d24. Packed sources, comparison assemblies and complete review evidence retained. New client checks pending. Walls01 (Object01/03) and Pier01 (Object04) now have disjoint ownership; Blender Python API production continues with frozen materials. Primary checkout and shared runtime untouched.

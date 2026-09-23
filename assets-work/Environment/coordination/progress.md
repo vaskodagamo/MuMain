@@ -1,3 +1,20 @@
+## Current checkpoint — 2026-09-23
+
+Dungeon pottery is independently accepted and integrated at 6d0323d7: Object28 and Object29 have rounder ceramic shoulders and modeled lips, with original interiors, bases and broken pieces preserved. Object30 remains unchanged on its own visual merits. Both original coffins, Object21 and Object22, are retained after candidate studies failed to demonstrate sufficient artistic improvement. These are two replacements and three individually justified retained assets, not full Dungeon coverage. All new client checks are pending.
+
+Accepted worker commit: 15a1a4c4 on codex/dungeon-pottery. Coffin study-only commit: 6cd41d24 on codex/dungeon-coffins; it is not integrated. Reports: pottery-final-review.json, coffin-retention-review.json and pottery-integration-validation.json. The integrated check resolves all 63 Object2 model dependencies and confirms exactly two changed game files. Original textures remain unchanged.
+
+Active production:
+
+| Family | Owned BMDs | Artist branch / worktree | Objective |
+|---|---|---|---|
+| Walls01 | Object2/Object01 and Object03 | architecture; codex/dungeon-walls; MuMain-q02-architecture | Purposeful stone crown and niche construction with exact modular ends and carved panels |
+| Pier01 | Object2/Object04 | furniture; codex/dungeon-pier; MuMain-q02-furniture | Readable curved creature relief while preserving pillar, caps, backing and placement contacts |
+
+All shared textures stay frozen. Workers retain source, official export, full contract checks and matching actual-placement renders; independent acceptance precedes sequential integration. Next: review wall/pier baselines, build purposeful candidates, validate and assess exported comparisons. The broader Dungeon inventory still requires scope and visual assessment. Lorencia remains separately accepted offline at d3ce9acf in draft PR12; user-reported client evidence applies only to the earlier baseline.
+
+## Historical phase-opening record
+
 # Environment production — Dungeon phase, 2026-09-23
 
 Lorencia passed independent artistic/offline acceptance at d3ce9acf on codex/environment-remake-continuation, draft PR12 https://github.com/vaskodagamo/MuMain/pull/12. That separate checkpoint retains22 accepted replacements,84 justified retained assets and all sources. New client checks are pending. Its stable checkout is ../MuMain-environment-remake; this branch starts from main7b808473 to keep the Dungeon PR focused and does not supersede or revert PR12.
