@@ -40,6 +40,7 @@ private:
     std::string CatalogNote() const;
     const Editor::Items::BrowseRow* RowOfType(int type) const;
 
+    float DetailsWidth(float filterWidth) const;
     void RenderFilterPanel();
     void RenderClassFilter();
     void RenderStageChoice();

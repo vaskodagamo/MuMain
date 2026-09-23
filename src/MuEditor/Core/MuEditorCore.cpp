@@ -17,6 +17,7 @@
 #include "../MuEditor/UI/ItemEditor/ConceptImageCache.h"
 #include "../MuEditor/UI/ItemEditor/ConceptJob.h"
 #include "../MuEditor/UI/ItemEditor/ConceptJobPanel.h"
+#include "../MuEditor/UI/ItemEditor/ItemAbCompare.h"
 #include "../MuEditor/UI/ItemEditor/ItemPreview.h"
 #include "../MuEditor/UI/ItemEditor/MuItemEditorUI.h"
 #include "../MuEditor/UI/SkillEditor/MuSkillEditorUI.h"
@@ -481,8 +482,10 @@ void CMuEditorCore::Shutdown()
     // Save skill editor preferences before shutting down
     g_MuSkillEditorUI.SaveColumnPreferences();
 
-    // The Item Editor preview's render target and character, while the renderer and engine still run.
+    // The Item Editor preview's render target and character, and the A/B compare's
+    // model copies, while the renderer and engine still run.
     g_ItemPreview.Release();
+    g_ItemAbCompare.Release();
     // A running concepts job stops as after Cancel (its in-flight requests finish); its images are kept.
     g_ConceptJob.Shutdown();
     g_ConceptImages.ReleaseAll();

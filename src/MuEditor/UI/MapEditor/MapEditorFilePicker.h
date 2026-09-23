@@ -15,7 +15,7 @@
 namespace Editor::Files
 {
 // The editor actions that ask the user for a file (the Map Editor's imports and
-// the Item Editor's reference images). Each has its own result slot, so a
+// the Item Editor's reference images and A/B candidates). Each has its own result slot, so a
 // pending dialog never receives another action's answer.
 enum class FilePickRequest
 {
@@ -23,6 +23,7 @@ enum class FilePickRequest
     MinimapTga,     // Minimap "Convert a .tga to mini_map.OZT": .tga
     ServerBaseAtt,  // Attribute "Load server base .att...":   .att
     ReferenceImage, // Item Editor, Ask Codex "Add image...":  .jpg/.jpeg
+    CandidateFile,  // Item Editor, A/B "Load candidate from folder...": .bmd/.ozj/.ozt
     Count
 };
 

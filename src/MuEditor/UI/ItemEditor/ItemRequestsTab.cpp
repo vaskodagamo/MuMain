@@ -4,6 +4,7 @@
 
 #include "ItemRequestsTab.h"
 
+#include "ItemAbCompare.h"
 #include "ItemRequestDialog.h"
 #include "ItemRequestWatch.h"
 
@@ -251,7 +252,7 @@ void CItemRequestsTab::RenderSelected(bool& showInBrowse, const ItemCatalog* cat
         Validate(*request);
     ImGui::EndDisabled();
     RenderWithdraw(*request);
-    RenderVerdict(*request);
+    RenderVerdict(*request, showInBrowse);
     RenderFollowUp(*request, showInBrowse, catalog);
     RenderResult();
 }
@@ -277,7 +278,7 @@ void CItemRequestsTab::RenderWithdraw(const ItemRequestSummary& request)
         m_confirmWithdraw = false;
 }
 
-void CItemRequestsTab::RenderVerdict(const ItemRequestSummary& request)
+void CItemRequestsTab::RenderVerdict(const ItemRequestSummary& request, bool& showInBrowse)
 {
     if (request.status != "delivered")
         return;
@@ -301,6 +302,22 @@ void CItemRequestsTab::RenderVerdict(const ItemRequestSummary& request)
         ImGui::SameLine();
         ImGui::TextColored(NOTE_COLOR, "(write what is wrong to reject)");
     }
+    ImGui::SameLine();
+    RenderCompare(request, showInBrowse);
+}
+
+void CItemRequestsTab::RenderCompare(const ItemRequestSummary& request, bool& showInBrowse)
+{
+    ImGui::BeginDisabled(!request.deliveryPresent || request.targetKeys.empty());
+    if (ImGui::Button("Compare"))
+    {
+        g_ItemAbCompare.OpenDeliveryCompare(request.id, request.targetKeys.front());
+        showInBrowse = true;
+    }
+    ImGui::EndDisabled();
+    if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
+        ImGui::SetTooltip("Shows the item in Browse: your checkout's files and the delivery side by side, one camera "
+                          "(no file changes).");
 }
 
 void CItemRequestsTab::RenderFollowUp(const ItemRequestSummary& request, bool& showInBrowse,
