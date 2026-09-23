@@ -7,6 +7,7 @@
 #include <sstream>
 #include <filesystem>
 #include <algorithm>
+#include <cstdlib>
 
 CMuEditorConfig& CMuEditorConfig::GetInstance()
 {
@@ -66,6 +67,14 @@ void CMuEditorConfig::Load()
                 {
                     m_language = value;
                 }
+                else if (key == "UIScale")
+                {
+                    m_uiScale = static_cast<float>(std::atof(value.c_str()));
+                }
+                else if (key == "StudioFullscreen")
+                {
+                    m_studioFullscreen = (value == "1" || value == "true");
+                }
             }
             else if (currentSection == "ColumnVisibility")
             {
@@ -96,7 +105,10 @@ void CMuEditorConfig::Save()
 
     // Write [General] section
     file << "[General]\n";
-    file << "Language=" << m_language << "\n\n";
+    file << "Language=" << m_language << "\n";
+    if (m_uiScale > 0.0f)
+        file << "UIScale=" << m_uiScale << "\n";
+    file << "StudioFullscreen=" << (m_studioFullscreen ? "1" : "0") << "\n\n";
 
     // Write [ColumnVisibility] section
     file << "[ColumnVisibility]\n";

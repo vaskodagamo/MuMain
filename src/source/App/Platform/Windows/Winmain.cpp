@@ -658,9 +658,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     break;
     case WM_SETCURSOR:
 #ifdef _EDITOR
-        // When hovering UI (including Open Editor button), let Windows show cursor
-        // Otherwise hide Windows cursor for game cursor
-        if (g_MuEditorCore.IsHoveringUI())
+        // When hovering UI (including Open Editor button), or in the item studio, let
+        // Windows show the cursor; otherwise hide it for the game cursor
+        if (g_MuEditorCore.WantsOsCursor())
         {
             // Let Windows cursor show - don't hide it
             return DefWindowProc(hwnd, msg, wParam, lParam);
