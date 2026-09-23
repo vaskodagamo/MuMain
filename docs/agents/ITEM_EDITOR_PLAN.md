@@ -257,6 +257,32 @@ Status:
     uncommitted ImGui-input hook searched, opened Columns, renamed Kris, saved (`git status`
     showed `item_eng.bmd` modified, backup written), saved again ("No changes"), copied a row,
     both exports; also under `MTL_DEBUG_LAYER=1`. Not tried by hand; Windows not built.
+- **I2 done (2026-09-23).** Item catalog, tiers and the item request contract; usage in
+  `assets-work/Items/README.md`.
+  - `tools/item_editor/`: `item_table.py` (both `Item_<lang>.bmd` layouts, checksum,
+    `ItemSetType.bmd`, `ItemAddOption.bmd`), `gen_item_models.py` -> `item_models.json` (walks
+    the model loads in `ZzzOpenData.cpp` with a small evaluator for its loops, `--check` keeps
+    it current), `bmd_facts.py`, `tiers.py`, `export_openmu_items.py` (admin backup or a
+    password-less read-only `docker exec psql` SELECT), `build_item_catalog.py` (`--check`).
+  - `assets-work/Items/catalog.json` (`mu-item-catalog/1`, ~2.5 MB): 889 items with a model,
+    939 models, no model file missing; 14 texture names without a file and the table items
+    without a model (70, 38 of them unused "-J" duplicates) are listed in the catalog.
+    `openmu-items.json` is the real export of the local OpenMU (676 definitions, 674 matched).
+  - Tiers: section 4 with one change: a percentile rank with ties counted half instead of plain
+    quantiles, so a family whose items share one score (third-generation wings) sits at T4
+    instead of T1. Swords run Short Sword, Kris, Rapier (T1) ... Knight/Bone/Explosion Blade (T7);
+    items that never drop from monsters come last in their family.
+  - `assets-work/Items/requests/`: README, `request.schema.json` (`mu-item-regen-request/1`),
+    `validate_request.py`; ids and branches use the item key (`2026-09-23-0-0-<slug>`,
+    `codex/item-req-0-0-<slug>`); the owner's accept/reject goes to
+    `requests/<id>/owner-decision.json`, the coordinator's reservations to
+    `assets-work/Items/assignments.json`.
+  - Checked: 56 Python tests (`python3 -m unittest discover -s tools/item_editor/tests`), also
+    in ctest as `item_editor_tools`; catalog `--check` with bmdconv.
+  - For I3/I5: read `tier.value`/`tier.family_rank` from the catalog, but filter classes with
+    `IsRequireEquipItem`; I5's request JSON must write the item target shape of the README.
+    Possible engine bug, not changed: `ItemSetType.bmd` marks "no set" with 0, while
+    `CSItemOption::IsChangeSetItem` tests only for `0xFF`.
 
 ## 8. Later options
 

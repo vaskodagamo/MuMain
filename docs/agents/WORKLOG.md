@@ -1021,3 +1021,16 @@ corrupted in the shipped file (long names spill into later fields).
 **Verified:** The 52 files in the portable masonry evidence package match its SHA-256 manifest. The independent review revalidated 29 model/texture appearances, all 17 selected placement transforms and model types, and exact old/current composition bounds. It found no additional placed-scale defect or production batch. This is selective offline evidence; newly changed game assets still need client verification.
 
 **Open / next:** Object44 has one bounded skeleton-silhouette prototype in progress on `codex/dungeon-remains44`, with `bons.OZJ`, `wood01.OZJ`, and neighboring models frozen. Independently review actual reduced/normal placement views before accepting it. Continue the Dungeon inventory and publish focused, ready-for-review PRs against `vaskodagamo/MuMain` as checkpoints pass.
+
+## 2026-09-23 - Item editor I2: item catalog, tiers, request contract (Claude Opus 5.5)
+**Goal:** Milestone I2 of `ITEM_EDITOR_PLAN.md`.
+
+**Done:** `tools/item_editor/` (item table decoder, model table generator, BMD facts, tiers,
+OpenMU export, catalog builder), `assets-work/Items/` (catalog, OpenMU export, tiers/assignments
+files, request README/schema/validator).
+
+**Verified:** 56 Python tests, registered in ctest; catalog `--check`; OpenMU export from the
+local database (read-only, no credentials).
+
+**Open / next:** I3 browse tab reads the catalog; I5 writes requests in this contract. Engine
+check for `ItemSetType` "no set" = 0 vs `0xFF`.
