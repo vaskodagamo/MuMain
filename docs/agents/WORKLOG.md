@@ -1064,3 +1064,16 @@ validation clean, ~75 fps with 959 items.
 **Verified:** `bmdconv validate` passed for all six mesh and action exports; `bmdconv compare` ran against each original and confirmed matching mesh/skeleton/action structure and bone motion (geometry differences are intentional); all six texture containers passed `mu_texture.py check`. All variants are below 1500 triangles and use 256×256 maps. Nothing was installed under `src/bin/Data`; no client check was performed.
 
 **Open / next:** Owner review and per-item A/B selection. Route chosen assets through the item editor request flow, then verify equipped placement and in-client materials before acceptance.
+
+## 2026-09-23 - Item editor I4: live 3D preview (Claude Opus 5.5)
+**Goal:** Milestone I4 of `ITEM_EDITOR_PLAN.md`.
+
+**Done:** turntable, inventory, ground and equipped views with +level, excellent and ancient,
+drawn by the game's own code on a preview character of its own; `RenderDroppedItem` /
+`PlaceItemOnGround` shared with the game (same behaviour).
+
+**Verified:** 382/382 editor-build and 381/381 player-build tests; scripted in-client run with
+screenshots of every acceptance view; Metal validation clean; ~75 fps.
+
+**Open / next:** owner hand test; compare the inventory slot scale and sword stance with the game;
+I5 needs a texture readback for clean captures.
