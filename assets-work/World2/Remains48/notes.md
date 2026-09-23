@@ -1,6 +1,6 @@
 # Object48: single-component rounded bone study
 
-The candidate changes one detached long bone in this eight-piece Dungeon scatter. It does not remodel the hand/foot silhouettes or any of the other seven pieces. Independent artistic review is pending; no game file is installed.
+The candidate changes one detached long bone in this eight-piece Dungeon scatter. It does not remodel the hand/foot silhouettes or any of the other seven pieces. Independent review accepts this as a localized refinement: fuller rounded ends and a tapered shaft remain discernible in the isolated reduced view. Cluster-distance gain is modest. The acceptance does not authorize propagation or imply a whole-family remake. See `independent-final-review.json`. No game file is installed in this worker checkout; integration remains the coordinator’s responsibility.
 
 The baseline is the original 284-triangle model at `7b808473`, also unchanged at this worktree's integration base `5577176b`. `baseline-sha256.json` records the exact BMD and frozen `Object2/bons.OZJ`. The latter has nine known consumers and is byte-identical in the candidate package and packed Blender image. Object45/46 and every other game asset remain untouched.
 
@@ -20,7 +20,7 @@ All 18 original component points remain as support controls. New rings keep the 
 - Eight old nonpositive corner-normal incidences on untouched geometry are matched explicitly: baseline faces 124, 128, 137, 139, 266, 270, 279, 281. No new incidence or zero-UV face. New bone is a closed oriented manifold with Euler characteristic 2; all eight disconnected components remain.
 - Converter `compare` correctly reports DIFFERENT for 32 replaced triangles, while bone distance and differing names are zero. Converter validation, exact raw header/action checks, texture checks and actual export reimport pass.
 
-`Object48/validation` contains measured reports and converter logs. `Object48/review` contains original/current/candidate diffuse, reverse, reduced and wire views. `review-assemblies` compares the exact recorded six-model remains cluster and representatives of all five nonzero normalized pitch families, including inverted pitch. All 385 transforms are checked numerically; the renders are samples, not 385 individual pictures.
+`Object48/validation` contains measured reports and converter logs. `Object48/review` contains original/current/candidate diffuse, reverse, reduced and wire views. `review-assemblies` compares the exact recorded six-model remains cluster and representatives of all six nonzero normalized pitch families, including inverted pitch. All 385 transforms are checked numerically; the renders are samples, not 385 individual pictures.
 
 These are offline diffuse renders without terrain or client verification. No runtime installation or client observation occurred.
 
