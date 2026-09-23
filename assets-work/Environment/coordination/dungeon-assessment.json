@@ -117,9 +117,12 @@
     "texture_names": [
       "deep_wall04.jpg"
     ],
-    "owner": null,
-    "status": "unclaimed; scope and visual assessment pending",
-    "client_verified": false
+    "owner": "architecture",
+    "status": "baseline retained; independent review accepted rejected-study evidence in PR #23",
+    "client_verified": false,
+    "branch": "codex/dungeon-supports-pr02",
+    "deliverables": "assets-work/World2/Supports01",
+    "evidence": "assets-work/World2/Supports01/README.md"
   },
   {
     "model": "Object07",
@@ -213,9 +216,12 @@
       "deep_wall04.jpg",
       "deep_wall01.jpg"
     ],
-    "owner": null,
-    "status": "unclaimed; scope and visual assessment pending",
-    "client_verified": false
+    "owner": "architecture",
+    "status": "baseline retained; independent review accepted rejected-study evidence in PR #23",
+    "client_verified": false,
+    "branch": "codex/dungeon-supports-pr02",
+    "deliverables": "assets-work/World2/Supports01",
+    "evidence": "assets-work/World2/Supports01/README.md"
   },
   {
     "model": "Object14",
@@ -240,9 +246,12 @@
     "texture_names": [
       "deep_wall04.jpg"
     ],
-    "owner": null,
-    "status": "unclaimed; scope and visual assessment pending",
-    "client_verified": false
+    "owner": "architecture",
+    "status": "baseline retained; independent review accepted rejected-study evidence in PR #23",
+    "client_verified": false,
+    "branch": "codex/dungeon-supports-pr02",
+    "deliverables": "assets-work/World2/Supports01",
+    "evidence": "assets-work/World2/Supports01/README.md"
   },
   {
     "model": "Object16",
@@ -565,8 +574,11 @@
       "deep_wall01.jpg"
     ],
     "owner": null,
-    "status": "unclaimed; scope and visual assessment pending",
-    "client_verified": false
+    "status": "retained baseline after independent corridor review; PR #19 merged",
+    "client_verified": false,
+    "branch": "codex/dungeon-object37-retention",
+    "deliverables": "assets-work/World2/Readiness03",
+    "evidence": "assets-work/World2/Readiness03/retention-review.json"
   },
   {
     "model": "Object38",
@@ -634,9 +646,12 @@
       "wood01.jpg",
       "fire0a.jpg"
     ],
-    "owner": null,
-    "status": "unclaimed; scope and visual assessment pending",
-    "client_verified": false
+    "owner": "furniture",
+    "status": "retained baseline after independent placed-scale review; PR #20 merged",
+    "client_verified": false,
+    "branch": "codex/dungeon-hearths-pr02",
+    "deliverables": "assets-work/World2/FireProps01",
+    "evidence": "assets-work/World2/FireProps01/notes.md"
   },
   {
     "model": "Object43",
@@ -648,9 +663,12 @@
       "wood01.jpg",
       "fire0a.jpg"
     ],
-    "owner": null,
-    "status": "unclaimed; scope and visual assessment pending",
-    "client_verified": false
+    "owner": "furniture",
+    "status": "retained baseline after independent placed-scale review; PR #20 merged",
+    "client_verified": false,
+    "branch": "codex/dungeon-hearths-pr02",
+    "deliverables": "assets-work/World2/FireProps01",
+    "evidence": "assets-work/World2/FireProps01/notes.md"
   },
   {
     "model": "Object44",
@@ -676,9 +694,11 @@
       "bons.jpg"
     ],
     "owner": null,
-    "status": "static remains baseline preview complete; visual assessment pending",
+    "status": "retained baseline after independent visual review; PR #22 open",
     "client_verified": false,
-    "evidence": "assets-work/World2/Readiness02/notes.md"
+    "evidence": "assets-work/World2/Readiness02/retention-review.json",
+    "branch": "codex/dungeon-bones45-47-retention",
+    "deliverables": "assets-work/World2/Readiness02"
   },
   {
     "model": "Object46",
@@ -690,9 +710,11 @@
       "bons.jpg"
     ],
     "owner": null,
-    "status": "static remains baseline preview complete; visual assessment pending",
+    "status": "retained baseline after independent visual review; PR #22 open",
     "client_verified": false,
-    "evidence": "assets-work/World2/Readiness02/notes.md"
+    "evidence": "assets-work/World2/Readiness02/retention-review.json",
+    "branch": "codex/dungeon-bones45-47-retention",
+    "deliverables": "assets-work/World2/Readiness02"
   },
   {
     "model": "Object47",
@@ -704,9 +726,11 @@
       "bons.jpg"
     ],
     "owner": null,
-    "status": "static remains baseline preview complete; visual assessment pending",
+    "status": "retained baseline after independent visual review; PR #22 open",
     "client_verified": false,
-    "evidence": "assets-work/World2/Readiness02/notes.md"
+    "evidence": "assets-work/World2/Readiness02/retention-review.json",
+    "branch": "codex/dungeon-bones45-47-retention",
+    "deliverables": "assets-work/World2/Readiness02"
   },
   {
     "model": "Object48",
@@ -718,7 +742,7 @@
       "bons.jpg"
     ],
     "owner": "coordinator",
-    "status": "accepted offline; PR #16 open and ready for review",
+    "status": "accepted offline replacement; PR #16 merged, client verification pending",
     "client_verified": false,
     "evidence": "assets-work/World2/Remains48/independent-final-review.json",
     "branch": "codex/dungeon-remains48-accepted",
@@ -738,8 +762,11 @@
       "TileRock01.jpg"
     ],
     "owner": null,
-    "status": "unclaimed; scope and visual assessment pending",
-    "client_verified": false
+    "status": "retained baseline after independent placed-scale review; PR #17 merged",
+    "client_verified": false,
+    "branch": "codex/dungeon-rocks49-50",
+    "deliverables": "assets-work/World2/Rocks01",
+    "evidence": "assets-work/World2/Rocks01/retention-review.json"
   },
   {
     "model": "Object50",
@@ -751,8 +778,11 @@
       "TileRock01.jpg"
     ],
     "owner": null,
-    "status": "unclaimed; scope and visual assessment pending",
-    "client_verified": false
+    "status": "retained baseline after independent placed-scale review; PR #17 merged",
+    "client_verified": false,
+    "branch": "codex/dungeon-rocks49-50",
+    "deliverables": "assets-work/World2/Rocks01",
+    "evidence": "assets-work/World2/Rocks01/retention-review.json"
   },
   {
     "model": "Object51",
@@ -763,9 +793,12 @@
     "texture_names": [
       "deep_wall12.jpg"
     ],
-    "owner": null,
-    "status": "unclaimed; scope and visual assessment pending",
-    "client_verified": false
+    "owner": "architecture",
+    "status": "retained baseline after independent placement review; PR #18 merged",
+    "client_verified": false,
+    "branch": "codex/dungeon-wall51",
+    "deliverables": "assets-work/World2/Walls02",
+    "evidence": "assets-work/World2/Walls02/independent-direction.json"
   },
   {
     "model": "Object52",

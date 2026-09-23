@@ -9,5 +9,10 @@
   "evidence": {
     "baseline.blend": "f16623138a4cc457f6fb08f27f75e05290ad0e1771496e92620e795ccaf67373",
     "baseline.png": "cfe2e5ac97d43f882c43b774ff8fe2ee9777898dbade3eaff70e1bcdf9a62abe"
+  },
+  "supplemental_evidence": {
+    "individual/baseline-front.png": "3d94d7ee826f50bc58e47ff8ded05ff8d36850874e1f9621a0120ac2b09c675c",
+    "individual/baseline-reduced.png": "19e9ce7dd654faec1a410ddf14f38a1858bd7a6df506e9318c368c98ea3d41b9",
+    "individual/baseline-reverse.png": "49705bc63bb6a63209841e544171d6128698d33a762113cb650bfabecefc45fc"
   }
 }
