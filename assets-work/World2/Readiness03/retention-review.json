@@ -1,0 +1,21 @@
+{
+  "asset": "Object37",
+  "decision": "RETAIN_BASELINE",
+  "review_type": "READ_ONLY_PLACED_CONTEXT",
+  "review_date": "2026-09-23",
+  "main_base": "7c25cce6911a0e3f8737e3214dcd12c982c18728",
+  "placement_count": 112,
+  "visually_reviewed_placements": [310, 311, 312, 313, 567, 568],
+  "rationale": [
+    "The shaft, broad capital, stepped foot and green bands remain readable in individual and reduced views.",
+    "The six rendered instances sit coherently among the actual neighboring static models, with no visible collision or contact defect.",
+    "No concrete placed-scale improvement was established that would justify changing the baseline."
+  ],
+  "independent_review": {
+    "result": "RETAIN_BASELINE",
+    "scope": "Six exact Object37 placements and the supplied individual, normal, reduced and reverse views.",
+    "limits": "The review does not claim visual inspection of all 112 placements, a terrain render or a game-client test."
+  },
+  "game_assets_changed": false,
+  "client_verified": false
+}
