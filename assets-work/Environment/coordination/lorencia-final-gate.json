@@ -1,0 +1,1090 @@
+{
+  "decision": "PASS Lorencia artistic and offline technical gate at reviewed integration revision",
+  "revision": "bb641d04ccafe086656d99e5c6fb2245c1f21ade",
+  "phase_permission": "Ready for coordinator to continue authorized other-map static environment phase; overall multi-map goal is not complete.",
+  "criteria": {
+    "complete_inventory_visual_assessment": {
+      "decision": "PASS",
+      "basis": "106 unique assessment names exactly partition into22 independently accepted replacements and84 individually justified retained assets; no overlap, extras or missing names. Review rationale, not inventory count, establishes acceptance."
+    },
+    "identified_substandard_assets_resolved": {
+      "decision": "PASS",
+      "basis": "22 final replacements have explicit independent art decisions; masonry candidates rejected and current4 baseline roles reassessed against real stack/gate/context evidence. No remaining known offline production defect from these reviews. Limits remain documented rather than hidden as unresolved improvements."
+    },
+    "retention_defensible": {
+      "decision": "PASS",
+      "basis": "76 individual baseline decisions plus4 companion decisions and4 masonry reassessments. Fresh254 full-path dependency references match current files. Original/texture-only treatment was not automatically accepted or rejected."
+    },
+    "replacement_validation": {
+      "decision": "PASS",
+      "basis": "23 installed game paths (22BMD+1atlas) exactly match retained accepted exports; every22BMD hash appears in acceptance evidence. All8 production batches have retained source, evidence and strict audits; no rejected candidate installed."
+    },
+    "integrated_coherence": {
+      "decision": "PASS for reviewed offline evidence scope",
+      "basis": "Coherence01 five local regions, current62 source records and30 image hashes verified; tavern/dome reduced reopened, homes/awning/well reviewed earlier. Latest fountain actual placement context and all production batch assemblies reviewed. Matched stone/wood/iron/foliage hierarchy with no new discrepancy identified."
+    },
+    "sources_evidence_handoff": {
+      "decision": "PASS",
+      "basis": "329 directly resolved and107 nested accepted-review file-hash references match. Only absent recorded file is generated JPEG patch executable, intentionally excluded; portable C/Python sources and compilation recipe retained. No authored/source or art evidence missing."
+    }
+  },
+  "verification": {
+    "partition": {
+      "assessment": 106,
+      "accepted": 22,
+      "retained": 84,
+      "overlap": [],
+      "missing_or_extra": []
+    },
+    "accepted_files": {
+      "src/bin/Data/Object1/HouseWall01.bmd": "2a5c787763f5de02f9e8b42ab463cc92b9d87910b89d86b1c5967512d306b965",
+      "src/bin/Data/Object1/HouseWall04.bmd": "2f593ea20c0ac5de7e8662608a8c9375bf6894d46cb7b22aa74d75d24b5084b5",
+      "src/bin/Data/Object1/HouseWall05.bmd": "2f2de7207c416cf8bf3ee6b4d67ea5bc77390dc9332bab4d692014b78f4a8b5d",
+      "src/bin/Data/Object1/HouseWall06.bmd": "0b38e706c4c1fa2103173d9052454ee48033ce49349745e6e080dc58f0ced201",
+      "src/bin/Data/Object1/Tree09.bmd": "5b6b83949c4b4ba7c5f4c4cbd2c7b8f76ca16ccca43300300d86ae81c07c7b38",
+      "src/bin/Data/Object1/Tree10.bmd": "471f2226cf526d3f1f4b81964ab9c97cb355eb37aa2822ed225f8761ed6b8679",
+      "src/bin/Data/Object1/Grass03.bmd": "ba0e8c4d85ecaf6fa17288d53dd4f74d1f7d1ef77062ae2189fac31b554560ec",
+      "src/bin/Data/Object1/Grass04.bmd": "c4f68a1ff5bb6a5ac7228eb5d13232b9fd1db737f5428210600860b04dd86fe8",
+      "src/bin/Data/Object1/Grass05.bmd": "1f13a8c297a31afc6ffe1ab61f84b991e6c3cb8fa8096a967119995044d674e4",
+      "src/bin/Data/Object1/Grass06.bmd": "fc115c8c1ccaa3bf8410921513efedd98213f7e81c968ebe80379976839000d3",
+      "src/bin/Data/Object1/House01.bmd": "ebae8d2a2bda5483e42f2c9c41066354e9fcee00df82549a63bca0bc367932b4",
+      "src/bin/Data/Object1/House03.bmd": "0fdb5c6fd61ae8239c780f2622b7764dee3ab3decec2708520722c4af2944d0c",
+      "src/bin/Data/Object1/House04.bmd": "6c040330a352cac50818f05a3da434c8c6623b8ab7b75cfbc9b722d2d411dcc5",
+      "src/bin/Data/Object1/Well01.bmd": "935944f4354f72e7839e8f97b41ab0bb6cd5f07d690d5972a551873b173e7831",
+      "src/bin/Data/Object1/Well02.bmd": "80c3ce31b8049e204ef9807505a07bd026bb550fe02b0c651eeb98fac63f32eb",
+      "src/bin/Data/Object1/Well03.bmd": "9f25e949dca54430438d3697d9eb65916e34ea5625c24b47f4427af89e4db703",
+      "src/bin/Data/Object1/Well04.bmd": "ebc11740cccc15c4745b82cd35205aff1e7f2fe49122e9c81392db3a9ea75542",
+      "src/bin/Data/Object1/Bonfire01.bmd": "5c0cba3c0d56711b96c03cc216ef2bc7c73c1fe1e138caf6c3a460046dcb0d35",
+      "src/bin/Data/Object1/StoneStatue01.bmd": "bd36218ec97576af5fbbe1e7aa425130dda42663e7d66c82f20a8e695f1507d1",
+      "src/bin/Data/Object1/StoneStatue03.bmd": "ddfa5d87568039df181dcf24831bd64b4c573ebccfe04c1c9973dba785bac8f3",
+      "src/bin/Data/Object1/SteelStatue01.bmd": "c118a1bd217e809a858e5b6eccef5ef83041d7d136499c3a7acca314415dcbf1",
+      "src/bin/Data/Object1/Waterspout01.bmd": "366d0fc591b50a269b6ac573d2493eee7572e88d5e3e1ef8c5c2c1fa1196c5df",
+      "src/bin/Data/Object1/reagon_waterspout.OZJ": "cc8e0438e4e63531650b5158244d6a618400f52729448d534cee7236387af909"
+    },
+    "retained_dependency_references": 254,
+    "retained_dependency_mismatches": [],
+    "coherence": {
+      "well": {
+        "sources": 11,
+        "images": 6,
+        "mismatches": []
+      },
+      "homes": {
+        "sources": 13,
+        "images": 6,
+        "mismatches": []
+      },
+      "tavern": {
+        "sources": 15,
+        "images": 6,
+        "mismatches": []
+      },
+      "dome": {
+        "sources": 13,
+        "images": 6,
+        "mismatches": []
+      },
+      "awning": {
+        "sources": 10,
+        "images": 6,
+        "mismatches": []
+      }
+    },
+    "independent_review_files": {
+      "assets-work/World1/QualityPass02/Broadleaf01/independent-final-review.json": "bbf47cebe3a571c0bbf4220b3297a8540affcec1c85cb32f709710bd92c4c542",
+      "assets-work/World1/QualityPass02/Fountain02/independent-review.json": "53baef25c4c51266f6808cf5a6232d8665cefbe978cfd9abd70727c104b82b30",
+      "assets-work/World1/QualityPass02/Wells02/independent-final-review.json": "8575e4f2568580f1f721997c246dba59822f0ad5ac7d970fd6fc62121f1f96d7",
+      "assets-work/World1/QualityPass02/Houses01/independent-review-House04.json": "867c3ea9d8703fc9f0a289f636dfb4f1fd6879051c6f6ae1fe443647aa73c889",
+      "assets-work/World1/QualityPass02/Houses01/independent-review-House01-House03.json": "05c7d16cd40af342279e68f4db4c79112ca0c45960cdaba40209cd6b112dac81",
+      "assets-work/World1/QualityPass02/Architecture01/independent-review.json": "3e8af23ca15405afa6e7d3be49d2e70a3e312054cf7abde0eb2b16e352c28a7a",
+      "assets-work/World1/QualityPass02/Statues02/independent-review.json": "b3f538bec81cca0e8574cfa37458dffc57db38800a2efc52d1a09029bd25213d",
+      "assets-work/World1/QualityPass02/Scrub01/independent-review.json": "8b2f70fe23c4fda1299c05dff24967a705d4bbf9ede5c56c9c1c41712f33831f",
+      "assets-work/World1/QualityPass02/Bonfire02/independent-final-review.json": "175b43941744ba9dc574cc81f0674c84ecbca0c76b9f2e5c01a726d1d268e194"
+    }
+  },
+  "review_evidence_verification": {
+    "checked": 329,
+    "paths": [
+      "assets-work/World1/QualityPass02/Broadleaf01/review-assemblies/candidate-small.png",
+      "assets-work/World1/QualityPass02/Broadleaf01/review-assemblies/current-small.png",
+      "assets-work/World1/QualityPass02/Broadleaf01/review-assemblies/candidate.png",
+      "assets-work/World1/QualityPass02/Broadleaf01/review-assemblies/current.png",
+      "assets-work/World1/QualityPass02/Broadleaf01/review-assemblies/Grass05/candidate-small.png",
+      "assets-work/World1/QualityPass02/Broadleaf01/review-assemblies/Grass05/current-small.png",
+      "assets-work/World1/QualityPass02/Broadleaf01/review-assemblies/Grass05/candidate.png",
+      "assets-work/World1/QualityPass02/Broadleaf01/review-assemblies/Grass05/current.png",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/source.blend",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/exports/Waterspout01.bmd",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/exports/reagon_waterspout.OZJ",
+      "src/bin/Data/Object1/stone_statue02.OZJ",
+      "src/bin/Data/Object1/ston01.OZJ",
+      "src/bin/Data/Object1/ston02.OZJ",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/review/baseline-diffuse-unlit-small.png",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/review/baseline-diffuse-unlit.png",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/review/baseline-light.png",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/review/baseline-neutral-ambient.png",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/review/baseline-reverse.png",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/review/baseline-small.png",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/review/baseline-water-action-0.png",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/review/baseline-water-action-10.png",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/review/baseline-water-action-20.png",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/review/baseline.png",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/review/candidate-diffuse-unlit-small.png",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/review/candidate-diffuse-unlit.png",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/review/candidate-light.png",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/review/candidate-neutral-ambient.png",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/review/candidate-reverse.png",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/review/candidate-small.png",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/review/candidate-water-action-0.png",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/review/candidate-water-action-10.png",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/review/candidate-water-action-20.png",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/review/candidate.png",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/review/context.json",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/review/diffuse-diagnostic-context.json",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/review/effect-context.json",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/review/original.png",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/review/wireframe.png",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/textures/paint02/engine-decode-proof.json",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/textures/paint02/packaging-proof.json",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/validation/apply-paint.txt",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/validation/attachments.json",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/validation/authored-match.json",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/validation/authored-raw-normals.json",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/validation/authored.json",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/validation/build.txt",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/validation/compare.txt",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/validation/engine-decoded-texture-protection.json",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/validation/export.txt",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/validation/fan-diagnostic.json",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/validation/frozen-textures.json",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/validation/info-after.txt",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/validation/local-motion.json",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/validation/normal-encoding-diagnostic.json",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/validation/official-motion-diagnostic.json",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/validation/paint-source-equivalence.json",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/validation/paint-source.json",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/validation/posed-authored-match.json",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/validation/raw-motion-equivalence.json",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/validation/raw-normal-bindings.json",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/validation/reimport.txt",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/validation/shading-contract.json",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/validation/skeleton-compare.txt",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/validation/smd-validation.txt",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/validation/summary.json",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/validation/texture-check.txt",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/validation/water-normal-diagnostic.json",
+      "assets-work/World1/QualityPass02/Fountain02/context/frozen-neighbor-hashes.json",
+      "assets-work/World1/QualityPass02/Fountain02/context/groups.json",
+      "assets-work/World1/QualityPass02/Fountain02/review/Waterspout01-0-baseline-reverse.png",
+      "assets-work/World1/QualityPass02/Fountain02/review/Waterspout01-0-baseline-small.png",
+      "assets-work/World1/QualityPass02/Fountain02/review/Waterspout01-0-baseline.png",
+      "assets-work/World1/QualityPass02/Fountain02/review/Waterspout01-0-candidate-reverse.png",
+      "assets-work/World1/QualityPass02/Fountain02/review/Waterspout01-0-candidate-small.png",
+      "assets-work/World1/QualityPass02/Fountain02/review/Waterspout01-0-candidate.png",
+      "assets-work/World1/QualityPass02/Fountain02/review/Waterspout01-0-contacts.json",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/textures/paint02/draft-original-quantization.jpg",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/textures/paint02/original.jpg",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/textures/paint02/patched.jpg",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/textures/paint02/engine-decode-proof.json",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/textures/paint02/reagon_waterspout.OZJ",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/textures/paint02/packaging-proof.json",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/textures/paint02/reagon_waterspout.jpg",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/textures/paint02/allowed-blocks.bin",
+      "assets-work/World1/QualityPass02/Wells02/Well01/review/candidate-small.png",
+      "assets-work/World1/QualityPass02/Wells02/Well01/review/candidate-reverse.png",
+      "assets-work/World1/QualityPass02/Wells02/Well01/review/original.png",
+      "assets-work/World1/QualityPass02/Wells02/Well01/review/wireframe.png",
+      "assets-work/World1/QualityPass02/Wells02/Well01/review/current-small.png",
+      "assets-work/World1/QualityPass02/Wells02/Well01/review/original-reverse.png",
+      "assets-work/World1/QualityPass02/Wells02/Well01/review/candidate.png",
+      "assets-work/World1/QualityPass02/Wells02/Well01/review/current-reverse.png",
+      "assets-work/World1/QualityPass02/Wells02/Well01/review/original-small.png",
+      "assets-work/World1/QualityPass02/Wells02/Well01/review/current.png",
+      "assets-work/World1/QualityPass02/Wells02/Well02/review/candidate-small.png",
+      "assets-work/World1/QualityPass02/Wells02/Well02/review/candidate-reverse.png",
+      "assets-work/World1/QualityPass02/Wells02/Well02/review/original.png",
+      "assets-work/World1/QualityPass02/Wells02/Well02/review/wireframe.png",
+      "assets-work/World1/QualityPass02/Wells02/Well02/review/current-small.png",
+      "assets-work/World1/QualityPass02/Wells02/Well02/review/original-reverse.png",
+      "assets-work/World1/QualityPass02/Wells02/Well02/review/candidate.png",
+      "assets-work/World1/QualityPass02/Wells02/Well02/review/current-reverse.png",
+      "assets-work/World1/QualityPass02/Wells02/Well02/review/original-small.png",
+      "assets-work/World1/QualityPass02/Wells02/Well02/review/current.png",
+      "assets-work/World1/QualityPass02/Wells02/Well03/review/candidate-small.png",
+      "assets-work/World1/QualityPass02/Wells02/Well03/review/candidate-reverse.png",
+      "assets-work/World1/QualityPass02/Wells02/Well03/review/original.png",
+      "assets-work/World1/QualityPass02/Wells02/Well03/review/wireframe.png",
+      "assets-work/World1/QualityPass02/Wells02/Well03/review/current-small.png",
+      "assets-work/World1/QualityPass02/Wells02/Well03/review/original-reverse.png",
+      "assets-work/World1/QualityPass02/Wells02/Well03/review/candidate.png",
+      "assets-work/World1/QualityPass02/Wells02/Well03/review/current-reverse.png",
+      "assets-work/World1/QualityPass02/Wells02/Well03/review/original-small.png",
+      "assets-work/World1/QualityPass02/Wells02/Well03/review/current.png",
+      "assets-work/World1/QualityPass02/Wells02/Well04/review/candidate-small.png",
+      "assets-work/World1/QualityPass02/Wells02/Well04/review/candidate-reverse.png",
+      "assets-work/World1/QualityPass02/Wells02/Well04/review/original.png",
+      "assets-work/World1/QualityPass02/Wells02/Well04/review/wireframe.png",
+      "assets-work/World1/QualityPass02/Wells02/Well04/review/current-small.png",
+      "assets-work/World1/QualityPass02/Wells02/Well04/review/original-reverse.png",
+      "assets-work/World1/QualityPass02/Wells02/Well04/review/candidate.png",
+      "assets-work/World1/QualityPass02/Wells02/Well04/review/current-reverse.png",
+      "assets-work/World1/QualityPass02/Wells02/Well04/review/original-small.png",
+      "assets-work/World1/QualityPass02/Wells02/Well04/review/current.png",
+      "assets-work/World1/QualityPass02/Wells02/review-assemblies/north-vessels/comparison-reverse.jpg",
+      "assets-work/World1/QualityPass02/Wells02/review-assemblies/north-vessels/comparison.jpg",
+      "assets-work/World1/QualityPass02/Wells02/review-assemblies/north-vessels/comparison-small.jpg",
+      "assets-work/World1/QualityPass02/Wells02/review-assemblies/west-vessels/comparison-reverse.jpg",
+      "assets-work/World1/QualityPass02/Wells02/review-assemblies/west-vessels/comparison.jpg",
+      "assets-work/World1/QualityPass02/Wells02/review-assemblies/west-vessels/comparison-small.jpg",
+      "assets-work/World1/QualityPass02/Wells02/review-assemblies/eastern-pots/comparison-reverse.jpg",
+      "assets-work/World1/QualityPass02/Wells02/review-assemblies/eastern-pots/comparison.jpg",
+      "assets-work/World1/QualityPass02/Wells02/review-assemblies/eastern-pots/comparison-small.jpg",
+      "assets-work/World1/QualityPass02/Wells02/review-assemblies/well-and-pots/comparison-reverse.jpg",
+      "assets-work/World1/QualityPass02/Wells02/review-assemblies/well-and-pots/comparison.jpg",
+      "assets-work/World1/QualityPass02/Wells02/review-assemblies/well-and-pots/comparison-small.jpg",
+      "assets-work/World1/QualityPass02/Houses01/House04/review/baseline-action-39.png",
+      "assets-work/World1/QualityPass02/Houses01/House04/review/baseline-action-10.png",
+      "assets-work/World1/QualityPass02/Houses01/House04/review/candidate-light.png",
+      "assets-work/World1/QualityPass02/Houses01/House04/review/baseline-reverse.png",
+      "assets-work/World1/QualityPass02/Houses01/House04/review/baseline.png",
+      "assets-work/World1/QualityPass02/Houses01/House04/review/candidate-action-0.png",
+      "assets-work/World1/QualityPass02/Houses01/House04/review/candidate-small.png",
+      "assets-work/World1/QualityPass02/Houses01/House04/review/candidate-reverse.png",
+      "assets-work/World1/QualityPass02/Houses01/House04/review/original.png",
+      "assets-work/World1/QualityPass02/Houses01/House04/review/wireframe.png",
+      "assets-work/World1/QualityPass02/Houses01/House04/review/candidate-action-20.png",
+      "assets-work/World1/QualityPass02/Houses01/House04/review/candidate-action-30.png",
+      "assets-work/World1/QualityPass02/Houses01/House04/review/candidate.png",
+      "assets-work/World1/QualityPass02/Houses01/House04/review/baseline-small.png",
+      "assets-work/World1/QualityPass02/Houses01/House04/review/candidate-action-39.png",
+      "assets-work/World1/QualityPass02/Houses01/House04/review/candidate-action-10.png",
+      "assets-work/World1/QualityPass02/Houses01/House04/review/baseline-action-0.png",
+      "assets-work/World1/QualityPass02/Houses01/House04/review/baseline-action-30.png",
+      "assets-work/World1/QualityPass02/Houses01/House04/review/baseline-light.png",
+      "assets-work/World1/QualityPass02/Houses01/House04/review/baseline-action-20.png",
+      "assets-work/World1/QualityPass02/Houses01/review/House04-0-baseline.png",
+      "assets-work/World1/QualityPass02/Houses01/review/House04-0-candidate.png",
+      "assets-work/World1/QualityPass02/Houses01/review/House04-0-baseline-reverse.png",
+      "assets-work/World1/QualityPass02/Houses01/review/House04-0-candidate-reverse.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall01/review/baseline-reverse.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall01/review/baseline.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall01/review/candidate-small.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall01/review/candidate-reverse.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall01/review/original.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall01/review/wireframe.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall01/review/original-reverse.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall01/review/candidate.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall01/review/baseline-small.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall01/review/comparison-small.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall01/review/original-small.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall04/review/baseline-reverse.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall04/review/baseline.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall04/review/candidate-small.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall04/review/candidate-reverse.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall04/review/original.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall04/review/wireframe.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall04/review/original-reverse.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall04/review/candidate.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall04/review/baseline-small.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall04/review/comparison-small.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall04/review/original-small.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall05/review/baseline-reverse.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall05/review/baseline.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall05/review/candidate-small.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall05/review/candidate-reverse.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall05/review/original.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall05/review/wireframe.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall05/review/original-reverse.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall05/review/candidate.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall05/review/baseline-small.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall05/review/comparison-small.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall05/review/original-small.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall06/review/baseline-reverse.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall06/review/baseline.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall06/review/candidate-small.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall06/review/candidate-reverse.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall06/review/original.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall06/review/wireframe.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall06/review/original-reverse.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall06/review/candidate.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall06/review/baseline-small.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall06/review/comparison-small.png",
+      "assets-work/World1/QualityPass02/Architecture01/HouseWall06/review/original-small.png",
+      "assets-work/World1/QualityPass02/Architecture01/review/town-candidate.png",
+      "assets-work/World1/QualityPass02/Architecture01/review/west-baseline.png",
+      "assets-work/World1/QualityPass02/Architecture01/review/town-baseline.png",
+      "assets-work/World1/QualityPass02/Architecture01/review/west-candidate.png",
+      "src/bin/Data/Object1/stone_statue02.OZJ",
+      "src/bin/Data/Object1/tombstone_big.OZJ",
+      "src/bin/Data/Object1/angel_stone_statue.OZJ",
+      "src/bin/Data/Object1/tombstone_big.OZJ",
+      "assets-work/World1/QualityPass02/Statues02/StoneStatue01/review/candidate-light.png",
+      "assets-work/World1/QualityPass02/Statues02/StoneStatue01/review/baseline-reverse.png",
+      "assets-work/World1/QualityPass02/Statues02/StoneStatue01/review/baseline.png",
+      "assets-work/World1/QualityPass02/Statues02/StoneStatue01/review/candidate-small.png",
+      "assets-work/World1/QualityPass02/Statues02/StoneStatue01/review/candidate-reverse.png",
+      "assets-work/World1/QualityPass02/Statues02/StoneStatue01/review/original.png",
+      "assets-work/World1/QualityPass02/Statues02/StoneStatue01/review/wireframe.png",
+      "assets-work/World1/QualityPass02/Statues02/StoneStatue01/review/candidate.png",
+      "assets-work/World1/QualityPass02/Statues02/StoneStatue01/review/baseline-small.png",
+      "assets-work/World1/QualityPass02/Statues02/StoneStatue01/review/baseline-light.png",
+      "assets-work/World1/QualityPass02/Statues02/StoneStatue03/review/candidate-light.png",
+      "assets-work/World1/QualityPass02/Statues02/StoneStatue03/review/baseline-reverse.png",
+      "assets-work/World1/QualityPass02/Statues02/StoneStatue03/review/baseline.png",
+      "assets-work/World1/QualityPass02/Statues02/StoneStatue03/review/candidate-small.png",
+      "assets-work/World1/QualityPass02/Statues02/StoneStatue03/review/candidate-reverse.png",
+      "assets-work/World1/QualityPass02/Statues02/StoneStatue03/review/original.png",
+      "assets-work/World1/QualityPass02/Statues02/StoneStatue03/review/wireframe.png",
+      "assets-work/World1/QualityPass02/Statues02/StoneStatue03/review/candidate.png",
+      "assets-work/World1/QualityPass02/Statues02/StoneStatue03/review/baseline-small.png",
+      "assets-work/World1/QualityPass02/Statues02/StoneStatue03/review/baseline-light.png",
+      "assets-work/World1/QualityPass02/Statues02/SteelStatue01/review/candidate-light.png",
+      "assets-work/World1/QualityPass02/Statues02/SteelStatue01/review/baseline-reverse.png",
+      "assets-work/World1/QualityPass02/Statues02/SteelStatue01/review/baseline.png",
+      "assets-work/World1/QualityPass02/Statues02/SteelStatue01/review/candidate-small.png",
+      "assets-work/World1/QualityPass02/Statues02/SteelStatue01/review/candidate-reverse.png",
+      "assets-work/World1/QualityPass02/Statues02/SteelStatue01/review/original.png",
+      "assets-work/World1/QualityPass02/Statues02/SteelStatue01/review/wireframe.png",
+      "assets-work/World1/QualityPass02/Statues02/SteelStatue01/review/candidate.png",
+      "assets-work/World1/QualityPass02/Statues02/SteelStatue01/review/baseline-small.png",
+      "assets-work/World1/QualityPass02/Statues02/SteelStatue01/review/baseline-light.png",
+      "assets-work/World1/QualityPass02/Statues02/review/StoneStatue03-0-baseline.png",
+      "assets-work/World1/QualityPass02/Statues02/review/SteelStatue01-2-baseline-reverse.png",
+      "assets-work/World1/QualityPass02/Statues02/review/StoneStatue01-4-candidate-reverse.png",
+      "assets-work/World1/QualityPass02/Statues02/review/StoneStatue01-3-baseline-reverse.png",
+      "assets-work/World1/QualityPass02/Statues02/review/StoneStatue03-2-baseline-reverse.png",
+      "assets-work/World1/QualityPass02/Statues02/review/StoneStatue03-3-candidate-reverse.png",
+      "assets-work/World1/QualityPass02/Statues02/review/SteelStatue01-0-candidate-reverse.png",
+      "assets-work/World1/QualityPass02/Statues02/review/StoneStatue01-0-candidate-reverse.png",
+      "assets-work/World1/QualityPass02/Statues02/review/SteelStatue01-2-baseline.png",
+      "assets-work/World1/QualityPass02/Statues02/review/StoneStatue03-3-candidate.png",
+      "assets-work/World1/QualityPass02/Statues02/review/StoneStatue03-3-baseline-reverse.png",
+      "assets-work/World1/QualityPass02/Statues02/review/StoneStatue01-0-baseline.png",
+      "assets-work/World1/QualityPass02/Statues02/review/SteelStatue01-2-candidate-reverse.png",
+      "assets-work/World1/QualityPass02/Statues02/review/StoneStatue03-0-candidate.png",
+      "assets-work/World1/QualityPass02/Statues02/review/SteelStatue01-2-candidate.png",
+      "assets-work/World1/QualityPass02/Statues02/review/StoneStatue03-0-candidate-reverse.png",
+      "assets-work/World1/QualityPass02/Statues02/review/StoneStatue01-4-baseline-reverse.png",
+      "assets-work/World1/QualityPass02/Statues02/review/StoneStatue01-3-candidate.png",
+      "assets-work/World1/QualityPass02/Statues02/review/StoneStatue03-0-baseline-reverse.png",
+      "assets-work/World1/QualityPass02/Statues02/review/SteelStatue01-0-candidate.png",
+      "assets-work/World1/QualityPass02/Statues02/review/StoneStatue01-0-candidate.png",
+      "assets-work/World1/QualityPass02/Statues02/review/StoneStatue01-4-candidate.png",
+      "assets-work/World1/QualityPass02/Statues02/review/StoneStatue01-3-baseline.png",
+      "assets-work/World1/QualityPass02/Statues02/review/StoneStatue01-4-baseline.png",
+      "assets-work/World1/QualityPass02/Statues02/review/StoneStatue03-2-candidate-reverse.png",
+      "assets-work/World1/QualityPass02/Statues02/review/StoneStatue03-2-candidate.png",
+      "assets-work/World1/QualityPass02/Statues02/review/SteelStatue01-0-baseline-reverse.png",
+      "assets-work/World1/QualityPass02/Statues02/review/SteelStatue01-0-baseline.png",
+      "assets-work/World1/QualityPass02/Statues02/review/StoneStatue01-0-baseline-reverse.png",
+      "assets-work/World1/QualityPass02/Statues02/review/StoneStatue03-3-baseline.png",
+      "assets-work/World1/QualityPass02/Statues02/review/StoneStatue01-3-candidate-reverse.png",
+      "assets-work/World1/QualityPass02/Statues02/review/StoneStatue03-2-baseline.png",
+      "assets-work/World1/QualityPass02/Scrub01/Tree09/review/candidate-light.png",
+      "assets-work/World1/QualityPass02/Scrub01/Tree09/review/baseline-reverse.png",
+      "assets-work/World1/QualityPass02/Scrub01/Tree09/review/baseline.png",
+      "assets-work/World1/QualityPass02/Scrub01/Tree09/review/candidate-small.png",
+      "assets-work/World1/QualityPass02/Scrub01/Tree09/review/candidate-reverse.png",
+      "assets-work/World1/QualityPass02/Scrub01/Tree09/review/original.png",
+      "assets-work/World1/QualityPass02/Scrub01/Tree09/review/wireframe.png",
+      "assets-work/World1/QualityPass02/Scrub01/Tree09/review/candidate.png",
+      "assets-work/World1/QualityPass02/Scrub01/Tree09/review/baseline-small.png",
+      "assets-work/World1/QualityPass02/Scrub01/Tree09/review/baseline-light.png",
+      "assets-work/World1/QualityPass02/Scrub01/Tree10/review/candidate-light.png",
+      "assets-work/World1/QualityPass02/Scrub01/Tree10/review/baseline-reverse.png",
+      "assets-work/World1/QualityPass02/Scrub01/Tree10/review/baseline.png",
+      "assets-work/World1/QualityPass02/Scrub01/Tree10/review/candidate-small.png",
+      "assets-work/World1/QualityPass02/Scrub01/Tree10/review/candidate-reverse.png",
+      "assets-work/World1/QualityPass02/Scrub01/Tree10/review/original.png",
+      "assets-work/World1/QualityPass02/Scrub01/Tree10/review/wireframe.png",
+      "assets-work/World1/QualityPass02/Scrub01/Tree10/review/candidate.png",
+      "assets-work/World1/QualityPass02/Scrub01/Tree10/review/baseline-small.png",
+      "assets-work/World1/QualityPass02/Scrub01/Tree10/review/baseline-light.png",
+      "assets-work/World1/QualityPass02/Scrub01/Grass03/review/candidate-light.png",
+      "assets-work/World1/QualityPass02/Scrub01/Grass03/review/baseline-reverse.png",
+      "assets-work/World1/QualityPass02/Scrub01/Grass03/review/baseline.png",
+      "assets-work/World1/QualityPass02/Scrub01/Grass03/review/candidate-small.png",
+      "assets-work/World1/QualityPass02/Scrub01/Grass03/review/candidate-reverse.png",
+      "assets-work/World1/QualityPass02/Scrub01/Grass03/review/original.png",
+      "assets-work/World1/QualityPass02/Scrub01/Grass03/review/wireframe.png",
+      "assets-work/World1/QualityPass02/Scrub01/Grass03/review/candidate.png",
+      "assets-work/World1/QualityPass02/Scrub01/Grass03/review/baseline-small.png",
+      "assets-work/World1/QualityPass02/Scrub01/Grass03/review/baseline-light.png",
+      "assets-work/World1/QualityPass02/Scrub01/Grass04/review/candidate-light.png",
+      "assets-work/World1/QualityPass02/Scrub01/Grass04/review/baseline-reverse.png",
+      "assets-work/World1/QualityPass02/Scrub01/Grass04/review/baseline.png",
+      "assets-work/World1/QualityPass02/Scrub01/Grass04/review/candidate-small.png",
+      "assets-work/World1/QualityPass02/Scrub01/Grass04/review/candidate-reverse.png",
+      "assets-work/World1/QualityPass02/Scrub01/Grass04/review/original.png",
+      "assets-work/World1/QualityPass02/Scrub01/Grass04/review/wireframe.png",
+      "assets-work/World1/QualityPass02/Scrub01/Grass04/review/candidate.png",
+      "assets-work/World1/QualityPass02/Scrub01/Grass04/review/baseline-small.png",
+      "assets-work/World1/QualityPass02/Scrub01/Grass04/review/baseline-light.png",
+      "assets-work/World1/QualityPass02/Bonfire02/Bonfire01/review/comparison-reverse.jpg",
+      "assets-work/World1/QualityPass02/Bonfire02/Bonfire01/review/comparison-wood-small.jpg",
+      "assets-work/World1/QualityPass02/Bonfire02/Bonfire01/review/comparison-wood.jpg",
+      "assets-work/World1/QualityPass02/Bonfire02/Bonfire01/review/comparison.jpg",
+      "assets-work/World1/QualityPass02/Bonfire02/Bonfire01/review/comparison-small.jpg",
+      "assets-work/World1/QualityPass02/Bonfire02/review-assemblies/adjacent-tilted-pair/comparison-reverse.jpg",
+      "assets-work/World1/QualityPass02/Bonfire02/review-assemblies/adjacent-tilted-pair/comparison.jpg",
+      "assets-work/World1/QualityPass02/Bonfire02/review-assemblies/adjacent-tilted-pair/comparison-small.jpg",
+      "assets-work/World1/QualityPass02/Bonfire02/review-assemblies/medium-scale/comparison-reverse.jpg",
+      "assets-work/World1/QualityPass02/Bonfire02/review-assemblies/medium-scale/comparison.jpg",
+      "assets-work/World1/QualityPass02/Bonfire02/review-assemblies/medium-scale/comparison-small.jpg",
+      "assets-work/World1/QualityPass02/Bonfire02/review-assemblies/small-tilted/comparison-reverse.jpg",
+      "assets-work/World1/QualityPass02/Bonfire02/review-assemblies/small-tilted/comparison.jpg",
+      "assets-work/World1/QualityPass02/Bonfire02/review-assemblies/small-tilted/comparison-small.jpg"
+    ],
+    "mismatches": [],
+    "unresolved": [
+      [
+        "independent-final-review.json",
+        "candidate-small.png"
+      ],
+      [
+        "independent-final-review.json",
+        "candidate-reverse.png"
+      ],
+      [
+        "independent-final-review.json",
+        "original.png"
+      ],
+      [
+        "independent-final-review.json",
+        "wireframe.png"
+      ],
+      [
+        "independent-final-review.json",
+        "current-small.png"
+      ],
+      [
+        "independent-final-review.json",
+        "original-reverse.png"
+      ],
+      [
+        "independent-final-review.json",
+        "candidate.png"
+      ],
+      [
+        "independent-final-review.json",
+        "current-reverse.png"
+      ],
+      [
+        "independent-final-review.json",
+        "original-small.png"
+      ],
+      [
+        "independent-final-review.json",
+        "current.png"
+      ],
+      [
+        "independent-final-review.json",
+        "candidate-small.png"
+      ],
+      [
+        "independent-final-review.json",
+        "candidate-reverse.png"
+      ],
+      [
+        "independent-final-review.json",
+        "original.png"
+      ],
+      [
+        "independent-final-review.json",
+        "wireframe.png"
+      ],
+      [
+        "independent-final-review.json",
+        "current-small.png"
+      ],
+      [
+        "independent-final-review.json",
+        "original-reverse.png"
+      ],
+      [
+        "independent-final-review.json",
+        "candidate.png"
+      ],
+      [
+        "independent-final-review.json",
+        "current-reverse.png"
+      ],
+      [
+        "independent-final-review.json",
+        "original-small.png"
+      ],
+      [
+        "independent-final-review.json",
+        "current.png"
+      ],
+      [
+        "independent-review.json",
+        "Waterspout01/textures/paint02/jpeg-block-patch"
+      ],
+      [
+        "independent-final-review.json",
+        "tub.OZJ"
+      ],
+      [
+        "independent-final-review.json",
+        "jar_01.OZJ"
+      ],
+      [
+        "independent-final-review.json",
+        "well.OZJ"
+      ],
+      [
+        "independent-final-review.json",
+        "horse_drawn_01.OZJ"
+      ],
+      [
+        "independent-final-review.json",
+        "well.OZJ"
+      ],
+      [
+        "independent-final-review.json",
+        "jar_01.OZJ"
+      ],
+      [
+        "independent-final-review.json",
+        "jar_01.OZJ"
+      ],
+      [
+        "independent-review-House01-House03.json",
+        "candidate-light.png"
+      ],
+      [
+        "independent-review-House01-House03.json",
+        "baseline-reverse.png"
+      ],
+      [
+        "independent-review-House01-House03.json",
+        "baseline.png"
+      ],
+      [
+        "independent-review-House01-House03.json",
+        "candidate-small.png"
+      ],
+      [
+        "independent-review-House01-House03.json",
+        "candidate-reverse.png"
+      ],
+      [
+        "independent-review-House01-House03.json",
+        "original.png"
+      ],
+      [
+        "independent-review-House01-House03.json",
+        "wireframe.png"
+      ],
+      [
+        "independent-review-House01-House03.json",
+        "candidate.png"
+      ],
+      [
+        "independent-review-House01-House03.json",
+        "baseline-small.png"
+      ],
+      [
+        "independent-review-House01-House03.json",
+        "baseline-light.png"
+      ],
+      [
+        "independent-review-House01-House03.json",
+        "candidate-light.png"
+      ],
+      [
+        "independent-review-House01-House03.json",
+        "baseline-reverse.png"
+      ],
+      [
+        "independent-review-House01-House03.json",
+        "baseline.png"
+      ],
+      [
+        "independent-review-House01-House03.json",
+        "candidate-small.png"
+      ],
+      [
+        "independent-review-House01-House03.json",
+        "candidate-reverse.png"
+      ],
+      [
+        "independent-review-House01-House03.json",
+        "original.png"
+      ],
+      [
+        "independent-review-House01-House03.json",
+        "wireframe.png"
+      ],
+      [
+        "independent-review-House01-House03.json",
+        "candidate.png"
+      ],
+      [
+        "independent-review-House01-House03.json",
+        "baseline-small.png"
+      ],
+      [
+        "independent-review-House01-House03.json",
+        "baseline-light.png"
+      ],
+      [
+        "independent-review-House01-House03.json",
+        "House01-0-baseline.png"
+      ],
+      [
+        "independent-review-House01-House03.json",
+        "House01-1-baseline.png"
+      ],
+      [
+        "independent-review-House01-House03.json",
+        "House01-0-candidate.png"
+      ],
+      [
+        "independent-review-House01-House03.json",
+        "House01-0-candidate-reverse.png"
+      ],
+      [
+        "independent-review-House01-House03.json",
+        "House03-0-baseline.png"
+      ],
+      [
+        "independent-review-House01-House03.json",
+        "House03-0-candidate.png"
+      ],
+      [
+        "independent-review-House01-House03.json",
+        "House01-1-candidate.png"
+      ],
+      [
+        "independent-review-House01-House03.json",
+        "House03-0-candidate-reverse.png"
+      ],
+      [
+        "independent-review-House01-House03.json",
+        "House01-0-baseline-reverse.png"
+      ],
+      [
+        "independent-review-House01-House03.json",
+        "House01-1-baseline-reverse.png"
+      ],
+      [
+        "independent-review-House01-House03.json",
+        "House03-0-baseline-reverse.png"
+      ],
+      [
+        "independent-review-House01-House03.json",
+        "House01-1-candidate-reverse.png"
+      ],
+      [
+        "independent-review-House01-House03.json",
+        "baseline-effect-0.4.png"
+      ],
+      [
+        "independent-review-House01-House03.json",
+        "baseline-effect-0.7.png"
+      ],
+      [
+        "independent-review-House01-House03.json",
+        "candidate-effect-0.7.png"
+      ],
+      [
+        "independent-review-House01-House03.json",
+        "candidate-effect-0.4.png"
+      ],
+      [
+        "independent-review.json",
+        "final-proof.json"
+      ],
+      [
+        "independent-review.json",
+        "summary.json"
+      ],
+      [
+        "independent-review.json",
+        "frozen-textures.json"
+      ],
+      [
+        "independent-review.json",
+        "authored-match.json"
+      ],
+      [
+        "independent-review.json",
+        "raw-normal-bindings.json"
+      ],
+      [
+        "independent-review.json",
+        "local-motion.json"
+      ],
+      [
+        "independent-review.json",
+        "authored.json"
+      ],
+      [
+        "independent-review.json",
+        "authored-raw-normals.json"
+      ],
+      [
+        "independent-review.json",
+        "contact-contract.json"
+      ],
+      [
+        "independent-review.json",
+        "final-proof.json"
+      ],
+      [
+        "independent-review.json",
+        "summary.json"
+      ],
+      [
+        "independent-review.json",
+        "frozen-textures.json"
+      ],
+      [
+        "independent-review.json",
+        "authored-match.json"
+      ],
+      [
+        "independent-review.json",
+        "raw-normal-bindings.json"
+      ],
+      [
+        "independent-review.json",
+        "local-motion.json"
+      ],
+      [
+        "independent-review.json",
+        "authored.json"
+      ],
+      [
+        "independent-review.json",
+        "authored-raw-normals.json"
+      ],
+      [
+        "independent-review.json",
+        "contact-contract.json"
+      ],
+      [
+        "independent-review.json",
+        "final-proof.json"
+      ],
+      [
+        "independent-review.json",
+        "summary.json"
+      ],
+      [
+        "independent-review.json",
+        "frozen-textures.json"
+      ],
+      [
+        "independent-review.json",
+        "authored-match.json"
+      ],
+      [
+        "independent-review.json",
+        "raw-normal-bindings.json"
+      ],
+      [
+        "independent-review.json",
+        "local-motion.json"
+      ],
+      [
+        "independent-review.json",
+        "authored.json"
+      ],
+      [
+        "independent-review.json",
+        "authored-raw-normals.json"
+      ],
+      [
+        "independent-review.json",
+        "contact-contract.json"
+      ],
+      [
+        "independent-review.json",
+        "mixed-scrub-candidate.png"
+      ],
+      [
+        "independent-review.json",
+        "mixed-scrub-baseline.png"
+      ],
+      [
+        "independent-review.json",
+        "mixed-tall-baseline.png"
+      ],
+      [
+        "independent-review.json",
+        "large-140-candidate.png"
+      ],
+      [
+        "independent-review.json",
+        "mixed-tall-candidate.png"
+      ],
+      [
+        "independent-review.json",
+        "large-140-baseline.png"
+      ],
+      [
+        "independent-review.json",
+        "small-042-candidate.png"
+      ],
+      [
+        "independent-review.json",
+        "small-042-baseline.png"
+      ],
+      [
+        "independent-final-review.json",
+        "fire_01.OZJ"
+      ],
+      [
+        "independent-final-review.json",
+        "fire_02.OZJ"
+      ]
+    ],
+    "additional_resolved_by_nested_asset_context": [
+      "assets-work/World1/QualityPass02/Broadleaf01/Grass05/review/candidate-small.png",
+      "assets-work/World1/QualityPass02/Broadleaf01/Grass05/review/candidate-reverse.png",
+      "assets-work/World1/QualityPass02/Broadleaf01/Grass05/review/original.png",
+      "assets-work/World1/QualityPass02/Broadleaf01/Grass05/review/wireframe.png",
+      "assets-work/World1/QualityPass02/Broadleaf01/Grass05/review/current-small.png",
+      "assets-work/World1/QualityPass02/Broadleaf01/Grass05/review/original-reverse.png",
+      "assets-work/World1/QualityPass02/Broadleaf01/Grass05/review/candidate.png",
+      "assets-work/World1/QualityPass02/Broadleaf01/Grass05/review/current-reverse.png",
+      "assets-work/World1/QualityPass02/Broadleaf01/Grass05/review/original-small.png",
+      "assets-work/World1/QualityPass02/Broadleaf01/Grass05/review/current.png",
+      "assets-work/World1/QualityPass02/Broadleaf01/Grass06/review/candidate-small.png",
+      "assets-work/World1/QualityPass02/Broadleaf01/Grass06/review/candidate-reverse.png",
+      "assets-work/World1/QualityPass02/Broadleaf01/Grass06/review/original.png",
+      "assets-work/World1/QualityPass02/Broadleaf01/Grass06/review/wireframe.png",
+      "assets-work/World1/QualityPass02/Broadleaf01/Grass06/review/current-small.png",
+      "assets-work/World1/QualityPass02/Broadleaf01/Grass06/review/original-reverse.png",
+      "assets-work/World1/QualityPass02/Broadleaf01/Grass06/review/candidate.png",
+      "assets-work/World1/QualityPass02/Broadleaf01/Grass06/review/current-reverse.png",
+      "assets-work/World1/QualityPass02/Broadleaf01/Grass06/review/original-small.png",
+      "assets-work/World1/QualityPass02/Broadleaf01/Grass06/review/current.png",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/baseline/stone_statue02.OZJ",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/original/ston01.OZJ",
+      "assets-work/World1/QualityPass02/Fountain02/Waterspout01/original/ston02.OZJ",
+      "assets-work/World1/QualityPass02/Wells02/Well01/baseline/tub.OZJ",
+      "assets-work/World1/QualityPass02/Wells02/Well01/baseline/jar_01.OZJ",
+      "assets-work/World1/QualityPass02/Wells02/Well01/baseline/well.OZJ",
+      "assets-work/World1/QualityPass02/Wells02/Well01/baseline/horse_drawn_01.OZJ",
+      "assets-work/World1/QualityPass02/Wells02/Well01/baseline/well.OZJ",
+      "assets-work/World1/QualityPass02/Wells02/Well01/baseline/jar_01.OZJ",
+      "assets-work/World1/QualityPass02/Wells02/Well01/baseline/jar_01.OZJ",
+      "assets-work/World1/QualityPass02/Houses01/House01/review/candidate-light.png",
+      "assets-work/World1/QualityPass02/Houses01/House01/review/baseline-reverse.png",
+      "assets-work/World1/QualityPass02/Houses01/House01/review/baseline.png",
+      "assets-work/World1/QualityPass02/Houses01/House01/review/candidate-small.png",
+      "assets-work/World1/QualityPass02/Houses01/House01/review/candidate-reverse.png",
+      "assets-work/World1/QualityPass02/Houses01/House01/review/original.png",
+      "assets-work/World1/QualityPass02/Houses01/House01/review/wireframe.png",
+      "assets-work/World1/QualityPass02/Houses01/House01/review/candidate.png",
+      "assets-work/World1/QualityPass02/Houses01/House01/review/baseline-small.png",
+      "assets-work/World1/QualityPass02/Houses01/House01/review/baseline-light.png",
+      "assets-work/World1/QualityPass02/Houses01/House03/review/candidate-light.png",
+      "assets-work/World1/QualityPass02/Houses01/House03/review/baseline-reverse.png",
+      "assets-work/World1/QualityPass02/Houses01/House03/review/baseline.png",
+      "assets-work/World1/QualityPass02/Houses01/House03/review/candidate-small.png",
+      "assets-work/World1/QualityPass02/Houses01/House03/review/candidate-reverse.png",
+      "assets-work/World1/QualityPass02/Houses01/House03/review/original.png",
+      "assets-work/World1/QualityPass02/Houses01/House03/review/wireframe.png",
+      "assets-work/World1/QualityPass02/Houses01/House03/review/candidate.png",
+      "assets-work/World1/QualityPass02/Houses01/House03/review/baseline-small.png",
+      "assets-work/World1/QualityPass02/Houses01/House03/review/baseline-light.png",
+      "assets-work/World1/QualityPass02/Houses01/review/House01-0-baseline.png",
+      "assets-work/World1/QualityPass02/Houses01/review/House01-1-baseline.png",
+      "assets-work/World1/QualityPass02/Houses01/review/House01-0-candidate.png",
+      "assets-work/World1/QualityPass02/Houses01/review/House01-0-candidate-reverse.png",
+      "assets-work/World1/QualityPass02/Houses01/review/House03-0-baseline.png",
+      "assets-work/World1/QualityPass02/Houses01/review/House03-0-candidate.png",
+      "assets-work/World1/QualityPass02/Houses01/review/House01-1-candidate.png",
+      "assets-work/World1/QualityPass02/Houses01/review/House03-0-candidate-reverse.png",
+      "assets-work/World1/QualityPass02/Houses01/review/House01-0-baseline-reverse.png",
+      "assets-work/World1/QualityPass02/Houses01/review/House01-1-baseline-reverse.png",
+      "assets-work/World1/QualityPass02/Houses01/review/House03-0-baseline-reverse.png",
+      "assets-work/World1/QualityPass02/Houses01/review/House01-1-candidate-reverse.png",
+      "assets-work/World1/QualityPass02/Houses01/House03/review/baseline-effect-0.4.png",
+      "assets-work/World1/QualityPass02/Houses01/House03/review/baseline-effect-0.7.png",
+      "assets-work/World1/QualityPass02/Houses01/House03/review/candidate-effect-0.7.png",
+      "assets-work/World1/QualityPass02/Houses01/House03/review/candidate-effect-0.4.png",
+      "assets-work/World1/QualityPass02/Statues02/StoneStatue01/exports/stone_statue02.OZJ",
+      "assets-work/World1/QualityPass02/Statues02/StoneStatue01/validation/final-proof.json",
+      "assets-work/World1/QualityPass02/Statues02/StoneStatue01/validation/summary.json",
+      "assets-work/World1/QualityPass02/Statues02/StoneStatue01/validation/frozen-textures.json",
+      "assets-work/World1/QualityPass02/Statues02/StoneStatue01/validation/authored-match.json",
+      "assets-work/World1/QualityPass02/Statues02/StoneStatue01/validation/raw-normal-bindings.json",
+      "assets-work/World1/QualityPass02/Statues02/StoneStatue01/validation/local-motion.json",
+      "assets-work/World1/QualityPass02/Statues02/StoneStatue01/validation/authored.json",
+      "assets-work/World1/QualityPass02/Statues02/StoneStatue01/validation/authored-raw-normals.json",
+      "assets-work/World1/QualityPass02/Statues02/SteelStatue01/validation/contact-contract.json",
+      "assets-work/World1/QualityPass02/Statues02/SteelStatue01/exports/tombstone_big.OZJ",
+      "assets-work/World1/QualityPass02/Statues02/StoneStatue03/exports/angel_stone_statue.OZJ",
+      "assets-work/World1/QualityPass02/Statues02/StoneStatue03/validation/final-proof.json",
+      "assets-work/World1/QualityPass02/Statues02/StoneStatue03/validation/summary.json",
+      "assets-work/World1/QualityPass02/Statues02/StoneStatue03/validation/frozen-textures.json",
+      "assets-work/World1/QualityPass02/Statues02/StoneStatue03/validation/authored-match.json",
+      "assets-work/World1/QualityPass02/Statues02/StoneStatue03/validation/raw-normal-bindings.json",
+      "assets-work/World1/QualityPass02/Statues02/StoneStatue03/validation/local-motion.json",
+      "assets-work/World1/QualityPass02/Statues02/StoneStatue03/validation/authored.json",
+      "assets-work/World1/QualityPass02/Statues02/StoneStatue03/validation/authored-raw-normals.json",
+      "assets-work/World1/QualityPass02/Statues02/StoneStatue03/validation/contact-contract.json",
+      "assets-work/World1/QualityPass02/Statues02/SteelStatue01/exports/tombstone_big.OZJ",
+      "assets-work/World1/QualityPass02/Statues02/SteelStatue01/validation/final-proof.json",
+      "assets-work/World1/QualityPass02/Statues02/SteelStatue01/validation/summary.json",
+      "assets-work/World1/QualityPass02/Statues02/SteelStatue01/validation/frozen-textures.json",
+      "assets-work/World1/QualityPass02/Statues02/SteelStatue01/validation/authored-match.json",
+      "assets-work/World1/QualityPass02/Statues02/SteelStatue01/validation/raw-normal-bindings.json",
+      "assets-work/World1/QualityPass02/Statues02/SteelStatue01/validation/local-motion.json",
+      "assets-work/World1/QualityPass02/Statues02/SteelStatue01/validation/authored.json",
+      "assets-work/World1/QualityPass02/Statues02/SteelStatue01/validation/authored-raw-normals.json",
+      "assets-work/World1/QualityPass02/Statues02/SteelStatue01/validation/contact-contract.json",
+      "assets-work/World1/QualityPass02/Scrub01/review/mixed-scrub-candidate.png",
+      "assets-work/World1/QualityPass02/Scrub01/review/mixed-scrub-baseline.png",
+      "assets-work/World1/QualityPass02/Scrub01/review/mixed-tall-baseline.png",
+      "assets-work/World1/QualityPass02/Scrub01/review/large-140-candidate.png",
+      "assets-work/World1/QualityPass02/Scrub01/review/mixed-tall-candidate.png",
+      "assets-work/World1/QualityPass02/Scrub01/review/large-140-baseline.png",
+      "assets-work/World1/QualityPass02/Scrub01/review/small-042-candidate.png",
+      "assets-work/World1/QualityPass02/Scrub01/review/small-042-baseline.png",
+      "assets-work/World1/QualityPass02/Bonfire02/study-v1/Bonfire01/exports/fire_01.OZJ",
+      "assets-work/World1/QualityPass02/Bonfire02/study-v1/Bonfire01/exports/fire_02.OZJ"
+    ],
+    "remaining_missing": [
+      [
+        "Fountain02/independent-review.json",
+        "Waterspout01/textures/paint02/jpeg-block-patch"
+      ]
+    ]
+  },
+  "accepted_names": [
+    "Bonfire01",
+    "Grass03",
+    "Grass04",
+    "Grass05",
+    "Grass06",
+    "House01",
+    "House03",
+    "House04",
+    "HouseWall01",
+    "HouseWall04",
+    "HouseWall05",
+    "HouseWall06",
+    "SteelStatue01",
+    "StoneStatue01",
+    "StoneStatue03",
+    "Tree09",
+    "Tree10",
+    "Waterspout01",
+    "Well01",
+    "Well02",
+    "Well03",
+    "Well04"
+  ],
+  "retained_names": [
+    "Beer01",
+    "Beer02",
+    "Beer03",
+    "Bridge01",
+    "BridgeStone01",
+    "Candle01",
+    "Cannon01",
+    "Cannon02",
+    "Cannon03",
+    "Carriage01",
+    "Carriage02",
+    "Carriage03",
+    "Carriage04",
+    "Curtain01",
+    "DoungeonGate01",
+    "Fence01",
+    "Fence02",
+    "Fence03",
+    "Fence04",
+    "FireLight01",
+    "FireLight02",
+    "Furniture01",
+    "Furniture02",
+    "Furniture03",
+    "Furniture04",
+    "Furniture05",
+    "Furniture06",
+    "Furniture07",
+    "Grass01",
+    "Grass02",
+    "Grass07",
+    "Grass08",
+    "Hanging01",
+    "House02",
+    "House05",
+    "HouseEtc01",
+    "HouseEtc02",
+    "HouseEtc03",
+    "HouseWall02",
+    "HouseWall03",
+    "Ship01",
+    "Sign01",
+    "Sign02",
+    "Stair01",
+    "SteelDoor01",
+    "SteelWall01",
+    "SteelWall02",
+    "SteelWall03",
+    "Stone01",
+    "Stone02",
+    "Stone03",
+    "Stone04",
+    "Stone05",
+    "StoneMuWall01",
+    "StoneMuWall02",
+    "StoneMuWall03",
+    "StoneMuWall04",
+    "StoneStatue02",
+    "StoneWall01",
+    "StoneWall02",
+    "StoneWall03",
+    "StoneWall04",
+    "StoneWall05",
+    "StoneWall06",
+    "Straw01",
+    "Straw02",
+    "StreetLight01",
+    "Tent01",
+    "Tomb01",
+    "Tomb02",
+    "Tomb03",
+    "TreasureChest01",
+    "TreasureDrum01",
+    "Tree01",
+    "Tree02",
+    "Tree03",
+    "Tree04",
+    "Tree05",
+    "Tree06",
+    "Tree07",
+    "Tree08",
+    "Tree11",
+    "Tree12",
+    "Tree13"
+  ],
+  "client_status": {
+    "baseline": "User-reported working client at task start; not personally observed by reviewer.",
+    "new_assets": "Client checks pending; no new client verification claimed."
+  },
+  "limits": [
+    "No complete map render or exhaustive terrain/light/occlusion simulation was performed; coherence conclusion combines verified local mixed scenes and asset/assembly reviews.",
+    "Offline effects approximate additive/scrolling appearance. Engine particle sorting, dynamic lighting, alpha/depth behavior and performance remain pending client observation.",
+    "Fountain raw motion is numerically equivalent under unchanged tolerances, not byte-identical. Historical angular head/tips and modest reduced-front gain explicitly retained.",
+    "Retained masonry remains coarse relief supported by painting, appropriate to reviewed modular role; rejected study geometry is not counted as completed remake.",
+    "Offline gate does not conclude the user overall goal: authorized remaining maps still require inventory and production."
+  ],
+  "coordination_evidence_hashes": {
+    "assets-work/Environment/coordination/assessment.json": "82c8bca1e03c6fb526934e42ec306b0a6d78bb730e70228cb939d6331cdec236",
+    "assets-work/Environment/coordination/accepted-exports.json": "ecf95b9cb74bae70f08eb94ea198a4e8868dd1e3d5db3f01c022531418fcac49",
+    "assets-work/Environment/coordination/retained-current-hash-check.json": "b7611084efe0fd7858bc7ecc48a0721d7dc112329e6aef6f942ea36f2544189c",
+    "assets-work/Environment/coordination/retention-gate.json": "a3b6e919aeb44e119dd3c800884d065c745d6fd4a218957d4d37e42e0b9f3952",
+    "assets-work/Environment/coordination/companion-review.json": "7b7ef267f5d98f4361e3146c68874a304114b8e31e7e1c4954e5a5c52561c7c9",
+    "assets-work/Environment/coordination/masonry-retention-review.json": "4ced0ea8941dbae2aabd251beb913284e2e6f85e83fd2e864bcf7ea6c94a0a49"
+  }
+}

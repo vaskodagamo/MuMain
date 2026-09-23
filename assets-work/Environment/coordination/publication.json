@@ -4,7 +4,7 @@
   "draft_pr": "https://github.com/vaskodagamo/MuMain/pull/12",
   "published_checkpoint": "7929166c",
   "status": "draft, not merged",
-  "lorencia_artistic_complete": false,
+  "lorencia_artistic_complete": true,
   "later_maps_started": false,
   "client_new_assets": "pending",
   "accepted_asset_commits": [
@@ -14,9 +14,11 @@
     "7be0eaa3",
     "5a0ad5b5",
     "38292593",
-    "cc43c901"
+    "cc43c901",
+    "bb641d04"
   ],
-  "accepted_game_assets": 21,
+  "accepted_game_assets": 22,
   "accepted_retained_assets": 84,
-  "remaining_production_assets": 1
+  "remaining_production_assets": 0,
+  "accepted_texture_changes": 1
 }

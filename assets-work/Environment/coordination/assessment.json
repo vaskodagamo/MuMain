@@ -4876,15 +4876,18 @@
       ]
     },
     "treatment": "texture-only treatment",
-    "remaining_problem": "Basin and rock base are coherent, but central dragon wings remain severe angular slabs and body loses material definition as near-black mass.",
+    "remaining_problem": "Accepted fuller dragon chest and bowed wing membranes with broad charcoal stone painting; historic angular head/tips retained; new client review pending.",
     "priority": 2,
     "owner": "architecture",
     "branch": "codex/lorencia-q02-architecture",
     "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture",
-    "status": "in progress",
+    "status": "accepted",
     "baseline": "7b808473",
     "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
-    "commits": [],
+    "commits": [
+      "187208c2",
+      "bb641d04"
+    ],
     "placement_count": 1,
     "placement_records": "../../World1/coordination/dependency-map.json#/models/Waterspout01/placements",
     "first_placement": {
@@ -4906,8 +4909,8 @@
     },
     "intended_improvement": "Geometry-only dragon silhouette and curvature pass with restrained diffuse tonal definition if exact exclusive dragon texture ownership verified; preserve all four original mesh slots, water UVs, 11 bones and 21 action keys. Review wings from multiple angles.",
     "assessment": "production",
-    "evidence": "../../../assets-work/World1/coordination/final-inspection/Waterspout01/final-offline.png",
-    "artistic_gate_resolved": false
+    "evidence": "assets-work/World1/QualityPass02/Fountain02/independent-review.json",
+    "artistic_gate_resolved": true
   },
   {
     "model": "Well01",

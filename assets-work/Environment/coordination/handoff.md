@@ -1,33 +1,20 @@
 # Current environment remake handoff — 2026-09-23
 
-Lorencia is not artistically complete. Historical 106/106 means first-pass coverage, not final artistic acceptance. Continue autonomously through Lorencia gate, then other maps per objective.
+## 2026-09-23 — Lorencia artistic/offline gate passed
 
-## Accepted integrated work
-- Architecture01: HouseWall01/04/05/06, integration `9abdf7e8`. Structural timber bays and shingle courses.
-- Scrub01: Tree09/10, Grass03/04, `4b0ccd02`. Continuous growth and rounded crowns. Reproduction baseline fix `1259e4f8`.
-- Broadleaf01: Grass05/06, `072f77f6`. Smooth drooping leaf arcs.
-- Houses01: House01/03/04, `7be0eaa3` from `32a1a24b`. Stone surrounds, structural awning supports and domed shingle laps. House04 protected rig/motion exact all40frames; authored source normals corrected to final preserved protected normals.
-- Statues02: StoneStatue01/03 and SteelStatue01, `cc43c901` from `10d1e765`. Carved niche, layered feather wings and memorial profiles.
-- Bonfire02: Bonfire01, `38292593` from `79ed83a5`. Quarter-split wood profiles, curved bark faces and longitudinal grain with unchanged effect shell.
-- Wells02: Well01–04, `5a0ad5b5` from `c1296be9`. Open curved pottery mouths, thick roof boards; all actual-placement groups accepted.
+Independent final gate at bb641d04:22 accepted replacements plus84 individually justified retained assets cover all106 in-scope assets. This is not106 new remakes. Final Fountain02 integrates187208c2 as bb641d04: fuller chest, bowed wing membranes and broad charcoal stone painting;921 triangles,11 bones,21 keys. Its dedicated128² dragon atlas changes while all1694 basin/filter-margin texels remain exact through engine-equivalent decoding. All other textures remain unchanged.
 
-All21 replacements independently accepted offline with packed sources, official exports, matching images and technical evidence. Ledger accepted-exports.json; latest statues-integration-validation.json passes exact21 game paths and115model texture resolution. All textures unchanged. Existing client success is user-reported only for baseline7b808473; new changes client pending.
+Combined scope is22 BMDs plus1 atlas, all115 Object1 models resolve textures. Final reviewer verified accepted-report hashes,254 retained dependency references and five mixed neighborhood comparisons (62 source records,30 images), plus fountain actual placement/effect views. No unresolved known offline production defect remains. Generated JPEG patcher executable is rebuilt from retained source, intentionally untracked. Reports: lorencia-final-gate.json, fountain-integration-validation.json, retained-current-hash-check.json and final-accepted-source-manifest.json.
 
-## Active ownership and next actions
-Architecture worktree MuMain-q02-architecture / codex/lorencia-q02-architecture: owns ONLY Waterspout01 BMD and QualityPass02/Fountain02. The three shared textures remain frozen. The exact dedicated reagon_waterspout.OZJ is now owned for a scoped dragon paint candidate, conditional on exact decoded preservation of all34 protected basin-face texels plus filtering margin and final consumer review. Edit actual dragon geometry in slot1; additional34 basin triangles there are protected. Preserve other3meshes, all21frames and water/particle interface. Follow next-statues-brief.md/evidence fountain section.
+New client checks remain pending. Prior baseline7b808473 client success is user-reported only. Offline views sample neighborhoods/assemblies and approximate effects; they do not claim a full-map terrain render or live client test. Overall goal remains unfinished: continue Dungeon static assets in a separate focused branch/PR, potteryObject28/29/30 and coffinObject21/22 with shared textures initially frozen. Read-only name-byte round trips pass through official Blender import/export; see dungeon-name-handling.md.
 
-Furniture worktree MuMain-q02-furniture / codex/lorencia-q02-furniture: rejected masonry studies are committed and published as fb734c0c, with no game-file changes. Read-only Dungeon readiness is complete; production waits for Lorencia acceptance.
+## Current operations
 
-Reviewer: fountain technical and visual gate. Root alone maintains coordination and integrates accepted owned commits.
+Lorencia integration: MuMain-environment-remake / codex/environment-remake-continuation; draft PR12 https://github.com/vaskodagamo/MuMain/pull/12. Accepted exports are listed exactly in accepted-exports.json. Source and export hashes are in final-accepted-source-manifest.json. Fountain final independent review is QualityPass02/Fountain02/independent-review.json.
 
-Only Waterspout01 remains unresolved. Twenty-one replacements and84 individually justified retained assets resolve105/106 Lorencia assets. Retention evidence is in companion-review.json, retention-gate.json and masonry-retention-review.json. Rejected masonry candidates are not counted as remakes. Coherence01 samples five mixed neighborhoods; fountain and final integrated acceptance remain pending. No later-map production has started.
+Architecture artist branch187208c2 and furniture study branchfb734c0c are published to the verified owner fork. Next phase will reuse their owned worktrees on new main-based branches, preserving unrelated untracked caches; coordinator will create a separate Dungeon integration worktree. Primary MuMain checkout unrelated edits and runtime remain untouched. Full access, no routine permission prompts. Root executes stable Blender Python scripts using toolchain.json when worker environments cannot launch Blender.
 
-Fountain normal diagnosis isolates three corners sharing a protected water normal. Preserving original connectivity fixes the rock normals; a read-only test with sharp water boundaries reduces the water error below the existing tolerance. The full official export and all motion, attachment, source-correspondence and protected-shading checks now pass with unchanged thresholds. First candidate remains artistically rejected for limited front-view gain; a focused wing/shoulder revision is underway.
-
-## Operations
-Root executes stable worker bpy scripts using toolchain.json because inherited worker context Blender execution fails. Full access/approval never: do not pass sandbox_permissions. Set BLENDER and MU_BLENDER, MU_BMDCONV, BLENDER_USER_SCRIPTS and BLENDER_USER_CONFIG explicitly. Pure assembly processes use --factory-startup; do not mix final_evidence and library append in one process. Never interrupt user GUI Blender/client or alter shared runtime. Primary MuMain checkout unrelated edits untouched.
-
-Draft PR12: https://github.com/vaskodagamo/MuMain/pull/12. Verified owner origin git@github.com:vaskodagamo/MuMain.git; focused pushes authorized, never force/upstream/merge. Sources under QualityPass02, independent reports inside accepted batches. Require actual exported visual gain, one-to-one authored triangle position/bone/UV/winding, raw world normals and full motion/contact proof. Protect Beer01/terrain and Grass02/Tree12/Tree13 original BMDs.
+## Historical checkpoints
 
 ## 2026-09-23 bonfire and retention checkpoint
 Bonfire01 accepted/integrated `38292593` from `79ed83a5`: quarter-split wood with curved bark faces and longitudinal grain;38 effect triangles and exact hot-end interface protected. Offline additive approximation/actual tilted placements accepted; client pending. Total18 new replacements. Independent individualized retention decision for76 baselines in retention-gate.json plus earlier4companions yields80 defensible retained assets; not80new remakes and not client verification. Root rechecked all217retention dependencyreferences/76imagehashes.

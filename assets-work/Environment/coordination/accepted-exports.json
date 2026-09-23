@@ -19,5 +19,7 @@
   "src/bin/Data/Object1/Bonfire01.bmd": "assets-work/World1/QualityPass02/Bonfire02/Bonfire01/exports/Bonfire01.bmd",
   "src/bin/Data/Object1/StoneStatue01.bmd": "assets-work/World1/QualityPass02/Statues02/StoneStatue01/exports/StoneStatue01.bmd",
   "src/bin/Data/Object1/StoneStatue03.bmd": "assets-work/World1/QualityPass02/Statues02/StoneStatue03/exports/StoneStatue03.bmd",
-  "src/bin/Data/Object1/SteelStatue01.bmd": "assets-work/World1/QualityPass02/Statues02/SteelStatue01/exports/SteelStatue01.bmd"
+  "src/bin/Data/Object1/SteelStatue01.bmd": "assets-work/World1/QualityPass02/Statues02/SteelStatue01/exports/SteelStatue01.bmd",
+  "src/bin/Data/Object1/Waterspout01.bmd": "assets-work/World1/QualityPass02/Fountain02/Waterspout01/exports/Waterspout01.bmd",
+  "src/bin/Data/Object1/reagon_waterspout.OZJ": "assets-work/World1/QualityPass02/Fountain02/Waterspout01/exports/reagon_waterspout.OZJ"
 }

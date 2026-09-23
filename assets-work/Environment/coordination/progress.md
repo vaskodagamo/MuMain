@@ -58,3 +58,12 @@ Current Lorencia gate:21 accepted new replacements +84 defensible retained asset
 Masonry02 rejected studies retained in furniture study-onlycommit fb734c0c (do not cherry-pick into accepted integration). Read-only Dungeon inventory/brief retained separately;63BMD,4488placements with static/effect exclusions. Candidate first family pottery Object28/29/30,45placements; start Object29 only after Lorencia gate. No Dungeonproduction has started.
 
 2026-09-23: Published checkpoint7929166c to owner fork and refreshed draft PR12 to21 replacements +84 retained, only fountain unresolved. Fountain water-only sharp normal fans fix the export encoding without changing protected geometry or tolerance; full pipeline passes. First sculpture direction remains rejected for insufficient front-view gain, with a focused second geometry study in progress. Dungeon readiness remains read-only.
+
+
+## 2026-09-23 — Lorencia artistic/offline gate passed
+
+Independent final gate at bb641d04:22 accepted replacements plus84 individually justified retained assets cover all106 in-scope assets. This is not106 new remakes. Final Fountain02 integrates187208c2 as bb641d04: fuller chest, bowed wing membranes and broad charcoal stone painting;921 triangles,11 bones,21 keys. Its dedicated128² dragon atlas changes while all1694 basin/filter-margin texels remain exact through engine-equivalent decoding. All other textures remain unchanged.
+
+Combined scope is22 BMDs plus1 atlas, all115 Object1 models resolve textures. Final reviewer verified accepted-report hashes,254 retained dependency references and five mixed neighborhood comparisons (62 source records,30 images), plus fountain actual placement/effect views. No unresolved known offline production defect remains. Generated JPEG patcher executable is rebuilt from retained source, intentionally untracked. Reports: lorencia-final-gate.json, fountain-integration-validation.json, retained-current-hash-check.json and final-accepted-source-manifest.json.
+
+New client checks remain pending. Prior baseline7b808473 client success is user-reported only. Offline views sample neighborhoods/assemblies and approximate effects; they do not claim a full-map terrain render or live client test. Overall goal remains unfinished: continue Dungeon static assets in a separate focused branch/PR, potteryObject28/29/30 and coffinObject21/22 with shared textures initially frozen. Read-only name-byte round trips pass through official Blender import/export; see dungeon-name-handling.md.
