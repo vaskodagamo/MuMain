@@ -19,30 +19,30 @@ constexpr float FULL_TURN_DEGREES = 360.0f;
 constexpr int GLOW_LEVELS[] = {9, 13};
 constexpr std::size_t FILE_NAME_CHARS = 96;
 
-// Degrees around the item from its front, 0..360.
-float AngleFromFront(float yawDegrees)
+float Wrapped(float degrees)
 {
-    const float angle = std::fmod(yawDegrees - FRONT_YAW_DEGREES, FULL_TURN_DEGREES);
+    const float angle = std::fmod(degrees, FULL_TURN_DEGREES);
     return angle < 0.0f ? angle + FULL_TURN_DEGREES : angle;
 }
 
-CaptureShot TurntableShot(const char* slug, float yaw, float pitch)
+// `offset` degrees around the item from its front, which is at `faceYaw`.
+CaptureShot TurntableShot(const char* slug, float faceYaw, float offset, float pitch)
 {
     CaptureShot shot;
     shot.slug = slug;
     shot.requestView = "turntable";
-    shot.yawDegrees = yaw;
+    shot.yawDegrees = Wrapped(faceYaw + offset);
     shot.pitchDegrees = pitch;
-    shot.angle = AngleFromFront(yaw);
+    shot.angle = Wrapped(offset);
     return shot;
 }
 
-CaptureShot GlowShot(int level, bool excellent)
+CaptureShot GlowShot(int level, bool excellent, float faceYaw)
 {
     CaptureShot shot;
     shot.slug = "glow-" + std::to_string(level) + (excellent ? "-exc" : "");
     shot.requestView = "glow";
-    shot.yawDegrees = THREE_QUARTER_YAW_DEGREES;
+    shot.yawDegrees = Wrapped(faceYaw + THREE_QUARTER_OFFSET_DEGREES);
     shot.pitchDegrees = THREE_QUARTER_PITCH_DEGREES;
     shot.level = level;
     shot.excellent = excellent;
@@ -50,13 +50,18 @@ CaptureShot GlowShot(int level, bool excellent)
 }
 } // namespace
 
-std::vector<CaptureShot> PlanItemCaptures(bool canBeExcellent)
+float FaceYawDegrees(int itemGroup)
+{
+    return itemGroup >= 0 && itemGroup <= LAST_WEAPON_GROUP ? WEAPON_FACE_YAW_DEGREES : BODY_FACE_YAW_DEGREES;
+}
+
+std::vector<CaptureShot> PlanItemCaptures(bool canBeExcellent, float faceYawDegrees)
 {
     std::vector<CaptureShot> shots = {
-        TurntableShot("front", FRONT_YAW_DEGREES, TURNTABLE_PITCH_DEGREES),
-        TurntableShot("side", SIDE_YAW_DEGREES, TURNTABLE_PITCH_DEGREES),
-        TurntableShot("back", BACK_YAW_DEGREES, TURNTABLE_PITCH_DEGREES),
-        TurntableShot("three-quarter", THREE_QUARTER_YAW_DEGREES, THREE_QUARTER_PITCH_DEGREES),
+        TurntableShot("front", faceYawDegrees, 0.0f, TURNTABLE_PITCH_DEGREES),
+        TurntableShot("side", faceYawDegrees, SIDE_OFFSET_DEGREES, TURNTABLE_PITCH_DEGREES),
+        TurntableShot("back", faceYawDegrees, BACK_OFFSET_DEGREES, TURNTABLE_PITCH_DEGREES),
+        TurntableShot("three-quarter", faceYawDegrees, THREE_QUARTER_OFFSET_DEGREES, THREE_QUARTER_PITCH_DEGREES),
     };
 
     CaptureShot inventory;
@@ -75,9 +80,9 @@ std::vector<CaptureShot> PlanItemCaptures(bool canBeExcellent)
     shots.push_back(equipped);
 
     if (canBeExcellent)
-        shots.push_back(GlowShot(0, true));
+        shots.push_back(GlowShot(0, true, faceYawDegrees));
     for (const int level : GLOW_LEVELS)
-        shots.push_back(GlowShot(level, canBeExcellent));
+        shots.push_back(GlowShot(level, canBeExcellent, faceYawDegrees));
     return shots;
 }
 
