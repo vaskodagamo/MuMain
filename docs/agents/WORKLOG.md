@@ -1147,3 +1147,21 @@ A/B for Axe01, Shield01, Wing01 and a texture/memory round trip back to the star
 
 **Open / next:** owner picks the pilot direction; wing textures must be painted for blended
 drawing; I7 pilot through the full request flow.
+## 2026-09-23 - Map Editor: visible pointer over every panel (Claude Opus 5.5)
+**Goal:** The pointer vanished over parts of the Map Editor on macOS (images, child regions, gaps
+between panels): the game cursor is drawn under ImGui, and the OS pointer was only shown where a
+window set `SetHoveringUI`.
+
+**Done:** `CMuEditorCore::UpdateCursors()` shows the OS pointer whenever ImGui has the mouse
+(`WantCaptureMouse`, any hovered window) or a window claimed it, and forces it through the
+`ShowCursor` display counter on every platform; over the world the game cursor, with ImGui's
+backend kept from re-showing the OS pointer (`NoMouseCursorChange`). Replaces I5b's studio-only
+rule (PR #35), which is now one condition in `IsMouseOverEditorUI()`.
+
+**Verified:** 408/408 ctest (editor build, after merging main with I5b); `./Main --editor --world 1`
+with posted mouse moves and full-screen captures (`screencapture -R` leaves the pointer out, `-m`
+does not): game cursor only over the world, OS arrow over palette images, gaps between tiles,
+panel text, toolbar and console gap, text beam over console text.
+
+**Open / next:** Windows build not compiled here; the item studio (`--items`) not re-run by eye
+after the merge (the owner was using the mouse).
