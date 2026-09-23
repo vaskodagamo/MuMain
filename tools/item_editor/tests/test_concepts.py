@@ -416,3 +416,44 @@ class Pick(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class TlsFallbackTests(unittest.TestCase):
+    def test_uses_pythons_own_bundle_when_present(self):
+        import ssl
+        from openai_images import find_ca_bundle
+        paths = ssl.DefaultVerifyPaths('/own/cert.pem', None, 'SSL_CERT_FILE', '/own/cert.pem', 'SSL_CERT_DIR', '/own/certs')
+        self.assertIsNone(find_ca_bundle(paths, exists=lambda p: p == '/own/cert.pem', env={}))
+
+    def test_falls_back_to_a_system_bundle_on_a_certificate_less_python(self):
+        import ssl
+        import openai_images
+        paths = ssl.DefaultVerifyPaths(None, None, 'SSL_CERT_FILE', '/missing/cert.pem', 'SSL_CERT_DIR', '/missing/certs')
+        found = openai_images.find_ca_bundle(paths, exists=lambda p: p == '/etc/ssl/cert.pem', env={})
+        try:
+            import certifi  # noqa: F401  (certifi wins when installed)
+            self.assertTrue(found)
+        except ImportError:
+            self.assertEqual(found, '/etc/ssl/cert.pem')
+
+    def test_ssl_cert_file_is_left_to_openssl(self):
+        from openai_images import find_ca_bundle
+        self.assertIsNone(find_ca_bundle(None, exists=lambda p: False, env={'SSL_CERT_FILE': '/x.pem'}))
+
+    def test_certificate_errors_fail_fast_without_retries(self):
+        import ssl
+        import urllib.error
+        from openai_images import ApiError, ImagesClient
+        calls = []
+
+        def opener(request, timeout):
+            calls.append(1)
+            raise urllib.error.URLError(ssl.SSLCertVerificationError('certificate verify failed'))
+
+        client = ImagesClient('sk-test-key-123456', opener=opener, sleep=lambda s: None)
+        with self.assertRaises(ApiError) as caught:
+            client.edit([('model', 'm'), ('prompt', 'p')], [('ref.png', b'png', 'image/png')])
+        self.assertEqual(len(calls), 1)
+        self.assertIn('certificate', str(caught.exception))
+        self.assertNotIn('sk-test-key-123456', str(caught.exception))
+

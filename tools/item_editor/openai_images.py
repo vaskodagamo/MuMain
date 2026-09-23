@@ -20,6 +20,7 @@ import os
 import random
 import re
 import socket
+import ssl
 import time
 import urllib.error
 import urllib.request
@@ -141,11 +142,49 @@ def error_details(body):
         return body[:ERROR_TEXT_LIMIT].decode('utf-8', 'replace') if isinstance(body, bytes) else '', None
 
 
+# Root certificate bundles to fall back to when this Python has none of its own (the python.org
+# installer on macOS ships without them until "Install Certificates.command" runs). Verification
+# stays on; only where the trusted roots come from changes.
+CA_BUNDLE_ENV = 'SSL_CERT_FILE'
+FALLBACK_CA_BUNDLES = ('/etc/ssl/cert.pem', '/opt/homebrew/etc/openssl@3/cert.pem',
+                       '/usr/local/etc/openssl@3/cert.pem', '/etc/ssl/certs/ca-certificates.crt')
+
+
+def find_ca_bundle(paths=None, exists=os.path.isfile, env=os.environ):
+    """The CA file to trust, or None when Python's own default already has one (or none exists)."""
+    if env.get(CA_BUNDLE_ENV):
+        return None  # OpenSSL reads SSL_CERT_FILE itself
+    if paths is None:
+        paths = ssl.get_default_verify_paths()
+    if (paths.cafile and exists(paths.cafile)) or (paths.openssl_cafile and exists(paths.openssl_cafile)):
+        return None
+    try:
+        import certifi  # optional
+        return certifi.where()
+    except ImportError:
+        pass
+    return next((path for path in FALLBACK_CA_BUNDLES if exists(path)), None)
+
+
+def tls_context():
+    """A verifying TLS context whose trusted roots also work on a certificate-less Python."""
+    return ssl.create_default_context(cafile=find_ca_bundle())
+
+
+def default_opener(request, timeout):
+    return urllib.request.urlopen(request, timeout=timeout, context=tls_context())
+
+
+def is_certificate_error(error):
+    reason = getattr(error, 'reason', error)
+    return isinstance(reason, ssl.SSLCertVerificationError)
+
+
 class ImagesClient:
     """Posts edit requests with retries. `opener` and `sleep` are injectable for tests."""
 
     def __init__(self, api_key, api_base=API_BASE, timeout=DEFAULT_TIMEOUT, attempts=DEFAULT_ATTEMPTS,
-                 log=None, opener=urllib.request.urlopen, sleep=time.sleep, rng=random.random):
+                 log=None, opener=default_opener, sleep=time.sleep, rng=random.random):
         self._key = api_key
         self._base = check_api_base(api_base)
         self._timeout = timeout
@@ -199,6 +238,10 @@ class ImagesClient:
     def _network_failure(self, error, attempt, tag):
         message = scrub(error, self._key)
         self._log({'event': 'network-error', 'tag': tag, 'attempt': attempt, 'message': message})
+        if is_certificate_error(error):
+            # Not transient: retrying cannot help. Nothing was sent (TLS failed before the request).
+            raise ApiError(f'TLS certificate check failed: {message}. Set {CA_BUNDLE_ENV} to a CA bundle '
+                           'or run Python\'s "Install Certificates.command".')
         if attempt == self._attempts:
             raise ApiError(f'network error: {message}')
         return self._delay(attempt, None, tag)
