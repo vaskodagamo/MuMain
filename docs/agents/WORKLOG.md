@@ -998,3 +998,16 @@ parallel. Reload of a non-world range is untested until I6 allows one.
 **Verified:** Pulled owner-fork main at `1256aeed` after those merges. Object45–47 source BMDs, shared `bons.OZJ`, packed Blender scenes and rendered previews are hash-bound; six exact Object47/Object48 cluster records match the main placement manifest. PR #20 independently passed 181 evidence-hash checks and all 120 placement records; its protected raw fire meshes and anchors remain unchanged. PR #23 independent review checked 218 evidence hashes and 446 placements. Lorencia's final offline gate remains `bb641d04`: 22 replacements and 84 retentions cover all 106 in-scope assets. New client verification remains pending.
 
 **Open / next:** Owner review of PRs #22 and #23; continue the Dungeon static inventory with actual-placement context. The latest triage found no coherent next 3–5 asset production batch among Object05/07/08/09/10/11/14; keep Object09's animated Object12 clearance dependency explicit.
+
+## 2026-09-23 - Item editor I2: item catalog, tiers, request contract (Claude Opus 5.5)
+**Goal:** Milestone I2 of `ITEM_EDITOR_PLAN.md`.
+
+**Done:** `tools/item_editor/` (item table decoder, model table generator, BMD facts, tiers,
+OpenMU export, catalog builder), `assets-work/Items/` (catalog, OpenMU export, tiers/assignments
+files, request README/schema/validator).
+
+**Verified:** 56 Python tests, registered in ctest; catalog `--check`; OpenMU export from the
+local database (read-only, no credentials).
+
+**Open / next:** I3 browse tab reads the catalog; I5 writes requests in this contract. Engine
+check for `ItemSetType` "no set" = 0 vs `0xFF`.
