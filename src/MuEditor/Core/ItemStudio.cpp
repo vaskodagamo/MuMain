@@ -6,6 +6,7 @@
 
 #include "MuEditorCore.h"
 #include "OfflineWorld.h"
+#include "UI/ItemEditor/ItemPreview.h"
 #include "UI/MapEditor/ObjectThumbnail.h"
 
 namespace Editor::ItemStudio
@@ -24,6 +25,12 @@ bool ShowsBackdropOnly()
 void RenderInsteadOfWorld()
 {
     g_ObjectThumbnail.ProcessPendingRequests();
+    g_ItemPreview.RenderPending();
+}
+
+void RenderAfterWorld()
+{
+    g_ItemPreview.RenderPending();
 }
 } // namespace Editor::ItemStudio
 

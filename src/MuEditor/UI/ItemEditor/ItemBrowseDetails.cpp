@@ -4,10 +4,9 @@
 
 #include "ItemBrowseDetails.h"
 
-#include "ItemThumbnailView.h"
+#include "ItemPreview.h"
 
 #include "Assets/EditorText.h"
-#include "Core/MuEditorCore.h"
 
 #include "imgui.h"
 
@@ -20,29 +19,10 @@ namespace
 using Assets::ItemCatalogEntry;
 using Assets::ItemModel;
 
-constexpr float PREVIEW_SIZE = 224.0f; // twice the thumbnail; I4's 3D preview takes this place
-constexpr float PREVIEW_PADDING = 6.0f;
-constexpr ImU32 PREVIEW_BACKGROUND = IM_COL32(24, 24, 28, 255);
-constexpr ImU32 PREVIEW_BORDER = IM_COL32(110, 110, 120, 255);
 constexpr ImVec4 NOTE_COLOR{0.75f, 0.75f, 0.75f, 1.0f};
 constexpr ImVec4 WARNING_COLOR{1.0f, 0.8f, 0.4f, 1.0f};
 constexpr const char* NO_NAME = "(no name in the item table)";
 constexpr const char* PLAYER_FOLDER = "/Data/Player/"; // armour parts load from the character models
-
-// The thumbnail in a framed square, with a note that the live preview comes later.
-void RenderPreviewArea(const Items::BrowseRow& row)
-{
-    const float size = PREVIEW_SIZE * g_MuEditorCore.GetUIScale();
-    const ImVec2 corner = ImGui::GetCursorScreenPos();
-    ImDrawList* drawList = ImGui::GetWindowDrawList();
-    drawList->AddRectFilled(corner, ImVec2(corner.x + size, corner.y + size), PREVIEW_BACKGROUND);
-    drawList->AddRect(corner, ImVec2(corner.x + size, corner.y + size), PREVIEW_BORDER);
-    ImGui::SetCursorScreenPos(ImVec2(corner.x + PREVIEW_PADDING, corner.y + PREVIEW_PADDING));
-    DrawItemThumbnail(row, size - 2.0f * PREVIEW_PADDING);
-    ImGui::SetCursorScreenPos(ImVec2(corner.x, corner.y + size));
-    ImGui::TextColored(NOTE_COLOR, "Thumbnail - the 3D preview (level, excellent,");
-    ImGui::TextColored(NOTE_COLOR, "ancient, equipped) comes here in I4.");
-}
 
 std::string BadgeText(const Assets::ItemBadges& badges)
 {
@@ -128,7 +108,7 @@ void RenderModels(const ItemCatalogEntry& item)
     for (const ItemModel& model : item.models)
         RenderModel(model);
     if (!item.models.empty() && item.models.front().bmd.find(PLAYER_FOLDER) != std::string::npos)
-        ImGui::TextColored(NOTE_COLOR, "The thumbnail shows the first model (the male part); variants follow it.");
+        ImGui::TextColored(NOTE_COLOR, "Thumbnails show the first model (the male part); variants follow it.");
     if (!item.originalRevision.empty())
         ImGui::TextColored(NOTE_COLOR, "Original: commit %.10s", item.originalRevision.c_str());
 }
@@ -148,12 +128,12 @@ void RenderRequests(const ItemCatalogEntry& item)
 }
 } // namespace
 
-void RenderItemDetails(const Items::BrowseRow& row, const std::string& catalogNote)
+void RenderItemDetails(const Items::BrowseRow& row, const std::string& catalogNote, int filterClass, int filterStage)
 {
     ImGui::TextUnformatted(row.name.empty() ? NO_NAME : row.name.c_str());
     ImGui::SameLine();
     ImGui::TextColored(NOTE_COLOR, "%s (type %d)", row.key.c_str(), row.type);
-    RenderPreviewArea(row);
+    g_ItemPreview.Render(row, filterClass, filterStage);
 
     if (ImGui::BeginTable("ItemFacts", 2, ImGuiTableFlags_SizingStretchProp))
     {

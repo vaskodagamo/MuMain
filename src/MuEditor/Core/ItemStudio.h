@@ -8,8 +8,8 @@
 //
 // The engine's main scene still runs with World1 loaded (OfflineWorld): the Map
 // Editor edits and saves the loaded map, so it needs one when it is opened from
-// the toolbar, and the hidden hero (the Item Editor's equipped preview) stands
-// on a map's ground and light. Only drawing is skipped: while the Map Editor is
+// the toolbar, and the Item Editor's preview puts its dropped item and dressed
+// character on the map's ground and light at the hidden hero's spot. Only drawing is skipped: while the Map Editor is
 // open, or the Item Editor is closed, the map is drawn as usual.
 namespace Editor::ItemStudio
 {
@@ -31,8 +31,13 @@ bool DocksItemEditor();
 
 // Called by the main scene instead of drawing the world while ShowsBackdropOnly():
 // renders the queued model thumbnails, which otherwise render during the world's
-// object pass (see UI/MapEditor/ObjectThumbnail.h).
+// object pass (see UI/MapEditor/ObjectThumbnail.h), and the Item Editor's preview
+// (UI/ItemEditor/ItemPreview.h).
 void RenderInsteadOfWorld();
+
+// Called by the main scene after it drew the world: renders the Item Editor's
+// preview when the map is shown (the Map Editor is open, or --items --world N).
+void RenderAfterWorld();
 } // namespace Editor::ItemStudio
 
 #endif // _EDITOR
