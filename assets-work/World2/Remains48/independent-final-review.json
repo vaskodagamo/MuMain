@@ -1,10 +1,10 @@
 {
-  "status": "ACCEPTED_BOUNDED_SINGLE_COMPONENT_REFINEMENT_OFFLINE",
-  "baseline_revision": "7b808473",
-  "worktree_base": "5577176b8a7213c6598b08c5db37b4bcb62d609a",
+  "decision": "ACCEPT_BOUNDED_SINGLE_COMPONENT_REFINEMENT",
+  "asset": "Object48",
   "candidate_sha256": "9c62a9eafb5eb7822490bd45ce6b8c049a343b270142e3fca62c23f05eafc11a",
   "source_sha256": "13e1a9f281c938b6df2dfc8e59eeeaafcd99aaeead29919fac5a5d3619ecf43b",
-  "files": {
+  "verified_manifest_refs": 99,
+  "evidence_sha256": {
     "Object48/baseline/Object48.bmd": "17921ffd7b933790593e3f7cb21b1a2ca76ebbb863e3b17be3461b1651b2d686",
     "Object48/baseline/source.blend": "0dff289566c18dddbf85b783055cf663ae19d8896fd80b8c7319c5782ad33c67",
     "Object48/exports/Object48.bmd": "9c62a9eafb5eb7822490bd45ce6b8c049a343b270142e3fca62c23f05eafc11a",
@@ -105,5 +105,13 @@
     "review-assemblies/remains-cluster/current-small.png": "442eccf3460aa9929186c84ae5f2b3b5fc9725e2638ac972e62dd2b1a4e2bb8b",
     "review-assemblies/remains-cluster/current.png": "8b43b16e40f45af9463651479c3e39f1f0ee447f5631c683fb0b36da5c38b378"
   },
-  "independent_review": "independent-final-review.json"
+  "art": "Changed detached long bone now has rounded full ends and a tapered shaft instead of squared bar ends. Main, reverse and pitched2143 clearly show this purposeful silhouette correction; it remains discernible in isolated reduced preview. Actual cluster-small gain is very restrained, and this is only one of eight components. Accept as localized refinement, not a substantial whole debris-family remake. Remaining hand/foot fragments have recognizably different anatomical silhouettes and intentionally broken ends, so they need not receive the same treatment.",
+  "technical": "428triangles versus284: component0 32\u2192176;252othertriangles exact position/UV/bone/cyclic order. All385 component and global placement supports pass.18 original edited-component anchors retained.8connected components remain; revisedbone closed oriented manifold. Full authoredtriangle position2.568e-6/UV6.337e-7 and worldnormal.0004883<.001 pass. Raw name/header exact, one-root/key rig unchanged, packed/frozenbons preserved. Eight inherited nonpositive-normal faces are matched unchanged; no new incident claimed repaired.",
+  "normal_limit": "Protected raw-baseline direction discrepancy max.000389484 is also present in untouched official roundtrip. Candidate vs untouched official roundtrip is exactly0. This is measured codec equivalence, not raw normal-byte identity.",
+  "view_scope": "Reviewed individual main/reverse/reduced; actual remains-cluster reduced and representative pitched2143 full pair. Allsix pitched-family image sets hash-verified; not all six visually inspected individually.",
+  "limits": [
+    "Cluster-distance gain modest; no automatic propagation into otherpieces/45/46.",
+    "No client verification or terrain/contact render claimed.",
+    "No blanket claim of new artwork; bons remains frozen."
+  ]
 }
