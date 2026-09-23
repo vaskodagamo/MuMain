@@ -40,7 +40,7 @@ Linux/WSL with MinGW-w64.
 
 A native Apple Silicon build produces a playable client as an app bundle: the
 engine plus the `osx-arm64` network library, rendered through SDL GPU/Metal.
-The in-game editor does not build on macOS yet (see the guide).
+The in-game editor builds with its own preset, `macos-arm64-mueditor` (see the guide).
 
 | Setup | Guide |
 |-------|-------|
@@ -58,7 +58,7 @@ buildable for them. See the per-platform notes when that work lands.
 | Linux | x64 | on / off | `MUnique.Client.Library.so` (linux-x64 AOT) | Full client |
 | Windows | x64 | on / off | `MUnique.Client.Library.dll` (win-x64 AOT) | Full client |
 | Windows | x86 | on / off | `MUnique.Client.Library.dll` (win-x86 AOT) | Full client |
-| macOS | arm64 | off | `MUnique.Client.Library.dylib` (osx-arm64 AOT) | Full client; editor build not ported yet |
+| macOS | arm64 | on / off | `MUnique.Client.Library.dylib` (osx-arm64 AOT) | Full client |
 | Linux | x86 | - | none | Not supported (see below) |
 
 Actions validate Windows native x64 Release, Linux x64 Release, and macOS arm64
@@ -81,6 +81,7 @@ These apply to every setup; the per-setup guides only cover what differs.
 |--------------|--------|---------|
 | `CMAKE_BUILD_TYPE` | `Release` / `Debug` | Optimized vs. debuggable. |
 | `ENABLE_EDITOR` | `ON` / `OFF` | Builds the in-app ImGui editor (admin tooling). When `OFF`, nothing under `src/MuEditor/` is compiled in - enforced by the `editor_leak` test. |
+| `ENABLE_CONTROL_SOCKET` | `ON` / `OFF` | Builds the developer control socket that lets test scripts drive the client (see [`control-socket.md`](../control-socket.md)). Default `OFF`; never for player builds. When `OFF`, nothing under `src/source/App/Control/` and no local-socket transport is compiled in, and the `MU_CONTROL_SOCKET` variable is ignored - enforced by the `control_socket_leak` test. The `-mueditor` presets turn it `ON`. |
 | `BUILD_TESTING` | `ON` / `OFF` | Builds and registers the unit tests (run with `ctest`). |
 | `MU_COPY_RUNTIME_ASSETS` | `ON` / `OFF` | Copies `Data/` and `fonts/` beside the executable. Defaults to `ON` for local runnable builds. |
 | `MU_BUILD_ASSET_TOOLS` | `ON` / `OFF` | Builds `bmdconv`, the BMD <-> SMD model converter under `tools/bmdconv/` (see [the asset pipeline](../asset-pipeline.md)). Defaults to `ON`. |

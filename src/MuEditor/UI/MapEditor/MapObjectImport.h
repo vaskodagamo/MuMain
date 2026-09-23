@@ -28,9 +28,10 @@ namespace Editor::ObjectImport
 
     // Imports `bmdFile` from Data\Object{sourceWorld}\ onto the current map:
     // loads it into a free model slot (live) and copies the model + textures into
-    // Data\Object{currentWorld}\ for persistence. Returns the object type (model
-    // slot) to place, or -1 on failure.
-    int UseModelOnCurrentMap(int currentWorld, int sourceWorld, const std::wstring& bmdFile);
+    // Data\Object{currentWorld}\ for persistence, and from there into the
+    // repository. Returns the object type (model slot) to place, or -1 on
+    // failure. `outReport` gets the absolute paths written.
+    int UseModelOnCurrentMap(int currentWorld, int sourceWorld, const std::wstring& bmdFile, std::string& outReport);
 }
 
 #endif // _EDITOR

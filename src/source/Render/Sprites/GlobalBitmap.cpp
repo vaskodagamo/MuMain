@@ -226,6 +226,25 @@ bool UploadTextureSDLGpu(BITMAP_t* bitmap, const std::uint8_t* pixelData, int wi
     bitmap->sdlSampler = sampler;
     return true;
 }
+
+void ReleaseBitmapGpuResources(BITMAP_t& bitmap)
+{
+    SDL_GPUDevice* device = static_cast<SDL_GPUDevice*>(mu::GetRenderer().GetDevice());
+    if (!device)
+    {
+        return;
+    }
+    if (bitmap.sdlSampler)
+    {
+        SDL_ReleaseGPUSampler(device, bitmap.sdlSampler);
+        bitmap.sdlSampler = nullptr;
+    }
+    if (bitmap.sdlTexture)
+    {
+        SDL_ReleaseGPUTexture(device, bitmap.sdlTexture);
+        bitmap.sdlTexture = nullptr;
+    }
+}
 } // namespace
 
 bool CBitmapCache::Create()
@@ -588,20 +607,7 @@ void CGlobalBitmap::UnloadImage(GLuint uiBitmapIndex, bool bForce)
         {
             mu::UnregisterTexture(uiBitmapIndex);
             mu::UnregisterSampler(uiBitmapIndex);
-            SDL_GPUDevice* device = static_cast<SDL_GPUDevice*>(mu::GetRenderer().GetDevice());
-            if (device)
-            {
-                if (pBitmap->sdlSampler)
-                {
-                    SDL_ReleaseGPUSampler(device, pBitmap->sdlSampler);
-                    pBitmap->sdlSampler = nullptr;
-                }
-                if (pBitmap->sdlTexture)
-                {
-                    SDL_ReleaseGPUTexture(device, pBitmap->sdlTexture);
-                    pBitmap->sdlTexture = nullptr;
-                }
-            }
+            ReleaseBitmapGpuResources(*pBitmap);
 
             const auto memoryUsed = static_cast<std::uint32_t>(pBitmap->BufferStorage.size());
             m_dwUsedTextureMemory -= memoryUsed;
@@ -616,6 +622,49 @@ void CGlobalBitmap::UnloadImage(GLuint uiBitmapIndex, bool bForce)
         }
     }
 }
+#ifdef _EDITOR
+bool CGlobalBitmap::ReloadImage(GLuint uiBitmapIndex, const std::wstring& filename, GLuint uiFilter, GLuint uiWrapMode)
+{
+    // Take the old image out so LoadImage reads the file even when the name is the
+    // same. Its GPU texture stays registered under the index until the new one
+    // replaces it, and comes back when the new file cannot be loaded.
+    BitmapPtr previous;
+    if (auto it = m_mapBitmap.find(uiBitmapIndex); it != m_mapBitmap.end())
+    {
+        previous = std::move(it->second);
+        m_mapBitmap.erase(it);
+    }
+    m_BitmapCache.Remove(uiBitmapIndex);
+
+    if (!LoadImage(uiBitmapIndex, filename, uiFilter, uiWrapMode))
+    {
+        if (previous)
+        {
+            m_mapBitmap.emplace(uiBitmapIndex, std::move(previous));
+        }
+        return false;
+    }
+
+    constexpr int maxRefs = std::numeric_limits<std::uint8_t>::max();
+    const int keptRefs = previous ? previous->Ref : 0;
+    m_mapBitmap[uiBitmapIndex]->Ref = static_cast<std::uint8_t>(std::min(keptRefs + 1, maxRefs));
+    if (previous)
+    {
+        m_dwUsedTextureMemory -= static_cast<std::uint32_t>(previous->BufferStorage.size());
+        ReleaseBitmapGpuResources(*previous);
+    }
+    // UnloadImage takes an index off the generated-index list; keep it there so
+    // GenerateTextureIndex never hands it out again while it is in use.
+    const bool nonamed = uiBitmapIndex >= BITMAP_NONAMED_TEXTURES_BEGIN && uiBitmapIndex <= BITMAP_NONAMED_TEXTURES_END;
+    const auto listed = std::find(m_listNonamedIndex.begin(), m_listNonamedIndex.end(), uiBitmapIndex);
+    if (nonamed && listed == m_listNonamedIndex.end())
+    {
+        m_listNonamedIndex.push_back(uiBitmapIndex);
+    }
+    return true;
+}
+#endif // _EDITOR
+
 void CGlobalBitmap::UnloadAllImages()
 {
     if (m_mapBitmap.empty())

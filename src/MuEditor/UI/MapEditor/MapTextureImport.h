@@ -17,11 +17,10 @@ namespace Editor::TextureImport
     // Places `sourcePath` (a .jpg/.jpeg or .ozj file) into the next free ExtTile
     // slot of `world`, loads it into that terrain slot, and returns the tile-slot
     // index (14..29) on success, or -1 on failure (no free slot / bad file).
-    int UseTextureFile(int world, const std::wstring& sourcePath);
-
-    // Opens a Windows file-picker for an image to import. Returns false if the
-    // user cancelled. Accepts JPEG (wrapped as OZJ) and OZJ files.
-    bool PickImageFile(std::wstring& outPath);
+    // The new ExtTile file is copied into the repository too; `outReport` gets
+    // the absolute paths written.
+    // The user picks the file with Editor::Files::RequestOpenFile(TextureImage).
+    int UseTextureFile(int world, const std::wstring& sourcePath, std::string& outReport);
 }
 
 #endif // _EDITOR

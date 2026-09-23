@@ -32,6 +32,8 @@ public:
     const char* GetName() const override { return "FreeFly"; }
     void InheritFOV(float hFov);
     void SnapToPosition(const vec3_t pos, float yaw, float pitch);
+    // Looks at `target` with the given yaw/pitch from `distance` units away.
+    void LookAt(const vec3_t target, float yaw, float pitch, float distance);
     // Positions the camera high above the map centre looking (almost) straight
     // down, framing the whole 256x256 terrain, with far/cull/fog pushed out - for
     // capturing a top-down minimap screenshot.

@@ -52,7 +52,7 @@ better textures (up to 1024x1024) and better animation, not from new material ty
 | 2 | **Static world objects** (`Object<N>/*.bmd`): remodel with the same pivot, footprint and height; no skeleton constraints beyond the single root bone. | low | new `.bmd` + textures |
 | 3 | **Items** (`Item/*.bmd`): remodel weapons, shields, wings on the original skeleton (usually one or two bones; weapons attach through the model origin). | medium | new `.bmd` + textures |
 | 4 | **Characters and monsters**: new meshes skinned to the untouched skeletons; optional re-animation with identical action lists. Player parts must fit each other across classes (same seams). | high | new `.bmd` + textures |
-| 5 | **Terrain polish**: height, tile painting, light map and object placement per world with the Map Editor (Windows build) or scripts; server walk map re-uploaded. "Extend a little" means using blocked areas of the existing 256x256 grid. | medium | `World<N>/` files + server `.att` |
+| 5 | **Terrain polish**: height, tile painting, light map and object placement per world with the Map Editor (Windows or macOS editor build) or scripts; server walk map re-uploaded. "Extend a little" means using blocked areas of the existing 256x256 grid. | medium | `World<N>/` files + server `.att` |
 | 6 | **New content**: new items (client `Item.bmd` + OpenMU item definitions), new maps (world enum, terrain, server map definition, gates, spawns). | high | client + server changes |
 
 Work inside a phase in the order players see things: Lorencia (World1/Object1) first, the
@@ -79,8 +79,11 @@ skeleton and actions unchanged.
 
 ## Known gaps to plan around
 
-- The in-game editors (map, item, skill) build on Windows only for now; on macOS use the
-  scripts and the OpenMU admin panel until the three Win32 file dialogs are ported.
+- The in-game editors (map, item, skill) build on Windows and macOS (preset
+  `macos-arm64-mueditor`). The Map Editor can open a map without the server
+  (`./Main --editor --world N`); see
+  [`MAP_EDITOR.md`](../../src/MuEditor/UI/MapEditor/MAP_EDITOR.md). The item and skill
+  editors have not been tried on macOS yet.
 - Sound and music are absent from the repository; supply `Data/Sound/*.wav` and
   `Data/Music/*.mp3` before a release.
 - `Data/Object74/` is missing most models; do not ship that world until it is complete.

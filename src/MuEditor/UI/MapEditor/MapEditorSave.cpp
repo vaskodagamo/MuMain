@@ -10,7 +10,9 @@
 
 #include <cstdio>
 #include <cstring>
+#include <filesystem>
 #include <memory>
+#include <string>
 
 namespace Editor::MapSave
 {
@@ -27,7 +29,7 @@ namespace
     constexpr BYTE MAP_VERSION = 0;
 }
 
-bool SaveMappingEncrypted(int worldNumber, int mapNumber)
+bool SaveMappingEncrypted(int worldNumber, int mapNumber, std::string& outReport)
 {
     // Build the decrypted byte image exactly as the loader expects to read it.
     auto plain = std::make_unique<BYTE[]>(PLAIN_BYTES);
@@ -46,27 +48,28 @@ bool SaveMappingEncrypted(int worldNumber, int mapNumber)
     auto enc = std::make_unique<BYTE[]>(PLAIN_BYTES);
     const int encBytes = MapFileEncrypt(enc.get(), plain.get(), PLAIN_BYTES);
 
-    wchar_t fileName[128];
-    swprintf_s(fileName, L"Data\\World%d\\EncTerrain%d.map", worldNumber, worldNumber);
+    const std::filesystem::path fileName = Editor::Files::TerrainMappingFile(worldNumber);
 
-    FILE* fp = _wfopen(fileName, L"wb");
+    const std::string target = Editor::Files::PathToUtf8(Editor::Files::AbsolutePath(fileName));
+    FILE* fp = _wfopen(fileName.wstring().c_str(), L"wb");
     if (fp == nullptr)
     {
-        g_MuEditorConsoleUI.LogEditor("[MapEditor] SaveMapping FAILED: could not open file for write");
+        outReport = "Save FAILED: could not open " + target + " for writing.";
+        g_MuEditorConsoleUI.LogEditor("[MapEditor] SaveMapping FAILED: could not open " + target);
         return false;
     }
 
     const bool ok = fwrite(enc.get(), 1, encBytes, fp) == static_cast<size_t>(encBytes);
-    fclose(fp);
+    const bool closed = fclose(fp) == 0;
 
-    if (!ok)
+    if (!ok || !closed)
     {
-        g_MuEditorConsoleUI.LogEditor("[MapEditor] SaveMapping FAILED: write error (disk full?)");
+        outReport = "Save FAILED: write error (disk full?) in " + target + ".";
+        g_MuEditorConsoleUI.LogEditor("[MapEditor] SaveMapping FAILED: write error in " + target);
         return false;
     }
 
-    g_MuEditorConsoleUI.LogEditor("[MapEditor] Saved terrain mapping (encrypted) to EncTerrain.map");
-    Editor::Files::MirrorNextToExe(fileName, worldNumber);
+    outReport = Editor::Files::DescribeSavedFiles({Editor::Files::MirrorSavedFile(fileName)});
     return true;
 }
 

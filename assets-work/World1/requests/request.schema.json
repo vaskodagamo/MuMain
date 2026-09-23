@@ -1,0 +1,367 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MU World1 regeneration request",
+  "description": "request.json of one folder under assets-work/World1/requests/<id>/. Contract and field ownership: README.md next to this file. Every path is relative to the repository root. validate_request.py checks this shape plus the rules a schema cannot express (paths exist, id/branch/folder agree, targets and engine controls match catalog.json, base_commit/start_commit and the worker's changes, delivered originals and exports, capture sizes).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema", "id", "created", "author", "world", "status", "status_history", "priority", "kind",
+    "base_commit", "targets", "change", "constraints", "evidence", "handoff", "result", "decision"
+  ],
+  "properties": {
+    "schema": { "const": "mu-regen-request/1" },
+    "id": { "$ref": "#/$defs/requestId" },
+    "created": { "$ref": "#/$defs/timestamp" },
+    "author": { "type": "string", "minLength": 1 },
+    "world": { "const": 1 },
+    "status": { "$ref": "#/$defs/status" },
+    "status_history": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Append-only; the last entry's status equals status.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["status", "at", "by"],
+        "properties": {
+          "status": { "$ref": "#/$defs/status" },
+          "at": { "$ref": "#/$defs/timestamp" },
+          "by": { "type": "string", "minLength": 1 },
+          "note": { "type": "string" }
+        }
+      }
+    },
+    "priority": { "enum": ["low", "normal", "high"] },
+    "kind": {
+      "enum": ["repaint", "remodel", "repaint+remodel", "new-variant"],
+      "description": "Art only. Placement and terrain changes are never requests."
+    },
+    "base_commit": { "$ref": "#/$defs/commit" },
+    "supersedes": {
+      "description": "Optional id of an earlier request this one replaces.",
+      "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/requestId" }]
+    },
+    "targets": {
+      "type": "array",
+      "minItems": 1,
+      "description": "The first target names the folder (<date>-<model>-<slug>).",
+      "items": { "$ref": "#/$defs/target" }
+    },
+    "change": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["summary", "details", "keep", "avoid"],
+      "properties": {
+        "summary": { "type": "string", "minLength": 1 },
+        "details": { "$ref": "#/$defs/stringList" },
+        "keep": { "$ref": "#/$defs/stringList" },
+        "avoid": { "$ref": "#/$defs/stringList" },
+        "reference_images": { "type": "array", "items": { "$ref": "#/$defs/repoPath" } },
+        "new_model": {
+          "type": "string",
+          "pattern": "^[A-Z][A-Za-z]*[0-9]{2,}$",
+          "description": "new-variant only: the new model name, <Family><NN> with the target's family and a number no BMD or request uses yet."
+        }
+      }
+    },
+    "constraints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["shared_textures", "frozen_textures", "owned_files", "protected_paths", "engine_controls", "must_keep"],
+      "properties": {
+        "shared_textures": {
+          "type": "object",
+          "description": "Every target texture container used by more than one model -> all its consumers (sorted).",
+          "propertyNames": { "$ref": "#/$defs/containerPath" },
+          "additionalProperties": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/modelName" } }
+        },
+        "frozen_textures": {
+          "type": "array",
+          "description": "Containers that must stay byte-identical: at least every shared container with a consumer outside targets.",
+          "items": { "$ref": "#/$defs/containerPath" }
+        },
+        "owned_files": {
+          "type": "array",
+          "description": "The only game files the worker may replace (target BMDs and/or non-frozen target textures).",
+          "items": { "$ref": "#/$defs/gamePath" }
+        },
+        "protected_paths": {
+          "type": "array",
+          "description": "Files or folder prefixes (ending in /) that must not change.",
+          "items": { "$ref": "#/$defs/repoPath" }
+        },
+        "engine_controls": {
+          "type": "array",
+          "description": "Rows from assets-work/World1/coordination/engine-controls.md for every target, as in catalog.json plus the model name.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["model", "source_row", "controls", "requirement"],
+            "properties": {
+              "model": { "$ref": "#/$defs/modelName" },
+              "source_row": { "type": "string", "minLength": 1 },
+              "controls": { "$ref": "#/$defs/stringList" },
+              "requirement": { "type": "string", "minLength": 1 },
+              "blend_mesh": { "type": "integer", "minimum": 0 },
+              "blend_mesh_texture": { "type": "string" }
+            }
+          }
+        },
+        "must_keep": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["captures", "offline_previews"],
+      "properties": {
+        "captures": { "type": "array", "items": { "$ref": "#/$defs/capture" } },
+        "offline_previews": { "type": "array", "items": { "$ref": "#/$defs/repoPath" } }
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repo", "branch", "worktree", "deliver_to", "push_allowed", "claimed_by", "claimed_at", "start_commit"],
+      "properties": {
+        "repo": { "const": "vaskodagamo/MuMain" },
+        "branch": { "type": "string", "pattern": "^codex/lorencia-req-[a-z0-9]+(-[a-z0-9]+){1,5}$" },
+        "worktree": { "type": "string", "pattern": "^\\.\\./MuMain-lorencia-req-[a-z0-9]+(-[a-z0-9]+){1,5}$" },
+        "deliver_to": {
+          "type": "string",
+          "pattern": "^assets-work/World1/requests/[0-9]{4}-[0-9]{2}-[0-9]{2}-[a-z0-9]+(-[a-z0-9]+){1,5}/delivery/$"
+        },
+        "push_allowed": {
+          "type": "boolean",
+          "description": "Set only by the owner. true records the owner's explicit authorization to push this branch and open a PR on vaskodagamo/MuMain; never to merge."
+        },
+        "claimed_by": { "type": ["string", "null"], "minLength": 1 },
+        "claimed_at": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/timestamp" }] },
+        "start_commit": {
+          "description": "Set by the worker when claiming: the full sha of the main commit its branch was created from (it contains the filed request and the reservation).",
+          "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/fullCommit" }]
+        }
+      }
+    },
+    "result": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["delivered_at", "source_commits", "installed_files", "validation", "review_images", "notes", "pr_url"],
+          "properties": {
+            "delivered_at": { "$ref": "#/$defs/timestamp" },
+            "source_commits": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/commit" } },
+            "installed_files": {
+              "type": "object",
+              "description": "Game path -> delivered export it is byte-identical to.",
+              "propertyNames": { "$ref": "#/$defs/gamePath" },
+              "additionalProperties": { "$ref": "#/$defs/repoPath" }
+            },
+            "validation": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/repoPath" } },
+            "review_images": { "type": "array", "items": { "$ref": "#/$defs/repoPath" } },
+            "notes": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/repoPath" } },
+            "pr_url": { "type": ["string", "null"], "pattern": "^https://github\\.com/vaskodagamo/MuMain/pull/[0-9]+$" }
+          }
+        }
+      ]
+    },
+    "decision": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "at", "by", "reason", "ledger_entry"],
+          "properties": {
+            "status": { "enum": ["accepted", "rejected", "withdrawn"] },
+            "at": { "$ref": "#/$defs/timestamp" },
+            "by": { "type": "string", "minLength": 1 },
+            "reason": { "type": "string" },
+            "ledger_entry": {
+              "description": "Name of the integration-ledger.json entry (requests/<id>/delivery) when accepted, else null.",
+              "type": ["string", "null"]
+            }
+          }
+        }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "status": { "const": "open" } } },
+      "then": {
+        "properties": {
+          "handoff": { "properties": { "claimed_by": { "type": "null" }, "claimed_at": { "type": "null" }, "start_commit": { "type": "null" } } },
+          "result": { "type": "null" },
+          "decision": { "type": "null" }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "status": { "const": "claimed" } } },
+      "then": {
+        "properties": {
+          "handoff": { "properties": { "claimed_by": { "type": "string" }, "claimed_at": { "type": "string" }, "start_commit": { "type": "string" } } },
+          "result": { "type": "null" },
+          "decision": { "type": "null" }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "status": { "const": "delivered" } } },
+      "then": {
+        "properties": {
+          "handoff": { "properties": { "claimed_by": { "type": "string" }, "claimed_at": { "type": "string" }, "start_commit": { "type": "string" } } },
+          "result": { "type": "object" },
+          "decision": { "type": "null" }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "status": { "const": "accepted" } } },
+      "then": {
+        "properties": {
+          "handoff": { "properties": { "claimed_by": { "type": "string" }, "claimed_at": { "type": "string" }, "start_commit": { "type": "string" } } },
+          "result": { "type": "object" },
+          "decision": {
+            "type": "object",
+            "properties": { "status": { "const": "accepted" }, "ledger_entry": { "type": "string" } }
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "status": { "const": "rejected" } } },
+      "then": {
+        "properties": {
+          "decision": { "type": "object", "properties": { "status": { "const": "rejected" }, "ledger_entry": { "type": "null" } } }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "status": { "const": "withdrawn" } } },
+      "then": {
+        "properties": {
+          "decision": { "type": "object", "properties": { "status": { "const": "withdrawn" }, "ledger_entry": { "type": "null" } } }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "kind": { "const": "new-variant" } } },
+      "then": {
+        "properties": {
+          "targets": { "maxItems": 1 },
+          "change": { "required": ["new_model"] },
+          "constraints": { "properties": { "owned_files": { "maxItems": 0 } } }
+        }
+      },
+      "else": {
+        "properties": { "change": { "not": { "required": ["new_model"] } } }
+      }
+    }
+  ],
+  "$defs": {
+    "status": { "enum": ["open", "claimed", "delivered", "accepted", "rejected", "withdrawn"] },
+    "requestId": {
+      "type": "string",
+      "maxLength": 80,
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}-[a-z0-9]+(-[a-z0-9]+){1,5}$",
+      "description": "<YYYY-MM-DD>-<model in lower case>-<slug of one to five words>; equals the folder name."
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]+)?(Z|[+-][0-9]{2}:[0-9]{2})$",
+      "description": "RFC 3339 with seconds and a UTC offset or Z, e.g. 2026-09-23T10:15:00+02:00."
+    },
+    "commit": { "type": "string", "pattern": "^[0-9a-f]{7,40}$" },
+    "fullCommit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "modelName": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9]*$" },
+    "stringList": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "repoPath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?![A-Za-z]:)(?!.*\\\\)(?!(.*/)?\\.\\.(/|$)).+$",
+      "description": "Relative to the repository root, forward slashes, no '..'."
+    },
+    "gamePath": { "type": "string", "pattern": "^src/bin/Data/Object1/[^/]+\\.([bB][mM][dD]|[oO][zZ][jJtT])$" },
+    "containerPath": { "type": "string", "pattern": "^src/bin/Data/Object1/[^/]+\\.[oO][zZ][jJtT]$" },
+    "vec3": { "type": "array", "minItems": 3, "maxItems": 3, "items": { "type": "number" } },
+    "vec2": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "number" } },
+    "placement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["position", "rotation", "scale"],
+      "properties": {
+        "obj_index": { "type": "integer", "minimum": 0, "description": "Record index in EncTerrain1.obj, when known." },
+        "position": { "$ref": "#/$defs/vec3" },
+        "rotation": { "$ref": "#/$defs/vec3" },
+        "scale": { "type": "number" },
+        "tile": { "$ref": "#/$defs/vec2" }
+      }
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["model", "type", "bmd", "current_sha256", "textures", "placement_count", "picked_instances", "last_batch", "model_dir", "original"],
+      "properties": {
+        "model": { "$ref": "#/$defs/modelName" },
+        "type": { "type": "integer", "minimum": 0 },
+        "bmd": { "type": "string", "pattern": "^src/bin/Data/Object1/[^/]+\\.bmd$" },
+        "current_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "textures": {
+          "type": "object",
+          "minProperties": 1,
+          "description": "Texture name as stored in the BMD -> container path, as in catalog.json.",
+          "additionalProperties": { "$ref": "#/$defs/containerPath" }
+        },
+        "placement_count": { "type": "integer", "minimum": 0 },
+        "picked_instances": { "type": "array", "items": { "$ref": "#/$defs/placement" } },
+        "last_batch": { "type": ["string", "null"] },
+        "model_dir": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/repoPath" }] },
+        "original": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["revision", "archive"],
+          "properties": {
+            "revision": { "$ref": "#/$defs/commit" },
+            "archive": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/repoPath" }] }
+          }
+        }
+      }
+    },
+    "capture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["file", "variant", "camera", "resolution", "client_commit"],
+      "properties": {
+        "file": {
+          "type": "string",
+          "pattern": "^assets-work/World1/requests/[^/]+/captures/[^/]+\\.(jpg|jpeg)$"
+        },
+        "variant": { "enum": ["current", "original", "candidate"] },
+        "camera": {
+          "type": "object",
+          "required": ["position", "angle"],
+          "properties": {
+            "position": { "$ref": "#/$defs/vec3" },
+            "angle": { "$ref": "#/$defs/vec3" },
+            "distance": { "type": "number" },
+            "free_fly": { "type": "boolean" }
+          }
+        },
+        "hero_tile": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/vec2" }] },
+        "resolution": {
+          "type": "array", "minItems": 2, "maxItems": 2,
+          "description": "[width, height] of the JPEG; at most 1920 px wide.",
+          "prefixItems": [{ "type": "integer", "minimum": 1, "maximum": 1920 }, { "type": "integer", "minimum": 1 }],
+          "items": false
+        },
+        "client_commit": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/commit" }] },
+        "note": { "type": "string" }
+      }
+    }
+  }
+}

@@ -19,6 +19,9 @@
 // Mutex for thread-safe console access
 static std::mutex g_consoleMutex;
 
+// Folder (next to the executable) that holds the daily editor logs.
+static constexpr const char* EDITOR_LOG_FOLDER = "MuEditor";
+
 // Replacement console output functions
 extern "C" {
     int editor_wprintf(const wchar_t* format, ...)
@@ -151,7 +154,7 @@ void CMuEditorConsoleUI::CleanupOldLogs()
         const time_t maxAge = 14 * 24 * 60 * 60; // 14 days in seconds
 
         // Ensure MuEditor directory exists
-        fs::path logDir = "MuEditor";
+        fs::path logDir = EDITOR_LOG_FOLDER;
         if (!fs::exists(logDir))
         {
             fs::create_directory(logDir);
@@ -199,13 +202,17 @@ void CMuEditorConsoleUI::Initialize()
     localtime_s(&timeinfo, &now);
 
     std::ostringstream filename;
-    filename << "MuEditor\\MuEditor_"
+    filename << "MuEditor_"
              << std::setfill('0') << std::setw(4) << (timeinfo.tm_year + 1900)
              << std::setfill('0') << std::setw(2) << (timeinfo.tm_mon + 1)
              << std::setfill('0') << std::setw(2) << timeinfo.tm_mday
              << ".log";
 
-    m_strLogFilePath = filename.str();
+    m_strLogFilePath = (std::filesystem::path(EDITOR_LOG_FOLDER) / filename.str()).string();
+
+    // Clean up old log files (keep only last 14 days). This also creates the log
+    // folder, so it runs before today's log is opened.
+    CleanupOldLogs();
 
     // Open in append mode to continue writing to today's log
     m_logFile.open(m_strLogFilePath, std::ios::app);
@@ -217,9 +224,6 @@ void CMuEditorConsoleUI::Initialize()
         m_logFile << "===========================" << std::endl << std::endl;
         m_logFile.flush();
     }
-
-    // Clean up old log files (keep only last 14 days)
-    CleanupOldLogs();
 
     // Redirect stdout and stderr to capture all console output
     m_pStdoutBuf = new ConsoleStreamBuf(std::cout, true);

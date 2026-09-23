@@ -957,19 +957,17 @@ Treat this as an integration requirement.
 
 # MAP / ITEM / SKILL EDITORS
 
-Be aware that the current game editors remain Windows-only.
-
 The in-game:
 
 - map editor
 - item editor
 - skill editor
 
-currently depend on Windows.
+build on Windows and macOS (editor build, preset `macos-arm64-mueditor` on the Mac).
 
-Three Win32 file dialogs still require SDL replacement.
+The map editor runs on macOS and can open a map without the server (`./Main --editor --world N`). Usage: `src/MuEditor/UI/MapEditor/MAP_EDITOR.md`.
 
-Do not design an asset pipeline that incorrectly assumes these tools already work cross-platform.
+The item and skill editors have not been tried on macOS yet; do not rely on them there without checking.
 
 ---
 
@@ -1159,6 +1157,35 @@ Show:
 - gameplay-distance view
 
 The improvement should be immediately obvious without losing the original identity.
+
+---
+
+# REGENERATION REQUESTS
+
+Follow-up work on an existing World1 asset arrives as a regeneration request, usually filed by
+the owner from the in-client world editor. The contract is
+[`assets-work/World1/requests/README.md`](assets-work/World1/requests/README.md). Read it before
+you touch a request.
+
+- One folder per request: `request.json` (binding), `brief.md`, `captures/*.jpg`.
+- Per-model facts are in `assets-work/World1/catalog.json`: identity, textures and their other
+  consumers, batches and notes, original archive, engine controls and offline previews.
+- Take only a request the coordinator assigned to you (your reservation in
+  `production-batches.json`). Claim it on `codex/lorencia-req-<model>-<slug>` in
+  `../MuMain-lorencia-req-<model>-<slug>`, created from the `main` commit that contains the filed
+  request and your reservation (normally `origin/main`). Record that commit as
+  `handoff.start_commit`.
+- Its `constraints` are binding: frozen and shared textures, `owned_files`, protected paths,
+  engine controls and `must_keep`. Outside the request folder, change only `owned_files` and
+  `docs/agents/WORKLOG.md`, and never merge `main` into the request branch.
+- Deliver into `assets-work/World1/requests/<id>/delivery/<Model>/` (`original/`, `source.blend`,
+  `exports/`, `review/`, `validation/summary.json`, `notes.md`). Install only `owned_files` into
+  `src/bin/Data/Object1/`, fill `result`, set `status` to `delivered`, and run
+  `validate_request.py`.
+- Never set `accepted`/`rejected`, and never edit the ledger, board, batches file or catalog.
+- Placement and terrain are never art requests.
+- Push or open a PR only with the owner's explicit authorization, only on `vaskodagamo/MuMain`
+  (`gh --repo vaskodagamo/MuMain`), and never merge.
 
 ---
 

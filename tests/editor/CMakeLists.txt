@@ -27,3 +27,111 @@ if(NOT ENABLE_EDITOR)
             "-DEDITOR_DIR=${PROJECT_SOURCE_DIR}/src/MuEditor"
             -P "${CMAKE_CURRENT_SOURCE_DIR}/test_leak.cmake")
 endif()
+
+# Where the Map Editor copies its saves (the repository's src/bin/Data, with
+# backups) is plain file-system code, so it is tested on its own, also in
+# builds without the editor. The test compiles that one file itself; nothing
+# of the editor goes into MuClient.
+mu_add_test(
+    NAME editor_repo_mirror_tests
+    SOURCES
+        test_repo_mirror.cpp
+        ${PROJECT_SOURCE_DIR}/src/MuEditor/UI/MapEditor/MapEditorRepoMirror.cpp
+        ${PROJECT_SOURCE_DIR}/src/MuEditor/Assets/EditorText.cpp
+)
+target_compile_definitions(editor_repo_mirror_tests PRIVATE _EDITOR)
+target_include_directories(editor_repo_mirror_tests PRIVATE ${PROJECT_SOURCE_DIR}/src/MuEditor)
+
+# The world editor's asset catalog, regeneration request files, git HEAD lookup,
+# capture JPEGs and the light map file (TerrainLight.OZJ) are data code without
+# ImGui or engine state, so they are tested here too, also in builds without the
+# editor. MuClient only supplies OpenSSL (SHA-256) and turbojpeg with their
+# include paths.
+set(MU_EDITOR_ASSETS_DIR ${PROJECT_SOURCE_DIR}/src/MuEditor/Assets)
+mu_add_test(
+    NAME editor_asset_request_tests
+    SOURCES
+        test_asset_catalog.cpp
+        test_editor_text.cpp
+        test_regen_request.cpp
+        test_terrain_light_file.cpp
+        ${MU_EDITOR_ASSETS_DIR}/AssetCatalog.cpp
+        ${MU_EDITOR_ASSETS_DIR}/CaptureImage.cpp
+        ${MU_EDITOR_ASSETS_DIR}/ClientReview.cpp
+        ${MU_EDITOR_ASSETS_DIR}/EditorText.cpp
+        ${MU_EDITOR_ASSETS_DIR}/FileDigest.cpp
+        ${MU_EDITOR_ASSETS_DIR}/GitCheckout.cpp
+        ${MU_EDITOR_ASSETS_DIR}/RegenRequest.cpp
+        ${MU_EDITOR_ASSETS_DIR}/RequestBrief.cpp
+        ${MU_EDITOR_ASSETS_DIR}/RequestFolder.cpp
+        ${MU_EDITOR_ASSETS_DIR}/RequestNaming.cpp
+        ${MU_EDITOR_ASSETS_DIR}/TerrainLightFile.cpp
+    LINK_LIBS
+        MuClient
+)
+target_compile_definitions(editor_asset_request_tests PRIVATE
+    _EDITOR
+    "MU_REPO_ROOT=\"${PROJECT_SOURCE_DIR}\""
+)
+target_include_directories(editor_asset_request_tests PRIVATE
+    ${PROJECT_SOURCE_DIR}/src/MuEditor
+    ${PROJECT_SOURCE_DIR}/src/ThirdParty
+)
+
+# The world editor's A/B compare checks a model and its textures before the
+# running client loads them in place of the one it shows, and finds the
+# original files built by tools/world_editor/materialize_variant.py. File-only
+# code as well; MuClient supplies turbojpeg, OpenSSL and the map-file cipher the
+# test uses to read the shipped models.
+mu_add_test(
+    NAME editor_model_preflight_tests
+    SOURCES
+        test_model_preflight.cpp
+        ${MU_EDITOR_ASSETS_DIR}/AssetCatalog.cpp
+        ${MU_EDITOR_ASSETS_DIR}/AssetVariant.cpp
+        ${MU_EDITOR_ASSETS_DIR}/CaptureImage.cpp
+        ${MU_EDITOR_ASSETS_DIR}/EditorText.cpp
+        ${MU_EDITOR_ASSETS_DIR}/FileDigest.cpp
+        ${MU_EDITOR_ASSETS_DIR}/ModelPreflight.cpp
+    LINK_LIBS
+        MuClient
+)
+target_compile_definitions(editor_model_preflight_tests PRIVATE
+    _EDITOR
+    "MU_REPO_ROOT=\"${PROJECT_SOURCE_DIR}\""
+)
+target_include_directories(editor_model_preflight_tests PRIVATE
+    ${PROJECT_SOURCE_DIR}/src/MuEditor
+    ${PROJECT_SOURCE_DIR}/src/ThirdParty
+)
+
+# The Map Editor's undo history (commands, terrain strokes), object selection,
+# transform gizmo math, terrain brushes and popup mouse guard: logic without
+# ImGui or engine state, tested against stand-in objects and terrain. MuClient
+# supplies the engine's AngleMatrix, which the gizmo's turns must agree with.
+set(MU_EDITOR_EDITING_DIR ${PROJECT_SOURCE_DIR}/src/MuEditor/Editing)
+mu_add_test(
+    NAME editor_editing_tests
+    SOURCES
+        test_edit_history.cpp
+        test_gizmo_math.cpp
+        test_object_selection.cpp
+        test_popup_mouse_guard.cpp
+        test_terrain_brush.cpp
+        ${MU_EDITOR_EDITING_DIR}/CommandStack.cpp
+        ${MU_EDITOR_EDITING_DIR}/EditCommandGroup.cpp
+        ${MU_EDITOR_EDITING_DIR}/FieldBrush.cpp
+        ${MU_EDITOR_EDITING_DIR}/GizmoMath.cpp
+        ${MU_EDITOR_EDITING_DIR}/ObjectEditCommand.cpp
+        ${MU_EDITOR_EDITING_DIR}/ObjectSelection.cpp
+        ${MU_EDITOR_EDITING_DIR}/ObjectTransform.cpp
+        ${MU_EDITOR_EDITING_DIR}/PopupMouseGuard.cpp
+        ${MU_EDITOR_EDITING_DIR}/SurfaceBrush.cpp
+        ${MU_EDITOR_EDITING_DIR}/TerrainBrush.cpp
+        ${MU_EDITOR_EDITING_DIR}/TerrainPatchCommand.cpp
+        ${MU_EDITOR_EDITING_DIR}/TerrainStroke.cpp
+    LINK_LIBS
+        MuClient
+)
+target_compile_definitions(editor_editing_tests PRIVATE _EDITOR)
+target_include_directories(editor_editing_tests PRIVATE ${PROJECT_SOURCE_DIR}/src/MuEditor)

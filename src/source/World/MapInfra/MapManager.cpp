@@ -1518,27 +1518,7 @@ void CMapManager::DeleteObjects()
         }
     }
 
-    for (int i = 0; i < 16; i++)
-    {
-        for (int j = 0; j < 16; j++)
-        {
-            OBJECT_BLOCK* ob = &ObjectBlock[i * 16 + j];
-            OBJECT* o = ob->Tail;
-            while (1)
-            {
-                if (o != NULL)
-                {
-                    OBJECT* Temp = o->Prior;
-                    DeleteObject(o, ob);
-                    if (Temp == NULL) break;
-                    o = Temp;
-                }
-                else break;
-            }
-            ob->Head = NULL;
-            ob->Tail = NULL;
-        }
-    }
+    DeleteAllObjects();
 
     for (int i = BITMAP_MAPTILE; i <= BITMAP_RAIN_CIRCLE; i++)
     {

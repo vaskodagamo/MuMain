@@ -42,7 +42,11 @@
 #include "Camera/CameraProjection.h"
 #include "Camera/OrbitalCamera.h"
 #include "Engine/Object/CullingConstants.h"
+#include "Engine/Object/ObjectReferences.h"
+#include "Engine/Object/WorldObjectFile.h"
 #include "Render/Renderer/MuRenderer.h"
+
+#include <unordered_set>
 
 // DevEditor function declarations
 #ifdef _EDITOR
@@ -408,6 +412,32 @@ bool Calc_ObjectAnimation(OBJECT* o, bool Translate, int Select)
     return true;
 }
 
+// Lost Tower blocks carry a fire layer: BITMAP_CHROME tinted orange, with the
+// texture streaming on one mesh. The look players know shows that fire only
+// through the alpha holes of the strip texture. Drawing the layer as an opaque
+// pass after the stone gives exactly that: the depth test rejects it on the
+// faces the stone already covered and keeps it where the strip was discarded.
+// Drawing it additively on top instead paints the whole block orange (#589).
+static const vec3_t kLostTowerFireTint = {1.f, 0.2f, 0.1f};
+
+static void RenderLostTowerFireBlock(BMD* b, OBJECT* o, int streamMesh)
+{
+    vec3_t bodyLight;
+    VectorCopy(b->BodyLight, bodyLight);
+
+    b->StreamMesh = -1;
+    b->RenderBody(RENDER_TEXTURE, o->Alpha, o->BlendMesh, o->BlendMeshLight, o->BlendMeshTexCoordU,
+                  o->BlendMeshTexCoordV, o->HiddenMesh);
+
+    VectorCopy(kLostTowerFireTint, b->BodyLight);
+    b->StreamMesh = streamMesh;
+    b->RenderBody(RENDER_TEXTURE, o->Alpha, o->BlendMesh, o->BlendMeshLight, o->BlendMeshTexCoordU,
+                  o->BlendMeshTexCoordV, o->HiddenMesh, BITMAP_CHROME);
+
+    VectorCopy(bodyLight, b->BodyLight);
+    b->StreamMesh = -1;
+}
+
 void Draw_RenderObject(OBJECT* o, bool Translate, int Select, int ExtraMon)
 {
     BMD* b = &Models[o->Type];
@@ -528,8 +558,9 @@ void Draw_RenderObject(OBJECT* o, bool Translate, int Select, int ExtraMon)
             //			b->RenderBody(RENDER_TEXTURE,o->Alpha,o->BlendMesh,o->BlendMeshLight,o->BlendMeshTexCoordU,o->BlendMeshTexCoordV);
             if (!M39Kanturu3rd::IsInKanturu3rd())
             {
-                VectorCopy(o->Light, b->BodyLight)
-                    b->RenderMesh(0, RENDER_TEXTURE, o->Alpha, o->BlendMesh, o->BlendMeshLight, o->BlendMeshTexCoordU, o->BlendMeshTexCoordV);
+                VectorCopy(o->Light, b->BodyLight);
+                b->RenderMesh(0, RENDER_TEXTURE, o->Alpha, o->BlendMesh, o->BlendMeshLight, o->BlendMeshTexCoordU,
+                              o->BlendMeshTexCoordV);
                 b->RenderMesh(1, RENDER_TEXTURE | RENDER_BRIGHT, o->Alpha, o->BlendMesh, o->BlendMeshLight, o->BlendMeshTexCoordU, o->BlendMeshTexCoordV);
                 b->RenderMesh(2, RENDER_TEXTURE | RENDER_BRIGHT, o->Alpha, o->BlendMesh, o->BlendMeshLight, o->BlendMeshTexCoordU, o->BlendMeshTexCoordV);
                 Vector(1.f, 1.f, 1.f, b->BodyLight);
@@ -1002,36 +1033,17 @@ void Draw_RenderObject(OBJECT* o, bool Translate, int Select, int ExtraMon)
             }
             else if (gMapManager.WorldActive == WD_4LOSTTOWER && (o->Type == 23 || o->Type == 19 || o->Type == 20 || o->Type == 3 || o->Type == 4))
             {
-                vec3_t Light, p;
-                float Luminosity;
-                Luminosity = (float)(rand() % 2 + 6) * 0.1f;
-                Vector(Luminosity * 0.4f, Luminosity * 0.8f, Luminosity * 1.f, Light);
-                Vector(0.f, 0.f, 0.f, p);
                 if (o->Type == 23)
                 {
                     b->RenderBody(RENDER_TEXTURE, o->Alpha, o->BlendMesh, o->BlendMeshLight, o->BlendMeshTexCoordU, o->BlendMeshTexCoordV, o->HiddenMesh);
                 }
                 else if (o->Type == 19 || o->Type == 20)
                 {
-                    VectorCopy(b->BodyLight, Light);
-                    b->StreamMesh = -1;
-                    b->RenderBody(RENDER_TEXTURE, o->Alpha, o->BlendMesh, o->BlendMeshLight, o->BlendMeshTexCoordU, o->BlendMeshTexCoordV, o->HiddenMesh);
-                    Vector(1.f, 0.2f, 0.1f, b->BodyLight);
-                    b->StreamMesh = 2;
-                    b->RenderBody(RENDER_TEXTURE | RENDER_BRIGHT, o->Alpha, o->BlendMesh, o->BlendMeshLight, o->BlendMeshTexCoordU, o->BlendMeshTexCoordV, o->HiddenMesh, BITMAP_CHROME);
-                    VectorCopy(Light, b->BodyLight);
-                    b->StreamMesh = -1;
+                    RenderLostTowerFireBlock(b, o, 2);
                 }
                 else if (o->Type == 3 || o->Type == 4)
                 {
-                    VectorCopy(b->BodyLight, Light);
-                    b->StreamMesh = -1;
-                    b->RenderBody(RENDER_TEXTURE, o->Alpha, o->BlendMesh, o->BlendMeshLight, o->BlendMeshTexCoordU, o->BlendMeshTexCoordV, o->HiddenMesh);
-                    Vector(1.f, 0.2f, 0.1f, b->BodyLight);
-                    b->StreamMesh = 1;
-                    b->RenderBody(RENDER_TEXTURE | RENDER_BRIGHT, o->Alpha, o->BlendMesh, o->BlendMeshLight, o->BlendMeshTexCoordU, o->BlendMeshTexCoordV, o->HiddenMesh, BITMAP_CHROME);
-                    VectorCopy(Light, b->BodyLight);
-                    b->StreamMesh = -1;
+                    RenderLostTowerFireBlock(b, o, 1);
                 }
             }
             else if (gMapManager.WorldActive == WD_8TARKAN && (o->Type == 81))
@@ -3257,20 +3269,37 @@ void RenderObjectVisual(OBJECT* o)
 // second box-drawing implementation.
 OBJECT* g_MapEditorSelectedObject = nullptr;
 
+// Every object selected in the Map Editor (the primary above among them), sorted by
+// address so the render loop finds each one with a binary search.
+std::vector<const OBJECT*> g_MapEditorSelectedObjects;
+
 // Set every frame while Select & edit mode is enabled: the object currently under
 // the cursor (before any click), so it can be outlined too - lets you see what a
 // click would pick, distinct from what's already selected.
 OBJECT* g_MapEditorHoveredObject = nullptr;
 
+// Set by the Map Editor's Assets tab ("Highlight all"): every object whose type
+// is in the set gets an outline, so all placements of a model stand out.
+std::unordered_set<int> g_MapEditorHighlightedTypes;
+
 // Set every frame while Place new mode is enabled and the cursor is over
 // terrain: the model that would be placed on a click, at the exact position
-// Editor::ObjectPlace::Place() would use (see ComputePlacementPosition()), so
+// a click would use (see Editor::ObjectPlace::ComputePlacementPosition()), so
 // RenderPlacementPreview() can draw it translucent before any click happens.
 bool g_MapEditorPlacementPreviewActive = false;
 int g_MapEditorPlacementPreviewType = -1;
 vec3_t g_MapEditorPlacementPreviewPos = {0.0f, 0.0f, 0.0f};
 float g_MapEditorPlacementPreviewYaw = 0.0f;
 float g_MapEditorPlacementPreviewScale = 1.0f;
+
+namespace
+{
+bool IsMapEditorSelected(const OBJECT* o)
+{
+    return !g_MapEditorSelectedObjects.empty() &&
+           std::binary_search(g_MapEditorSelectedObjects.begin(), g_MapEditorSelectedObjects.end(), o);
+}
+} // namespace
 #endif
 
 void RenderObjects()
@@ -3472,6 +3501,13 @@ void RenderObjects()
                                 static const std::uint32_t kSelectedColor = mu::PackABGR(1.0f, 0.9f, 0.1f, 1.0f);
                                 RenderObjectOutline(o, kSelectedColor);
                             }
+                            else if (o->Visible == true && IsMapEditorSelected(o))
+                            {
+                                // The rest of a multi-selection: orange, told apart from the
+                                // yellow primary whose values the Objects tab shows.
+                                static const std::uint32_t kAlsoSelectedColor = mu::PackABGR(1.0f, 0.55f, 0.1f, 1.0f);
+                                RenderObjectOutline(o, kAlsoSelectedColor);
+                            }
                             else if (o->Visible == true && o == g_MapEditorHoveredObject)
                             {
                                 // Distinct color from the selected outline so you can
@@ -3479,6 +3515,14 @@ void RenderObjects()
                                 // already selected" at a glance.
                                 static const std::uint32_t kHoverColor = mu::PackABGR(0.2f, 0.9f, 1.0f, 1.0f);
                                 RenderObjectOutline(o, kHoverColor);
+                            }
+                            else if (o->Visible == true && !g_MapEditorHighlightedTypes.empty() &&
+                                     g_MapEditorHighlightedTypes.contains(o->Type))
+                            {
+                                // Magenta, so "every instance of this model" is told apart from
+                                // the selected (yellow) and hovered (cyan) object.
+                                static const std::uint32_t kHighlightColor = mu::PackABGR(1.0f, 0.3f, 0.9f, 1.0f);
+                                RenderObjectOutline(o, kHighlightColor);
                             }
 #endif // _EDITOR
                         }
@@ -4851,7 +4895,16 @@ OBJECT* CreateObject(int Type, vec3_t Position, vec3_t Angle, float Scale)
     return o;
 }
 
-void DeleteObject(OBJECT* o, OBJECT_BLOCK* ob)
+namespace
+{
+#ifdef _EDITOR
+// Bumped by every DeleteAllObjects call; see ObjectListGeneration().
+unsigned int s_objectListGeneration = 0;
+#endif
+
+// Takes `o` out of its block's list and frees it. The callers release the
+// engine's references to it first (see Engine/Object/ObjectReferences.h).
+void UnlinkAndFreeObject(OBJECT* o, OBJECT_BLOCK* ob)
 {
     if (o != NULL)
     {
@@ -4886,6 +4939,42 @@ void DeleteObject(OBJECT* o, OBJECT_BLOCK* ob)
         SAFE_DELETE(o);
     }
 }
+} // namespace
+
+void DeleteObject(OBJECT* o, OBJECT_BLOCK* ob)
+{
+    if (o == nullptr)
+        return;
+    Engine::Object::ReleaseReferencesTo(o);
+    UnlinkAndFreeObject(o, ob);
+}
+
+void DeleteAllObjects()
+{
+#ifdef _EDITOR
+    ++s_objectListGeneration;
+#endif
+    std::unordered_set<const OBJECT*> objects;
+    for (OBJECT_BLOCK& ob : ObjectBlock)
+    {
+        for (const OBJECT* o = ob.Head; o != nullptr; o = o->Next)
+            objects.insert(o);
+    }
+    Engine::Object::ReleaseReferencesTo(objects);
+
+    for (OBJECT_BLOCK& ob : ObjectBlock)
+    {
+        while (ob.Tail != nullptr)
+            UnlinkAndFreeObject(ob.Tail, &ob);
+    }
+}
+
+#ifdef _EDITOR
+unsigned int ObjectListGeneration()
+{
+    return s_objectListGeneration;
+}
+#endif
 
 typedef std::vector<OBJECT* > ObjectPtrVec_t;
 typedef std::map<int, ObjectPtrVec_t> SortObj_t;
@@ -4967,24 +5056,136 @@ int OpenObjects(wchar_t* FileName)
 
     int DataPtr = 0;
 
-    BYTE Version = *((BYTE*)(Data + DataPtr)); DataPtr += 1;
+    BYTE Version = Data[DataPtr];
+    DataPtr += 1;
 
     int iMapNumber = 0;
-    short Count = *((short*)(Data + DataPtr)); DataPtr += 2;
+    short Count = 0;
+    memcpy(&Count, Data + DataPtr, sizeof(Count));
+    DataPtr += sizeof(Count);
     for (int i = 0; i < Count; i++)
     {
         vec3_t Position;
         vec3_t Angle;
-        short Type = *((short*)(Data + DataPtr)); DataPtr += 2;
-        memcpy(Position, Data + DataPtr, sizeof(vec3_t)); DataPtr += sizeof(vec3_t);
-        memcpy(Angle, Data + DataPtr, sizeof(vec3_t)); DataPtr += sizeof(vec3_t);
-        float Scale = *((float*)(Data + DataPtr)); DataPtr += 4;
+        short Type = 0;
+        memcpy(&Type, Data + DataPtr, sizeof(Type));
+        DataPtr += sizeof(Type);
+        memcpy(Position, Data + DataPtr, sizeof(vec3_t));
+        DataPtr += sizeof(vec3_t);
+        memcpy(Angle, Data + DataPtr, sizeof(vec3_t));
+        DataPtr += sizeof(vec3_t);
+        float Scale = 0.f;
+        memcpy(&Scale, Data + DataPtr, sizeof(Scale));
+        DataPtr += sizeof(Scale);
         CreateObject(Type, Position, Angle, Scale);
     }
     delete[] Data;
 
     return iMapNumber;
 }
+
+namespace
+{
+namespace ObjectFile = Engine::Object::WorldObjectFile;
+
+constexpr std::uint8_t OBJECT_FILE_VERSION = 0;
+
+// Model types at or above MAX_WORLD_OBJECTS that the loaded object file placed.
+// A few maps' files use such models (the login and character scenes, World52,
+// World58, ...), while other maps add objects of those types at run time
+// (Devias' donkey and warp gate), which must not end up in a saved file.
+std::unordered_set<int> s_fileTypesAboveWorldRange;
+
+bool IsModelType(int type)
+{
+    return type >= 0 && type < MAX_MODELS;
+}
+
+// The objects SaveObjects writes: live ones the map file placed or the Map
+// Editor added, not the ones a map spawns at run time.
+bool IsSavedWorldObject(const OBJECT* o)
+{
+    if (!o->Live || o->Type < 0)
+        return false;
+    if (o->Type < MAX_WORLD_OBJECTS)
+        return true;
+    return s_fileTypesAboveWorldRange.count(o->Type) != 0;
+}
+
+void CreateObjectsFromFile(const wchar_t* fileName, const std::vector<ObjectFile::Record>& records)
+{
+    s_fileTypesAboveWorldRange.clear();
+    for (size_t i = 0; i < records.size(); ++i)
+    {
+        const ObjectFile::Record& record = records[i];
+        // A corrupt record (World7's file has one with type -515) would index
+        // outside Models[] once its block is drawn.
+        if (!IsModelType(record.type))
+        {
+            g_ErrorReport.Write(L"%ls: skipped object %d with invalid model type %d\r\n", fileName, static_cast<int>(i),
+                                record.type);
+            continue;
+        }
+        if (record.type >= MAX_WORLD_OBJECTS)
+            s_fileTypesAboveWorldRange.insert(record.type);
+
+        vec3_t position;
+        vec3_t angle;
+        VectorCopy(record.position, position);
+        VectorCopy(record.angle, angle);
+        [[maybe_unused]] OBJECT* created = CreateObject(record.type, position, angle, record.scale);
+#ifdef _EDITOR
+        if (created != nullptr)
+            created->SaveOrder = static_cast<int>(i);
+#endif
+    }
+}
+
+// The Map Editor build keeps the loaded file's record order (OBJECT::SaveOrder),
+// with the objects it added after them. Otherwise, and for objects the game made
+// at run time, object-grid block order, which most shipped files use; a few,
+// Lorencia's among them, list their records in another order.
+std::vector<ObjectFile::Record> CollectSavedObjects()
+{
+    std::vector<ObjectFile::OrderedRecord> records;
+    for (const OBJECT_BLOCK& ob : ObjectBlock)
+    {
+        for (const OBJECT* o = ob.Head; o != nullptr; o = o->Next)
+        {
+            if (!IsSavedWorldObject(o))
+                continue;
+            ObjectFile::OrderedRecord ordered;
+#ifdef _EDITOR
+            ordered.order = o->SaveOrder;
+#endif
+            ordered.record.type = static_cast<std::int16_t>(o->Type);
+            VectorCopy(o->Position, ordered.record.position);
+            VectorCopy(o->Angle, ordered.record.angle);
+            ordered.record.scale = o->Scale;
+            records.push_back(ordered);
+        }
+    }
+    return ObjectFile::InSaveOrder(std::move(records));
+}
+
+bool WriteObjectFile(const wchar_t* fileName, const std::vector<std::uint8_t>& bytes)
+{
+    FILE* fp = _wfopen(fileName, L"wb");
+    if (fp == nullptr)
+    {
+        g_ErrorReport.Write(L"%ls: cannot be opened for writing, objects not saved\r\n", fileName);
+        return false;
+    }
+    const bool written = fwrite(bytes.data(), 1, bytes.size(), fp) == bytes.size();
+    const bool closed = fclose(fp) == 0;
+    if (!written || !closed)
+    {
+        g_ErrorReport.Write(L"%ls: write failed, the file may be incomplete\r\n", fileName);
+        return false;
+    }
+    return true;
+}
+} // namespace
 
 int OpenObjectsEnc(wchar_t* FileName)
 {
@@ -5009,88 +5210,37 @@ int OpenObjectsEnc(wchar_t* FileName)
     MapFileDecrypt(Data, EncData, EncBytes);
     delete[] EncData;
 
-    int DataPtr = 0;
-    DataPtr += 1;
-    int iMapNumber = (int)*((BYTE*)(Data + DataPtr)); DataPtr += 1;
-    short Count = *((short*)(Data + DataPtr)); DataPtr += 2;
-    g_iTotalObj = Count;
-    for (int i = 0; i < Count; i++)
+    ObjectFile::Contents contents;
+    if (!ObjectFile::Decode(Data, DataBytes, contents))
     {
-        vec3_t Position;
-        vec3_t Angle;
-        short Type = *((short*)(Data + DataPtr)); DataPtr += 2;
-        memcpy(Position, Data + DataPtr, sizeof(vec3_t)); DataPtr += sizeof(vec3_t);
-        memcpy(Angle, Data + DataPtr, sizeof(vec3_t)); DataPtr += sizeof(vec3_t);
-        float Scale = *((float*)(Data + DataPtr)); DataPtr += 4;
-        CreateObject(Type, Position, Angle, Scale);
+        g_ErrorReport.Write(L"%ls: the object list is cut short, loading its first %d object(s)\r\n", FileName,
+                            static_cast<int>(contents.records.size()));
     }
     delete[] Data;
 
-    return iMapNumber;
+    g_iTotalObj = static_cast<int>(contents.records.size());
+    CreateObjectsFromFile(FileName, contents.records);
+    return contents.mapNumber;
 }
 
 bool SaveObjects(wchar_t* FileName, int iMapNumber)
 {
-    FILE* fp = _wfopen(FileName, L"wb");
+    ObjectFile::Contents contents;
+    contents.version = OBJECT_FILE_VERSION;
+    contents.mapNumber = static_cast<std::uint8_t>(iMapNumber);
+    contents.records = CollectSavedObjects();
 
-    short ObjectCount = 0;
-    int CounterPoint = 3;
-    BYTE Version = 0;
-    fwrite(&Version, sizeof(BYTE), 1, fp);
-    fwrite(&iMapNumber, 1, 1, fp);
-    fseek(fp, 4, SEEK_SET);
-    for (int i = 0; i < 16; i++)
+    std::vector<std::uint8_t> plain = ObjectFile::Encode(contents);
+    if (plain.empty())
     {
-        for (int j = 0; j < 16; j++)
-        {
-            OBJECT_BLOCK* ob = &ObjectBlock[i * 16 + j];
-            OBJECT* o = ob->Head;
-            while (1)
-            {
-                if (o != NULL)
-                {
-                    if (o->Live)
-                    {
-                        fwrite(&o->Type, 2, 1, fp);
-                        fwrite(o->Position, sizeof(vec3_t), 1, fp);
-                        fwrite(o->Angle, sizeof(vec3_t), 1, fp);
-                        fwrite(&o->Scale, sizeof(float), 1, fp);
-                    }
-                    ObjectCount++;
-                    if (o->Next == NULL) break;
-                    o = o->Next;
-                }
-                else break;
-            }
-        }
+        g_ErrorReport.Write(L"%ls: not saved, %d objects are more than the file can hold\r\n", FileName,
+                            static_cast<int>(contents.records.size()));
+        return false;
     }
-    int EndPoint = ftell(fp);
-    fseek(fp, 2, SEEK_SET);
-    fwrite(&ObjectCount, 2, 1, fp);
-    fseek(fp, EndPoint, SEEK_SET);
 
-    fclose(fp);
-
-    {
-        fp = _wfopen(FileName, L"rb");
-        fseek(fp, 0, SEEK_END);
-        int EncBytes = ftell(fp);
-        fseek(fp, 0, SEEK_SET);
-        auto* EncData = new unsigned char[EncBytes];
-        fread(EncData, 1, EncBytes, fp);
-        fclose(fp);
-
-        int DataBytes = MapFileEncrypt(NULL, EncData, EncBytes);
-        auto* Data = new unsigned char[DataBytes];
-        MapFileEncrypt(Data, EncData, EncBytes);
-        delete[] EncData;
-
-        fp = _wfopen(FileName, L"wb");
-        fwrite(Data, DataBytes, 1, fp);
-        fclose(fp);
-        delete[] Data;
-    }
-    return true;
+    std::vector<std::uint8_t> encrypted(plain.size());
+    MapFileEncrypt(encrypted.data(), plain.data(), static_cast<int>(plain.size()));
+    return WriteObjectFile(FileName, encrypted);
 }
 
 void SaveTrapObjects(wchar_t* FileName)

@@ -30,6 +30,8 @@ void RenderObjects_AfterCharacter();
 void MoveObjects();
 void DeleteObjectTile(int x, int y);
 void DeleteObject(OBJECT* o, OBJECT_BLOCK* ob);
+// Frees every object in ObjectBlock (map change, the Map Editor's undo).
+void DeleteAllObjects();
 OBJECT* CreateObject(int Type, vec3_t Position, vec3_t Angle, float Scale = 1.f);
 bool SaveObjects(wchar_t* FileName, int iMapNumber);
 int OpenObjects(wchar_t* FileName);
@@ -117,6 +119,10 @@ void RenderObjectOutline(OBJECT* pObj, std::uint32_t color);
 // Map Editor Place-new-mode preview: draws the model that would be placed on
 // a click, translucent, at g_MapEditorPlacementPreviewPos - see the globals'
 // doc comments (ZzzObject.cpp) for how they're kept in sync with
-// Editor::ObjectPlace::Place()'s own placement math.
+// the Map Editor's own placement math.
 void RenderPlacementPreview();
+
+// Counts DeleteAllObjects calls (every map unload). An OBJECT* kept from an
+// earlier frame is freed once this number changes.
+unsigned int ObjectListGeneration();
 #endif // _EDITOR

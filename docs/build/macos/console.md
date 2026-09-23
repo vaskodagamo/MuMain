@@ -47,27 +47,28 @@ cmake --preset macos-arm64 -DOPENSSL_ROOT_DIR="$(brew --prefix openssl@3)"
 cmake --build --preset macos-arm64-release
 ```
 
-### Editor build (not available on macOS yet)
+### Editor build
 
-`-DENABLE_EDITOR=ON` does not compile on macOS in the current tree. The engine,
-ImGui and the editor core build, but the Map Editor opens files through the
-Win32 common dialog (`<commdlg.h>` / `GetOpenFileNameW` in
-`MapTextureImport.cpp`, `MapMinimapCapture.cpp` and `MapAttributeSave.cpp`
-under `src/MuEditor/UI/MapEditor/`), so compilation stops there; further
-platform gaps may surface once those three compile. Porting the pickers to
-SDL3's file dialog (`SDL_ShowOpenFileDialog`) is the known remaining work. Once
-that lands, the editor build is a second build directory:
+The editor (`ENABLE_EDITOR=ON`: ImGui toolbar, Item/Skill/Dev editors and the
+Map Editor) has its own preset and build directory,
+`out/build/macos-arm64-mueditor`:
 
 ```bash
-cmake --preset macos-arm64 -B out/build/macos-arm64-editor \
-  -DENABLE_EDITOR=ON \
-  -DOPENSSL_ROOT_DIR="$(brew --prefix openssl@3)"
-cmake --build out/build/macos-arm64-editor --config Release
+cmake --preset macos-arm64-mueditor -DOPENSSL_ROOT_DIR="$(brew --prefix openssl@3)"
+cmake --build --preset macos-arm64-mueditor-release --target Main
 ```
+
+Run it from `out/build/macos-arm64-mueditor/src/Release/Main.app/Contents/MacOS`
+with `./Main --editor`. The Map Editor's usage, including macOS keys and where
+saves land, is in
+[`src/MuEditor/UI/MapEditor/MAP_EDITOR.md`](../../../src/MuEditor/UI/MapEditor/MAP_EDITOR.md).
 
 The generator is Ninja Multi-Config, so `--config Debug` builds a debug client
 into the same build directory without reconfiguring. Debug builds enable SDL GPU
-validation and are noticeably slower.
+validation and are noticeably slower. Metal's own API validation, which stops
+the client at the first invalid GPU call, is separate: a Debug build alone does
+not switch it on. Start a client of either configuration with
+`MTL_DEBUG_LAYER=1`, for example `MTL_DEBUG_LAYER=1 ./Main --editor`.
 
 `OPENSSL_ROOT_DIR` is required: CMake does not find Homebrew's keg-only OpenSSL
 on its own. Homebrew's `curl` is found through the macOS SDK instead.
@@ -102,7 +103,8 @@ Set the server in `config.ini` (`[CONNECTION SETTINGS]` `ServerIP` /
 `ServerPort`). An [OpenMU](https://github.com/MUnique/OpenMU) server listens for
 this client on port **44406** (44405 is for the original client). `/u<ip>` and
 `/p<port>` on the command line override the file, and `--editor` starts an
-editor build with the editor open (F12 toggles it) on platforms where it builds.
+editor build with the editor open (F12 toggles it; fn+F12 when the top row
+sends media keys).
 
 ## Asset tools
 

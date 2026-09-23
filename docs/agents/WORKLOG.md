@@ -465,3 +465,426 @@ Integrated worker 15a1a4c4 as 6d0323d7: Object28 and Object29 ceramic forms acce
 ### 2026-09-23 — Dungeon wall crown integrated; pier retained
 
 Integrated focused worker commits 81562d69 as c9a34462 for Object01 after independent review accepted the final64-triangle crown chamfer; source/export/integrated hashes match. The dragon plaque, all end faces, textures, original metadata and 1,262 bounds remain protected. Object03’s four-niche baseline and Object04’s carved pier are retained after independent visual review; pier candidates, complete consumer analysis and evidence are committed for future reference. Root combined scope check reports exactly three accepted Dungeon game BMDs and all63 Object2 texture dependencies resolve. New client checks remain pending. Next read-only queue Object45–48 comprises510 bone-remains placements and frozen shared bons.OZJ. Primary checkout/runtime remain untouched.
+## 2026-09-22 - World1 editor catalog and regeneration-request contract (Claude Opus 5.5)
+**Goal:** Prepare world editor plan milestone M4. Give the in-client editor one per-model file to
+read, define how a request from the editor reaches Codex, and remove the stale "PR #11 not merged"
+state.
+
+**Done:**
+- Added `assets-work/World1/coordination/build_editor_catalog.py`. It generates
+  `assets-work/World1/catalog.json` (schema `mu-world-catalog/1`, keyed by World1 object type)
+  from the coordination files, the pilot and tavern data hard-coded in `update_board.py` (read
+  with `ast`, not copied), the request folders and the history of `HEAD`. Status and identity
+  follow the asset board, so the four pilot props are `accepted`. Batches carry the board's
+  agent, branch and worktree. `unreachable_commits` and `original.reachable` flag commits that a
+  fresh clone cannot `git show`. Requests carry `assigned_to` from their reservation.
+- Added `assets-work/World1/requests/`:
+  - [`README.md`](../../assets-work/World1/requests/README.md): the lifecycle and where each state
+    lives, `start_commit`, new variants, the worker and coordinator rules (including the
+    `superseded_game_files` move and the `inspect_final.py` re-run), the fork git rules and an
+    example.
+  - `request.schema.json` (draft 2020-12).
+  - A stdlib-only `validate_request.py`. On the worker branch it allows differences from
+    `start_commit` only in the request's `request.json` and `delivery/`, the owned files and this
+    log. It compares frozen fields with the filed request, originals and `current_sha256` with
+    `base_commit`, and live requests with `catalog.json`.
+- Recorded the PR #11 merge (`7b808473`):
+  - in `publication.json`;
+  - in `write_handoff.py` and `notes.md`;
+  - in `update_board.py` and `asset-board.md`, whose header now comes from `publication.json`, so
+    a re-run keeps it;
+  - in this HANDOFF, together with the PR #10 HUD row.
+- Added the fork-only rule to `AGENTS.md` and a request section to `ASTRA.md`.
+
+**Verified:**
+- The catalog has 115 models (112 typed, 3 untyped). Each of the 109 placed types resolves to
+  exactly one entry. Status is 106 accepted and 9 blocked, and identity, status and the
+  pilot/tavern claims equal the board for all 115 rows. 32 recorded commits are not reachable
+  from `HEAD`.
+- Runs with different hash seeds, and a run in a separate clone, are byte-identical. `--check`
+  passes, and no absolute paths appear.
+- `update_board.py` regenerates the tracked `asset-board.md` byte for byte.
+  `write_handoff.publication_status()` and its Reproduce text match `notes.md`. `write_handoff.py`
+  itself was not run, because it would also rewrite the generated revision and worktree lines.
+- In a scratch clone at `7b808473`, the README example was filed, reserved, claimed, delivered and
+  accepted. Three more requests, including a new variant, were filed and then rejected, withdrawn
+  or delivered. 90 checks passed, including:
+  - 29 tampering cases on the delivered branch;
+  - a stale-request case;
+  - the schema subset;
+  - `validate_integration.check_exports` with and without the `superseded_game_files` move.
+- `validate_integration.py` as a whole was not run.
+
+**Open / next:**
+- `validate_integration.py` still compares against the pre-merge baseline `ac0f6dd8`.
+- After the first accepted request, re-run Blender `inspect_final.py`. The catalog builder warns
+  while provenance is stale.
+- Editor side of M4 on `feat/world-editor`: read `catalog.json` (nlohmann), write request folders
+  and captures.
+
+## 2026-09-22 - Editor overlay under Metal API validation (Claude Opus 5.5)
+**Goal:** Close the open M1 item of the world editor plan: with `MTL_DEBUG_LAYER=1` the editor
+client aborted at its first ImGui draw ("render pipeline's pixelFormat (Invalid) does not match
+the framebuffer's pixelFormat (Depth32Float)").
+
+**Done:**
+- ImGui still draws inside the engine's main render pass (the contract in
+  `tests/render/test_imgui_sdlgpu_backend.cmake`). The renderer now builds, in editor builds
+  only, a copy of the ImGui SDL_GPU backend's pipeline (same shaders, vertex layout, blend and
+  raster state) that declares the main pass's depth format with depth test and write off:
+  `src/source/Render/Renderer/SdlGpuEditorOverlayPipeline.*`. `MuEditorCore::RenderDrawData`
+  passes it to `ImGui_ImplSDLGPU3_RenderDrawData`. It is released with the other pipelines.
+- The pipeline carries its own depth-stencil state, so the earlier depth-state reset before the
+  overlay (`ResetDepthStateForEditorOverlay`) is removed. The main pass depth format is one
+  named constant, `k_DepthFormat`.
+- The contract test now requires the depth-aware pipeline and its depth settings.
+- Docs: `MAP_EDITOR.md`, the macOS console guide, HANDOFF item 2 and a HANDOFF symptom row
+  (the macOS reopen-windows dialog after a crash blocks the next start), plan status.
+
+**Verified:**
+- Release editor, `MTL_DEBUG_LAYER=1` ("Metal API Validation Enabled" in stdout): `--world 1`
+  83 s and the login scene 35 s (not logged in), no assertion, full editor UI in the captures.
+- Debug editor, `--world 1`: 47 s with the variable unset and 42 s with `MTL_DEBUG_LAYER=1`, no
+  assertion. Before the fix the Debug binary with `MTL_DEBUG_LAYER=1` aborted within 2 s with
+  the message above. Without the variable a Debug build ran with Metal's validation off (no
+  "Metal API Validation Enabled" line), although SDL requests it.
+- Devil Square (`--world 10`), where the overlay used to draw as empty panels, shows the full UI.
+  A temporary probe that made ImGui use its own pipeline brought the empty panels back
+  (reverted, checksum verified).
+- Player build and `ctest` 216/216.
+
+**Open / next:**
+- Windows (D3D12) was not built here; the new file uses only SDL3 and the ImGui backend's
+  shader header, like the backend itself.
+
+## 2026-09-23 - World editor M3: safe, correct editing (Claude Opus 5.5)
+**Goal:** Milestone M3 of [`WORLD_EDITOR_PLAN.md`](WORLD_EDITOR_PLAN.md): saves that survive the
+next build, no dangling pointers on object delete/undo, no lighting drift after sculpting, a
+hardened `SaveObjects`, hotkeys that respect typing, and an object drag that follows the ground.
+
+**Done:**
+- Saves: `Editor::Files::MirrorSavedFile` (MapEditorFileUtil) + the file-system-only
+  `MapEditorRepoMirror.*`. Every Map Editor save and import writes the game's `Data`, then copies
+  the file into `<repo>/src/bin/Data`; a repo file with other bytes is first copied to
+  `out/editor-backups/<YYYYMMDD-HHMMSS>/Data/...`; identical bytes change nothing. Repo =
+  `MU_EDITOR_REPO_ROOT`, else the first folder above the working directory or `SDL_GetBasePath()`
+  with `src/bin/Data` and `.git`. Without one: the old copy next to the executable, and the panel
+  says why. Server `.att` + HOWTO also go to `out/editor-exports/`. `MirrorNextToExe` is gone.
+  Status lines (new `Editor::StatusLine`) list absolute paths; everything is logged.
+- Engine (player build too): `Engine::Object::ReleaseReferencesTo` (new `ObjectReferences.*`)
+  clears `Operates[]` owners (and `SelectedOperate`) and ends effects, joints and particles
+  attached to an object. `DeleteObject` calls it; new `DeleteAllObjects` does it in one pass for
+  map change and the editor's undo (`RestoreAll`), so undo no longer re-registers 110 operates on
+  top of dangling ones.
+- `CreateTerrainNormal(_Part)` rebuild each cell's normal from zero (`ComputeTerrainNormal`).
+- `.obj` format in `WorldObjectFile.*` (encode/decode); `OpenObjectsEnc` decodes with it and
+  `SaveObjects` writes once through it: `fopen`/`fwrite`/`fclose` checked, header count = records
+  written, run-time objects left out (types >= `MAX_WORLD_OBJECTS` are kept only when the loaded
+  file had them: World52/58/59/66/69/73/74 ship such records).
+- Map Editor: `m_groundHit` copied from the terrain pass before any object pick; drag moves by the
+  ground point and keeps the height above ground; **Drop to ground**; Backspace deletes when
+  `io.ConfigMacOSXBehaviors`; `UndoShortcutPressed` (Cmd/Ctrl+Z) on Texture, Objects, Height and
+  Attribute; no hotkey while `WantTextInput` or a game text box has focus. `SaveHeightMap`
+  extracted from the Height tab.
+- Tests: `tests/engine/` (object file round trip, every shipped `.obj` re-encodes byte for byte,
+  terrain normals equal the old first-load result and stay equal on recompute, reference
+  release) and `tests/editor/test_repo_mirror.cpp`. Docs: MAP_EDITOR.md ("Where saves go", keys,
+  drag, lighting formula), plan status, HANDOFF item 2.
+
+**Verified:**
+- Editor and player builds; `ctest` 236/236 (216 + 20 new). A probe that removed the zeroing made
+  the terrain tests fail (reverted, checksum verified).
+- `--world 1` with a temporary hook (deleted; grep finds nothing): `TerrainNormal` and
+  `BackTerrainLight` after the first load are byte-identical to the old code's dump, and a second
+  recompute no longer changes them (old code: every normal doubled, 801 light cells changed).
+  110 operates, no dangling owner after moves across blocks, 3 undos (<4 ms each), delete/undo of
+  an operate owner; 70 s alive with the game's `SelectOperate` run every frame. Injected
+  Backspace deleted, Cmd+Z restored, Backspace in the focused Pos field did not delete. An injected
+  drag moved an object by exactly the ground delta, 0.00 above ground before and after. Sculpt +
+  undo: normal, light and height hashes equal the pre-sculpt ones; screenshot diff smaller than
+  between two unedited runs. Save of objects: `git status` showed `EncTerrain1.obj`, backup equal
+  to the tracked bytes; all other saves, imports and the export checked too. Restored afterwards
+  (`git checkout`, new files and `out/editor-*` removed, runtime `Data` checksums equal).
+
+**Open / next:**
+- Windows/Linux not built here. 3D sounds keep an `OBJECT*` while they play (MiniAudioBackend)
+  and are not released on delete. Dragging a tall object by its top moves it at the speed of
+  the ground behind it; a drag plane through the grab point (M6 gizmo) would feel more direct.
+
+## 2026-09-23 - World editor M4: Assets tab and regeneration requests (Claude Opus 5.5)
+**Goal:** Milestone M4 of [`WORLD_EDITOR_PLAN.md`](WORLD_EDITOR_PLAN.md), C++ side: review the
+catalog's models in the client and file regeneration requests exactly per
+[`requests/README.md`](../../assets-work/World1/requests/README.md).
+
+**Done:**
+- Data code without ImGui or engine (`src/MuEditor/Assets/`): catalog and `client-review.json`
+  readers/writer (nlohmann `json.hpp`, now on the editor build's include path), `request.json`
+  (fields in contract order) and `brief.md` builders, request ids and slugs, next free
+  new-variant name, the request folder writer (all or nothing), the checkout's `HEAD` read from
+  `.git` (loose refs before packed ones, detached HEAD, worktrees), SHA-256 (OpenSSL) and the
+  capture JPEG (box downscale to 1920 px, libjpeg-turbo: the vendored `stb_image_write.h` only
+  writes PNG).
+- `Editor::ViewCapture`: the frame after a request is drawn without the ImGui overlay, the game
+  cursor and the cameras' editor-only debug text, read back with the renderer's
+  `RequestFramePixels`, retried when the GPU skipped the frame. `Editor::Camera::ActivateFreeFly`
+  (shared with `OfflineWorld::ResetCamera`).
+- Map Editor: **Assets** tab (`CMapAssetReview`), **Flag for regeneration** dialog
+  (`CRegenRequestDialog`), catalog block in the Objects tab, `g_MapEditorHighlightedTypes`
+  outline in `ZzzObject.cpp`, live object queries in `Editor::ObjectPlace`. The selection now
+  survives switching tabs and is cleared only on a map change.
+- `build_editor_catalog.py` folds `client-review.json` into `client_verified` and
+  `client_review` (strict: unknown model, verdict or field fails); `catalog.json` regenerated;
+  README documents the file and the editor's behaviour; MAP_EDITOR.md "Assets tab"; plan status.
+
+**Verified:**
+- Editor and player builds; `ctest` 257/257 (236 + 21 new `editor_asset_request_tests`).
+- `--world 1` with a temporary hook (deleted; grep finds nothing): Tree01 selected, 80 live
+  instances, highlight on, stepped to instance 2 (camera moved), a repaint request with Tree02 as
+  partner written with a 1920x1080 capture (no editor, cursor or debug text in it),
+  `validate_request.py` OK, `obj_index` 15 confirmed against the decrypted `EncTerrain1.obj`;
+  verdict written and folded by the catalog builder (`client_verified` true, request listed).
+  Highlight outlines checked on fences. Test folder, `client-review.json` and `imgui.ini` table
+  settings removed; `catalog.json` equals the generator output without them; `src/bin` clean.
+
+**Open / next:**
+- Trees hide most of their outline under their leaves (the outline is an inflated copy of the
+  mesh). **Open folder** and the preview buttons call `SDL_OpenURL(file://...)` and were not
+  clicked in the scripted run. Windows not built. Next: M5 (A/B compare).
+
+## 2026-09-23 - World editor M5: A/B compare of current and original assets (Claude Opus 5.5)
+**Goal:** Milestone M5 of [`WORLD_EDITOR_PLAN.md`](WORLD_EDITOR_PLAN.md): switch Lorencia's models
+between their current and original files in the running client, and reload a model from disk.
+
+**Done:**
+- `tools/world_editor/materialize_variant.py original [--world N]` (stdlib): builds
+  `out/ab/original/Data/Object{N}/` and `manifest.json` from git using each catalog model's
+  `original.revision`/`sha256` (archive as fallback) and the textures the original BMD names
+  (decrypted in Python), cross-checked against `coordination/texture-baseline`; deterministic.
+- `Editor::Assets` `ModelPreflight` (BMD header/version, limits, triangle and bone indices, one
+  texture slot per mesh, texture files, `.OZJ`/`.OZT` headers, 1024 px, path length) and
+  `AssetVariant` (variant folders, command, manifest vs catalog SHA-256), unit-tested.
+- `Editor::Assets::HotReload` (`MuEditor/Core/ModelHotReload`): queued reloads run at the start of
+  a frame, preflight, `BMD::Open2` re-open with the world code's action speeds/stream mesh kept,
+  textures into the model's old bitmap indices via the new editor-only
+  `CGlobalBitmap::ReloadImage` (keeps the other references, keeps the old image on failure),
+  placed objects clamped to the new actions, the type's thumbnail dropped.
+- Assets tab (`CMapAssetVariants`): **All models: Current / Original**, per model **Show: Current /
+  Original** and **Reload from disk**, a **Shows** column, the build command with Copy / Check
+  again when `out/ab/original` is missing or stale. MAP_EDITOR.md section, plan status, HANDOFF.
+
+**Verified:**
+- Editor and player builds; `ctest` 269/269 (257 + 12 new `editor_model_preflight_tests`, which
+  also run every shipped Object1 BMD and texture through the preflight).
+- `materialize_variant.py original`: 115 models, 105 textures (3.8 MB, 4.2 MB on disk), identical
+  tree hash on a second run; pilot models and their textures from `9a8b2027`.
+- `--world 1` with a temporary hook (deleted; grep and `nm` find nothing), four runs, 60-130 s
+  each: all 112 typed models to original and back (0 refused), Tree01 alone back to current
+  (Tree02 then `mixed`), House01 reloaded from disk, a broken BMD and a texture-less copy refused
+  with messages, a map reload while everything was original. Bitmap count and texture memory
+  returned exactly to the start values (2108 / 169191176) each time; shared-texture reference
+  counts unchanged. Clean captures: town 21 % of pixels changed current vs original, 3-5 % between
+  two captures without a switch; tree view 17 %. Missing-folder hint shown, **Check again** after
+  restoring the folder enabled **Original**. Also under `MTL_DEBUG_LAYER=1`. `src/bin` clean,
+  `imgui.ini` restored.
+
+**Open / next:**
+- Windows not built. A texture shared by models switched to different sides shows the side of
+  the model switched last (the UI says `mixed`). Not clicked by hand: the buttons themselves (the
+  hook called the same functions). Next: M6.
+
+## 2026-09-23 - World editor workflow: Metal overlay, M3-M5 and their review (Claude (world editor workflow))
+**Goal:** Take the world editor from M2 to M5 on `feat/world-editor` (plan in
+[`WORLD_EDITOR_PLAN.md`](WORLD_EDITOR_PLAN.md)), then review the result and fix what the review
+found.
+
+**Done:**
+- Metal overlay, M3, M4 and M5: see the four entries above (ImGui pipeline for the main pass's
+  depth buffer; saves into the repo with backups, safe object delete/undo, terrain normals,
+  hardened `.obj` save, ground drag; Assets tab and regeneration requests; A/B compare).
+- Review fixes:
+  - A map unload (another map, the same map again, the panel closed meanwhile, or the Target
+    world override set) now drops the Map Editor's selection and every undo snapshot. Key:
+    `ObjectListGeneration()`, which `DeleteAllObjects` bumps (editor-only, `ZzzObject`); the
+    editor's own object undo re-syncs it, so the other tabs keep their undo. Before, the old
+    selection could be read, moved or deleted after its object was freed, and Cmd+Z could write
+    one map's objects, heights or walls into another.
+  - Requests: an id that collides keeps its `-2`/`-3` within 80 characters (a single over-long
+    word is cut); the dialog warns for the BMD of every target, not only the clicked one; text is
+    trimmed like Python's `strip()` (no-break and other Unicode spaces); "pushed" means a branch
+    on `origin`, not `upstream`; `obj_index` is set only when `EncTerrain1.obj` equals the blob in
+    git's index (new `Editor::Git::IsFileUnchanged`, index versions 2/3, and
+    `Editor::Files::GitBlobIdHex`), because an editor save reorders Lorencia's records.
+  - A/B: a model the map load read shows `as built` (the build's `Data` copy), not `current`;
+    MAP_EDITOR.md and `requests/README.md` say to press **Current** before a verdict on pulled or
+    delivered files. The materialize command names the script by its full path (`py -3` on
+    Windows) and Copy command copies exactly that.
+  - Windows: messages build paths from UTF-8 (`PathToUtf8`) instead of `generic_string()`, which
+    throws on MSVC for characters outside the ANSI code page; `MU_EDITOR_REPO_ROOT` is read with
+    `SDL_getenv`. The duplicated path, case, join and warning-colour helpers are shared
+    (`Assets/EditorText.*`, `Editor::StatusLine::WarningColor`).
+  - Docs: MAP_EDITOR.md (overlay pipeline row and gotcha 15 for imgui updates, record order,
+    map-unload behaviour, `as built`, command, origin), plan status, HANDOFF item 2. `__pycache__/`
+    added to `.gitignore` and the stray `tools/world_editor/__pycache__` removed.
+
+**Verified:**
+- Editor build and player build (all targets) exit 0, no new warnings in changed files; the
+  player `Main` has none of the new symbols. `ctest` 277/277 (269 + 8 new: long id collisions,
+  origin-only push check, git index and blob id, worktree index, `Editor::Text`). The index reader
+  also matched `git status` on this checkout (clean and modified files).
+- `--world 1` under `MTL_DEBUG_LAYER=1` with a temporary hook (deleted; files byte-identical to
+  their backups, grep and `nm` find nothing): after a same-map reload with the panel closed, the
+  freed selection's address already held a new object (the old world-number check would have kept
+  it); on reopening, selection and all undo steps were empty, and Delete/Undo did nothing. The
+  same with the Target world override set. The editor's own object undo kept the texture, height
+  and attribute undo. Dialog: `obj_index` 4 on the clean file, left out (with a note) after an
+  objects save; a partner BMD mismatch (faked in memory) is warned about. Assets tab shows
+  `as built` and the full-path command. The saved `EncTerrain1.obj` was restored with
+  `git checkout`, copied back into the game's `Data`, `out/editor-backups` removed.
+- Final run of the hook-free build, `--world 1`, `MTL_DEBUG_LAYER=1`: about 60 s, no validation
+  assertion, frame 300 shows Lorencia with the full Map Editor. `src/bin` clean, `out/ab/original`
+  unchanged, runtime `imgui.ini` and `config.ini` equal to before.
+
+**Open / next:**
+- Not changed: saving objects writes records in grid order, so Lorencia's first save still
+  renumbers most records (documented in MAP_EDITOR.md; a stable order needs a per-object file
+  index, a candidate for M6). The dialog warns but does not block Create when a target's BMD
+  differs from the catalog (the catalog may just be out of date); such a request fails
+  `validate_request.py` when the BMD is not committed.
+- Windows and Linux were not built. Next: M6 (editing comfort).
+
+## 2026-09-23 - World editor M6: editing comfort (Claude (world editor workflow))
+**Goal:** M6 of [`WORLD_EDITOR_PLAN.md`](WORLD_EDITOR_PLAN.md): multi-level undo/redo, stable
+object save order, multi-select, Outliner, transform gizmo.
+
+**Done:**
+- `MuEditor/Editing/` (no ImGui, no engine, unit-tested): `CommandStack` (64 MB limit, oldest
+  dropped), object steps by key (`ObjectEditCommand`, `ObjectWorld`), terrain steps that keep the
+  changed rectangle (`TerrainStroke`, `TerrainPatchCommand`), `ObjectSelection`, gizmo math
+  (`GizmoMath`: projection and rays as `CameraProjection` does them, axis/plane drags, turning
+  `Angle[]` around a world axis as `AngleMatrix` reads it; `ObjectTransform`: group move, turn and
+  scale around the centre, snapping).
+- Map Editor: one Undo/Redo bar for all editing tabs (`CMapEditHistory`, adapters
+  `CMapObjectWorld`, `CMapTerrainLayers`), replacing the per-tab snapshots and `RestoreAll`;
+  Select & edit moved into `CMapObjectEditor` (selection, group ground drag, fields as deltas, Drop
+  to ground, Duplicate, Delete, Esc); `CTransformGizmo` (W/E/R, snap, one step per drag, keys kept
+  from the game while used); `CMapOutliner` window; shared keys in `Editor::Shortcuts`;
+  `Editor::Camera::FocusOn` and `Editor::Text::ContainsIgnoringCase` shared with the Assets tab.
+- Engine, editor build only: `OBJECT::SaveOrder` (record index from the loader; `SaveObjects`
+  sorts by it through the new `WorldObjectFile::InSaveOrder`), `g_MapEditorSelectedObjects`
+  (orange outline for every selected object besides the yellow primary). Player build: the save
+  goes through `InSaveOrder` with no orders, the same block order as before.
+- Docs: MAP_EDITOR.md (keys, files, Objects, Transform gizmo, Outliner, Undo and redo, recipe,
+  free-fly close-up culling limit), plan status, HANDOFF item 2.
+
+**Verified:**
+- Editor and player builds exit 0, no new warnings in changed files; `ctest` all green (new:
+  command stack, object and terrain steps, selection, gizmo math against `AngleMatrix`, stable
+  save order on `EncTerrain1.obj` and every shipped `.obj`, `ContainsIgnoringCase`).
+- `--world 1` under `MTL_DEBUG_LAYER=1` with a temporary hook (deleted; grep finds nothing, the
+  touched files match their pre-hook copies except for later deliberate edits): every check passed
+  (see the plan's M6 status), including a move across an object-grid block (re-created object
+  keeps its record index; the save changes only that record; undo, save: equal to `HEAD`). Screenshots of the gizmo in each mode on a Lorencia cannon and on a
+  group of three, mid-drag with its label, the duplicates and the Outliner. `src/bin` and the
+  game's `Data` unchanged (`EncTerrain1.obj` equals `HEAD`), no `out/editor-backups`, runtime
+  `imgui.ini` restored.
+
+**Open / next:**
+- The free-fly camera culls objects near the bottom of a close view (under about 1000 units);
+  existing M2 culling, documented, not changed.
+- Not clicked by hand: the buttons (the hook drove the same functions and injected mouse and key
+  events). Windows and Linux were not built. Next: M7 (terrain comfort).
+
+## 2026-09-23 - World editor M7: terrain comfort (Claude (world editor workflow))
+**Goal:** M7 of [`WORLD_EDITOR_PLAN.md`](WORLD_EDITOR_PLAN.md): usable editor lines, round
+brushes, partial relighting, objects that follow sculpted ground, a Light tab that saves
+`TerrainLight.OZJ`.
+
+**Done:**
+- Renderer: `RenderScreenLines` (camera-facing, pixel width, untextured; `Render::Lines`), GL shim
+  line strips/loops and `glLineWidth` (`LineTopology.h`); overlays set state through the wrappers
+  (`TerrainOverlayState`) instead of `glPushAttrib`; brush outline on the ground
+  (`Render::Terrain::BrushOutline`). `RenderLines` and its non-editor callers unchanged.
+- `MuEditor/Editing`: `TerrainBrush` (circle, smoothstep falloff, clipped footprint),
+  `FieldBrush` (add, move towards, 5-point smooth, clamp for heights and light), `SurfaceBrush`
+  (overlay paint/fade, hard cells), `EditCommandGroup`. `MuEditor/Assets/TerrainLightFile`
+  (`.OZJ` encode/decode as the loader reads it).
+- Map Editor: `CMapHeightTool` (four tools, Objects follow terrain via `CMapGroundFollowers`),
+  `CMapLightTool` + `Editor::LightSave` (new Light tab), `Editor::BrushControls` (sliders, [ ]
+  keys, outline); Texture layer 2 and Attribute use round brushes; every brush clips at the map's
+  edges. `CMapTerrainLayers` gained the light layer and rectangle relighting.
+- Engine (player build too, no behaviour change): `CreateTerrainNormal_Rect`,
+  `CreateTerrainLight_Rect`, `CreateTerrainLight` sharing its per-cell code.
+- Docs: MAP_EDITOR.md (Round brushes, Texture, Height, Attribute, Light, formats, gotcha 16,
+  recipe), plan status, HANDOFF item 2.
+
+**Verified:**
+- Editor and player builds exit 0, no new warnings in changed files; `ctest` 328/328 (23 new:
+  screen lines and line modes, brush math and edge clipping, overlay paint, command groups, light
+  map file round trips and the shipped Lorencia file, rectangle vs whole-map normals and light).
+- `--world 1` under `MTL_DEBUG_LAYER=1` with a temporary hook (deleted; grep and `nm` find
+  nothing, the touched files equal their pre-hook copies): every check passed (see the plan's M7
+  status), including save + map reload of the light map bit for bit. Screenshots of the height,
+  overlay, square, attribute and light brushes from 45 degrees and straight down. `src/bin`,
+  the game's `Data` and the runtime `imgui.ini`/`config.ini` restored and equal to before; no
+  `out/editor-backups`.
+
+**Open / next:**
+- The brush acts once per frame (strength per frame, not per second), as the legacy editor did.
+- On a rising hill the ground point under a still cursor creeps towards the camera, so a long
+  raise moves a little (documented).
+- Battle Castle and Crywolf load `TerrainLight1/2.OZJ` in some states; the Light tab always saves
+  `TerrainLight.OZJ` (documented).
+- Not clicked by hand (the hook drove the same functions and injected mouse and key events).
+  Windows and Linux were not built.
+
+## 2026-09-23 - World editor: M6/M7 review fixes and owner quick start (Claude (world editor workflow))
+**Goal:** Fix what the review of M6 (editing comfort) and M7 (terrain comfort) found, and give the
+owner a short quick start at the top of [`MAP_EDITOR.md`](../../src/MuEditor/UI/MapEditor/MAP_EDITOR.md).
+
+**Done:**
+- A click that closed a popup (Outliner row menu or type list, Light colour picker, combos) also
+  selected, placed or painted under the window it landed on. `Editor::Editing::PopupMouseGuard`
+  (unit-tested) keeps the mouse with the editor while a popup is open and until that button is
+  released; Esc closes open menus and lists and no longer also clears the selection.
+- The tile grid and the Attribute overlay were cut off at 4096 quads per `RenderQuad3D` call (a
+  corner of the view; a warning every frame). Both submit in runs of 4096 now
+  (`Render::Topology::ForEachQuadBatch`, unit-tested); `RenderQuad3D` itself is unchanged.
+- An Outliner or Assets-tab pick switches the Objects tab to Select & edit.
+- `OBJECT::SaveOrder` in every build (one `OBJECT` layout; only the editor sets it).
+- Cleanups: shared `Editor::ObjectPlace::ForEachLiveObject` (replaces four grid loops, including the
+  ground followers' copy of `CreateObject`'s block numbering), `Transform::Describe` (tested),
+  `RenderAttributeTab` and `CMuEditorCore::Render` split; docs corrected.
+- Docs: quick start in MAP_EDITOR.md (build, open offline, fly, objects and gizmo keys, undo, ground
+  tools, save and commit, Assets review, A/B, regeneration requests, known limits), popup and
+  batching notes; plan status; HANDOFF item 2.
+
+**Verified:**
+- Editor and player builds exit 0, no new warnings in changed files; `ctest` 335/335 (7 new).
+- `--world 1` under `MTL_DEBUG_LAYER=1` with scripted SDL input from a driver library in the
+  scratchpad (no hook in the tree): the review's failing cases (row-menu dismissal over the Outliner
+  in Place new and Select & edit, colour-picker dismissal over the panel and on the 3D view) change
+  nothing now, Esc closes the menu and keeps the selection, a later click still paints; tile grid and
+  overlay cover the whole view and the whole map top-down with no `clamping draw` warning. Final run
+  without the driver: no validation error. `src/bin`, the game's `Data` and the runtime ini files are
+  unchanged; no `out/editor-backups`.
+
+**Open / next:**
+- `RenderQuad3D` still clamps other callers above 4096 quads; the player build's logs, including a
+  full game session, show no such warning.
+- Windows and Linux were not built; the buttons were not clicked by hand.
+
+## 2026-09-23 - World editor published as PR #15 (Claude Opus 5.5)
+**Goal:** Commit the world editor (M1-M7), bring the branch up to date and open the PR.
+
+**Done:** Split `feat/world-editor` into eight commits (presets, engine/renderer, editor units,
+editor UI, A/B tool, coordination state, catalog and request contract, agent docs). Merged
+`origin/main` (upstream sync PR #14); the only conflict, `OpenObjectsEnc`, keeps the
+`WorldObjectFile` decoder. Deleted the stale hand-configured `out/build/macos-arm64-editor`.
+Opened [PR #15](https://github.com/vaskodagamo/MuMain/pull/15) against `main`.
+
+**Verified:** after the merge, the `macos-arm64-mueditor` and `macos-arm64` builds pass,
+339/339 tests pass, and `./Main --editor --world 1` opens Lorencia under `MTL_DEBUG_LAYER=1`
+with no Metal assertion (screenshot checked).
+
+**Open / next:** owner review of PR #15; try the file dialog and the Open folder / preview
+buttons by hand; Windows/Linux builds untested.
