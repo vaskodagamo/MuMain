@@ -1,0 +1,138 @@
+{
+  "status": "PASS",
+  "mouth_contact_vertices": 27,
+  "tolerance": 0.0003,
+  "particle_bones": [
+    1,
+    4
+  ],
+  "all21_frames": [
+    {
+      "frame": 0,
+      "particle_envelope_maximum_delta": 1.5377536293599222e-05,
+      "mouth_maximum_delta": 0.0,
+      "mouth_relative_to_water_root_delta": 1.9073486328125e-06
+    },
+    {
+      "frame": 1,
+      "particle_envelope_maximum_delta": 3.4172960028016885e-05,
+      "mouth_maximum_delta": 0.0,
+      "mouth_relative_to_water_root_delta": 1.9073486328125e-06
+    },
+    {
+      "frame": 2,
+      "particle_envelope_maximum_delta": 4.3168908301377394e-05,
+      "mouth_maximum_delta": 0.0,
+      "mouth_relative_to_water_root_delta": 1.9073486328125e-06
+    },
+    {
+      "frame": 3,
+      "particle_envelope_maximum_delta": 3.411968959808029e-05,
+      "mouth_maximum_delta": 0.0,
+      "mouth_relative_to_water_root_delta": 1.9073486328125e-06
+    },
+    {
+      "frame": 4,
+      "particle_envelope_maximum_delta": 3.4133014999720155e-05,
+      "mouth_maximum_delta": 0.0,
+      "mouth_relative_to_water_root_delta": 1.9073486328125e-06
+    },
+    {
+      "frame": 5,
+      "particle_envelope_maximum_delta": 4.3168908301377394e-05,
+      "mouth_maximum_delta": 0.0,
+      "mouth_relative_to_water_root_delta": 1.9073486328125e-06
+    },
+    {
+      "frame": 6,
+      "particle_envelope_maximum_delta": 4.315837287515549e-05,
+      "mouth_maximum_delta": 0.0,
+      "mouth_relative_to_water_root_delta": 1.9073486328125e-06
+    },
+    {
+      "frame": 7,
+      "particle_envelope_maximum_delta": 4.8290210346878675e-05,
+      "mouth_maximum_delta": 0.0,
+      "mouth_relative_to_water_root_delta": 1.9073486328125e-06
+    },
+    {
+      "frame": 8,
+      "particle_envelope_maximum_delta": 3.4172960028016885e-05,
+      "mouth_maximum_delta": 0.0,
+      "mouth_relative_to_water_root_delta": 1.9073486328125e-06
+    },
+    {
+      "frame": 9,
+      "particle_envelope_maximum_delta": 4.5935037913483794e-05,
+      "mouth_maximum_delta": 0.0,
+      "mouth_relative_to_water_root_delta": 1.9073486328125e-06
+    },
+    {
+      "frame": 10,
+      "particle_envelope_maximum_delta": 3.053247564999031e-05,
+      "mouth_maximum_delta": 0.0,
+      "mouth_relative_to_water_root_delta": 1.9073486328125e-06
+    },
+    {
+      "frame": 11,
+      "particle_envelope_maximum_delta": 3.4172960028016885e-05,
+      "mouth_maximum_delta": 0.0,
+      "mouth_relative_to_water_root_delta": 1.9073486328125e-06
+    },
+    {
+      "frame": 12,
+      "particle_envelope_maximum_delta": 1.5377536293599222e-05,
+      "mouth_maximum_delta": 0.0,
+      "mouth_relative_to_water_root_delta": 1.9073486328125e-06
+    },
+    {
+      "frame": 13,
+      "particle_envelope_maximum_delta": 1.52587890625e-05,
+      "mouth_maximum_delta": 0.0,
+      "mouth_relative_to_water_root_delta": 1.9073486328125e-06
+    },
+    {
+      "frame": 14,
+      "particle_envelope_maximum_delta": 4.320049916422319e-05,
+      "mouth_maximum_delta": 0.0,
+      "mouth_relative_to_water_root_delta": 1.9073486328125e-06
+    },
+    {
+      "frame": 15,
+      "particle_envelope_maximum_delta": 3.1514571460453614e-05,
+      "mouth_maximum_delta": 0.0,
+      "mouth_relative_to_water_root_delta": 1.9073486328125e-06
+    },
+    {
+      "frame": 16,
+      "particle_envelope_maximum_delta": 1.552469310388537e-05,
+      "mouth_maximum_delta": 0.0,
+      "mouth_relative_to_water_root_delta": 1.9073486328125e-06
+    },
+    {
+      "frame": 17,
+      "particle_envelope_maximum_delta": 3.057712467552452e-05,
+      "mouth_maximum_delta": 0.0,
+      "mouth_relative_to_water_root_delta": 1.9073486328125e-06
+    },
+    {
+      "frame": 18,
+      "particle_envelope_maximum_delta": 2.7771415288087914e-05,
+      "mouth_maximum_delta": 0.0,
+      "mouth_relative_to_water_root_delta": 1.9073486328125e-06
+    },
+    {
+      "frame": 19,
+      "particle_envelope_maximum_delta": 3.4172960028016885e-05,
+      "mouth_maximum_delta": 0.0,
+      "mouth_relative_to_water_root_delta": 1.9073486328125e-06
+    },
+    {
+      "frame": 20,
+      "particle_envelope_maximum_delta": 1.5377536293599222e-05,
+      "mouth_maximum_delta": 0.0,
+      "mouth_relative_to_water_root_delta": 1.9073486328125e-06
+    }
+  ],
+  "policy": "Original dragon points within14units of the water outlet retained; actual engine particle offsets sampled at extrema; all21 intended-v-final raw transforms checked"
+}

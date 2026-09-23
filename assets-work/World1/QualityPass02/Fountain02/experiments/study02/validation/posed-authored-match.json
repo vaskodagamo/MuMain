@@ -1,0 +1,94 @@
+{
+  "status": "PASS",
+  "method": "Every authored source triangle corner mapped one-to-one to final SMD corner, transformed through original intended raw baseline action and actual final raw BMD action at all21 keys",
+  "corners": 2763,
+  "frames": [
+    {
+      "frame": 0,
+      "maximum_authored_corner_distance": 0.0001312649776773665
+    },
+    {
+      "frame": 1,
+      "maximum_authored_corner_distance": 0.0001312649776773665
+    },
+    {
+      "frame": 2,
+      "maximum_authored_corner_distance": 0.0001312649776773665
+    },
+    {
+      "frame": 3,
+      "maximum_authored_corner_distance": 0.0001312649776773665
+    },
+    {
+      "frame": 4,
+      "maximum_authored_corner_distance": 0.0001312649776773665
+    },
+    {
+      "frame": 5,
+      "maximum_authored_corner_distance": 0.0001312649776773665
+    },
+    {
+      "frame": 6,
+      "maximum_authored_corner_distance": 0.0001312649776773665
+    },
+    {
+      "frame": 7,
+      "maximum_authored_corner_distance": 0.0001312649776773665
+    },
+    {
+      "frame": 8,
+      "maximum_authored_corner_distance": 0.0001312649776773665
+    },
+    {
+      "frame": 9,
+      "maximum_authored_corner_distance": 0.0001312649776773665
+    },
+    {
+      "frame": 10,
+      "maximum_authored_corner_distance": 0.0001312649776773665
+    },
+    {
+      "frame": 11,
+      "maximum_authored_corner_distance": 0.0001312649776773665
+    },
+    {
+      "frame": 12,
+      "maximum_authored_corner_distance": 0.0001312649776773665
+    },
+    {
+      "frame": 13,
+      "maximum_authored_corner_distance": 0.0001312649776773665
+    },
+    {
+      "frame": 14,
+      "maximum_authored_corner_distance": 0.0001312649776773665
+    },
+    {
+      "frame": 15,
+      "maximum_authored_corner_distance": 0.0001312649776773665
+    },
+    {
+      "frame": 16,
+      "maximum_authored_corner_distance": 0.0001312649776773665
+    },
+    {
+      "frame": 17,
+      "maximum_authored_corner_distance": 0.0001312649776773665
+    },
+    {
+      "frame": 18,
+      "maximum_authored_corner_distance": 0.0001312649776773665
+    },
+    {
+      "frame": 19,
+      "maximum_authored_corner_distance": 0.0001312649776773665
+    },
+    {
+      "frame": 20,
+      "maximum_authored_corner_distance": 0.0001312649776773665
+    }
+  ],
+  "maximum": 0.0001312649776773665,
+  "tolerance": 0.0003,
+  "normal_proof": "raw-normal-bindings.json evaluates actual raw normal ownership/direction through every hierarchical frame"
+}

@@ -1,0 +1,99 @@
+{
+  "status": "PASS",
+  "maximum_direction_delta": 0.0003317896232206324,
+  "tolerance": 0.001,
+  "materials": {
+    "stone_statue02.jpg": 7.42071843027397e-07,
+    "reagon_waterspout.jpg": 0.0003317896232206324,
+    "ston01.jpg": 6.677234107600681e-05,
+    "ston02.jpg": 6.494403360269789e-05
+  },
+  "frames": [
+    {
+      "frame": 0,
+      "maximum_direction_delta": 0.0003317896232206324
+    },
+    {
+      "frame": 1,
+      "maximum_direction_delta": 0.0003317896232206324
+    },
+    {
+      "frame": 2,
+      "maximum_direction_delta": 0.0003317896232206324
+    },
+    {
+      "frame": 3,
+      "maximum_direction_delta": 0.0003317896232206324
+    },
+    {
+      "frame": 4,
+      "maximum_direction_delta": 0.0003317896232206324
+    },
+    {
+      "frame": 5,
+      "maximum_direction_delta": 0.0003317896232206324
+    },
+    {
+      "frame": 6,
+      "maximum_direction_delta": 0.0003317896232206324
+    },
+    {
+      "frame": 7,
+      "maximum_direction_delta": 0.0003317896232206324
+    },
+    {
+      "frame": 8,
+      "maximum_direction_delta": 0.0003317896232206324
+    },
+    {
+      "frame": 9,
+      "maximum_direction_delta": 0.0003317896232206324
+    },
+    {
+      "frame": 10,
+      "maximum_direction_delta": 0.0003317896232206324
+    },
+    {
+      "frame": 11,
+      "maximum_direction_delta": 0.0003317896232206324
+    },
+    {
+      "frame": 12,
+      "maximum_direction_delta": 0.0003317896232206324
+    },
+    {
+      "frame": 13,
+      "maximum_direction_delta": 0.0003317896232206324
+    },
+    {
+      "frame": 14,
+      "maximum_direction_delta": 0.0003317896232206324
+    },
+    {
+      "frame": 15,
+      "maximum_direction_delta": 0.0003317896232206324
+    },
+    {
+      "frame": 16,
+      "maximum_direction_delta": 0.0003317896232206324
+    },
+    {
+      "frame": 17,
+      "maximum_direction_delta": 0.0003317896232206324
+    },
+    {
+      "frame": 18,
+      "maximum_direction_delta": 0.0003317896232206324
+    },
+    {
+      "frame": 19,
+      "maximum_direction_delta": 0.0003317896232206324
+    },
+    {
+      "frame": 20,
+      "maximum_direction_delta": 0.0003317896232206324
+    }
+  ],
+  "authored_corners": 2763,
+  "method": "Blender authored split corner normal against actual BMD raw normal node/vector, each through full baseline/final hierarchy at21frames"
+}

@@ -1,0 +1,26 @@
+{
+  "status": "READ_ONLY_SCOPE_ANALYSIS",
+  "texture": "src/bin/Data/Object1/reagon_waterspout.OZJ",
+  "consumer": "Waterspout01 only in complete115model World1 map",
+  "resolution": [
+    128,
+    128
+  ],
+  "footprints": {
+    "basin": {
+      "covered_pixels": 1195,
+      "overlap_with_basin": 1195,
+      "overlap_with_basin_three_pixel_margin": 1195
+    },
+    "body": {
+      "covered_pixels": 2381,
+      "overlap_with_basin": 0,
+      "overlap_with_basin_three_pixel_margin": 0
+    },
+    "wing": {
+      "covered_pixels": 2410,
+      "overlap_with_basin": 0,
+      "overlap_with_basin_three_pixel_margin": 0
+    }
+  }
+}

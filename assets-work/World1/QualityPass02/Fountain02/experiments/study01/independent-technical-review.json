@@ -1,0 +1,39 @@
+{
+  "decision": "TECHNICAL mechanism ACCEPTABLE; ART REVISE remains",
+  "study": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Fountain02/experiments/study01",
+  "protected_original_faces": 335,
+  "required_non_dragon_faces": 256,
+  "required_all_present": true,
+  "one_to_one_material_bone_uv_position_cyclic_winding": true,
+  "maximum_position_component_delta": 0.00010699999998564635,
+  "maximum_uv_component_delta": 0,
+  "maximum_protected_normal_direction_delta": 0.00014480298412318922,
+  "maximum_water_normal_direction_delta": 0.00014480298412318922,
+  "unchanged_tolerances": {
+    "position": 0.0003,
+    "UV": 1e-06,
+    "normal": 0.001
+  },
+  "mechanism": "Sharp edges only on water alter Blender custom-normal encoding fan basis; explicit baseline corner directions are reapplied. This is not a geometric crease or intended final shading change. Shared baseline topology preserves rock normals. Raw source-to-final normal proof all21 frames remains required and passed in retained report.",
+  "raw_motion": "Official exporter measured numeric equivalence; raw tail is NOT byte identical, maximum local float delta4.57763671875e-5 below unchanged.0001. Do not label exact bytes.",
+  "evidence_hashes": {
+    "source.blend": "55175631d7d1510366bf0fac2308db8547fa2d60828821555d02fb961395d419",
+    "exports/Waterspout01.bmd": "64ecb1de46156510810526ff9e8d889474373a19bc8cd5798753cf0195b1f008",
+    "build_source.py": "a23adf054ec5dfbf9f72066e71c9a5fd71ab91859d6954228bd70e9a9d947ba9",
+    "validation/summary.json": "4b54770ecccc16defec2f93e9926b0a65f49e2011731988d7e4e21ce61fa4ede",
+    "validation/frozen-textures.json": "17763889b8b94ba17d784f02aaec31d60d8828e9be67b36b93d03c60d1e4e5c9",
+    "validation/attachments.json": "3207940b930109e18e83ea3363f1e1d7dcdb3cee50ce39b7a2d63f0799b5aa18",
+    "validation/shading-contract.json": "7339b8aed55fb48696c2fc54132317db3d5cf5311f1d2ecb5608a4059234dd9e",
+    "validation/water-normal-diagnostic.json": "3c3cb85279642d6e58e18c33b59659f4285d6abc46e608fb3c5aa236c2e213b5",
+    "validation/authored-match.json": "38636c868607b9438dbc08c4cc077ae075b1e97a14cf896e826ff7ff01cd7ecb",
+    "validation/raw-normal-bindings.json": "0f75f8b2db46f0c985c4e07356281a81270be7cb2735499641009c50cb614cd0",
+    "validation/posed-authored-match.json": "049bd406c8d591f8c688c4936ea4e82d32782684bc3bfbd3e2d66e17e2d4b029",
+    "validation/fan-diagnostic.json": "3100abd8b7f88b9fbce83a43766728516d173323622744fadc87377f1c948af2",
+    "validation/official-motion-diagnostic.json": "76afcffefc50d79d0a2abfc351dea02bfcf4e1ac24d9cee2806ce33f3be3894b",
+    "validation/normal-encoding-diagnostic.json": "ffc6e1f7cfe274b69a0510ebb104b9b2accebd60d1e1224adc0a37dd112b027d",
+    "validation/local-motion.json": "ecb8883b48facd67066fc8201d61d3d1952e5484eac8ba13fe9ce5b3de55237c",
+    "validation/authored.json": "36e6a34ca31174b20d7bf36622e003c0d9c6dca69044e2b590e52799b9a12338",
+    "validation/raw-motion-equivalence.json": "746a94ae1be4ffdecb7c250a117d1e53e4ec143eb92bebc4c824fc6e0368a440",
+    "validation/authored-raw-normals.json": "0ab2a98c5ce5bb6935b86e263fed53e4564459d8791d6dba190e520fbe329f5e"
+  }
+}

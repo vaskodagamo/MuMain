@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "decoder": "libturbojpeg tjDecompress2 TJPF_RGB TJFLAG_FASTDCT(2048), matching GlobalBitmap.cpp",
+  "protected_filter_margin_max_rgb_error": 0,
+  "all_unselected_blocks_max_rgb_error": 0,
+  "no_mipmaps": "GlobalBitmap.cpp144 texInfo.num_levels=1; no resampling for128power-of-two",
+  "sampler": "LoadData.h defaultGL_NEAREST, GlobalBitmap.cpp211\u2013214 min/mag filter andnearest mip mode;2pxguard also covers fallbackbilinear"
+}

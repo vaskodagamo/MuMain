@@ -1,0 +1,4 @@
+OK /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Fountain02/Waterspout01/exports/reagon_waterspout.OZJ
+OK /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Fountain02/Waterspout01/exports/ston01.OZJ
+OK /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Fountain02/Waterspout01/exports/ston02.OZJ
+OK /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Fountain02/Waterspout01/exports/stone_statue02.OZJ
