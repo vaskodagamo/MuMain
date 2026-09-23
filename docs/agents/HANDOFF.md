@@ -7,14 +7,17 @@ about *this fork's* goal and state. **Append a dated entry to
 [`WORKLOG.md`](WORKLOG.md) at the end of every session** and update this page when the
 state changes.
 
-## Current Lorencia correction — 2026-09-22
+## Current Lorencia correction — 2026-09-23
 
-PR #11 was merged at `7b808473`. The user reports the existing baseline works in game;
-this is user-reported verification, not a new observation by ASTRA. Historical 106/106
-offline acceptance is first-pass coverage, **not artistic completion**. A second quality
-pass is active in `MuMain-environment-remake` on `codex/environment-remake-continuation`.
-See [current handoff](../../assets-work/Environment/coordination/handoff.md).
-The earlier completion/publication statements below remain historical only.
+PR #12 merged into owner-fork main at c40d0b0d. It contains 22 accepted Lorencia
+replacements and 84 first-pass retention decisions. Lorencia remains artistically unfinished:
+the historical 106/106 offline label is first-pass inventory coverage, not consistent-quality
+completion. The user reports the prior baseline worked in game; new changes have not been
+checked in the client. Continue Lorencia quality assessment and production from refreshed
+main in an isolated worktree before expanding later-map production. See the current remake
+assessment at ../../assets-work/Environment/coordination/current-remake-assessment.json and
+the current handoff at ../../assets-work/Environment/coordination/handoff.md. Earlier
+completion and publication statements below remain historical only.
 
 ## 1. Goal of the fork
 
@@ -39,7 +42,7 @@ in [`../asset-pipeline.md`](../asset-pipeline.md). The artist agent's own brief 
 | `tools/mu_texture.py` | Works, byte-identical round trips on shipped textures. |
 | Blender scripts (`tools/blender/`) | Import and export through Blender Source Tools; verified round trip on `Monster01.bmd` (geometry, bone order, 7 actions equivalent). |
 | Lorencia asset pilot | 17 ground textures, Beer01 and three more static props (Candle01, TreasureChest01, Tomb03) exported/validated offline on `art/world1-pilot`, now merged into `main`; client acceptance pending. See [`assets-work/World1/notes.md`](../../assets-work/World1/notes.md). |
-| Lorencia static rebuild | All 106 in-scope static models accepted offline and on `main`: the rebuild batches arrived with PR #11 (merge commit `7b808473`, 2026-09-22); the four pilot props and four tavern files were already there. Client acceptance pending. Per-model facts: [`assets-work/World1/catalog.json`](../../assets-work/World1/catalog.json). Follow-up art: [regeneration requests](../../assets-work/World1/requests/README.md). |
+| Lorencia static rebuild | First-pass offline inventory coverage only. PR #12 merged on 2026-09-23 with 22 accepted replacements and 84 first-pass retention decisions; Lorencia's consistent-quality art gate remains open. Prior baseline success is user-reported; new client checks are pending. See the current assessment at ../../assets-work/Environment/coordination/current-remake-assessment.json. |
 | Game data in `src/bin/Data` | Complete except: no `Sound/`, no `Music/`, most of `Object74/` missing, a few effect/skill models missing. |
 | UI art pilot revision (`art/ui-modern-pilot`) | Five right-HUD textures revised with clean dark metal, bold symbols and clearer selected states. User selected this restrained direction. Offline validation and source Data installation are isolated to the revision worktree. Native/1080p comparisons cover anchored and classic layouts: [`assets-work/UI/notes.md`](../../assets-work/UI/notes.md). Client verification pending; shared runtime untouched. |
 | Remaining bottom HUD (`codex/ui-hud-completion`) | Extends merged PR #9's style across 14 connected frame, gauge, item/skill-slot, XP and cash-shop textures. Exact dimensions/UVs preserved; all exports, 10% resource visibility, shared backing alignment and reproducible assembly pass offline checks. Merged into `main` with PR #10 (merge commit `17a932a2`, 2026-09-22); the 14 textures are in `src/bin/Data/Interface/`. [Inventory, sources, previews and client checklist](../../assets-work/UI/HudCompletion/notes.md). Shared skill slots also affect MU Helper/pet information; client acceptance pending. |
@@ -96,7 +99,7 @@ out/build/macos-arm64/tools/bmdconv/Release/bmdconv compare src/bin/Data/Item/Sw
 
 ## 6. Open work, in priority order
 
-1. **Lorencia static art**: All 106 in-scope static models are accepted offline and on `main` (the rebuild merged with PR #11, merge commit `7b808473`, 2026-09-22; the four preserved pilot props were already there); the 17 terrain paintings remain unchanged. Production is complete for this inventory. Client acceptance and genuine 1920×1080 before/after captures remain pending under explicit offline authorization; investigate stability separately. Follow-up art goes through [regeneration requests](../../assets-work/World1/requests/README.md) and the generated per-model [`catalog.json`](../../assets-work/World1/catalog.json); read the [consolidated handoff](../../assets-work/World1/coordination/notes.md) and [asset board](../../assets-work/World1/coordination/asset-board.md) first. The rebuild's branches and worktrees are historical, so start from `main`. `validate_integration.py` still compares against the pre-merge baseline `ac0f6dd8`; adapt it before relying on it on `main`.
+1. **Lorencia static art**: The historical 106/106 label records first-pass inventory coverage, not completion. PR #12 merged on 2026-09-23 with 22 accepted replacements and 84 first-pass retention decisions; further artistic assessment and production are required. The user reports the previous baseline works in game; new changes remain unverified in the client. Continue from refreshed owner-fork main in a dedicated worktree. Read the current assessment at ../../assets-work/Environment/coordination/current-remake-assessment.json, consolidated handoff at ../../assets-work/World1/coordination/notes.md, and asset board at ../../assets-work/World1/coordination/asset-board.md.
 2. **World editor on macOS** (branch `feat/world-editor`, plan in
    [`WORLD_EDITOR_PLAN.md`](WORLD_EDITOR_PLAN.md), usage in
    [`MAP_EDITOR.md`](../../src/MuEditor/UI/MapEditor/MAP_EDITOR.md), which starts with a quick
@@ -160,6 +163,8 @@ out/build/macos-arm64/tools/bmdconv/Release/bmdconv compare src/bin/Data/Item/Sw
 | Texture looks padded or flipped | `mu_texture.py check` (power of two, TGA origin) |
 
 ## Lorencia rebuild integration — 2026-09-22
+
+Current clarification, 2026-09-23: the details below document first-pass inventory coverage. They do not close Lorencia's artistic quality gate. PR #12 merged with 22 replacements and 84 first-pass retention decisions; further quality work remains.
 
 The completed offline static environment pass was integrated on `art/lorencia-rebuild` in the
 sibling worktree `MuMain-lorencia-rebuild`, and was merged into `main` with PR #11 on 2026-09-22

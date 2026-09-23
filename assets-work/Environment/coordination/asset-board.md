@@ -1,3 +1,25 @@
+# Current environment remake board — 2026-09-23
+
+The overall goal remains in progress. PR #12 is merged with 22 accepted Lorencia replacements and 84 first-pass retention decisions. These records do not establish that Lorencia has reached consistent art quality; further assessment and production remain the top priority. The user reports that the prior Lorencia baseline worked in game. New changes have not been checked in the client.
+
+PR #13 is merged with three independently accepted Dungeon replacements: Object28, Object29 and Object01. Object48 is a bounded one-component refinement with independent offline acceptance; this branch contains its integrated export and focused review evidence. Client verification is pending. The next production work returns to Lorencia before expanding Dungeon work.
+
+See current-remake-assessment.json for the active goal status, dungeon-assessment.json for asset-level status, and progress.md for dated checkpoints.
+
+## Accepted and proposed checkpoints
+
+| Map | State | Count | Scope |
+|---|---|---:|---|
+| Lorencia | PR #12 merged; quality work remains open | 22 replacements, 84 first-pass retention decisions | World1 static environment |
+| Dungeon | PR #13 merged | 3 replacements | Object28, Object29 and Object01 |
+| Dungeon | Independently accepted; focused PR in progress | 1 replacement | Object48; bounds and texture contract preserved |
+
+New client verification remains pending. The accepted exports and their source packages are indexed in accepted-exports.json. The prior coordination snapshot follows as historical record.
+
+---
+
+## Historical board snapshot before Object48 integration
+
 # Dungeon environment production — current status, 2026-09-23
 
 Lorencia remains separately accepted offline at d3ce9acf in draft PR12. The user reports that earlier Lorencia baseline working in game; newly changed assets have no client verification.

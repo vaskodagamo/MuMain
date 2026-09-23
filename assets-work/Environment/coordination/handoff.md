@@ -1,3 +1,28 @@
+# Current environment remake handoff — 2026-09-23
+
+The goal remains active. Lorencia is not artistically complete. Its 22 accepted replacements and 84 retention decisions in merged PR #12 are first-pass records, not a final quality gate. Continue with Lorencia assessment and production before starting another Dungeon production batch. The user reports that the previous Lorencia baseline worked in game; new changes remain client-unverified.
+
+Dungeon PR #13 merged three replacements (Object28, Object29 and Object01). This focused checkpoint contains the accepted Object48 refinement and integration report; its PR will be opened ready for review after pushing. No client or runtime checks were performed for these new assets.
+
+## Current branches and pull requests
+
+- PR #12: merged to main in vaskodagamo/MuMain; 22 Lorencia replacements and 84 first-pass retention decisions.
+- PR #13: merged to main; Object28, Object29 and Object01.
+- Object48: branch codex/dungeon-remains48-accepted from refreshed main c40d0b0d; one BMD path differs, and all 63 Object2 model textures resolve.
+- The primary checkout has unrelated local edits. Keep all work in isolated task worktrees.
+
+## Next work
+
+1. Start the next Lorencia quality batch from the current owner-fork main in a dedicated worktree. Reassess assets for visible quality gaps despite earlier acceptance labels; use placement frequency and prominence to prioritize.
+2. Keep the remaining Dungeon baseline queue documented while Lorencia is unfinished.
+3. For each accepted focused batch, commit and open one ready-for-review PR; do not merge it for the user.
+
+Historical production notes and the prior handoff snapshot follow.
+
+---
+
+## Historical handoff snapshot before Object48 integration
+
 # Dungeon environment production — current status, 2026-09-23
 
 Lorencia remains separately accepted offline at d3ce9acf in draft PR12. The user reports that earlier Lorencia baseline working in game; newly changed assets have no client verification.

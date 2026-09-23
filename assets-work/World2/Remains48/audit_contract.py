@@ -29,7 +29,7 @@ def check(folder):
         candidate = next(face for face in new if same(old[index], face))
         shift = min(range(3), key=lambda s: max(math.dist(v[1:4], candidate[1][(j+s)%3][1:4]) for j,v in enumerate(control[1])))
         roundtrip_normal_error = max(roundtrip_normal_error, max(math.dist(v[4:7], candidate[1][(j+shift)%3][4:7]) for j,v in enumerate(control[1])))
-    assert roundtrip_normal_error == 0, 'Untouched normals must exactly match official unchanged roundtrip' 
+    assert roundtrip_normal_error == 0, 'Untouched normals must exactly match official unchanged roundtrip'
     old_points = [Vector(row[1:4]) for _, rows in old for row in rows]
     new_points = [Vector(row[1:4]) for _, rows in new for row in rows]
     records = []
