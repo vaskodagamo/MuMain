@@ -9,6 +9,7 @@
 // Forward declarations
 class CItemBrowseTab;
 class CItemEditorTable;
+class CItemRequestsTab;
 
 class CMuItemEditorUI
 {
@@ -38,6 +39,7 @@ private:
         None,
         Browse,
         StatsTable,
+        Requests,
     };
 
     char m_szItemSearchBuffer[256];
@@ -48,6 +50,7 @@ private:
     // The selected item (its type), shared by the Browse and Stats table tabs; -1 = none.
     int m_selectedRow;
     Tab m_activeTab;
+    bool m_showBrowse; // switch to the Browse tab next frame (asked by the Requests tab)
     bool m_wasDocked;
 
     // Column freezing state
@@ -56,6 +59,7 @@ private:
     // Table renderer
     CItemEditorTable* m_pTable;
     std::unique_ptr<CItemBrowseTab> m_pBrowse;
+    std::unique_ptr<CItemRequestsTab> m_pRequests;
 };
 
 #define g_MuItemEditorUI CMuItemEditorUI::GetInstance()

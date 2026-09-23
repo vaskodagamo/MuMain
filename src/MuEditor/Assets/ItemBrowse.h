@@ -26,8 +26,9 @@ enum class ItemStatus
 {
     Original, // every model file has the catalog's original SHA-256
     Changed,  // a model file differs from (or is missing against) its original
-    AtCodex,  // a request for the item is open, claimed or delivered
-    Unknown,  // no catalog entry, or not computed yet
+    AtCodex,   // a request for the item is open or claimed
+    Delivered, // a request for the item is delivered and waits for the owner's verdict
+    Unknown,   // no catalog entry, or not computed yet
 };
 
 const char* StatusLabel(ItemStatus status);
@@ -69,11 +70,17 @@ struct TableFacts
 // A row from the table facts and the item's catalog entry (may be null).
 BrowseRow MakeRow(const TableFacts& facts, const Assets::ItemCatalogEntry* catalog);
 
-// The item's status: at Codex when a request is pending, else changed when any of
-// its model files' SHA-256 (`currentSha256(bmd)`, empty when the file is missing)
-// differs from the catalog's original, else original.
+// The item's status from the catalog's list of its requests: delivered when a
+// request is delivered, at Codex when one is open or claimed, else changed when
+// any of its model files' SHA-256 (`currentSha256(bmd)`, empty when the file is
+// missing) differs from the catalog's original, else original.
 ItemStatus ComputeStatus(const Assets::ItemCatalogEntry& item,
                          const std::function<std::string(const std::string& bmd)>& currentSha256);
+// The same with the item's requests as the requests folder has them now
+// (`scannedRequests`) instead of the catalog's (stale until it is rebuilt).
+ItemStatus ComputeStatus(const Assets::ItemCatalogEntry& item,
+                         const std::function<std::string(const std::string& bmd)>& currentSha256,
+                         const std::vector<Assets::RequestRef>& scannedRequests);
 
 constexpr int ANY_CLASS = -1;
 constexpr int LOWEST_TIER = 1;

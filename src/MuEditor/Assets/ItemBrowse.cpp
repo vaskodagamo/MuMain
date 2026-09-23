@@ -22,6 +22,7 @@ namespace
 constexpr const char* CLASS_LABELS[MAX_CLASS] = {"DW", "DK", "Elf", "MG", "DL", "SUM", "RF"};
 constexpr std::uint8_t THREE_STAGES[] = {1, 2, 3};
 constexpr std::uint8_t NO_SECOND_STAGE[] = {1, 3};
+constexpr const char* STATUS_DELIVERED = "delivered";
 
 bool IsBaseClass(int baseClass)
 {
@@ -145,6 +146,8 @@ const char* StatusLabel(ItemStatus status)
         return "changed";
     case ItemStatus::AtCodex:
         return "at Codex";
+    case ItemStatus::Delivered:
+        return "delivered";
     case ItemStatus::Unknown:
         break;
     }
@@ -178,7 +181,17 @@ BrowseRow MakeRow(const TableFacts& facts, const Assets::ItemCatalogEntry* catal
 ItemStatus ComputeStatus(const Assets::ItemCatalogEntry& item,
                          const std::function<std::string(const std::string& bmd)>& currentSha256)
 {
-    if (std::any_of(item.requests.begin(), item.requests.end(), Assets::IsRequestPending))
+    return ComputeStatus(item, currentSha256, item.requests);
+}
+
+ItemStatus ComputeStatus(const Assets::ItemCatalogEntry& item,
+                         const std::function<std::string(const std::string& bmd)>& currentSha256,
+                         const std::vector<Assets::RequestRef>& scannedRequests)
+{
+    const auto isDelivered = [](const Assets::RequestRef& request) { return request.status == STATUS_DELIVERED; };
+    if (std::any_of(scannedRequests.begin(), scannedRequests.end(), isDelivered))
+        return ItemStatus::Delivered;
+    if (std::any_of(scannedRequests.begin(), scannedRequests.end(), Assets::IsRequestPending))
         return ItemStatus::AtCodex;
     for (const Assets::ItemModel& model : item.models)
     {

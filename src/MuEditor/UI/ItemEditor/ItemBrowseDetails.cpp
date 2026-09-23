@@ -4,6 +4,7 @@
 
 #include "ItemBrowseDetails.h"
 
+#include "ItemOwnerActions.h"
 #include "ItemPreview.h"
 
 #include "Assets/EditorText.h"
@@ -113,27 +114,17 @@ void RenderModels(const ItemCatalogEntry& item)
         ImGui::TextColored(NOTE_COLOR, "Original: commit %.10s", item.originalRevision.c_str());
 }
 
-void RenderRequests(const ItemCatalogEntry& item)
-{
-    if (item.requests.empty() && !item.clientReview)
-        return;
-    ImGui::SeparatorText("Requests and verdict");
-    for (const Assets::RequestRef& request : item.requests)
-    {
-        const char* assigned = request.assignedTo.empty() ? "unassigned" : request.assignedTo.c_str();
-        ImGui::BulletText("%s: %s (%s)", request.id.c_str(), request.status.c_str(), assigned);
-    }
-    if (item.clientReview)
-        ImGui::BulletText("Owner: %s %s", item.clientReview->verdict.c_str(), item.clientReview->note.c_str());
-}
 } // namespace
 
-void RenderItemDetails(const Items::BrowseRow& row, const std::string& catalogNote, int filterClass, int filterStage)
+void RenderItemDetails(const Items::BrowseRow& row, const std::string& catalogNote, int filterClass, int filterStage,
+                       const Assets::ItemCatalog* catalog)
 {
     ImGui::TextUnformatted(row.name.empty() ? NO_NAME : row.name.c_str());
     ImGui::SameLine();
     ImGui::TextColored(NOTE_COLOR, "%s (type %d)", row.key.c_str(), row.type);
     g_ItemPreview.Render(row, filterClass, filterStage);
+    if (row.catalog != nullptr && catalog != nullptr)
+        RenderOwnerActions(*row.catalog, *catalog);
 
     if (ImGui::BeginTable("ItemFacts", 2, ImGuiTableFlags_SizingStretchProp))
     {
@@ -148,7 +139,6 @@ void RenderItemDetails(const Items::BrowseRow& row, const std::string& catalogNo
         return;
     }
     RenderModels(*row.catalog);
-    RenderRequests(*row.catalog);
 }
 } // namespace Editor::ItemEditor
 
