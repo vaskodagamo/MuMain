@@ -1,8 +1,9 @@
 # Item Editor (MuEditor)
 
-A table of every item the client knows (`Data/Local/<lang>/Item_<lang>.bmd`): name, size, damage,
-defence, requirements, class stages, resistances and prices, edited in place and saved into the
-game's own file. It exists only in editor builds (`ENABLE_EDITOR`), so the normal game is unaffected.
+Every item the client knows, in two tabs: **Browse** (a list or thumbnail grid you filter by class,
+family, tier and status, sorted from basic to rare, with the facts of the selected item) and
+**Stats table** (every field of `Data/Local/<lang>/Item_<lang>.bmd`, edited in place and saved into the
+game's own file). It exists only in editor builds (`ENABLE_EDITOR`), so the normal game is unaffected.
 The quick start is for the Mac; everything after it is reference. The Map Editor's guide,
 [MAP_EDITOR.md](../MapEditor/MAP_EDITOR.md), covers building, logs and the editor in general.
 
@@ -11,30 +12,137 @@ The quick start is for the Mac; everything after it is reference. The Map Editor
 1. **Build** (repository root; the first build takes several minutes):
    ```sh
    PATH=/opt/homebrew/bin:$PATH cmake --preset macos-arm64-mueditor -DOPENSSL_ROOT_DIR="$(brew --prefix openssl@3)"
-   PATH=/opt/homebrew/bin:$PATH cmake --build --preset macos-arm64-mueditor-release --target Main
+   PATH=/opt/homebrew/bin:$PATH cmake --build --preset macos-arm64-mueditor-release
    ```
-2. **Open the Item Editor without a server:**
+   Next to `Main.app` the build makes **`MU Item Editor.app`**
+   (`out/build/macos-arm64-mueditor/src/Release/`).
+2. **Start it:** double-click `MU Item Editor.app` in Finder. It starts the client offline (no server,
+   no login) in the Item Editor's **studio**: no map, a plain dark backdrop, and the Item Editor
+   filling the window under the MU Editor toolbar. From a terminal the same is
    ```sh
    cd out/build/macos-arm64-mueditor/src/Release/Main.app/Contents/MacOS && ./Main --editor --items
    ```
-   The client opens Lorencia offline (add `--world N` for another map) with the Item Editor open and
-   the Map Editor closed. In a game session, **F12** opens the editor and the toolbar's **Item Editor**
-   button shows the window.
-3. **Find an item:** type in **Search** (part of the name, any letter case). **Columns** picks which
-   fields are shown; the choice is kept in `MuEditor/MuEditor.ini`. **Freeze Index/Name** keeps those
-   two columns in view while you scroll sideways.
-4. **Edit:** click a cell and type. The change is live at once (the running game uses the same
+3. **Keep it at hand:** drag `MU Item Editor.app` onto the Dock (the Dock keeps a shortcut; the app
+   stays in the build folder). You can also copy it into `/Applications`: a copy that is not next to
+   `Main.app` starts the `Main.app` of the build that made it, so it keeps working as long as that
+   build folder exists. The build itself installs nothing outside the build folder.
+4. **Browse:** pick a class (**DW DK Elf MG DL SUM RF**) and its stage (for example *Dark Knight*,
+   *Blade Knight*, *Blade Master*) to see only what that character can equip, a family (swords,
+   helms, wings-2, ...), and click an item: its facts appear on the right. See [Browse](#browse).
+5. **Edit stats:** the **Stats table** tab is the table of every field; an item picked in Browse is
+   selected and scrolled to there, and the other way round. See [Stats table](#stats-table).
+
+The other editors stay on the toolbar. Opening the **Map Editor** from the studio shows the map
+(Lorencia) and turns the Item Editor into a normal window; closing the Map Editor brings the studio
+back.
+
+### Starting options
+
+| Command | What opens |
+|---------|------------|
+| `MU Item Editor.app`, or `./Main --editor --items` | The studio: no map drawn, the Item Editor fills the window. |
+| `./Main --editor --items --world N` | Map N (Data folder number, 1 = Lorencia) offline behind a floating Item Editor. |
+| `./Main --editor --world N` | Map N offline with the Map Editor (unchanged). |
+| **F12** in a game session | The editor over the running game; the toolbar's **Item Editor** button shows the window. |
+
+**Why the studio still loads a map:** it skips drawing (terrain, objects, sky, weather, effects,
+fog), not loading. The Map Editor on the toolbar edits and saves the loaded map, so it needs one, and
+the hidden character the later preview will dress with items stands on a map's ground and light.
+World1 is loaded once at start (about a second) and not drawn while the Item Editor fills the window.
+
+## Browse
+
+**Left - filters.**
+
+- **Search:** part of the name, in any letter case (also accented, Greek and Cyrillic letters), or
+  the item key such as `0-19`.
+- **Class and stage:** shows only what that class may equip at that stage, by the game's own rule
+  (see [Who may equip an item](#who-may-equip-an-item)). **All** switches the filter off.
+- **Tier range** (drag either end) and **status** (original / changed / at Codex / unknown).
+- **Only items with a model** hides table rows the client loads no model for (the unused "-J"
+  duplicates and a few tickets).
+- **Family:** swords, axes, ..., potions, with how many items of each pass the other filters.
+
+**Middle - the items.** **List** shows a thumbnail, name, key (`group-index`), tier, drop level,
+required level, the classes that may use it (class and lowest stage, e.g. `DK 2`) and the status;
+**Grid** shows bigger thumbnails with tier and name. The sort choice and **Ascending/Descending** are
+above it:
+
+| Sort | Order |
+|------|-------|
+| **Tier (basic -> rare)**, the default | Named items first; items that drop from monsters before shop, event and quest items; then tier T1..T7, the item's place in its family, name. |
+| Group / index | The item number (`group * 512 + index`). |
+| Name, Drop level, Required level, Status | That value; ties in the tier order. |
+
+Items without a catalog entry (no tier) stay at the end of the tier order in both directions. Within
+one family the tier order is the catalog's family order, so for example the Dark Knight's swords run
+Short Sword, Kris, Rapier ... Knight Blade, Bone Blade, then the Divine Sword (a quest reward that
+never drops).
+
+**Right - the selected item:** name, key, a bigger thumbnail (the live 3D preview with level,
+excellent and ancient effects comes there in the next milestone), classes, required and drop level,
+status, family, tier (its place among the family's items and whether it drops from monsters), what
+it can be (socket, ancient set, 380 option, excellent, maximum +level), size in inventory slots,
+every model file with triangles, meshes and textures, the original commit, open requests and your
+last verdict.
+
+**Thumbnails** are rendered from the loaded model the first time a row is shown (six per frame) and
+kept; long items lie corner to corner, flat ones show their broad side. Armour parts load from
+`Data/Player` per class; the thumbnail shows the item's own model, the male (first) one, and the
+details list the class variants after it. Items without a model show an empty frame.
+
+### Status
+
+| Status | Meaning |
+|--------|---------|
+| original | Every model file in your checkout has the SHA-256 the catalog recorded as original. |
+| changed | A model file differs from its original (or is missing). |
+| at Codex | A request for the item is open, claimed or delivered (not yet accepted, rejected or withdrawn). |
+| unknown | The item has no catalog entry, or there is no catalog. |
+
+The files are hashed once, the first time Browse opens (about 20 MB, well under a second);
+**Rescan files** hashes them again after a pull or a delivery.
+
+### Tier and family
+
+Tiers, families and the order within a family come from `assets-work/Items/catalog.json`; the rule is
+in [`assets-work/Items/README.md`](../../../../assets-work/Items/README.md#tiers-basic-to-rare) and the
+editor only reads the result. Without a catalog (no checkout above the game folder, or the file is
+missing) Browse still lists every item of the client table with its classes and levels, and the
+family list says why tier, family and status are missing. Rebuild the catalog with
+`tools/item_editor/build_item_catalog.py` after a model or table change.
+
+### Who may equip an item
+
+Each item has a class entry per base class (DW, DK, Elf, MG, DL, SUM, RF): the lowest stage that may
+use it, 0 for never. Stage 1 is the base class, 2 the second class (Soul Master, Blade Knight, Muse
+Elf, Bloody Summoner), 3 the third (Grand Master, Blade Master, High Elf, Duel Master, Lord Emperor,
+Dimension Master, Fist Master); Magic Gladiator, Dark Lord and Rage Fighter have no second class. A
+class may equip the item when its entry is not 0 and not above its stage. As in the original client,
+a Magic Gladiator may also use an item that both the Dark Wizard and the Dark Knight may use, even when
+the MG entry is 0. The game then also checks strength, agility, energy, vitality, command and level;
+Browse filters by class and stage only. Browse and the game share this rule
+(`GameLogic::Items::CanClassEquip`, called by `IsRequireEquipItem`).
+
+## Stats table
+
+The table of every item field:
+
+1. **Find an item:** type in **Search** (part of the name, any letter case, also outside A-Z).
+   **Columns** picks which fields are shown; the choice is kept in `MuEditor/MuEditor.ini`. **Freeze
+   Index/Name** keeps those two columns in view while you scroll sideways.
+2. **Edit:** click a cell and type. The change is live at once (the running game uses the same
    table) and is logged in the Editor Console. A name holds at most 29 bytes (letters outside
-   A-Z take two or more); the cell stops there.
-5. **Save:** **Save Items** writes the game's file and your checkout's
+   A-Z take two or more); the cell stops there. Browse shows the edit the next time you switch to it.
+3. **Save:** **Save Items** writes the game's file and your checkout's
    `src/bin/Data/Local/Eng/item_eng.bmd`, and first copies the file it replaces to
    `out/editor-backups/<time>/`. The lines under the buttons list the paths; the Editor Console lists
    every changed field. Nothing edited means nothing is written.
-6. **Commit or undo** like code: `git status` shows `src/bin/Data/Local/Eng/item_eng.bmd` modified;
+4. **Commit or undo** like code: `git status` shows `src/bin/Data/Local/Eng/item_eng.bmd` modified;
    `git add` + `git commit` keeps it, `git checkout -- src/bin/Data/Local/Eng/item_eng.bmd` throws the
    edit away. The game's copy keeps the edit until the next build copies `src/bin/Data` over it
-   again (step 1's build command), so rebuild before you start the client again.
-7. **Copy a row:** select it (click any of its cells), then **Cmd+C** (Ctrl+C on Windows) copies it as
+   again (the quick start's build command), so rebuild before you start the client again.
+5. **Copy a row:** select it (click any of its cells), then **Cmd+C** (Ctrl+C on Windows) copies it as
    `Field = value` text plus a CSV line, for pasting into a note or a request.
 
 **Stats and names are only half of it:** the server (OpenMU) sends just group and number for each
@@ -46,6 +154,9 @@ to keep in play must be made in OpenMU too (admin panel, Items).
 
 | What | Where | Notes |
 |------|-------|-------|
+| Launcher | `out/build/<preset>/src/<Config>/MU Item Editor.app` | Made by editor builds on macOS; runs `Main --editor --items` from `Main.app/Contents/MacOS` (the game reads `Data/` from there). |
+| Item catalog (Browse) | `assets-work/Items/catalog.json` in the checkout | Tiers, families, model files, originals, requests; generated, never edited by hand. |
+| Model files (status) | `src/bin/Data/Item/...`, `src/bin/Data/Player/...` in the checkout | Hashed and compared with the catalog's originals. |
 | Item table the game loads | `Data/Local/<lang>/Item_<lang>.bmd` next to the executable | `<lang>` is `LanguageSelection` in `config.ini` (`Eng`). On disk the file is `item_eng.bmd`; the editor saves under that spelling. |
 | Repository copy | `src/bin/Data/Local/Eng/item_eng.bmd` | Written on every save; this is the file git tracks. |
 | Backup of the repo file | `out/editor-backups/<YYYYMMDD-HHMMSS>/Data/Local/Eng/item_eng.bmd` | Taken before the repo file is replaced; `out/` is not in git. |
@@ -53,11 +164,12 @@ to keep in play must be made in OpenMU too (admin panel, Items).
 | **Export as S6E3** | `Data/Local/<lang>/Item_S6E3.bmd`, copy in `out/editor-exports/` | The table in the legacy S6E3 layout for other tools; the game does not read it. |
 | **Export as CSV** | `Data/Local/<lang>/Item.csv`, copy in `out/editor-exports/` | UTF-8 with BOM, one row per named item, field names as in the code. |
 | Column choice | `MuEditor/MuEditor.ini`, section `[ColumnVisibility]` | Next to the executable. |
-| Logs | `MuError.log`, `MuEditor/MuEditor_YYYYMMDD.log` | The save's paths and the changed fields. |
+| Logs | `MuError.log`, `MuEditor/MuEditor_YYYYMMDD.log` | The start (`[Editor] Opened the Item Editor studio ...`), the save's paths and the changed fields. |
 
 Without a checkout above the game folder (a copied `Main.app`), a save keeps a copy next to the
-executable instead (`Local/Eng/item_eng.bmd`); `MU_EDITOR_REPO_ROOT=/path/to/repo` points the editor
-at a checkout. See [Where saves go](../MapEditor/MAP_EDITOR.md#where-saves-go).
+executable instead (`Local/Eng/item_eng.bmd`) and Browse has no catalog;
+`MU_EDITOR_REPO_ROOT=/path/to/repo` points the editor at a checkout. See
+[Where saves go](../MapEditor/MAP_EDITOR.md#where-saves-go).
 
 ### Gotchas
 
@@ -74,5 +186,7 @@ at a checkout. See [Where saves go](../MapEditor/MAP_EDITOR.md#where-saves-go).
   (the group is `index / 512`). An index already in use is refused.
 - **Only the running language's table is edited.** `Por` and `Spn` have their own
   `item_por.bmd` / `item_spn.bmd`, and `Data/Local/Item.bmd` is an older table the game does not load.
-- **Offline there is no hero or inventory,** so an edited item cannot be seen in the game yet;
-  the preview comes in a later milestone (docs/agents/ITEM_EDITOR_PLAN.md).
+- **Browse reads the catalog once per start.** After rebuilding `catalog.json`, restart the editor;
+  **Rescan files** only hashes the model files again.
+- **Offline there is no hero or inventory,** so an edited item cannot be seen worn yet; the preview
+  comes in a later milestone (docs/agents/ITEM_EDITOR_PLAN.md).
