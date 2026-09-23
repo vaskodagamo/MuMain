@@ -1,0 +1,7 @@
+00:00.729  blend            | Read blend: "/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-wall51/assets-work/World2/Walls02/Object51/baseline/source.blend"
+Info: No new files have been packed
+Info: Saved as "source.blend"
+{'triangles': 66, 'exact_original_triangles': 48, 'bevel_width': 7.0, 'design': 'Three broad dressed edges on the central projecting boss only'}
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:49:19)
+
+Blender quit
