@@ -1,21 +1,22 @@
 # Current environment remake handoff — 2026-09-23
 
-The overall goal remains active. Lorencia passed its independent final artistic/offline gate at `bb641d04`; this closed its 22-replacement/84-retention assessment, while new client verification is pending. Main includes Dungeon replacements Object28, Object29, Object01 and Object48. Keep work on the remaining Dungeon inventory and open review checkpoints.
+The overall goal remains active. Lorencia passed its independent final artistic/offline gate at `bb641d04`; this closed its 22-replacement/84-retention assessment, while new client verification is pending. Main includes Dungeon replacements Object28, Object29, Object01 and Object48. Retention PRs #18, #19 and #20 have merged. PRs #22 and #23 remain open for review; new client verification is pending.
 
 ## Current pull requests
 
-- PR #18: Object51 baseline retention after a rejected bevel study; ready for review.
-- PR #19: Object37 baseline retention after six actual corridor placements; ready for review.
-- PR #20: Object42/43 baseline retention package; ready for review, independently confirmed.
+- PR #18 (merged): retain Object51 after the rejected bevel study.
+- PR #19 (merged): retain Object37 after six actual corridor placements.
+- PR #20 (merged): retain unchanged Object42/43 fire props after independent review.
 - PR #22: Object45–47 baseline retention after individual and actual-cluster review; ready for review.
+- PR #23: reject the proposed Object06/13/15 replacements and retain current BMDs; independently reviewed and ready for review.
 
 ## Active studies and next queue
 
-Architecture's Object06/13/15 support/collar study found too little reduced-scale improvement to justify its candidates; the assets remain unchanged pending independent review. Furniture's Objects42/43 package preserves fire meshes, texture and runtime anchors. The independent static triage of Objects05/07/08/09/10/11/14 did not identify a coherent 3–5 asset production batch: Object05's isolated surface issue is small/partly occluded in context, Object09 overlaps animated Object12 and needs all-frame clearance before any geometry work, and the remaining models already read clearly at actual scale. Continue with documented context and branch evidence; do not claim client verification.
+Architecture's Object06/13/15 support/collar study found too little reduced-scale improvement to justify its candidates; independent review agreed, and the original assets remain unchanged. Furniture's merged Objects42/43 package preserves fire meshes, texture and runtime anchors. The independent static triage of Objects05/07/08/09/10/11/14 did not identify a coherent 3–5 asset production batch: Object05's isolated surface issue is small/partly occluded in context, Object09 overlaps animated Object12 and needs all-frame clearance before any geometry work, and the remaining models already read clearly at actual scale. Continue with documented context and branch evidence; do not claim client verification.
 
 ## Active checkout
 
-Dungeon production branches start from owner-fork main `7c25cce6`. Keep the primary checkout's unrelated user edits untouched. Use Blender's official Python importer/exporter for any future candidate; game assets and textures remain unchanged in the current retention PRs. Open focused PRs when each evidence package passes verification; never merge main for the user.
+Dungeon production branches start from owner-fork main `1256aeed`. Keep the primary checkout's unrelated user edits untouched. Use Blender's official Python importer/exporter for any future candidate; game assets and textures remain unchanged in the current retention PRs. Open focused PRs when each evidence package passes verification; never merge main for the user.
 
 ---
 

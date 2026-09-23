@@ -1,6 +1,6 @@
 # Current checkpoint — 2026-09-23
 
-After PR #12 merged, current owner-fork main is `7c25cce6`. The Lorencia independent artistic/offline gate is complete at `bb641d04` (22 replacements plus 84 justified retention decisions); new client verification remains pending. Four Dungeon replacements are merged. Retention review PRs #18–#20 and #22 are open and ready; #21 is an unrelated editor-docs PR. Independent review passed for #20. Object45–47 evidence is in PR #22. Active supports/collars Object06/13/15 remain unchanged and have not cleared independent placed-scale review. Continue Dungeon's actual-placement inventory before selecting another production batch.
+Current owner-fork main is `1256aeed`. The Lorencia independent artistic/offline gate is complete at `bb641d04` (22 replacements plus 84 justified retention decisions); new client verification remains pending. Four Dungeon replacements are merged. Retention PRs #18–#20 have also merged: Object51, Object37 and Object42/43 remain unchanged. PR #22 records Objects45–47; PR #23 documents rejected support studies for Objects06/13/15 and passed independent review. PR #21, editor documentation, also merged. Continue Dungeon's actual-placement inventory before selecting another production batch.
 
 # Environment production progress
 

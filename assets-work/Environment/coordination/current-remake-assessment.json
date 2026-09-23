@@ -2,7 +2,7 @@
   "accepted_replacements_merged_to_main": 26,
   "as_of": "2026-09-23",
   "client_verification_for_new_changes": "pending",
-  "current_next_priority": "Continue Dungeon inventory through actual placements, finish independent review of active support/fire-prop studies, then select the next coherent static batch. New client verification remains pending.",
+  "current_next_priority": "Continue Dungeon inventory through actual placements, then select the next coherent static production family. Current retention checkpoints are documented; new client verification remains pending.",
   "dungeon": {
     "merged_replacements": [
       "Object28",
@@ -20,17 +20,37 @@
     "open_retention_reviews": [
       {
         "assets": [
+          "Object45",
+          "Object46",
+          "Object47"
+        ],
+        "pull_request": "https://github.com/vaskodagamo/MuMain/pull/22",
+        "status": "open and ready for review"
+      },
+      {
+        "assets": [
+          "Object06",
+          "Object13",
+          "Object15"
+        ],
+        "pull_request": "https://github.com/vaskodagamo/MuMain/pull/23",
+        "status": "open and ready; independent review accepted the rejected-study evidence"
+      }
+    ],
+    "merged_retention_reviews": [
+      {
+        "assets": [
           "Object51"
         ],
         "pull_request": "https://github.com/vaskodagamo/MuMain/pull/18",
-        "status": "open and ready for review"
+        "status": "merged; baseline retained after independent placement review"
       },
       {
         "assets": [
           "Object37"
         ],
         "pull_request": "https://github.com/vaskodagamo/MuMain/pull/19",
-        "status": "open and ready for review"
+        "status": "merged; baseline retained after six actual corridor placements"
       },
       {
         "assets": [
@@ -38,16 +58,7 @@
           "Object43"
         ],
         "pull_request": "https://github.com/vaskodagamo/MuMain/pull/20",
-        "status": "independently confirmed; open and ready for review"
-      },
-      {
-        "assets": [
-          "Object45",
-          "Object46",
-          "Object47"
-        ],
-        "pull_request": "https://github.com/vaskodagamo/MuMain/pull/22",
-        "status": "open and ready for review"
+        "status": "merged; unchanged fire props independently confirmed"
       }
     ]
   },
@@ -68,5 +79,5 @@
     }
   },
   "overall_status": "in_progress",
-  "staged_later_map_review": "Dungeon inventory remains active; no client verification for new changes. See dungeon-assessment.json, progress.md and handoff.md."
+  "staged_later_map_review": "Continue the Dungeon static inventory with actual placement context. No client verification for new environment changes. See dungeon-assessment.json, progress.md and handoff.md."
 }

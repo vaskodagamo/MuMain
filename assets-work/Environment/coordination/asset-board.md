@@ -2,7 +2,7 @@
 
 The overall goal remains in progress. Lorencia's independent final artistic/offline gate passed at `bb641d04`: 22 accepted replacements and 84 individually justified retained assets cover all 106 in-scope assets. This was not 106 remakes. New client verification remains pending; prior baseline client success is user-reported only.
 
-Four Dungeon replacements are merged to main: Object28, Object29, Object01 and Object48. Open review checkpoints record unchanged baselines for Object51 (#18), Object37 (#19), Object42/43 (#20; independent review passed), and Objects45–47 (#22). The next work remains a bounded static inventory review; active support/collar candidates are not accepted and have not changed game assets.
+Four Dungeon replacements are merged to main: Object28, Object29, Object01 and Object48. PRs #18, #19 and #20 are merged retention checkpoints for Object51, Object37, and Object42/43. Open PR #22 records Objects45–47; PR #23 preserves rejected support/collar studies for Objects06/13/15 after independent review. The next work returns to the unassessed static inventory; no game assets changed in these retention checkpoints.
 
 See `current-remake-assessment.json` for goal status, `dungeon-assessment.json` for asset-level state, and `progress.md` for dated checkpoints.
 
@@ -12,9 +12,9 @@ See `current-remake-assessment.json` for goal status, `dungeon-assessment.json` 
 |---|---|---:|---|
 | Lorencia | PR #12 merged; independent offline gate passed | 22 replacements, 84 retained assets | World1 static environment |
 | Dungeon | PR #13 and #16 merged | 4 replacements | Object28, Object29, Object01 and Object48 |
-| Dungeon | PR #18 and #19 open, ready for review | 2 retained baselines | Object51 and Object37 |
-| Dungeon | PR #20 open, ready; independent review passed | 2 retained baselines | Object42 and Object43 |
-| Dungeon | PR #22 open, ready for review | 3 retained baselines | Object45, Object46 and Object47 |
+| Dungeon | PR #18–#20 merged | 4 retained baselines | Object51, Object37, Object42 and Object43 |
+| Dungeon | PR #22 open and ready for review | 3 retained baselines | Object45, Object46 and Object47 |
+| Dungeon | PR #23 open; independent review passed | 3 rejected production studies; baseline retained | Object06, Object13 and Object15 |
 
 Client verification for new environment changes remains pending. Accepted exports and sources are indexed in `accepted-exports.json`.
 
