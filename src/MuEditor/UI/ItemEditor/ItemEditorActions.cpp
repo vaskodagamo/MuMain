@@ -134,7 +134,7 @@ std::string DescribeExport(const std::filesystem::path& file)
                        "\n  game:   " + Editor::Files::PathToUtf8(Editor::Files::AbsolutePath(file));
     const std::filesystem::path copy = Editor::Files::CopyToRepoExports(file);
     if (!copy.empty())
-        text += "\n  repo:   " + Editor::Files::PathToUtf8(copy);
+        text += "\n  copy:   " + Editor::Files::PathToUtf8(copy);
     return text;
 }
 } // namespace

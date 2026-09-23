@@ -33,6 +33,7 @@ const char* const SHIPPED_TABLES[] = {
 
 constexpr size_t CHECKSUM_BYTES = sizeof(DWORD);
 constexpr int KRIS = 0; // sword 0, the first item of the table
+constexpr size_t LEGACY_NAME_BYTES = 29; // char Name[30] with its terminator
 
 // ItemAttribute is allocated by the client at start-up; the test owns one for its run.
 class ItemTable
@@ -100,6 +101,7 @@ TEST_CASE("an item table saved without an edit is byte-identical to the file it 
         REQUIRE(fs::exists(source));
         REQUIRE(Load(source));
         CHECK(ItemFileSnapshot::RecordSize() == sizeof(ITEM_ATTRIBUTE_FILE_LEGACY));
+        CHECK(g_ItemDataHandler.GetMaxNameBytes() == LEGACY_NAME_BYTES);
 
         const fs::path saved = temp.Root() / source.filename();
         REQUIRE(Save(saved));

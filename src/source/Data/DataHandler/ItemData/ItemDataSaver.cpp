@@ -80,6 +80,13 @@ bool ItemDataSaver::Save(wchar_t* fileName, std::string* outChangeLog)
     return SaveAs<ITEM_ATTRIBUTE_FILE>(fileName, outChangeLog);
 }
 
+size_t ItemDataSaver::MaxNameBytes()
+{
+    if (ItemFileSnapshot::RecordSize() == sizeof(ITEM_ATTRIBUTE_FILE_LEGACY))
+        return sizeof(ITEM_ATTRIBUTE_FILE_LEGACY::Name) - 1;
+    return sizeof(ITEM_ATTRIBUTE_FILE::Name) - 1;
+}
+
 template <typename TFile>
 bool ItemDataSaver::SaveAs(wchar_t* fileName, std::string* outChangeLog)
 {
