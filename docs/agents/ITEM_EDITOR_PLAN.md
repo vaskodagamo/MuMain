@@ -344,6 +344,21 @@ Status:
     readback yet (add an editor-only one, or crop a `ViewCapture` frame); scripted captures need
     setters for view, orbit, level and flags. For I6: a second preview scene and target in the
     same pass gives side by side; call `g_ItemPreview.Release()` after a model hot reload.
+- **Concept images (added by the owner, 2026-09-23; built the same day).** Before Codex models an
+  item, `tools/item_editor/concepts.py` generates concept art through the OpenAI Images API
+  (`/v1/images/edits` with the item's current render as reference), the owner picks one, and the
+  pick becomes the request's `captures/ref-concept.jpg`. Usage in `assets-work/Items/concepts/`.
+  - Model choice (official docs, 2026-09-23): `--preset explore` = `gpt-image-2.5-flare`, medium,
+    3 variants in one request, 512 px reference (~$0.05 per item); `--preset final` =
+    `gpt-image-2.5-sunburst`, high, 1024 px reference. 2.5 has no Batch API; Tier 1 allows
+    5 images/minute.
+  - Safety: key only from `$OPENAI_API_KEY` (never printed or written; tested), `plan` is a dry
+    run with a text/reference/output cost split, `run` needs `--yes` and refuses above
+    `--max-images` (30) or `--max-cost` ($5); batches in `out/item-concepts/` (not in git), only
+    picks are committed.
+  - References: offline Blender renders through the study's pipeline (`refs`); alpha textures
+    render opaque and armour stands in bind pose. Once I4 lands, in-client renders are better.
+  - Checked: 82 tests with a mock server; no real API call yet (the owner sets the key).
 
 ## 8. Later options
 

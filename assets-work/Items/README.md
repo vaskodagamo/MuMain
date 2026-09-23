@@ -13,6 +13,7 @@ assets-work/Items/
   client-review.json   the owner's verdicts from the editor (created by the editor on first use)
   assignments.json     the coordinator's worker assignments for requests
   requests/            item requests: contract (README.md), request.schema.json, validate_request.py
+  concepts/            the owner's picked concept images per item (see "Concept images")
 ```
 
 The tools that build these files live in [`tools/item_editor/`](../../tools/item_editor/):
@@ -23,6 +24,7 @@ The tools that build these files live in [`tools/item_editor/`](../../tools/item
 | `item_table.py` | - | Decodes `Item_<lang>.bmd` (legacy 30-byte and current 50-byte names, BuxConvert XOR, checksum), `ItemSetType.bmd` and `ItemAddOption.bmd`. |
 | `export_openmu_items.py` | `openmu-items.json` | Reads OpenMU's item definitions from the admin backup or the local database container. |
 | `build_item_catalog.py` | `catalog.json` | Joins all of the above with `bmdconv info` of every model and the git history, and computes tiers (`tiers.py`). |
+| `concepts.py` | `concepts/<key>/` (picks), `out/item-concepts/` | Concept images through the OpenAI Images API, with reference renders, cost caps and a contact sheet; see [`concepts/README.md`](concepts/README.md). |
 
 ## Rebuilding
 
@@ -51,6 +53,17 @@ Commit the regenerated files together with whatever changed them. The catalog is
 for a commit (sorted keys, no timestamps); it depends on `openmu-items.json`, so rebuild it after
 refreshing the export. A worker branch that installs new textures or models does not rebuild the
 catalog; the coordinator does that when a request is accepted.
+
+## Concept images
+
+Before a `redesign` request, the owner can have concept images made for an item and pick one:
+`tools/item_editor/concepts.py plan` (dry run with the cost estimate) -> `refs` (renders the
+current look offline in Blender) -> `run --yes` (OpenAI Images API, hard caps on images and
+dollars) -> `sheet` (contact sheet: current look next to the variants) -> `pick <batch> <key> <v>`.
+The pick lands in `concepts/<key>/concept.jpg` (committed, small) and goes into the request as
+`captures/ref-concept.jpg`. The API key stays in the owner's shell (`OPENAI_API_KEY`); batches
+stay in the git-ignored `out/item-concepts/`. Workflow, options and prices:
+[`concepts/README.md`](concepts/README.md).
 
 ## `catalog.json`
 
