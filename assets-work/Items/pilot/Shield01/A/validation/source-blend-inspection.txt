@@ -1,0 +1,9 @@
+$ /Applications/Blender.app/Contents/MacOS/Blender -b /Users/webproduktion3/Documents/claude-test-mumain/MuMain-items-style-pilot/assets-work/Items/pilot/Shield01/A/source.blend --python /tmp/mu_style_pilot/inspect_source.py -- Shield01
+
+00:00.519  blend            | Read blend: "/Users/webproduktion3/Documents/claude-test-mumain/MuMain-items-style-pilot/assets-work/Items/pilot/Shield01/A/source.blend"
+PILOT_SOURCE_JSON {"model": "Shield01", "candidate_mesh_objects": 1, "mesh_name": "Shield01", "vertices": 228, "polygons": 432, "triangles": 432, "bounds_min": [8.199999809265137, -26.98699951171875, -15.229000091552734], "bounds_max": [29.844999313354492, 26.992000579833984, 38.749000549316406], "location": [0.0, 0.0, 0.0], "scale": [1.0, 1.0, 1.0], "rotation_euler": [0.0, 0.0, 0.0], "materials": ["du_shield1.jpg"], "uv_layers": ["UVMap"], "max_vertex_group_assignments": 1, "bone_order_metadata": ["shield1"], "bone_count": 1, "action_meta": {"Shield01_a00": {"index": 0, "lock": false}}, "active_action": "Shield01_skeleton", "active_action_frame_range": [0.0, 0.0]}
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:49:19)
+
+Blender quit
+
+exit_code=0

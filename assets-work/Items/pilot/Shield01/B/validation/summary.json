@@ -1,0 +1,178 @@
+{
+  "model": "Shield01",
+  "variant": "B",
+  "source_commit": "6f93a708",
+  "original_bmd": "src/bin/Data/Item/Shield01.bmd",
+  "original_sha256": "d2d03d1c3adeaa3c5a81222853f7398ea41cc6ab38a9e2df372ec78c13fafca3",
+  "exported_bmd": "Shield01.bmd",
+  "exported_bmd_sha256": "0a155788dca0d9535fd30d22776c9bb982d463742758f05eb1492b24a0b7a1bc",
+  "textures": [
+    {
+      "source_image": "du_shield1.jpg",
+      "source_image_sha256": "57e9d5c5eaffad84f79e8e7b83a2b79592c92f076fd3d215d3a2208011e6f64b",
+      "game_file": "du_shield1.OZJ",
+      "game_file_sha256": "101150fb501d54d43b7a587a246cc1e849735431b13eb76521670a1ed00b443b",
+      "size_px": [
+        256,
+        256
+      ]
+    }
+  ],
+  "original": {
+    "triangle_count": 18,
+    "mesh_count": 1,
+    "bone_count": 1,
+    "action_count": 1,
+    "action_key_counts": [
+      1
+    ],
+    "bounds_bind_pose": {
+      "min": [
+        8.2,
+        -26.99,
+        -15.23
+      ],
+      "max": [
+        29.85,
+        26.99,
+        38.75
+      ],
+      "size": [
+        21.65,
+        53.98,
+        53.98
+      ]
+    },
+    "texture_names": [
+      "du_shield1.jpg"
+    ]
+  },
+  "export": {
+    "mesh_count": 1,
+    "bone_count": 1,
+    "action_count": 1,
+    "triangle_count": 560,
+    "bone_order": [
+      [
+        0,
+        "shield1",
+        -1
+      ]
+    ],
+    "action_key_counts": [
+      1
+    ],
+    "texture_names": [
+      "du_shield1.jpg"
+    ],
+    "bounds": {
+      "min": [
+        8.2,
+        -26.99,
+        -15.23
+      ],
+      "max": [
+        29.84,
+        26.99,
+        38.75
+      ]
+    },
+    "texture_name": "du_shield1.jpg"
+  },
+  "source_blend": {
+    "model": "Shield01",
+    "candidate_mesh_objects": 1,
+    "mesh_name": "Shield01",
+    "vertices": 300,
+    "polygons": 560,
+    "triangles": 560,
+    "bounds_min": [
+      8.199999809265137,
+      -26.98699951171875,
+      -15.229000091552734
+    ],
+    "bounds_max": [
+      29.844999313354492,
+      26.992000579833984,
+      38.749000549316406
+    ],
+    "location": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "scale": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "rotation_euler": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "materials": [
+      "du_shield1.jpg"
+    ],
+    "uv_layers": [
+      "UVMap"
+    ],
+    "max_vertex_group_assignments": 1,
+    "bone_order_metadata": [
+      "shield1"
+    ],
+    "bone_count": 1,
+    "action_meta": {
+      "Shield01_a00": {
+        "index": 0,
+        "lock": false
+      }
+    },
+    "active_action": "Shield01_skeleton",
+    "active_action_frame_range": [
+      0.0,
+      0.0
+    ]
+  },
+  "checks": {
+    "bmdconv_validate_mesh": {
+      "command": "/Users/webproduktion3/Documents/claude-test-mumain/MuMain/out/build/macos-arm64/tools/bmdconv/Release/bmdconv validate /private/var/folders/8p/y7qf5mcn3zz__8r7hssc53x40000gn/T/mu_export_0gvei4pc/Shield01_mu_export.smd",
+      "exit_code": 0,
+      "output": "/private/var/folders/8p/y7qf5mcn3zz__8r7hssc53x40000gn/T/mu_export_0gvei4pc/Shield01_mu_export.smd: bones=1 frames=1 triangles=560 materials=1\nOK"
+    },
+    "bmdconv_validate_animation": {
+      "command": "/Users/webproduktion3/Documents/claude-test-mumain/MuMain/out/build/macos-arm64/tools/bmdconv/Release/bmdconv validate /private/var/folders/8p/y7qf5mcn3zz__8r7hssc53x40000gn/T/mu_export_0gvei4pc/anims/Shield01_a00.smd --animation",
+      "exit_code": 0,
+      "output": "/private/var/folders/8p/y7qf5mcn3zz__8r7hssc53x40000gn/T/mu_export_0gvei4pc/anims/Shield01_a00.smd: bones=1 frames=1 triangles=0 materials=0\nOK"
+    },
+    "bmdconv_compare": {
+      "command": "/Users/webproduktion3/Documents/claude-test-mumain/MuMain/out/build/macos-arm64/tools/bmdconv/Release/bmdconv compare /Users/webproduktion3/Documents/claude-test-mumain/MuMain-items-style-pilot/src/bin/Data/Item/Shield01.bmd /Users/webproduktion3/Documents/claude-test-mumain/MuMain-items-style-pilot/assets-work/Items/pilot/Shield01/B/Shield01.bmd",
+      "exit_code": 2,
+      "output": "meshes 1 vs 1, bones 1 vs 1, actions 1 vs 1, triangles 18 vs 560\nunmatched triangles: 18  max corner distance: 0.0000  max bone distance: 0.0000  differing bone names: 0\nDIFFERENT"
+    },
+    "bmdconv_info": {
+      "command": "/Users/webproduktion3/Documents/claude-test-mumain/MuMain/out/build/macos-arm64/tools/bmdconv/Release/bmdconv info /Users/webproduktion3/Documents/claude-test-mumain/MuMain-items-style-pilot/assets-work/Items/pilot/Shield01/B/Shield01.bmd",
+      "exit_code": 0,
+      "output": "model /Users/webproduktion3/Documents/claude-test-mumain/MuMain-items-style-pilot/assets-work/Items/pilot/Shield01/B/Shield01.bmd\n  name field: Data2\\Item\\Shield\\Shield01.smd  version: 12\n  meshes: 1  bones: 1  actions: 1  triangles: 560\n  bounds (bind pose): min 8.20 -26.99 -15.23  max 29.84 26.99 38.75  size 21.65 53.98 53.98\n  mesh 0: triangles=560 vertices=300 normals=265 uvs=322 texture=du_shield1.jpg\n  bone 0: \"shield1\" parent=-1\n  action 0: keys=1 lock=0"
+    },
+    "mu_texture_check": {
+      "command": "python3 /Users/webproduktion3/Documents/claude-test-mumain/MuMain-items-style-pilot/tools/mu_texture.py check /Users/webproduktion3/Documents/claude-test-mumain/MuMain-items-style-pilot/assets-work/Items/pilot/Shield01/B/du_shield1.OZJ",
+      "exit_code": 0,
+      "output": "OK /Users/webproduktion3/Documents/claude-test-mumain/MuMain-items-style-pilot/assets-work/Items/pilot/Shield01/B/du_shield1.OZJ"
+    },
+    "triangle_budget_passed": true,
+    "texture_dimensions_power_of_two_max_1024": true,
+    "texture_is_256x256": true,
+    "mesh_count_preserved": true,
+    "texture_names_and_suffixes_preserved": true,
+    "bone_order_names_and_parents_match": true,
+    "action_count_and_key_counts_match": true,
+    "bone_motion_matches_within_0_0001_and_no_name_diffs": true,
+    "bind_bounds_preserved_within_0_02_due_to_bmdconv_precision": true,
+    "source_bounds_preserved_within_0_006": true,
+    "source_transform_identity": true,
+    "source_has_uvs_and_one_bone_assignment_max": true
+  },
+  "comparison_interpretation": "DIFFERENT is expected because the pilot intentionally remodels geometry; the compare report confirms equal mesh, bone and action counts and zero bone motion/name difference.",
+  "overall_required_checks_passed": true
+}
