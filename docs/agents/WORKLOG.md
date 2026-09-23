@@ -973,3 +973,179 @@ buttons by hand; Windows/Linux builds untested.
 **Done:** Refreshed an isolated worktree from owner-fork main after PR #12 merged. Integrated the reviewed Object48 BMD and recorded export, placement, texture and converter evidence. Updated current assessment: Lorencia remains artistically unfinished despite first-pass 22-replacement and 84-retention counts.
 **Verified:** The integrated BMD matches the reviewed export hash; the official converter validates its static and animation SMDs; the frozen texture container passes; all 63 Object2 models resolve their texture dependencies. Exactly one Object2 game path changes in this branch. Client and runtime verification remain pending.
 **Open / next:** Opened [PR #16](https://github.com/vaskodagamo/MuMain/pull/16), ready for review and mergeable against main. Resume production with a Lorencia quality batch from refreshed main.
+
+## 2026-09-23 - M8: eyes for an AI agent (Claude Opus 5.5, branch feat/ai-map-editing)
+**Goal:** Let an agent see a map through the control socket on the Mac editor build, keep the client
+answering while its window is hidden, and fix the terrain loaders' memory-safety bugs.
+
+**Done:**
+- `macos-arm64-mueditor` turns `ENABLE_CONTROL_SOCKET` on; the transport works on macOS
+  (`SO_NOSIGPIPE`, 256 KiB send buffer on accepted sockets; the socket tests give their client a
+  wider buffer on macOS, where a blocking 16 KiB write into the default 8 KiB deadlocked them).
+- Hidden window: no stall found on macOS; while the socket serves, frames of a minimized, hidden or
+  covered window are drawn offscreen (`Render::HiddenWindow`), so captures keep working.
+- New commands (editor builds): `map-open`, `map-info`, `map-camera` (tile / top-down rectangle),
+  `map-export` (layer PNGs, `legend.json`, `objects.json`), `map-query`, and `screenshot` with
+  `clean`, `region` and PNG output. Pure logic in `src/MuEditor/MapInspect/` (unit-tested),
+  engine adapter `Editor::LiveMap`, thin handlers in `App/Control/ControlCommandsMap*.cpp`.
+- Player build: bounds checks in `OpenTerrainMapping`, `OpenTerrainHeightNew`, `OpenJpegBuffer`
+  (logged refusal instead of overrun) and the row-255 corner reads of `RenderTerrainTile(_After)`.
+- Docs: `docs/control-socket.md` (macOS, "Editor commands", hidden-window note), `MAP_EDITOR.md`,
+  plan status M8.
+
+**Verified:** editor and player builds exit 0, no new warnings in touched files; `ctest` player
+358/358, editor build 386/386 (socket tests included). Release editor client on World1/World3
+driven from Python: every command and its argument errors, clean/overlay shots, a top-down shot of
+Lorencia cropped to the map, the layer PNGs (safe zone, walls, moat, river; north up as in the
+top-down shot), map switches, and all of it again while the window was minimized, hidden (Cmd+H)
+and covered by a floating window (log: offscreen on/off at each change). `src/bin` unchanged.
+
+**Open / next:** M9 (undoable edits over the socket), M10 (new maps and gates). Windows and Linux not
+built; the Linux compositor stall is only covered where SDL reports the window as occluded.
+
+## 2026-09-23 - M9: hands for an AI agent (Claude Opus 5.5, branch feat/ai-map-editing)
+**Goal:** Let an agent make high-level, undoable map edits through the control socket, dry-run
+them, save them like the Map Editor does, and throw them away again.
+
+**Done:**
+- Edit scripts (`mu-map-edit/1`) for terrain, textures, walkability, light and objects (place,
+  seeded Poisson-disk scatter with avoid rules, move/rotate/scale/delete/drop to ground) over
+  circles, rectangles, polygons and paths; parsed, checked and run on plain arrays in
+  `src/MuEditor/MapScript/` (unit-tested), applied to the live map as one undo step by
+  `Editor::LiveMapEdit`.
+- Socket commands `map-apply` (script or path, dry run), `map-undo`, `map-redo`, `map-history`,
+  `map-save`, `map-revert` (`App/Control/ControlCommandsMapEdit.cpp`); saves and reverts through
+  `Editor::LiveMapFiles` and the tabs' own saves (now able to report the paths they wrote).
+- `Editing/` brushes take masks of any shape (`WeightMask`); `CommandStack` lists its labels; the
+  height save moved to `Editor::HeightSave` and refuses 24-bit height maps.
+- Docs: new `docs/agents/AI_MAP_EDITING.md`; pointers in `docs/control-socket.md` and `MAP_EDITOR.md`;
+  plan status M9.
+
+**Verified:** editor build and player build exit 0 with no new warnings; `ctest` editor preset
+416/416, player preset 388/388 (30 new cases). Release editor client on World1 over the socket:
+grove script dry run then apply, before/after/undo/redo/revert screenshots from one pose (undo
+and revert match the before shot within frame noise), unsaved flags back to false after undo,
+map-save of all five files with backups and a reload, every error path. `src/bin` restored from
+git, `out/editor-backups` removed.
+
+**Open / next:** M10 (maps 82+ joined by gates). Windows and Linux not built (MSVC reviewed by
+reading only). `busy` while a stroke is held was not exercised at run time; edits in a
+logged-in session were not tried (offline only).
+
+## 2026-09-23 - M10 part A: new maps and gates (Claude Opus 5.5, branch feat/ai-map-editing)
+**Goal:** Let the world grow the MU way: new 256 x 256 maps (82 and up) joined by gates, from the
+Map Editor and over the control socket, plus the files OpenMU needs (never applied).
+
+**Done:**
+- New maps: `MuEditor/NewMap/` (renumbered template copies, flat maps, Lorencia's named models
+  under numbered names, writing with the repository copy; refuses existing folders), adapter
+  `Editor::NewMapFiles`, the Map Editor's **New map...** window and socket `map-new`.
+- Names: `World::MapNames` (player build too, inert for stock data) gives maps 82+ the name in
+  `Data/World{N}/MapName.txt`; `--world` and `map-open` accept any existing folder 1 to 255.
+- Gates: `MuEditor/Gates/` (Gate.bmd byte-exact reader/writer, edits of gates 345+, checks),
+  adapter `Editor::LiveGates`, the **Gates** tab (list, ground rectangles over the walkability
+  overlay, draw, add, move, remove, look at), socket `gate-list`, `gate-add`, `gate-remove`,
+  `gate-show`. Gate 344 turned out to be a Karutan 2 spawn record, so custom gates start at 345.
+- OpenMU export: `MuEditor/ServerExport/` + `Editor::ServerExportFiles`, Gates tab button and
+  `map-server-export` -> `out/openmu-export/map{N}/` (walk map for new maps, map.json, gates.json,
+  HOWTO.md, openmu.sql marked not applied).
+- Docs: `MAP_EDITOR.md` (New maps, Gates, OpenMU export, formats, files), `AI_MAP_EDITING.md`
+  (Growing the world), `docs/control-socket.md`, plan status, handoff.
+
+**Verified:** editor and player builds exit 0, no new warnings; `ctest` editor 441/441, player
+413/413 (25 new cases). Socket run on the Release editor client: flat map 82 created and opened,
+booted with `--world 83`, a Lorencia copy as map 83 opened with its 2870 objects, gate pair
+Lorencia <-> 82 added (only records 345-348 of Gate.bmd changed), shown by `gate-list`, `map-info`
+and the Gates tab (`gate-show`), export written and read. Test maps deleted, Gate.bmd restored from
+the editor's backup (identical to the main checkout's), backups and export folder removed.
+
+**Open / next:** walking through the gate needs the server (not tried, no login). The Gates tab's
+mouse drawing and buttons and the New map window were only seen, not clicked (ImGui takes real
+input only). A copy of Lorencia loses Lorencia-only code (effects, blending). Windows and Linux not
+built. `openmu.sql` was never run against a database.
+
+## 2026-09-23 - M10 part B: mapctl and the agent guide (Claude Opus 5.5, branch feat/ai-map-editing)
+**Goal:** Make map editing easy for AI agents and the owner: a command line over the control
+socket, and one page an agent follows when the owner says "expand X with Y".
+
+**Done:**
+- `tools/world_editor/mapctl.py` (standard library only, CLI and module): `launch` (finds the
+  editor build, sets `MU_CONTROL_SOCKET`, waits for the world scene, prints the PID), `ping`, `info`,
+  `open` (refuses while the loaded map has unsaved edits, which `map-open` drops silently;
+  `--discard`), `camera`, `shot` (clean PNG, `--topdown` frames and crops), `export`, `query`,
+  `apply`/`dry-run` (script files inline, by path above the 256 KiB line limit), `undo`, `redo`,
+  `history`, `save`, `revert`, `new-map`, `gates`, `gate-add`, `gate-remove`, `gate-show`,
+  `server-export`, `quit` (waits until the client has gone), `send`, and `sketch`
+  (`map_sketch.py`: a labelled tile grid and a script's shapes over an export layer or a top-down
+  shot). JSON out; exit 0 ok, 1 refused, 2 bad input, 3 no client or no answer.
+- Tests: `tools/world_editor/tests/test_mapctl.py`, 47 cases without a client (fake socket server),
+  ctest `world_editor_mapctl`.
+- `docs/agents/AI_MAP_EDITING.md` rewritten as the entry point: prompt template and defaults, ground
+  rules, setup, the loop with sketches and layered applies, MU design rules, growing the world,
+  hand-back (review in the editor, or branch + PR after the owner's OK), the server side; the
+  reference kept. Pointers in `AGENTS.md`, `HANDOFF.md`, `docs/control-socket.md`, `MAP_EDITOR.md`;
+  plan row and status M10 part B.
+
+**Verified:** every mapctl command against the Release editor client (Lorencia and a new map 82,
+launch 1.7 s), screenshots looked at (clean, overlay, top-down, side, sketches; the sketched gate
+rectangles lie on the engine's gate areas). Saved height file restored from git, test map and gates
+removed (`Gate.bmd` byte-identical to before), backups and logs deleted. No server login.
+
+**Open / next:** mapctl on Windows needs a Python with `AF_UNIX` (CPython there has none). The
+branch + PR hand-back and the `assets-work/map-edits/` record folder are documented, not yet used.
+
+## 2026-09-23 - M8-M10 review fixes (Claude (AI map editing workflow))
+**Goal:** Verify and fix every finding of the M8-M10 reviews and every friction item of the
+acceptance run (map 82 "Lorencia Outskirts"), keeping the acceptance deliverables.
+
+**Done:**
+- Crash: Korean (CP949) model names ended the client in `map-query`, `map-export` and `map-apply`
+  on most game maps (nlohmann's strict UTF-8 check threw with no catch). `ModelName` escapes
+  non-UTF-8 names as `%XX` (`Editor::Text::ValidUtf8`); the dispatcher answers `failed` for a
+  handler exception; response lines use the replace handler.
+- Hidden window: frames drawn offscreen are submitted with a fence, at most two in flight, at most
+  60 a second (`Render::HiddenWindow::SubmitPaced`); EndFrame keeps its one direct submit (the
+  renderer contract test).
+- Gates: `gate.bmd` found in any letter case (`Editor::NewMap::FindIgnoringCase`; tests read the
+  tracked spelling); every gate edit, `gate-list` and export first re-read the file
+  (`LiveGates::Refresh`); traps (no walkable arrival tile, arrival inside its own enter area) are
+  refused unless `allow_trap`; `faces` in gate answers; gate-show and the Gates tab share
+  `Editor::Camera::FrameGateArea`.
+- OpenMU export: only the gates the editor added; a stock arrival they land on is looked up, never
+  inserted; rectangles low corner first; no spawn gates; the map name as hex in `openmu.sql`, which
+  also sets `ON_ERROR_STOP`; `gates.json`/`map.json` carry their own `FormatVersion` so OpenMU's
+  spawn import refuses them; the HOWTO says so and gives `git add src/bin/Data/gate.bmd`.
+- Scripts: `light.bake`, `attribute.set` `under`, a cost budget (`MapScript/ScriptCost`), no FP
+  contraction for MapScript (CMake), the unknown-model error lists types. Commands: `map-tab`,
+  `map-info` `models`, `pid` in `ping` and `quit`, `Quit requested: ...` in `MuError.log`
+  (editor builds), captures retry skipped frames for 3 s.
+- PNG writer (vendored stb, editor only): row filters plus deflate with per-block Huffman codes.
+- mapctl: private default socket folder (`/tmp/mu-<uid>`, 0700, or `$XDG_RUNTIME_DIR`) and an
+  owner check; `launch` refuses a busy socket and another client's pid; `quit` waits for the pid;
+  `shot` retries; JSON on usage errors; `info --models`, `gate-add --allow-trap`, `tab`.
+- `MapManager.cpp`: the double blank line (CI clang-format gate) removed; the `MapName.txt` lookup
+  moved behind `_EDITOR`. Smaller: `MIN_OBJECT_SCALE` and `TileOf` reused instead of copied.
+- Docs: `AI_MAP_EDITING.md` (socket, loop saves, design rules 1/10/11/12 with Lorencia's measured
+  walkability per model, new-map light and names, gates, git, server export, reference, gotchas),
+  `docs/control-socket.md`, `MAP_EDITOR.md`, `WORLD_EDITOR_PLAN.md`, `HANDOFF.md`.
+- Deliverables: `out/openmu-export/map82` regenerated with the new format; map 82 and `gate.bmd`
+  unchanged (checksums before and after).
+
+**Verified:** editor preset 449/449 and player preset 421/421 tests (new: ValidUtf8, gate traps,
+export scope and SQL quoting, light bake, `under`, script cost, PNG size, mapctl 53 cases);
+clang-format 21 clean on the changed `src/source` lines. Release editor client over mapctl:
+Devias whole-map query (2,237 objects) and objects export with escaped names, unknown-model error,
+a dry run placing a model by its escaped name with `under` and `light.bake`, a heavy script refused
+in 0.07 s; window hidden on Devias and Lorencia top-downs: footprint flat at 1.2 and 2.85 GB, CPU as
+when visible, shots correct; trap refusals and `--allow-trap`; `gate-show` then `tab texture`
+(overlay gone in the clean shot); `gate.bmd` swapped behind the client and picked up; exports of map
+0 (gates 345-348 only) and 82; `quit` waited for the pid, `Quit requested` logged; end to end:
+`launch --world 1`, `info`, `open --map 82`, clean shots of map 82 looked at. PNG round trips
+against Python's zlib (noise, gradients, three 1920 x 1080 frames), also under ASan/UBSan. The
+player binary has none of `Quit requested`, `map-tab`, `MU_CONTROL_SOCKET`. No server login.
+
+**Open / next:** Windows and Linux not built. The owner decides whether the player build names new
+maps (`MapName.txt`). Map 82 would profit from an art pass (focal points in the meadow, a road end,
+softer river edges). New maps made with `models_from` still name models by file, not by the source
+catalog. The acceptance deliverables are saved, not committed.
+

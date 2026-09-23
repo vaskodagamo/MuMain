@@ -139,6 +139,28 @@ out/build/macos-arm64/tools/bmdconv/Release/bmdconv compare src/bin/Data/Item/Sw
      `src/bin/Data` and the pre-rebuild originals without a restart. Models the map load read
      show `as built` (the last build's `Data` copy); press **Current** before judging files you
      just pulled or Codex just delivered.
+   - AI map editing (M8 to M10; branch `feat/ai-map-editing`): **an agent asked to edit or expand
+     a map starts at [`AI_MAP_EDITING.md`](AI_MAP_EDITING.md)** (the owner's prompt template, the
+     rules, the loop, MU design rules, hand-back and server steps). It drives the editor with
+     `python3 tools/world_editor/mapctl.py` (`launch --world N`, `info`, `shot`, `export`, `query`,
+     `sketch`, `dry-run`/`apply`, `undo`, `save`, `new-map`, `gate-add`, `server-export`, `quit`;
+     tests in `tools/world_editor/tests`, ctest `world_editor_mapctl`). Underneath, the
+     `macos-arm64-mueditor` build has
+     the control socket (`MU_CONTROL_SOCKET=/tmp/x.sock ./Main --editor --world 1`). Agents look
+     at a map with `map-info`, `map-query`, `map-export`, `map-camera` and clean screenshots, and
+     change it with edit scripts (`map-apply`, dry run first), `map-undo`/`map-redo`,
+     `map-save` and `map-revert`. M10 part A: new maps 82+ (`Data/World83`...) from
+     the Map Editor's **New map...** window or `map-new`, gates in the **Gates** tab or `gate-*`
+     (saved to `Gate.bmd` at once; custom gates from 345), and an OpenMU export (`HOWTO.md`, JSON,
+     unapplied SQL). Git tracks the gate table as `src/bin/Data/gate.bmd` (lowercase): commit gate
+     changes with `git add src/bin/Data/gate.bmd`; new map folders need `git add -f`. The
+     acceptance map 82 "Lorencia Outskirts" (`Data/World83`, `Object83`, gates 345-348, export in
+     `out/openmu-export/map82`) is built and saved but not committed. After the review fixes:
+     mapctl's default socket is `/tmp/mu-<uid>/mu-mapctl.sock`; a hidden client is paced like a
+     visible one; Korean model names show as `%XX`; `light.bake` shades relief; `attribute.set`
+     takes `under` (a selector); `map-tab` (`mapctl tab texture`) leaves the Gates tab. Owner
+     decision pending: the player build does not read `MapName.txt` yet (behind `_EDITOR` in
+     `CMapManager::GetMapName`).
    - Not yet tried by hand: choosing a file in the SDL file dialog, the Item/Skill editors, the
      request dialog's **Open folder** and preview buttons, **Copy command**; the M6/M7 buttons were
      driven by injected mouse and key events only. Windows and Linux were not built. For scripted
