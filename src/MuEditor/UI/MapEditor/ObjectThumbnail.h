@@ -2,12 +2,15 @@
 
 #ifdef _EDITOR
 
+#include "Editing/ThumbnailFraming.h"
+
 #include <unordered_map>
 #include <vector>
 
-// Renders loaded world-object models (Models[type]) to small textures for use as
-// ImGui thumbnails, so the object palette can show a preview grid instead of a
-// name list.
+// Renders loaded models (Models[type]) to small textures for use as ImGui
+// thumbnails: world objects for the Map Editor's object palette, and item models
+// (MODEL_ITEM + item type) for the Item Editor's Browse tab, each framed its own
+// way (Editor::Thumbnail::Framing).
 //
 // Get()/RequestSlotPreview() are called from ImGui widget-building code
 // (CMuEditorCore::Update(), via CMapEditorUI/CMapObjectBrowser), which runs
@@ -33,8 +36,9 @@ public:
 
     // Returns a texture id previewing model `type`, queuing a render if not
     // already cached (subject to the per-frame budget). Returns 0 if not ready
-    // yet or the model isn't loaded.
-    unsigned int Get(int type);
+    // yet or the model isn't loaded. A type is always framed the same way; the
+    // world object and item model ranges do not overlap.
+    unsigned int Get(int type, Editor::Thumbnail::Framing framing = Editor::Thumbnail::Framing::Object);
 
     // Drops all cached thumbnails (e.g. on map change, since model slots change).
     void Invalidate();
@@ -74,7 +78,13 @@ private:
     CObjectThumbnail() = default;
     ~CObjectThumbnail() = default;
 
-    unsigned int RenderNow(int type);
+    struct PendingRender
+    {
+        int type;
+        Editor::Thumbnail::Framing framing;
+    };
+
+    unsigned int RenderNow(int type, Editor::Thumbnail::Framing framing);
 
     static constexpr int THUMB_SIZE = 112;
     static constexpr int MAX_RENDERS_PER_FRAME = 6;
@@ -89,7 +99,7 @@ private:
     int m_budget = 0;
     std::unordered_map<int, unsigned int> m_cache;      // type -> renderer texture id (0 = failed)
     std::unordered_map<int, int> m_failCount;           // type -> consecutive RenderNow() failures so far
-    std::vector<int> m_pendingTypes;                    // Get() requests awaiting ProcessPendingRequests()
+    std::vector<PendingRender> m_pending;               // Get() requests awaiting ProcessPendingRequests()
 
     bool m_scratchPending = false;    // a RequestSlotPreview() call awaits ProcessPendingRequests()
     int  m_scratchSlot = -1;          // Models[] slot to render for that pending request

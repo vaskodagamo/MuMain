@@ -132,9 +132,10 @@ target_include_directories(editor_model_preflight_tests PRIVATE
 )
 
 # The Map Editor's undo history (commands, terrain strokes), object selection,
-# transform gizmo math, terrain brushes and popup mouse guard: logic without
-# ImGui or engine state, tested against stand-in objects and terrain. MuClient
-# supplies the engine's AngleMatrix, which the gizmo's turns must agree with.
+# transform gizmo math, terrain brushes, popup mouse guard and the model
+# thumbnails' camera framing: logic without ImGui or engine state, tested
+# against stand-in objects and terrain. MuClient supplies the engine's
+# AngleMatrix, which the gizmo's turns must agree with.
 set(MU_EDITOR_EDITING_DIR ${PROJECT_SOURCE_DIR}/src/MuEditor/Editing)
 mu_add_test(
     NAME editor_editing_tests
@@ -144,6 +145,7 @@ mu_add_test(
         test_object_selection.cpp
         test_popup_mouse_guard.cpp
         test_terrain_brush.cpp
+        test_thumbnail_framing.cpp
         ${MU_EDITOR_EDITING_DIR}/CommandStack.cpp
         ${MU_EDITOR_EDITING_DIR}/EditCommandGroup.cpp
         ${MU_EDITOR_EDITING_DIR}/FieldBrush.cpp
@@ -156,6 +158,7 @@ mu_add_test(
         ${MU_EDITOR_EDITING_DIR}/TerrainBrush.cpp
         ${MU_EDITOR_EDITING_DIR}/TerrainPatchCommand.cpp
         ${MU_EDITOR_EDITING_DIR}/TerrainStroke.cpp
+        ${MU_EDITOR_EDITING_DIR}/ThumbnailFraming.cpp
     LINK_LIBS
         MuClient
 )

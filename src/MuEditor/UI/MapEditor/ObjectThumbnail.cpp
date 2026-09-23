@@ -61,6 +61,34 @@ namespace
         m[3] = 0.0f;    m[7] = 0.0f;    m[11] = 0.0f;     m[15] = 1.0f;
         mu::GetRenderer().LoadMatrix(m);
     }
+
+    constexpr float NO_BOUND = 1e9f;
+
+    // The model's bounds in the pose BoneTransform holds, from its vertices
+    // (BMD::Transform does not return them). False for a model without vertices.
+    bool PoseBounds(const BMD& model, vec3_t boundsMin, vec3_t boundsMax)
+    {
+        Vector(NO_BOUND, NO_BOUND, NO_BOUND, boundsMin);
+        Vector(-NO_BOUND, -NO_BOUND, -NO_BOUND, boundsMax);
+        bool any = false;
+        for (int mesh = 0; mesh < model.NumMeshs; ++mesh)
+        {
+            const Mesh_t& meshData = model.Meshs[mesh];
+            for (int vertex = 0; vertex < meshData.NumVertices; ++vertex)
+            {
+                const Vertex_t& source = meshData.Vertices[vertex];
+                vec3_t position;
+                VectorTransform(source.Position, BoneTransform[source.Node], position);
+                for (int axis = 0; axis < 3; ++axis)
+                {
+                    boundsMin[axis] = std::fmin(boundsMin[axis], position[axis]);
+                    boundsMax[axis] = std::fmax(boundsMax[axis], position[axis]);
+                }
+                any = true;
+            }
+        }
+        return any;
+    }
 }
 
 CObjectThumbnail& CObjectThumbnail::GetInstance()
@@ -87,7 +115,7 @@ void CObjectThumbnail::Invalidate()
             mu::GetRenderer().ReleaseTexture(kv.second);
     m_cache.clear();
     m_failCount.clear();
-    m_pendingTypes.clear();
+    m_pending.clear();
 }
 
 void CObjectThumbnail::Invalidate(int type)
@@ -98,19 +126,21 @@ void CObjectThumbnail::Invalidate(int type)
         m_cache.erase(it);
     }
     m_failCount.erase(type);
-    m_pendingTypes.erase(std::remove(m_pendingTypes.begin(), m_pendingTypes.end(), type), m_pendingTypes.end());
+    std::erase_if(m_pending, [type](const PendingRender& pending) { return pending.type == type; });
 }
 
-unsigned int CObjectThumbnail::Get(int type)
+unsigned int CObjectThumbnail::Get(int type, Editor::Thumbnail::Framing framing)
 {
     auto it = m_cache.find(type);
     if (it != m_cache.end())
         return it->second;
     if (m_budget <= 0)
         return 0;  // try again next frame
-    if (std::find(m_pendingTypes.begin(), m_pendingTypes.end(), type) == m_pendingTypes.end())
+    const bool queued = std::any_of(m_pending.begin(), m_pending.end(),
+                                    [type](const PendingRender& pending) { return pending.type == type; });
+    if (!queued)
     {
-        m_pendingTypes.push_back(type);
+        m_pending.push_back({type, framing});
         --m_budget;
     }
     return 0;  // result appears once ProcessPendingRequests() has run
@@ -145,9 +175,10 @@ void CObjectThumbnail::ProcessPendingRequests()
     if (!mu::GetRenderer().IsFrameActive())
         return;
 
-    for (const int type : m_pendingTypes)
+    for (const PendingRender& pending : m_pending)
     {
-        const unsigned int tex = RenderNow(type);
+        const int type = pending.type;
+        const unsigned int tex = RenderNow(type, pending.framing);
         if (tex != 0)
         {
             m_cache[type] = tex;
@@ -161,11 +192,11 @@ void CObjectThumbnail::ProcessPendingRequests()
         }
         // else: leave uncached - Get() will queue another attempt later.
     }
-    m_pendingTypes.clear();
+    m_pending.clear();
 
     if (m_scratchPending)
     {
-        const unsigned int tex = RenderNow(m_scratchSlot);
+        const unsigned int tex = RenderNow(m_scratchSlot, Editor::Thumbnail::Framing::Object);
         if (tex != 0)
         {
             m_scratchResult = tex;
@@ -184,7 +215,7 @@ void CObjectThumbnail::ProcessPendingRequests()
     }
 }
 
-unsigned int CObjectThumbnail::RenderNow(int type)
+unsigned int CObjectThumbnail::RenderNow(int type, Editor::Thumbnail::Framing framing)
 {
     if (type < 0)
         return 0;
@@ -192,7 +223,7 @@ unsigned int CObjectThumbnail::RenderNow(int type)
     if (b->NumMeshs <= 0 || b->Meshs == nullptr)
     {
         char msg[96];
-        snprintf(msg, sizeof(msg), "[MapEditor] Thumbnail skip: type %d not loaded (NumMeshs=%d, Meshs=%p)",
+        snprintf(msg, sizeof(msg), "[Editor] Thumbnail skip: type %d not loaded (NumMeshs=%d, Meshs=%p)",
                  type, b->NumMeshs, static_cast<void*>(b->Meshs));
         g_MuEditorConsoleUI.LogEditor(msg);
         return 0;
@@ -205,7 +236,7 @@ unsigned int CObjectThumbnail::RenderNow(int type)
     if (tex == 0u)
     {
         char msg[96];
-        snprintf(msg, sizeof(msg), "[MapEditor] Thumbnail FAILED: type %d BeginOffscreenCapture returned 0", type);
+        snprintf(msg, sizeof(msg), "[Editor] Thumbnail FAILED: type %d BeginOffscreenCapture returned 0", type);
         g_MuEditorConsoleUI.LogEditor(msg);
         return 0;
     }
@@ -241,42 +272,21 @@ unsigned int CObjectThumbnail::RenderNow(int type)
     vec3_t bbMin = { 0, 0, 0 }, bbMax = { 0, 0, 0 };
     OBB_t obb;
     b->Transform(BoneTransform, bbMin, bbMax, &obb, true);
+    // Transform() leaves bbMin/bbMax as they are, so world objects are framed as
+    // the fallback box (a typical object at the origin), as they always were.
+    // Items are framed from their real bounds.
+    if (framing == Editor::Thumbnail::Framing::Item && !PoseBounds(*b, bbMin, bbMax))
+        return 0;
 
-    // Frame the model from its bounding box (MU objects are Z-up). Fall back to a
-    // sensible default when the box comes back degenerate.
-    float cx = (bbMin[0] + bbMax[0]) * 0.5f;
-    float cy = (bbMin[1] + bbMax[1]) * 0.5f;
-    float cz = (bbMin[2] + bbMax[2]) * 0.5f;
-    const float sx = bbMax[0] - bbMin[0];
-    const float sy = bbMax[1] - bbMin[1];
-    const float sz = bbMax[2] - bbMin[2];
-    // Half the box's diagonal, not half its largest single axis: a box that's
-    // wide AND tall (not just cube-shaped) needs the full diagonal to guarantee
-    // every corner stays inside the frame from an arbitrary viewing angle: using
-    // only the largest axis put the camera too close, so non-cubic objects (most
-    // of them) stuck out past the thumbnail's edges.
-    float radius = 0.5f * std::sqrt(sx * sx + sy * sy + sz * sz);
-    if (!(radius > 1.0f) || radius > 100000.0f)
-    {
-        // Degenerate/invalid box: assume a typical MU object size.
-        cx = 0.0f; cy = 0.0f; cz = 80.0f;
-        radius = 160.0f;
-    }
+    // Frame the model from its bounding box (see Editing/ThumbnailFraming.h).
+    const Editor::Thumbnail::Camera camera = Editor::Thumbnail::FrameBounds(
+        {bbMin[0], bbMin[1], bbMin[2]}, {bbMax[0], bbMax[1], bbMax[2]}, framing);
+    const float eye[3] = {camera.eye.x, camera.eye.y, camera.eye.z};
+    const float center[3] = {camera.center.x, camera.center.y, camera.center.z};
+    const float up[3] = {camera.up.x, camera.up.y, camera.up.z};
 
-    const float fovDeg = 35.0f;
-    const float dist = radius / std::tan(fovDeg * 0.5f * 3.14159265f / 180.0f) * 1.8f;
-
-    float dir[3] = { 1.0f, -1.0f, 0.8f };
-    Normalize3(dir);
-    const float eye[3]    = { cx + dir[0] * dist, cy + dir[1] * dist, cz + dir[2] * dist };
-    const float center[3] = { cx, cy, cz };
-    const float up[3]     = { 0.0f, 0.0f, 1.0f };
-
-    // Generous near/far so nothing clips regardless of true model size.
-    const float znear = std::fmax(2.0f, dist * 0.05f);
-    const float zfar  = dist + radius * 8.0f + 4000.0f;
     glMatrixMode(GL_PROJECTION); glLoadIdentity();
-    gluPerspective(fovDeg, 1.0f, znear, zfar);
+    gluPerspective(camera.fovDegrees, 1.0f, camera.zNear, camera.zFar);
     glMatrixMode(GL_MODELVIEW); glLoadIdentity();
     LoadLookAt(eye, center, up);
 
