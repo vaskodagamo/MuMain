@@ -90,6 +90,17 @@ void CObjectThumbnail::Invalidate()
     m_pendingTypes.clear();
 }
 
+void CObjectThumbnail::Invalidate(int type)
+{
+    if (const auto it = m_cache.find(type); it != m_cache.end())
+    {
+        FreeTexture(it->second);
+        m_cache.erase(it);
+    }
+    m_failCount.erase(type);
+    m_pendingTypes.erase(std::remove(m_pendingTypes.begin(), m_pendingTypes.end(), type), m_pendingTypes.end());
+}
+
 unsigned int CObjectThumbnail::Get(int type)
 {
     auto it = m_cache.find(type);

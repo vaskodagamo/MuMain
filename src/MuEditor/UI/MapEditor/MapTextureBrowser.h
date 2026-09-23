@@ -38,6 +38,12 @@ private:
     void LoadPending(Preview& p);   // budgeted, called from Render()'s thumbnail loop
     void ClearPreviews();
 
+    // "Upload image...": opens the file dialog, then imports the picked file in a
+    // later frame (the dialog does not block the game).
+    void RenderUploadButton(int defaultWorld);
+    void PollUploadPick(int defaultWorld);
+    void UploadPickedImage(const std::wstring& picked, int defaultWorld);
+
     bool             m_scanned = false;
     int              m_selectedWorld = -1;
     std::vector<int> m_worlds;      // World folder numbers found in the Data tree
@@ -46,6 +52,7 @@ private:
                                     // (the game cursor can cover ImGui tooltips)
     int              m_selectedIndex = -1;  // clicked preview (index into m_previews)
     std::string      m_status;              // result of the last import action
+    int m_uploadWorld = -1;                 // map that was current when "Upload image..." was clicked
 };
 
 #define g_MapTextureBrowser CMapTextureBrowser::GetInstance()

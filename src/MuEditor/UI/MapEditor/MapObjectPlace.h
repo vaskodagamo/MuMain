@@ -2,6 +2,8 @@
 
 #ifdef _EDITOR
 
+#include <filesystem>
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -27,46 +29,48 @@ namespace Editor::ObjectPlace
     // sorted by type. These are the types safe to place (their .bmd is loaded).
     std::vector<ModelEntry> EnumerateModels(int world);
 
-    // Places an object of `type` at world position (x,y), with the given yaw
-    // (degrees, Z rotation) and scale. When `snap` is set, the position is
-    // snapped to the tile centre. Returns false if creation failed.
-    bool Place(int type, float x, float y, float yawDeg, float scale, bool snap);
-
-    // The (x,y,z) Place() would actually use for the same (x,y,snap) - tile-centre
-    // snapping and terrain-height lookup, without creating anything. Shared by
-    // Place() and the placement preview so they can never drift apart.
+    // Where a click at world position (x,y) places an object: snapped to the tile
+    // centre when `snap` is set, on the ground. Shared by placing and the placement
+    // preview so they can never drift apart.
     void ComputePlacementPosition(float x, float y, bool snap, vec3_t outPos);
 
-    // Saves all live objects back to Data\World{world}\EncTerrain{world}.obj
-    // (encrypted by the engine SaveObjects). Returns false on write failure.
-    bool Save(int world);
+    // Saves all live objects back to Data/World{world}/EncTerrain{world}.obj
+    // (encrypted by the engine SaveObjects) and copies the file into the
+    // repository. Returns false on write failure. `outReport` gets the
+    // status-line text with the absolute paths written.
+    bool Save(int world, std::string& outReport);
 
     // Returns the visible object under the mouse cursor (ray pick), or nullptr.
     OBJECT* PickUnderCursor();
 
+    // Calls visit(o) for every live world object of the loaded map, block by block of
+    // the object grid (the Outliner, the undo steps and "Objects follow terrain").
+    void ForEachLiveObject(const std::function<void(OBJECT*)>& visit);
+
+    // Every live object of `type` on the current map, ordered by position (by Y,
+    // then X), so stepping through them visits them in the same order each time.
+    std::vector<OBJECT*> LiveObjectsOfType(int type);
+
+    // Sets counts[type] to the number of live objects of each type; `counts` is
+    // resized to cover the highest type on the map. Reuses the vector's storage.
+    void CountLiveObjects(std::vector<int>& counts);
+
+    // The index of the record in the encrypted object file `objFile`
+    // (EncTerrain{N}.obj) with this type at exactly this position, or -1 when
+    // none matches (the object was moved or added after the file was saved).
+    int FindRecordIndex(const std::filesystem::path& objFile, int type, const vec3_t position);
+
     // Moves `o` to (x,y,z). If the move crosses a 16x16 object-grid block the
-    // object is re-created in the correct block (so live culling stays correct);
-    // returns the possibly-new object pointer. The saved .obj re-blocks on load
-    // regardless, so persistence is always correct.
+    // object is re-created in the correct block (so live culling stays correct),
+    // keeping its place in the saved file (OBJECT::SaveOrder); returns the
+    // possibly-new object pointer.
     OBJECT* Reposition(OBJECT* o, float x, float y, float z);
 
     // Removes `o` from the world.
     void Remove(OBJECT* o);
 
-    // A minimal serialisable copy of an object, for one-level undo of edits.
-    struct SavedObject
-    {
-        int   type;
-        float pos[3];
-        float angle[3];
-        float scale;
-    };
-
-    // Snapshots all live objects (type/pos/angle/scale). RestoreAll clears the
-    // current objects and re-creates them from a snapshot; any live OBJECT* the
-    // caller holds is invalid afterwards.
-    std::vector<SavedObject> SnapshotAll();
-    void RestoreAll(const std::vector<SavedObject>& snapshot);
+    // The height of the ground under (x, y), the height a placed object gets.
+    float GroundHeightAt(float x, float y);
 }
 
 #endif // _EDITOR

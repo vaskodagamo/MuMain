@@ -5,6 +5,9 @@
 #include "MapTextureBrowser.h"
 
 #include "imgui.h"
+#include "MapEditorFilePicker.h"
+#include "MapEditorFileUtil.h"
+#include "MapEditorStatusLine.h"
 #include "MapTextureImport.h"
 #include "Render/Sprites/GlobalBitmap.h"    // Bitmaps[]
 #include "Render/Textures/ZzzTexture.h"     // LoadBitmap / DeleteBitmap
@@ -22,10 +25,6 @@ namespace fs = std::filesystem;
 
 namespace
 {
-    // Root of the client data tree (relative to the working directory, same base
-    // LoadBitmap prepends).
-    const wchar_t* DATA_ROOT = L"Data";
-
     // Dedicated scratch bitmap-index base for preview textures. Sits far above the
     // game's own indices (which top out around the low 33000s + dynamic range) so
     // browser previews never collide with real textures.
@@ -87,14 +86,16 @@ CMapTextureBrowser& CMapTextureBrowser::GetInstance()
 void CMapTextureBrowser::ScanWorlds()
 {
     m_worlds.clear();
+    // Root of the client data tree (the same base LoadBitmap prepends).
+    const fs::path dataRoot = Editor::Files::DataDir();
     std::error_code ec;
-    if (!fs::is_directory(DATA_ROOT, ec))
+    if (!fs::is_directory(dataRoot, ec))
     {
         m_scanned = true;
         return;
     }
 
-    for (const auto& entry : fs::directory_iterator(DATA_ROOT, ec))
+    for (const auto& entry : fs::directory_iterator(dataRoot, ec))
     {
         if (!entry.is_directory())
             continue;
@@ -131,7 +132,7 @@ void CMapTextureBrowser::LoadWorld(int world)
     m_selectedWorld = world;
     m_selectedIndex = -1;
 
-    const fs::path folder = fs::path(DATA_ROOT) / (L"World" + std::to_wstring(world));
+    const fs::path folder = Editor::Files::WorldDir(world);
     std::error_code ec;
     if (!fs::is_directory(folder, ec))
         return;
@@ -170,6 +171,60 @@ void CMapTextureBrowser::LoadPending(Preview& p)
                                   LoaderName(fs::path(p.file));
     p.loaded = LoadBitmap(relative.c_str(), p.slot, GL_LINEAR, GL_REPEAT, false);
     p.attempted = true;
+}
+
+void CMapTextureBrowser::RenderUploadButton(int defaultWorld)
+{
+    using Editor::Files::FilePickRequest;
+
+    PollUploadPick(defaultWorld);
+
+    ImGui::BeginDisabled(Editor::Files::IsOpenFilePending(FilePickRequest::TextureImage));
+    if (ImGui::Button("Upload image...") && Editor::Files::RequestOpenFile(FilePickRequest::TextureImage))
+    {
+        // The dialog answers in a later frame; import into the map current now.
+        m_uploadWorld = defaultWorld;
+        m_status = "Choose an image in the file dialog...";
+    }
+    ImGui::EndDisabled();
+}
+
+void CMapTextureBrowser::PollUploadPick(int defaultWorld)
+{
+    using Editor::Files::FilePickState;
+
+    const Editor::Files::FilePickResult pick =
+        Editor::Files::PollOpenFile(Editor::Files::FilePickRequest::TextureImage);
+    if (pick.state == FilePickState::Cancelled)
+        m_status = "Upload cancelled.";
+    else if (pick.state == FilePickState::Failed)
+        m_status = "Could not open the file dialog: " + pick.error;
+    else if (pick.state == FilePickState::Picked)
+        UploadPickedImage(pick.path.wstring(), defaultWorld);
+}
+
+void CMapTextureBrowser::UploadPickedImage(const std::wstring& picked, int defaultWorld)
+{
+    // The import loads the texture into the live map's tile slots, so it only
+    // makes sense on the map that was current when the button was clicked.
+    if (defaultWorld != m_uploadWorld)
+    {
+        m_status = "The map changed while the file dialog was open - nothing was uploaded.";
+        return;
+    }
+
+    std::string written;
+    const int slot = Editor::TextureImport::UseTextureFile(m_uploadWorld, picked, written);
+    if (slot < 0)
+    {
+        m_status = "Upload failed - use a .jpg/.jpeg or .ozj, and ensure a free ExtTile slot.";
+        return;
+    }
+
+    SelectMapping = slot;
+    char s[96];
+    snprintf(s, sizeof(s), "Uploaded to slot %d - selected on the Texture tab.\n", slot);
+    m_status = s + written;
 }
 
 void CMapTextureBrowser::Render(int defaultWorld)
@@ -221,14 +276,15 @@ void CMapTextureBrowser::Render(int defaultWorld)
     ImGui::BeginDisabled(!hasSelection);
     if (ImGui::Button("Use selected texture on this map") && sel)
     {
-        const std::wstring src = L"Data\\World" + std::to_wstring(m_selectedWorld) + L"\\" + sel->file;
-        const int slot = Editor::TextureImport::UseTextureFile(defaultWorld, src);
+        const fs::path src = Editor::Files::WorldDir(m_selectedWorld) / sel->file;
+        std::string written;
+        const int slot = Editor::TextureImport::UseTextureFile(defaultWorld, src.wstring(), written);
         if (slot >= 0)
         {
             SelectMapping = slot;  // ready to paint with it on the Texture tab
             char s[96];
-            snprintf(s, sizeof(s), "Added to slot %d - selected on the Texture tab.", slot);
-            m_status = s;
+            snprintf(s, sizeof(s), "Added to slot %d - selected on the Texture tab.\n", slot);
+            m_status = s + written;
         }
         else
         {
@@ -238,34 +294,11 @@ void CMapTextureBrowser::Render(int defaultWorld)
     ImGui::EndDisabled();
 
     ImGui::SameLine();
-    if (ImGui::Button("Upload image..."))
-    {
-        std::wstring picked;
-        if (Editor::TextureImport::PickImageFile(picked))
-        {
-            const int slot = Editor::TextureImport::UseTextureFile(defaultWorld, picked);
-            if (slot >= 0)
-            {
-                SelectMapping = slot;
-                char s[96];
-                snprintf(s, sizeof(s), "Uploaded to slot %d - selected on the Texture tab.", slot);
-                m_status = s;
-            }
-            else
-            {
-                m_status = "Upload failed - use a .jpg/.jpeg or .ozj, and ensure a free ExtTile slot.";
-            }
-        }
-        else
-        {
-            m_status = "Upload cancelled.";
-        }
-    }
+    RenderUploadButton(defaultWorld);
     ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f),
                        "Adds to current map (World %d) as a free ExtTile slot, then paint it on the Texture tab.",
                        defaultWorld);
-    if (!m_status.empty())
-        ImGui::TextColored(ImVec4(0.6f, 1.0f, 0.6f, 1.0f), "%s", m_status.c_str());
+    Editor::StatusLine::Render(m_status);
 
     ImGui::Separator();
     ImGui::Text("%d textures in World %d", (int)m_previews.size(), m_selectedWorld);

@@ -2,9 +2,15 @@
 
 #ifdef _EDITOR
 
+#include <filesystem>
+#include <string>
 #include <vector>
 
 #include "MapObjectPlace.h"  // Editor::ObjectPlace::ModelEntry
+#include "MapBrushControls.h"
+#include "MapHeightTool.h"
+#include "MapLightTool.h"
+#include "Editing/TerrainStroke.h"
 
 class OBJECT;
 
@@ -39,40 +45,87 @@ private:
     CMapEditorUI() = default;
     ~CMapEditorUI() = default;
 
+    // The tab bar and the active tab.
+    void RenderTabs();
+    void RenderObjectBrowserTab();
+    // The Assets tab; stepping to an instance there selects it.
+    void RenderAssetsTab();
+    // Owns the whole-map render flags while the Minimap tab's top-down view is on,
+    // and releases them once when it ends (also when the panel closes).
+    void UpdateTopDownRenderFlags(bool show);
     void RenderTextureTab();
     void RenderObjectsTab();
     void RenderHeightTab();
     void RenderMinimapTab();
+    // Status line and "Reset view" for a map opened with --world (no server).
+    void RenderOfflineWorldBar();
+    // One line under a Save button saying where saves go (game Data + repository).
+    void RenderSaveTargetNote();
+    // Keeps this frame's terrain point under the cursor (see m_groundHit).
+    void CaptureGroundUnderCursor();
+    // Drops the selection and the undo history once the map's objects were freed
+    // (a map change or reload), also one that happened while the panel was closed;
+    // see ObjectListGeneration().
+    void ForgetUnloadedMap();
+    // The Undo/Redo buttons shared by every editing tab (and their shortcuts).
+    void RenderHistoryBar();
+    // A stroke or drag is still held: undo and redo are unavailable until it ends.
+    bool IsEditInProgress() const;
+    // Ends the brush strokes that are still open, each as one undo step.
+    void FinishStrokes();
+    // "Convert a .tga to mini_map.OZT...": opens the file dialog, then converts the
+    // picked file in a later frame (the dialog does not block the game).
+    void RenderMinimapTgaConvert();
     void RenderAttributeTab();
+    // The Attribute tab's brush values (the TW_* bits the .att stores).
+    void RenderAttributeBrushValues();
+    // Tiles painted this session that now differ from the baseline; rescans only after
+    // a stroke, an undo or a baseline reset.
+    int CountEditedAttributeTiles();
+    // "Step 2: Save server .att": merges the edited tiles onto the loaded server base.
+    void RenderServerAttSave(int serverMap);
+    // "Load server base .att...": same two-step pattern as RenderMinimapTgaConvert.
+    void RenderServerBaseLoad(int world);
+    void LoadServerBaseFile(const std::filesystem::path& file, int world);
     // Paints TerrainWall[] with the selected attribute under the cursor.
     void PaintAttribute();
-    void TakeAttrUndoSnapshot();
-    void UndoAttr();
-    // Raises/lowers terrain under the cursor while the Height tab is active.
+    // Sets the walkability of the tiles inside `circle` to `value`.
+    void PaintWalls(const Editor::Editing::BrushCircle& circle, unsigned short value);
+    // Hands this frame's cursor to the Height tab's brush while the tab is active.
     void SculptHeight();
-    void TakeHeightUndoSnapshot();
-    void UndoHeight();
+    // The Light tab: paints and saves the map's light map.
+    void RenderLightTab();
+    // The cursor on the ground as the round brushes see it this frame.
+    TerrainBrushInput BrushInput() const;
+    // "Save height": writes TerrainHeight.OZB and copies it into the repository.
+    void SaveHeightMap();
 
     // Paints the terrain mapping arrays from the current brush/selection when the
     // mouse is over terrain and pressed. Runs each frame the Texture tab is
     // active; the legacy Editor::EditObjects() paint path is compiled out in this
     // build (it's gated on ENABLE_EDIT, not _EDITOR), so the editor owns it.
     void PaintMapping();
+    // Where the next click paints: layer 1's square or layer 2's circle, on the ground.
+    void ShowTextureBrush(const TerrainBrushInput& input, int x, int y);
+    // The dropper: selects the tile of the current layer at (x, y).
+    void PickTile(int x, int y);
+    // Layer 1: the square of tiles around the cursor gets the selected tile.
+    void PaintBaseTiles(int x, int y, bool leftPaint);
+    // Layer 2: the round, soft brush paints or fades the overlay.
+    void PaintOverlay(const TerrainBrushInput& input, bool leftPaint);
+    // The brush sliders of the selected layer and their [ ] keys.
+    void RenderTextureBrushControls();
 
-    // One-level undo: snapshot the mapping arrays at the start of a paint stroke,
-    // and restore them on demand.
-    void TakeUndoSnapshot();
-    void Undo();
-
+    // Place new mode: the placement transform and the model palette.
+    void RenderPlacePanel();
+    // A grid of live 3D thumbnails of the map's models; a click picks the one to place.
+    void RenderModelPalette();
     // Places an object on left-click (Objects tab, Place mode).
     void PlaceObjects(int world);
-    // Picks/drags the object under the cursor (Objects tab, Select mode).
+    // Places the selected model at the cursor as one undo step.
+    void PlaceObjectAtCursor();
+    // Select & edit mode: hands this frame's world input to the object editor.
     void HandleObjectSelect();
-    // Draws the selected object's editable transform fields + delete.
-    void RenderSelectedObjectPanel();
-    // One-level undo for object edits (place/move/rotate/scale/delete).
-    void TakeObjectUndoSnapshot();
-    void UndoObjects();
 
     // Puts the game into the given edit mode (sets EditFlag). Idempotent.
     void EnterEditMode(int editFlag);
@@ -89,18 +142,22 @@ private:
                                      // game plays normally (walk without painting)
     int  m_TargetWorldOverride = -1; // -1 = auto (gMapManager.WorldActive + 1)
     float m_OverlayAlpha = 1.0f;     // blend strength applied to layer-2 overlay paint
+    float m_overlayRadius = 3.0f;    // layer-2 brush radius (tiles)
+    float m_overlayStrength = 0.5f;  // share of the way to m_OverlayAlpha per frame at the brush's core
     bool m_bDropperMode = false;     // when on (or Alt held), a click picks the tile
 
     // Mouse state captured before the game consumes it (see CaptureInputForPainting).
     bool m_PaintLDown = false;
     bool m_PaintRDown = false;
-    bool m_StrokeActive = false;     // a left-drag stroke is in progress (undo edge)
+    Editor::Editing::TerrainStroke m_textureStroke; // the paint stroke held now (one undo step)
 
-    // One-level undo snapshot of the three mapping arrays.
-    bool m_bHasUndo = false;
-    std::vector<unsigned char> m_UndoLayer1;
-    std::vector<unsigned char> m_UndoLayer2;
-    std::vector<float>         m_UndoAlpha;
+    std::string m_textureStatus;     // last "Save terrain textures" result
+
+    // The ground point under the cursor this frame. The terrain pass leaves it in
+    // CollisionPosition, but picking an object overwrites that with the hit on
+    // the object's mesh, so the tools read this copy instead.
+    bool   m_groundHitValid = false;
+    vec3_t m_groundHit = {};
 
     // --- Objects tab state ---
     bool  m_bObjEditEnabled = false;   // master: take EDIT_OBJECT (else walk freely)
@@ -110,43 +167,34 @@ private:
     float m_objScale = 1.0f;           // placement scale
     bool  m_bObjSnap = false;          // snap placement to tile centre
     bool  m_objWasDown = false;        // rising-edge guard so one click = one object
-    bool  m_objDragging = false;       // a select-mode drag is in progress
-    float m_grabOffsetX = 0.0f;        // object.Pos - cursor at grab (so clicks don't jump)
-    float m_grabOffsetY = 0.0f;
-    OBJECT* m_pSelected = nullptr;     // currently selected object (Select mode)
-    std::string m_objStatus;           // last placement/save result
+    bool  m_selectAssetsTab = false;   // "Show in Assets tab" was clicked: switch tabs next frame
+    bool m_showOutliner = false;       // the Outliner window is open
+    unsigned int m_objectListGeneration = 0; // ObjectListGeneration() the selection and undo belong to
     int   m_modelsWorld = -1;          // world the cached model list is for
     std::vector<Editor::ObjectPlace::ModelEntry> m_models;
 
-    // One-level object undo (snapshot of all objects before the last edit).
-    bool m_bObjHasUndo = false;
-    std::vector<Editor::ObjectPlace::SavedObject> m_objUndo;
-
     // --- Height tab state ---
     bool  m_bHeightEnabled = false;   // master: take EDIT_HEIGHT (else walk freely)
-    int   m_heightBrush = 2;          // brush radius (tiles)
-    float m_heightStrength = 8.0f;    // world units added per application
-    bool  m_bHeightFixedMode = false; // flatten to a target height instead of raise/lower
-    float m_heightFixedValue = 100.0f;// target height for fixed mode (world units)
-    bool  m_heightStrokeActive = false;
-    bool  m_bHeightHasUndo = false;
-    std::vector<float> m_heightUndo;  // BackTerrainHeight snapshot before a stroke
+    CMapHeightTool m_heightTool;      // the brush, its settings and the stroke held now
     std::string m_heightStatus;       // last "Save height" result
+
+    // --- Light tab state ---
+    bool m_bLightEnabled = false; // master: take EDIT_LIGHT (else walk freely)
+    CMapLightTool m_lightTool;
 
     // Minimap top-down mode: while active (and camera is FreeFly), force the whole
     // terrain to render for a full-map screenshot.
     bool m_bMinimapMode = false;
     bool m_topdownWasActive = false;  // edge-detect so we only own TopViewEnable while active
     std::string m_minimapStatus;      // result text for the generate button
+    int m_minimapTgaWorld = -1;       // map that was current when the .tga dialog was opened
 
     // --- Attribute (walkability) tab state ---
     bool m_bAttrEnabled = false;      // master: take EDIT_WALL (else walk freely)
     bool m_bAttrOverlay = true;       // tint tiles by their attribute
     int  m_attrBrushValue = 4;        // TW_* value the brush writes (0 = walkable)
-    int  m_attrBrush = 1;             // brush radius (tiles)
-    bool m_attrStrokeActive = false;
-    bool m_bAttrHasUndo = false;
-    std::vector<unsigned short> m_attrUndo;   // TerrainWall snapshot before a stroke
+    float m_attrRadius = 1.0f;        // brush radius (tiles), hard edge
+    Editor::Editing::TerrainStroke m_attrStroke;
     int  m_serverMapOverride = -1;    // -1 = auto (gMapManager.WorldActive)
     std::string m_attrStatus;
 
@@ -159,6 +207,7 @@ private:
     int  m_attrBaselineWorld = -1;          // world the baseline was taken on
     std::vector<BYTE>  m_serverBase;        // server's current TerrainData (65539)
     std::string m_serverBaseName;           // shown in the UI ("" = none loaded)
+    int m_serverBasePickWorld = -1;         // map that was current when the base dialog was opened
     int  m_attrEditedCountCache = 0;        // cached "tiles edited" count for the status line
     bool m_attrCountDirty = true;           // recompute the cache only after paint/undo/baseline reset
 

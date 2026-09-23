@@ -10,9 +10,8 @@
 #include "Render/Sprites/GlobalBitmap.h"      // Bitmaps / BITMAP_t
 #include "Core/Globals/_TextureIndex.h"       // BITMAP_MAPTILE
 
-#include <commdlg.h>   // GetOpenFileNameW (.tga picker)
-
 #include <cstdio>
+#include <filesystem>
 #include <vector>
 
 extern unsigned char TerrainMappingLayer1[];
@@ -25,6 +24,9 @@ namespace
 {
     constexpr int kOut = 1024;   // every stock world minimap is 1024x1024
     constexpr int kTileSlots = 30;   // BITMAP_MAPTILE + 0..29
+
+    constexpr const wchar_t* MINIMAP_TGA_FILE = L"mini_map.tga";
+    constexpr const wchar_t* MINIMAP_OZT_FILE = L"mini_map.OZT";
 
     struct RGB { float r, g, b; bool valid; };
 
@@ -138,12 +140,11 @@ bool GenerateFromTiles(int world, std::string& outMsg)
     FillTgaHeader(hdr);
     const BYTE oztPrefix[4] = { 0x00, 0x00, 0x02, 0x00 };
 
-    wchar_t tgaPath[128], oztPath[128];
-    swprintf_s(tgaPath, L"Data\\World%d\\mini_map.tga", world);
-    swprintf_s(oztPath, L"Data\\World%d\\mini_map.OZT", world);
+    const std::filesystem::path tgaPath = Editor::Files::WorldDir(world) / MINIMAP_TGA_FILE;
+    const std::filesystem::path oztPath = Editor::Files::WorldDir(world) / MINIMAP_OZT_FILE;
 
-    const bool okTga = WriteFile(tgaPath, nullptr, 0, hdr, pixels);
-    const bool okOzt = WriteFile(oztPath, oztPrefix, 4, hdr, pixels);
+    const bool okTga = WriteFile(tgaPath.wstring().c_str(), nullptr, 0, hdr, pixels);
+    const bool okOzt = WriteFile(oztPath.wstring().c_str(), oztPrefix, 4, hdr, pixels);
     if (!okTga || !okOzt)
     {
         outMsg = "Generate FAILED: could not write the minimap file(s).";
@@ -151,47 +152,21 @@ bool GenerateFromTiles(int world, std::string& outMsg)
         return false;
     }
 
-    Editor::Files::MirrorNextToExe(tgaPath, world);
-    Editor::Files::MirrorNextToExe(oztPath, world);
-
-    char buf[160];
-    snprintf(buf, sizeof(buf),
-             "Generated mini_map.OZT + .tga (1024x1024) from the map tiles, in Data\\World%d\\ and next to Main.exe.",
-             world);
-    outMsg = buf;
+    outMsg = "Generated mini_map.OZT + .tga (1024x1024) from the map tiles.\n" +
+             Editor::Files::DescribeSavedFiles(
+                 {Editor::Files::MirrorSavedFile(tgaPath), Editor::Files::MirrorSavedFile(oztPath)});
     g_MuEditorConsoleUI.LogEditor("[MapEditor] Generated minimap from tiles (OZT + TGA)");
     return true;
 }
 
-bool WrapTgaToOzt(int world, std::string& outMsg)
+bool WrapTgaFileToOzt(int world, const std::wstring& tgaPath, std::string& outMsg)
 {
-    wchar_t file[MAX_PATH] = { 0 };
-    OPENFILENAMEW ofn = { 0 };
-    ofn.lStructSize = sizeof(ofn);
-    ofn.lpstrFilter = L"TGA image (*.tga)\0*.tga\0All Files\0*.*\0";
-    ofn.lpstrFile = file;
-    ofn.nMaxFile = MAX_PATH;
-    ofn.lpstrTitle = L"Select your edited minimap .tga";
-    ofn.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_NOCHANGEDIR;
-    if (!GetOpenFileNameW(&ofn))
-        return false;   // cancelled
-
-    FILE* fp = _wfopen(file, L"rb");
-    if (fp == nullptr)
+    const std::vector<BYTE> raw = Editor::Files::ReadWholeFile(tgaPath);
+    if (raw.empty())
     {
         outMsg = "Could not open that .tga.";
         return false;
     }
-    std::vector<BYTE> raw;
-    fseek(fp, 0, SEEK_END);
-    const long sz = ftell(fp);
-    fseek(fp, 0, SEEK_SET);
-    if (sz > 18)
-    {
-        raw.resize(static_cast<size_t>(sz));
-        fread(raw.data(), 1, raw.size(), fp);
-    }
-    fclose(fp);
     if (raw.size() <= 18)
     {
         outMsg = "That file is too small to be a TGA.";
@@ -278,20 +253,15 @@ bool WrapTgaToOzt(int world, std::string& outMsg)
     hdr[17] = 8;
 
     const BYTE oztPrefix[4] = { 0x00, 0x00, 0x02, 0x00 };
-    wchar_t oztPath[128];
-    swprintf_s(oztPath, L"Data\\World%d\\mini_map.OZT", world);
-    if (!WriteFile(oztPath, oztPrefix, 4, hdr, pixels))
+    const std::filesystem::path oztPath = Editor::Files::WorldDir(world) / MINIMAP_OZT_FILE;
+    if (!WriteFile(oztPath.wstring().c_str(), oztPrefix, 4, hdr, pixels))
     {
         outMsg = "Could not write mini_map.OZT.";
         return false;
     }
-    Editor::Files::MirrorNextToExe(oztPath, world);
-
-    char buf[160];
-    snprintf(buf, sizeof(buf),
-             "Wrote mini_map.OZT (%dx%d) to Data\\World%d\\ and next to Main.exe. Relog to see it.",
-             width, height, world);
-    outMsg = buf;
+    char buf[96];
+    snprintf(buf, sizeof(buf), "Wrote mini_map.OZT (%dx%d). Relog to see it.\n", width, height);
+    outMsg = buf + Editor::Files::DescribeSavedFiles({Editor::Files::MirrorSavedFile(oztPath)});
     g_MuEditorConsoleUI.LogEditor("[MapEditor] Wrapped .tga into mini_map.OZT");
     return true;
 }

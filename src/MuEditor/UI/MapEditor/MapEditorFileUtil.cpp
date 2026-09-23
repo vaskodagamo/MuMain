@@ -4,40 +4,320 @@
 
 #include "MapEditorFileUtil.h"
 
+#include "Assets/EditorText.h"
+#include "Core/Utilities/StringUtils.h"
 #include "UI/Console/MuEditorConsoleUI.h"
 
+#include <SDL3/SDL_error.h>
+#include <SDL3/SDL_filesystem.h>
+#include <SDL3/SDL_misc.h>
+#include <SDL3/SDL_stdinc.h>
+
+#include <cctype>
 #include <cstdio>
+#include <cstring>
+#include <ctime>
 #include <filesystem>
+#include <system_error>
 
 namespace fs = std::filesystem;
 
 namespace Editor::Files
 {
-
-std::wstring MirrorNextToExe(const std::wstring& savedPath, int world)
+namespace
 {
+// Folder names of the client data tree (Data/World7, Data/Object7).
+constexpr const wchar_t* DATA_FOLDER = L"Data";
+constexpr const wchar_t* WORLD_PREFIX = L"World";
+constexpr const wchar_t* OBJECT_PREFIX = L"Object";
+
+// File names inside Data/World{N}. The EncTerrain files carry the map number too
+// (EncTerrain7.map); the height and light maps do not.
+constexpr const wchar_t* ENC_TERRAIN_PREFIX = L"EncTerrain";
+constexpr const wchar_t* MAPPING_EXTENSION = L".map";
+constexpr const wchar_t* ATTRIBUTE_EXTENSION = L".att";
+constexpr const wchar_t* OBJECT_EXTENSION = L".obj";
+constexpr const wchar_t* HEIGHT_FILE = L"TerrainHeight.OZB";
+constexpr const wchar_t* LIGHT_FILE = L"TerrainLight.OZJ";
+
+fs::path NumberedFolder(const wchar_t* prefix, int number)
+{
+    return prefix + std::to_wstring(number);
+}
+
+fs::path EncTerrainFile(int world, const wchar_t* extension)
+{
+    const std::wstring fileName = ENC_TERRAIN_PREFIX + std::to_wstring(world) + extension;
+    return WorldDir(world) / fileName;
+}
+
+// Overrides the repository the saves are mirrored into.
+constexpr const char* REPO_ROOT_VARIABLE = "MU_EDITOR_REPO_ROOT";
+// Backup folder names: out/editor-backups/20260922-235959.
+constexpr const char* BACKUP_STAMP_FORMAT = "%Y%m%d-%H%M%S";
+constexpr size_t BACKUP_STAMP_CHARS = 32;
+
+// Our messages are UTF-8; std::filesystem converts UTF-8 to wide text on every platform.
+std::wstring Utf8ToWide(const std::string& text)
+{
+    return fs::path(std::u8string(text.begin(), text.end())).wstring();
+}
+
+void Log(const std::wstring& message)
+{
+    g_ErrorReport.Write(L"%ls\r\n", message.c_str());
+    g_MuEditorConsoleUI.LogEditor(StringUtils::WideToNarrow(message.c_str()));
+}
+
+// The working directory (the executable's folder on macOS) and the folder SDL
+// reports for the executable (inside Main.app on macOS).
+std::vector<fs::path> RepoSearchStarts()
+{
+    std::vector<fs::path> starts;
     std::error_code ec;
-    const fs::path src(savedPath);
-    if (!fs::exists(src, ec))
+    const fs::path workingDir = fs::current_path(ec);
+    if (!ec)
+        starts.push_back(workingDir);
+    if (const char* basePath = SDL_GetBasePath())
+        starts.push_back(fs::path(std::u8string(reinterpret_cast<const char8_t*>(basePath))));
+    return starts;
+}
+
+RepoRootLookup LookUpRepoRoot()
+{
+    // SDL_getenv gives UTF-8 on every platform; getenv would give the ANSI code page on Windows.
+    const char* overrideRoot = SDL_getenv(REPO_ROOT_VARIABLE);
+    const fs::path overridePath = (overrideRoot != nullptr) ? Editor::Text::Utf8Path(overrideRoot) : fs::path();
+    RepoRootLookup lookup = LocateRepoRoot(overridePath, RepoSearchStarts());
+    if (lookup.root.empty())
+        Log(L"[MapEditor] Saves stay in the game's Data folder: " + Utf8ToWide(lookup.description));
+    else
+        Log(L"[MapEditor] Saves are also copied into the repository " + lookup.root.wstring());
+    return lookup;
+}
+
+std::string BackupStamp()
+{
+    const time_t now = time(nullptr);
+    tm local{};
+    localtime_s(&local, &now);
+    char text[BACKUP_STAMP_CHARS] = {};
+    strftime(text, sizeof(text), BACKUP_STAMP_FORMAT, &local);
+    return text;
+}
+
+// Without a repository: the old behaviour, a copy next to the executable that the
+// next build's asset copy does not touch (Data/World7/X -> World7/X).
+fs::path CopyNextToExecutable(const fs::path& dataRelative)
+{
+    const fs::path copy = dataRelative.lexically_relative(DataDir());
+    std::error_code ec;
+    fs::create_directories(copy.parent_path(), ec);
+    fs::copy_file(dataRelative, copy, fs::copy_options::overwrite_existing, ec);
+    if (ec)
+        return {};
+    return AbsolutePath(copy);
+}
+
+void LogSavedFile(const SavedFile& saved)
+{
+    Log(L"[MapEditor] Saved " + saved.runtimeFile.wstring());
+    const MirrorOutcome& repo = saved.repo;
+    if (!repo.backupFile.empty())
+        Log(L"[MapEditor]   old repo file kept in " + repo.backupFile.wstring());
+    if (repo.result == RepoCopyResult::Created || repo.result == RepoCopyResult::Replaced)
+        Log(L"[MapEditor]   copied into the repository: " + repo.repoFile.wstring());
+    else if (repo.result == RepoCopyResult::Unchanged)
+        Log(L"[MapEditor]   repository file already identical: " + repo.repoFile.wstring());
+    else if (repo.result == RepoCopyResult::InPlace)
+        Log(L"[MapEditor]   the game reads the repository's Data folder, saved in place");
+    else if (!saved.localCopy.empty())
+        Log(L"[MapEditor]   no repository, copy kept next to the game: " + saved.localCopy.wstring());
+    else
+        Log(L"[MapEditor]   NOT copied into the repository: " + Utf8ToWide(repo.error));
+}
+
+std::string DescribeRepoCopy(const SavedFile& saved)
+{
+    const MirrorOutcome& repo = saved.repo;
+    switch (repo.result)
+    {
+    case RepoCopyResult::Replaced:
+        return "\n  repo:   " + PathToUtf8(repo.repoFile) + "\n  backup: " + PathToUtf8(repo.backupFile);
+    case RepoCopyResult::Created:
+        return "\n  repo:   " + PathToUtf8(repo.repoFile) +
+               " (new file: git ignores new files in src/bin, use git add -f)";
+    case RepoCopyResult::Unchanged:
+        return "\n  repo:   " + PathToUtf8(repo.repoFile) + " (already identical)";
+    case RepoCopyResult::InPlace:
+        return "\n  repo:   the game reads the repository's Data folder directly";
+    case RepoCopyResult::Failed:
+        break;
+    }
+    if (!saved.localCopy.empty())
+        return "\n  no repo copy (" + RepoRoot().description + ")\n  copy:   " + PathToUtf8(saved.localCopy);
+    return "\n  repo copy FAILED: " + repo.error;
+}
+
+// file:///Users/me/My%20Repo: every byte outside the unreserved URL characters
+// (and the '/' and ':' of the path) as %XX of its UTF-8 encoding.
+std::string FileUrl(const fs::path& absolute)
+{
+    constexpr const char* HEX_DIGITS = "0123456789ABCDEF";
+    constexpr int HIGH_NIBBLE_SHIFT = 4;
+    constexpr unsigned LOW_NIBBLE_MASK = 0x0F;
+    const std::u8string generic = absolute.generic_u8string();
+    const std::string path(generic.begin(), generic.end());
+    std::string url = path.rfind('/', 0) == 0 ? "file://" : "file:///";
+    for (const char c : path)
+    {
+        const unsigned char byte = static_cast<unsigned char>(c);
+        if (std::isalnum(byte) || std::strchr("-._~/:", c) != nullptr)
+        {
+            url.push_back(c);
+            continue;
+        }
+        url.push_back('%');
+        url.push_back(HEX_DIGITS[byte >> HIGH_NIBBLE_SHIFT]);
+        url.push_back(HEX_DIGITS[byte & LOW_NIBBLE_MASK]);
+    }
+    return url;
+}
+} // namespace
+
+fs::path DataDir()
+{
+    return DATA_FOLDER;
+}
+
+fs::path WorldDir(int world)
+{
+    return DataDir() / NumberedFolder(WORLD_PREFIX, world);
+}
+
+fs::path ObjectDir(int world)
+{
+    return DataDir() / NumberedFolder(OBJECT_PREFIX, world);
+}
+
+fs::path TerrainMappingFile(int world)
+{
+    return EncTerrainFile(world, MAPPING_EXTENSION);
+}
+
+fs::path TerrainAttributeFile(int world)
+{
+    return EncTerrainFile(world, ATTRIBUTE_EXTENSION);
+}
+
+fs::path TerrainObjectFile(int world)
+{
+    return EncTerrainFile(world, OBJECT_EXTENSION);
+}
+
+fs::path TerrainHeightFile(int world)
+{
+    return WorldDir(world) / HEIGHT_FILE;
+}
+
+fs::path TerrainLightFile(int world)
+{
+    return WorldDir(world) / LIGHT_FILE;
+}
+
+// MSVC's STL has a non-standard std::ifstream/ofstream(std::wstring, ...)
+// extension; libstdc++ (GCC/MinGW) has no such overload, so this must use
+// the wide-path FILE* API (_wfopen) that the rest of the Map Editor's file
+// I/O already uses, rather than iostreams, to build with both compilers.
+std::vector<unsigned char> ReadWholeFile(const fs::path& path)
+{
+    FILE* fp = _wfopen(path.wstring().c_str(), L"rb");
+    if (fp == nullptr)
         return {};
 
-    // Mirror into a World{N}\ folder next to Main.exe, keeping the original file
-    // name, so the whole folder can be dropped straight into src\bin\Data\.
-    const fs::path dstDir = L"World" + std::to_wstring(world);
-    fs::create_directories(dstDir, ec);
-
-    const fs::path dst = dstDir / src.filename();
-    fs::copy_file(src, dst, fs::copy_options::overwrite_existing, ec);
-    if (ec)
+    fseek(fp, 0, SEEK_END);
+    const long size = ftell(fp);
+    fseek(fp, 0, SEEK_SET);
+    if (size <= 0)
     {
-        g_MuEditorConsoleUI.LogEditor("[MapEditor] Could not copy the saved file next to Main.exe");
+        fclose(fp);
         return {};
     }
 
-    char msg[192];
-    snprintf(msg, sizeof(msg), "[MapEditor] Also saved a copy next to Main.exe: %ls", dst.wstring().c_str());
-    g_MuEditorConsoleUI.LogEditor(msg);
-    return dst.wstring();
+    std::vector<unsigned char> data(static_cast<size_t>(size));
+    const size_t read = fread(data.data(), 1, data.size(), fp);
+    fclose(fp);
+    if (read != data.size())
+        return {};
+    return data;
+}
+
+const RepoRootLookup& RepoRoot()
+{
+    static const RepoRootLookup lookup = LookUpRepoRoot();
+    return lookup;
+}
+
+fs::path AbsolutePath(const fs::path& file)
+{
+    std::error_code ec;
+    const fs::path absolute = fs::absolute(file, ec);
+    return ec ? file : absolute.lexically_normal();
+}
+
+SavedFile MirrorSavedFile(const fs::path& dataRelative)
+{
+    SavedFile saved;
+    saved.runtimeFile = AbsolutePath(dataRelative);
+    const RepoRootLookup& repoRoot = RepoRoot();
+    if (repoRoot.root.empty())
+        saved.localCopy = CopyNextToExecutable(dataRelative);
+    else
+        saved.repo = MirrorIntoRepo(saved.runtimeFile, dataRelative, repoRoot.root, BackupStamp());
+    LogSavedFile(saved);
+    return saved;
+}
+
+fs::path CopyToRepoExports(const fs::path& file)
+{
+    const RepoRootLookup& repoRoot = RepoRoot();
+    if (repoRoot.root.empty())
+        return {};
+
+    const fs::path exportDir = RepoExportDir(repoRoot.root);
+    const fs::path copy = exportDir / file.filename();
+    std::error_code ec;
+    fs::create_directories(exportDir, ec);
+    fs::copy_file(file, copy, fs::copy_options::overwrite_existing, ec);
+    if (ec)
+    {
+        Log(L"[MapEditor] Could not copy " + file.filename().wstring() + L" into " + exportDir.wstring());
+        return {};
+    }
+    Log(L"[MapEditor] Export copied to " + copy.wstring());
+    return copy;
+}
+
+std::string DescribeSavedFiles(const std::vector<SavedFile>& files)
+{
+    std::string text;
+    for (const SavedFile& saved : files)
+    {
+        if (!text.empty())
+            text += "\n";
+        text += "Saved " + PathToUtf8(saved.runtimeFile.filename()) + "\n  game:   " + PathToUtf8(saved.runtimeFile) +
+                DescribeRepoCopy(saved);
+    }
+    return text;
+}
+
+bool OpenWithSystem(const fs::path& path, std::string& error)
+{
+    const std::string url = FileUrl(AbsolutePath(path));
+    if (SDL_OpenURL(url.c_str()))
+        return true;
+    error = "could not open " + url + ": " + SDL_GetError();
+    return false;
 }
 
 } // namespace Editor::Files

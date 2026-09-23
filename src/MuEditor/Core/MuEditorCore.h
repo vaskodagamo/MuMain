@@ -4,6 +4,8 @@
 
 #include "stdafx.h"
 
+#include "Editing/PopupMouseGuard.h"
+
 struct SDL_Window;
 struct SDL_GPUCommandBuffer;
 struct SDL_GPURenderPass;
@@ -30,6 +32,10 @@ public:
     bool IsShowingDevEditor() const { return m_bShowDevEditor; }
     bool IsShowingMapEditor() const { return m_bShowMapEditor; }
     bool IsShowingConsole() const { return m_bShowConsole; }
+    void ShowMapEditor()
+    {
+        m_bShowMapEditor = true;
+    }
     bool IsHoveringUI() const { return m_bHoveringUI; }
     void SetHoveringUI(bool hovering) { m_bHoveringUI = hovering; }
 
@@ -38,11 +44,24 @@ public:
     void  SetUIScale(float scale);
     float GetUIScale() const { return m_UIScale; }
 
+    // The game window the editor draws into; OS dialogs (file pickers) attach to it.
+    // nullptr until Initialize() succeeded.
+    SDL_Window* GetWindow() const
+    {
+        return m_pWindow;
+    }
+
 private:
     CMuEditorCore();
     ~CMuEditorCore();
 
     void ApplyUIScale();
+    // The editor windows of this frame; with the editor closed only the Map Editor's
+    // hand-back of the game's edit mode.
+    void RenderEditorWindows();
+    // Esc closes the open menus, combo lists and pickers (not dialogs), as ImGui's keyboard
+    // navigation would; it is off because the arrow keys fly the camera.
+    void CloseMenusOnEscape();
 
     bool m_bEditorMode;
     bool m_bInitialized;
@@ -55,9 +74,12 @@ private:
     bool m_bShowConsole;
     bool m_bHoveringUI;
     bool m_bPreviousFrameHoveringUI;  // Store previous frame's hover state for input blocking
+    Editor::Editing::PopupMouseGuard m_popupMouseGuard; // an open popup and the click that closes it keep the mouse
 
     float m_UIScale;        // 1.0 = default ImGui size
     bool  m_bScaleDirty;    // apply the new scale at the start of the next frame
+
+    SDL_Window* m_pWindow; // game window passed to Initialize()
 };
 
 // Global accessor
