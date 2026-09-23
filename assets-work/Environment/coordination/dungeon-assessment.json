@@ -742,7 +742,7 @@
       "bons.jpg"
     ],
     "owner": "coordinator",
-    "status": "accepted offline; PR #16 open and ready for review",
+    "status": "accepted offline replacement; PR #16 merged, client verification pending",
     "client_verified": false,
     "evidence": "assets-work/World2/Remains48/independent-final-review.json",
     "branch": "codex/dungeon-remains48-accepted",
@@ -762,8 +762,11 @@
       "TileRock01.jpg"
     ],
     "owner": null,
-    "status": "unclaimed; scope and visual assessment pending",
-    "client_verified": false
+    "status": "retained baseline after independent placed-scale review; PR #17 merged",
+    "client_verified": false,
+    "branch": "codex/dungeon-rocks49-50",
+    "deliverables": "assets-work/World2/Rocks01",
+    "evidence": "assets-work/World2/Rocks01/retention-review.json"
   },
   {
     "model": "Object50",
@@ -775,8 +778,11 @@
       "TileRock01.jpg"
     ],
     "owner": null,
-    "status": "unclaimed; scope and visual assessment pending",
-    "client_verified": false
+    "status": "retained baseline after independent placed-scale review; PR #17 merged",
+    "client_verified": false,
+    "branch": "codex/dungeon-rocks49-50",
+    "deliverables": "assets-work/World2/Rocks01",
+    "evidence": "assets-work/World2/Rocks01/retention-review.json"
   },
   {
     "model": "Object51",

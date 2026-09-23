@@ -40,6 +40,14 @@
     "merged_retention_reviews": [
       {
         "assets": [
+          "Object49",
+          "Object50"
+        ],
+        "pull_request": "https://github.com/vaskodagamo/MuMain/pull/17",
+        "status": "merged; rock-spire pair retained after placed-scale review"
+      },
+      {
+        "assets": [
           "Object51"
         ],
         "pull_request": "https://github.com/vaskodagamo/MuMain/pull/18",

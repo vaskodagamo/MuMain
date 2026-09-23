@@ -1,8 +1,10 @@
 # Current environment remake handoff — 2026-09-23
 
-The overall goal remains active. Lorencia passed its independent final artistic/offline gate at `bb641d04`; this closed its 22-replacement/84-retention assessment, while new client verification is pending. Main includes Dungeon replacements Object28, Object29, Object01 and Object48. Retention PRs #18, #19 and #20 have merged. PRs #22 and #23 remain open for review; new client verification is pending.
+The overall goal remains active. Lorencia passed its independent final artistic/offline gate at `bb641d04`; this closed its 22-replacement/84-retention assessment, while new client verification is pending. Main includes Dungeon replacements Object28, Object29, Object01 and Object48. Retention PRs #17–#20 have merged. PRs #22 and #23 remain open for review; new client verification is pending.
 
 ## Current pull requests
+
+PRs #17–#20 are merged and retain Objects49/50, Object51, Object37, and Objects42/43.
 
 - PR #18 (merged): retain Object51 after the rejected bevel study.
 - PR #19 (merged): retain Object37 after six actual corridor placements.
