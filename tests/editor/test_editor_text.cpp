@@ -62,3 +62,21 @@ TEST_CASE("ContainsIgnoringCase finds a part of a name in any case [editor][text
     CHECK(ContainsIgnoringCase("Fence01", ""));
     CHECK_FALSE(ContainsIgnoringCase("", "a"));
 }
+
+TEST_CASE("FoldCase lowers ASCII and the capitals of the item-name scripts [editor][text]")
+{
+    CHECK(FoldCase("Short Sword") == "short sword");
+    CHECK(FoldCase("\xC3\x89P\xC3\x89\x45") == "\xC3\xA9p\xC3\xA9\x65");         // ÉPÉE -> épée
+    CHECK(FoldCase("\xC3\x97") == "\xC3\x97");                                   // × stays
+    CHECK(FoldCase("\xC5\x81\xC3\x93\x44\xC5\xB9") == "\xC5\x82\xC3\xB3\x64\xC5\xBA"); // ŁÓDŹ -> łódź
+    CHECK(FoldCase("\xC4\xB0") == "i");                                           // İ -> i
+    CHECK(FoldCase("\xC4\xB1") == "\xC4\xB1");                                   // ı stays
+    CHECK(FoldCase("\xC5\xB8") == "\xC3\xBF");                                   // Ÿ -> ÿ
+    CHECK(FoldCase("\xCE\xA3\xCE\xA9") == "\xCF\x83\xCF\x89");                   // ΣΩ -> σω
+    CHECK(FoldCase("\xD0\x9C\xD0\x95\xD0\xA7") == "\xD0\xBC\xD0\xB5\xD1\x87");   // МЕЧ -> меч
+    CHECK(FoldCase("\xD0\x81") == "\xD1\x91");                                   // Ё -> ё
+    CHECK(FoldCase("\xE6\x98\x9F") == "\xE6\x98\x9F");                           // 星 stays
+    // Bytes that are not UTF-8 stay as they are, so a broken name still matches itself.
+    CHECK(FoldCase("A\xFF" "B") == "a\xFF" "b");
+    CHECK(FoldCase("").empty());
+}

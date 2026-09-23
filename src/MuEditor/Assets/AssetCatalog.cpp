@@ -3,8 +3,7 @@
 #ifdef _EDITOR
 
 #include "EditorText.h"
-
-#include <json.hpp>
+#include "JsonFields.h"
 
 #include <algorithm>
 #include <fstream>
@@ -18,52 +17,17 @@ namespace Editor::Assets
 {
 namespace
 {
+// Hide Editor::Text (the namespace) behind the JSON field readers.
+using Json::Array;
+using Json::Member;
+using Json::OptionalText;
+using Json::Text;
+using Json::TextList;
+
 constexpr const char* CATALOG_SCHEMA = "mu-world-catalog/1";
 constexpr const char* ASSETS_FOLDER = "assets-work";
 constexpr const char* WORLD_PREFIX = "World";
 constexpr const char* CATALOG_FILE_NAME = "catalog.json";
-
-std::string Text(const json& object, const char* key)
-{
-    const auto it = object.find(key);
-    return it != object.end() && it->is_string() ? it->get<std::string>() : std::string();
-}
-
-std::optional<std::string> OptionalText(const json& object, const char* key)
-{
-    const auto it = object.find(key);
-    if (it == object.end() || !it->is_string())
-        return std::nullopt;
-    return it->get<std::string>();
-}
-
-std::vector<std::string> TextList(const json& object, const char* key)
-{
-    std::vector<std::string> values;
-    const auto it = object.find(key);
-    if (it == object.end() || !it->is_array())
-        return values;
-    for (const json& value : *it)
-    {
-        if (value.is_string())
-            values.push_back(value.get<std::string>());
-    }
-    return values;
-}
-
-const json& Member(const json& object, const char* key)
-{
-    static const json empty = json::object();
-    const auto it = object.find(key);
-    return it != object.end() && it->is_object() ? *it : empty;
-}
-
-const json& Array(const json& object, const char* key)
-{
-    static const json empty = json::array();
-    const auto it = object.find(key);
-    return it != object.end() && it->is_array() ? *it : empty;
-}
 
 EngineControl ParseEngineControl(const json& row)
 {

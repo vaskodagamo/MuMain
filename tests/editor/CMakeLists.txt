@@ -61,6 +61,7 @@ mu_add_test(
         ${MU_EDITOR_ASSETS_DIR}/EditorText.cpp
         ${MU_EDITOR_ASSETS_DIR}/FileDigest.cpp
         ${MU_EDITOR_ASSETS_DIR}/GitCheckout.cpp
+        ${MU_EDITOR_ASSETS_DIR}/JsonFields.cpp
         ${MU_EDITOR_ASSETS_DIR}/RegenRequest.cpp
         ${MU_EDITOR_ASSETS_DIR}/RequestBrief.cpp
         ${MU_EDITOR_ASSETS_DIR}/RequestFolder.cpp
@@ -74,6 +75,30 @@ target_compile_definitions(editor_asset_request_tests PRIVATE
     "MU_REPO_ROOT=\"${PROJECT_SOURCE_DIR}\""
 )
 target_include_directories(editor_asset_request_tests PRIVATE
+    ${PROJECT_SOURCE_DIR}/src/MuEditor
+    ${PROJECT_SOURCE_DIR}/src/ThirdParty
+)
+
+# The Item Editor's item catalog (assets-work/Items/catalog.json) and its Browse
+# tab's filters and sort order. File-only code as well; MuClient supplies the
+# engine's class rule (GameLogic::Items::CanClassEquip) the class filter calls.
+mu_add_test(
+    NAME editor_item_browse_tests
+    SOURCES
+        test_item_browse.cpp
+        test_item_catalog.cpp
+        ${MU_EDITOR_ASSETS_DIR}/EditorText.cpp
+        ${MU_EDITOR_ASSETS_DIR}/ItemBrowse.cpp
+        ${MU_EDITOR_ASSETS_DIR}/ItemCatalog.cpp
+        ${MU_EDITOR_ASSETS_DIR}/JsonFields.cpp
+    LINK_LIBS
+        MuClient
+)
+target_compile_definitions(editor_item_browse_tests PRIVATE
+    _EDITOR
+    "MU_REPO_ROOT=\"${PROJECT_SOURCE_DIR}\""
+)
+target_include_directories(editor_item_browse_tests PRIVATE
     ${PROJECT_SOURCE_DIR}/src/MuEditor
     ${PROJECT_SOURCE_DIR}/src/ThirdParty
 )
@@ -92,6 +117,7 @@ mu_add_test(
         ${MU_EDITOR_ASSETS_DIR}/CaptureImage.cpp
         ${MU_EDITOR_ASSETS_DIR}/EditorText.cpp
         ${MU_EDITOR_ASSETS_DIR}/FileDigest.cpp
+        ${MU_EDITOR_ASSETS_DIR}/JsonFields.cpp
         ${MU_EDITOR_ASSETS_DIR}/ModelPreflight.cpp
     LINK_LIBS
         MuClient
