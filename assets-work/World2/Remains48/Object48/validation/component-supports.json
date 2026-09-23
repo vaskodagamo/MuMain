@@ -1,0 +1,1547 @@
+{
+  "status": "PASS",
+  "retained_original_component_vertices": 18,
+  "placements": [
+    {
+      "index": 125,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 126,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 127,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 128,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 129,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 130,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 131,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 134,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 135,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 141,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 142,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 143,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 144,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 145,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 146,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 147,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 160,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 161,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 162,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 163,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 164,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 165,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 166,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 167,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 168,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 169,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 187,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 195,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 196,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 197,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 198,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 199,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 200,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 201,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 222,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 223,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 224,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 225,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 226,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 227,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 228,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 229,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 230,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 419,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 420,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 421,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 422,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 423,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 424,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 425,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 432,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 433,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 434,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 440,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 441,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 484,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 487,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 488,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 629,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 630,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 657,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 689,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 690,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 691,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 692,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 693,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 694,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 695,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 696,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 697,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 698,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 699,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 700,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 701,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 702,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 724,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 736,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 737,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 738,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 753,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 754,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 875,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 876,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 879,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 895,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 896,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 897,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 910,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 911,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 982,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1003,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1025,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1026,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1027,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1028,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1029,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1030,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1031,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1032,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1033,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1058,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1059,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1060,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1061,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1062,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1063,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1083,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1101,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1102,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1103,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1104,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1133,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1134,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1135,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1156,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1157,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1158,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1170,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1227,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1228,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1229,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1259,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1260,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1261,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1262,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1292,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1293,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1294,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1316,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1317,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1318,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1319,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1320,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1357,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1358,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1359,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1360,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1361,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1362,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1363,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1372,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1373,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1374,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1375,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1376,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1396,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1419,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1420,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1421,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1422,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1427,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1442,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1443,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1444,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1470,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1471,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1472,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1473,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1544,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1545,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1607,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1617,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1618,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1619,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1659,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1660,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1662,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1675,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1676,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1677,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1678,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1679,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1682,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1683,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1684,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1685,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1707,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1735,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1736,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1737,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1763,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1764,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1765,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1767,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1789,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1790,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1791,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1792,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1793,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1888,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1889,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1890,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1894,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1895,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1930,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1931,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1932,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1933,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1934,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1935,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1936,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1969,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1970,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1981,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1991,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1992,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1993,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1998,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 1999,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2000,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2019,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2052,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2081,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2082,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2099,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2100,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2132,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2133,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2143,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2168,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2169,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2170,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2198,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2228,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2229,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2272,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2273,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2274,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2276,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2277,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2278,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2279,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2289,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2290,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2306,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2307,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2326,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2327,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2329,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2447,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2463,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2464,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2467,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2468,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2469,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2498,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2500,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2501,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2502,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2537,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2538,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2539,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2540,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2541,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2542,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2724,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2725,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2726,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2727,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2776,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2788,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2789,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2790,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2791,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2793,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2794,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2809,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2810,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2811,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2812,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2813,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2814,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2816,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2817,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2844,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2845,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 2857,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3079,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3080,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3081,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3145,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3146,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3147,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3148,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3149,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3155,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3156,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3157,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3158,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3159,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3160,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3161,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3162,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3163,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3164,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3165,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3166,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3167,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3168,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3169,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3170,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3239,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3303,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3382,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3418,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3419,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3420,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3430,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3534,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3579,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3580,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3603,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3604,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3605,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3606,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3615,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3616,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3617,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3618,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3619,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3652,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3653,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3654,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3688,
+      "maximum_component_support_error": 1.9073486328125e-06
+    },
+    {
+      "index": 3689,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3804,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3805,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3806,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3807,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3808,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3809,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3810,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3811,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3812,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3868,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3869,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3870,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3886,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3888,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3889,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3982,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3997,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3998,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 3999,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 4000,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 4009,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 4010,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 4029,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 4030,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 4031,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 4032,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 4045,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 4046,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 4063,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 4064,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 4065,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 4102,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 4103,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 4104,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 4105,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 4124,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 4125,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 4126,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 4129,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 4246,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 4247,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 4273,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 4274,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 4288,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 4289,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 4323,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 4324,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 4325,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 4339,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 4343,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 4344,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 4345,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 4346,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 4347,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 4469,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 4471,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 4483,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 4484,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 4485,
+      "maximum_component_support_error": 0.0
+    },
+    {
+      "index": 4486,
+      "maximum_component_support_error": 0.0
+    }
+  ],
+  "other_components": "All 252 triangles exactly matched by position, UV, binding and cyclic winding"
+}

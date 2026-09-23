@@ -1,0 +1,2 @@
+assets-work/World2/Remains48/Object48/validation/integration/Object48.smd: bones=1 frames=1 triangles=428 materials=1
+OK

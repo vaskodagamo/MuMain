@@ -1,8 +1,8 @@
-## Current remake assessment — 2026-09-22
+# Lorencia current assessment — 2026-09-23
 
-Lorencia is **not artistically complete**. Historical “106/106 accepted offline” records below describe first-pass inventory coverage and technical acceptance, not the current artistic gate. PR #11 is merged at `7b808473`; owner-fork main was verified at that revision on 2026-09-22. The user reports that this existing Lorencia baseline works in game. ASTRA has not personally observed that verification, and new changes do not inherit it.
+Lorencia is still not artistically complete. PR #12 merged on 2026-09-23 and contains 22 accepted replacements plus 84 first-pass retention decisions. Historical 106/106 language is inventory coverage, not proof of consistent-quality completion. The prior baseline's in-game success is user-reported; verification of new changes is pending.
 
-Current integration branch: `codex/environment-remake-continuation`, worktree `/Users/lukasmac/Documents/claude-test-mumain/MuMain-environment-remake`. See [current environment board](../../Environment/coordination/asset-board.md) and [restart handoff](../../Environment/coordination/handoff.md). Prior paths/publication states below are historical. Terrain and Beer01 remain protected references.
+Rows below preserve earlier inventory and batch records. Treat their accepted and retained labels as first-pass decisions, not a closed artistic gate. Continue quality production from refreshed owner-fork main in a dedicated worktree. See assets-work/Environment/coordination/current-remake-assessment.json.
 
 # Lorencia rebuild asset board — ASTRA coordinator — 2026-09-22
 
