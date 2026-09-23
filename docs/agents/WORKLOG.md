@@ -1120,3 +1120,16 @@ status.
 of every acceptance point; Metal validation clean.
 
 **Open / next:** owner files the first real request (I7 pilot); I5b concepts inside the editor.
+
+## 2026-09-23 - Item editor I5b: concepts in the editor (Claude Opus 5.5)
+**Goal:** The owner's workflow inside the Item Editor: select items, generate concept images,
+pick or refine with a comment, hand the pick to Codex; plus pointer, full screen and UI size.
+
+**Done:** multi-select, Generate dialog with the real estimate, background job with cancel and
+resume, Concepts section (pick, refine, discard), concept in Ask Codex, visible pointer in the
+studio, full screen, remembered UI scale, front captures show the broad face.
+
+**Verified:** 408/408 and 407/407 tests, 114 tools tests; scripted in-client run against a local
+fake API (no spending) with the owner's real concept batch copied in.
+
+**Open / next:** the owner's first real generate from the editor; I6 A/B compare; I7 pilot.
