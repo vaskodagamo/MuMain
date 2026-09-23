@@ -16,9 +16,10 @@ namespace Editor::Assets
 {
 namespace
 {
-constexpr const char* SCHEMA = "mu-regen-request/1";
-constexpr const char* AUTHOR = "owner (world editor)";
-constexpr const char* FILED_BY = "world editor";
+constexpr const char* WORLD_SCHEMA = "mu-regen-request/1";
+constexpr const char* WORLD_FILED_BY = "world editor";
+constexpr const char* ASSETS_FOLDER = "assets-work/";
+constexpr const char* REQUESTS_FOLDER = "/requests";
 constexpr const char* STATUS_OPEN = "open";
 constexpr const char* CAPTURE_VARIANT = "current";
 constexpr const char* FORK_REPOSITORY = "vaskodagamo/MuMain";
@@ -32,9 +33,8 @@ constexpr int JSON_INDENT = 2;
 
 // Paths a worker must never change, beyond the ones outside its scope anyway.
 // The World folders are filled in per world; see "How the editor fills a request".
-std::vector<std::string> ProtectedPaths(int world)
+std::vector<std::string> WorldProtectedPaths(const std::string& worldFolder)
 {
-    const std::string worldFolder = "World" + std::to_string(world);
     return {
         "src/bin/Data/" + worldFolder + "/",
         "src/source/",
@@ -50,6 +50,20 @@ std::vector<std::string> ProtectedPaths(int world)
 }
 
 } // namespace
+
+RequestDomain WorldRequestDomain(int world, const std::string& worldName)
+{
+    const std::string worldFolder = "World" + std::to_string(world);
+    RequestDomain domain;
+    domain.assetsFolder = worldFolder;
+    domain.branchWord = ToLower(worldName);
+    domain.world = world;
+    domain.modelDataDirs = {"Object" + std::to_string(world)};
+    domain.protectedPaths = WorldProtectedPaths(worldFolder);
+    domain.schema = WORLD_SCHEMA;
+    domain.filedBy = WORLD_FILED_BY;
+    return domain;
+}
 
 const std::vector<std::string>& MustKeepItems()
 {
@@ -71,12 +85,6 @@ namespace
 std::string RequestName(const std::string& id)
 {
     return id.size() > ID_DATE_PREFIX_CHARS ? id.substr(ID_DATE_PREFIX_CHARS) : id;
-}
-
-// "lorencia" in codex/lorencia-req-<model>-<slug>.
-std::string WorldWord(const RequestDraft& draft)
-{
-    return ToLower(draft.worldName);
 }
 
 ordered_json OptionalJson(const std::optional<std::string>& value)
@@ -163,7 +171,7 @@ ordered_json ConstraintsJson(const RequestDraft& draft)
     json["shared_textures"] = shared;
     json["frozen_textures"] = scope.frozenTextures;
     json["owned_files"] = scope.ownedFiles;
-    json["protected_paths"] = ProtectedPaths(draft.world);
+    json["protected_paths"] = draft.domain.protectedPaths;
     json["engine_controls"] = controls;
     json["must_keep"] = MustKeepItems();
     return json;
@@ -179,7 +187,7 @@ ordered_json CaptureJson(const RequestDraft& draft, const CaptureInfo& capture)
     camera["free_fly"] = capture.freeFly;
 
     ordered_json json;
-    json["file"] = CapturePath(draft.world, draft.id, capture.fileName);
+    json["file"] = CapturePath(draft.domain, draft.id, capture.fileName);
     json["variant"] = CAPTURE_VARIANT;
     json["camera"] = camera;
     json["hero_tile"] = capture.heroTile ? ordered_json(*capture.heroTile) : ordered_json(nullptr);
@@ -209,12 +217,12 @@ ordered_json EvidenceJson(const RequestDraft& draft)
 
 ordered_json HandoffJson(const RequestDraft& draft)
 {
-    const std::string name = WorldWord(draft) + REQUEST_BRANCH_WORD + RequestName(draft.id);
+    const std::string name = draft.domain.branchWord + REQUEST_BRANCH_WORD + RequestName(draft.id);
     ordered_json json;
     json["repo"] = FORK_REPOSITORY;
     json["branch"] = BRANCH_PREFIX + name;
     json["worktree"] = WORKTREE_PREFIX + name;
-    json["deliver_to"] = RequestFolderPath(draft.world, draft.id) + DELIVERY_FOLDER;
+    json["deliver_to"] = RequestFolderPath(draft.domain, draft.id) + DELIVERY_FOLDER;
     json["push_allowed"] = draft.input.pushAllowed;
     json["claimed_by"] = nullptr;
     json["claimed_at"] = nullptr;
@@ -253,14 +261,19 @@ const char* PriorityName(RequestPriority priority)
     return "normal";
 }
 
-std::string RequestFolderPath(int world, const std::string& id)
+std::string RequestsFolderPath(const RequestDomain& domain)
 {
-    return "assets-work/World" + std::to_string(world) + "/requests/" + id;
+    return ASSETS_FOLDER + domain.assetsFolder + REQUESTS_FOLDER;
 }
 
-std::string CapturePath(int world, const std::string& id, const std::string& fileName)
+std::string RequestFolderPath(const RequestDomain& domain, const std::string& id)
 {
-    return RequestFolderPath(world, id) + CAPTURES_FOLDER + fileName;
+    return RequestsFolderPath(domain) + "/" + id;
+}
+
+std::string CapturePath(const RequestDomain& domain, const std::string& id, const std::string& fileName)
+{
+    return RequestFolderPath(domain, id) + CAPTURES_FOLDER + fileName;
 }
 
 RequestScope ComputeScope(RequestKind kind, const std::vector<RequestTarget>& targets)
@@ -298,17 +311,18 @@ RequestScope ComputeScope(RequestKind kind, const std::vector<RequestTarget>& ta
 std::string BuildRequestJson(const RequestDraft& draft)
 {
     ordered_json history = ordered_json::array();
-    history.push_back({{"status", STATUS_OPEN}, {"at", draft.created}, {"by", FILED_BY}});
+    history.push_back({{"status", STATUS_OPEN}, {"at", draft.created}, {"by", draft.domain.filedBy}});
     ordered_json targets = ordered_json::array();
     for (const RequestTarget& target : draft.targets)
         targets.push_back(TargetJson(target));
 
     ordered_json json;
-    json["schema"] = SCHEMA;
+    json["schema"] = draft.domain.schema;
     json["id"] = draft.id;
     json["created"] = draft.created;
-    json["author"] = AUTHOR;
-    json["world"] = draft.world;
+    json["author"] = "owner (" + draft.domain.filedBy + ")";
+    if (draft.domain.world)
+        json["world"] = *draft.domain.world;
     json["status"] = STATUS_OPEN;
     json["status_history"] = history;
     json["priority"] = PriorityName(draft.input.priority);

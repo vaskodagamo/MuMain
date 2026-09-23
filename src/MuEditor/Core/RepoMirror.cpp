@@ -1,4 +1,4 @@
-#include "MapEditorRepoMirror.h"
+#include "RepoMirror.h"
 
 #ifdef _EDITOR
 

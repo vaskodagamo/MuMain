@@ -11,7 +11,7 @@ namespace Editor::Assets
 {
 namespace
 {
-// brief.md sits in assets-work/World{N}/requests/<id>/, four folders below the repository root.
+// brief.md sits in assets-work/<domain>/requests/<id>/, four folders below the repository root.
 constexpr const char* REPO_ROOT_FROM_BRIEF = "../../../../";
 constexpr const char* ASTRA_LINK = "ASTRA.md";
 constexpr const char* README_WORKER_RULES_LINK = "../README.md#worker-rules-codex";
@@ -58,16 +58,16 @@ void Header(std::ostringstream& out, const RequestDraft& draft)
     out << "| | |\n|---|---|\n";
     out << "| Kind | " << KindName(draft.input.kind) << " |\n";
     out << "| Priority | " << PriorityName(draft.input.priority) << " |\n";
-    out << "| Status | open, filed " << draft.created << " from the world editor |\n";
+    out << "| Status | open, filed " << draft.created << " from the " << draft.domain.filedBy << " |\n";
     out << "| Base commit | " << Code(draft.baseCommit) << " |\n";
-    out << "| Deliver to | " << Code(RequestFolderPath(draft.world, draft.id) + "/delivery/") << " |\n";
+    out << "| Deliver to | " << Code(RequestFolderPath(draft.domain, draft.id) + "/delivery/") << " |\n";
     out << "| Push allowed | " << (draft.input.pushAllowed ? "yes (branch and PR on the fork, never merge)" : "no")
         << " |\n\n";
     out << "`request.json` next to this file is the contract; this brief repeats it for people. Work as "
         << "[ASTRA.md](" << RepoLink(ASTRA_LINK) << ") and the [worker rules](" << README_WORKER_RULES_LINK
         << ") describe, and check the folder with\n"
-        << "`python3 assets-work/World" << draft.world << "/requests/validate_request.py "
-        << RequestFolderPath(draft.world, draft.id) << "`.\n"
+        << "`python3 " << RequestsFolderPath(draft.domain) << "/validate_request.py "
+        << RequestFolderPath(draft.domain, draft.id) << "`.\n"
         << "Placement, rotation, scale and terrain are not part of this request.\n\n";
 }
 

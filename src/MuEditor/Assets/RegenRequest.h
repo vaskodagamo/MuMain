@@ -80,13 +80,30 @@ struct CaptureInfo
     std::string note;
 };
 
+// Where one kind of asset keeps its requests and what a worker on them must not
+// touch. The Map Editor files requests in the domain of a world (World1:
+// assets-work/World1/requests, branches codex/lorencia-req-...); other kinds of
+// assets (items) get a domain of their own with the same contract.
+struct RequestDomain
+{
+    std::string assetsFolder;                // under assets-work/: "World1"
+    std::string branchWord;                  // names the worker branch: codex/<branchWord>-req-<name>
+    std::optional<int> world;                // request.json "world"; none for assets outside a map
+    std::vector<std::string> modelDataDirs;  // under src/bin/Data, holding the domain's models: "Object1"
+    std::vector<std::string> protectedPaths; // constraints.protected_paths
+    std::string schema;                      // request.json "schema"
+    std::string filedBy;                     // the tool that files the requests: "world editor"
+};
+
+// The domain of map `world`; `worldName` ("Lorencia") names the worker branches.
+RequestDomain WorldRequestDomain(int world, const std::string& worldName);
+
 struct RequestDraft
 {
     std::string id; // <date>-<model>-<slug>, also the folder name
     std::string created;
-    int world = 1;
-    std::string worldName = "Lorencia"; // names the worker branch: codex/lorencia-req-...
-    std::string baseCommit;             // full sha
+    RequestDomain domain = WorldRequestDomain(1, "Lorencia");
+    std::string baseCommit; // full sha
     OwnerInput input;
     std::vector<RequestTarget> targets; // the clicked model first
     std::optional<std::string> newModel;
@@ -94,8 +111,9 @@ struct RequestDraft
 };
 
 // Repo-relative paths derived from the id.
-std::string RequestFolderPath(int world, const std::string& id); // assets-work/World1/requests/<id>
-std::string CapturePath(int world, const std::string& id, const std::string& fileName);
+std::string RequestsFolderPath(const RequestDomain& domain);                      // assets-work/World1/requests
+std::string RequestFolderPath(const RequestDomain& domain, const std::string& id); // .../requests/<id>
+std::string CapturePath(const RequestDomain& domain, const std::string& id, const std::string& fileName);
 
 // Containers of the targets -> every model that uses them (only the ones used by
 // more than one model), frozen containers (a consumer outside the targets) and the

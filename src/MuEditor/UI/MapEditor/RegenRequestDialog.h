@@ -73,8 +73,7 @@ private:
     Stage m_stage = Stage::Closed;
     bool m_openPending = false;
 
-    int m_world = 0;
-    std::string m_worldName;
+    Editor::Assets::RequestDomain m_domain; // the map's: assets-work/World{N}/requests
     // The clicked model first (with the picked instance), then the in-scope models
     // that share its textures, each with the SHA-256 of its BMD in the checkout.
     std::vector<Editor::Assets::RequestTarget> m_targets;

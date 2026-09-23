@@ -212,7 +212,31 @@ vaskodagamo/MuMain (--repo vaskodagamo/MuMain); do not merge.
 
 Status:
 
-- Plan written 2026-09-23; nothing implemented yet.
+- Plan written 2026-09-23 (PR #21). Split agreed with the owner the same day: Claude sessions
+  implement I0-I6, Codex does the art (I7 and every item request afterwards).
+- **I0 done (2026-09-23).** Shared code for a second editor, no Map Editor behaviour change:
+  - `Editor::Assets::RequestDomain` (asset folder, branch word, optional world, model data
+    folders, protected paths, schema, filed-by) replaces `RequestDraft::world`/`worldName`;
+    `WorldRequestDomain(world, name)` gives the Map Editor's. `RequestFolderPath`,
+    `CapturePath`, `RequestsDir`, `ExistingRequestIds`, `TakenModelNames` and the brief take the
+    domain; `request.json` writes `world` only when the domain has one. The request dialog
+    keeps one `m_domain`.
+  - `MapEditorRepoMirror` is now `MuEditor/Core/RepoMirror`; the generic half of
+    `MapEditorFileUtil` (`DataDir`, `ReadWholeFile`, `RepoRoot`, `MirrorSavedFile`,
+    `CopyToRepoExports`, `DescribeSavedFiles`, `OpenWithSystem`) is `MuEditor/Core/EditorFiles`;
+    `MapEditorFileUtil` keeps the map folders and files and includes it. Their log lines say
+    `[Editor]` instead of `[MapEditor]`.
+  - `HotReload::ModelRange` + `AllowRange`: the reload accepts every allowed block of `Models[]`
+    (world objects always; texture filter/wrap and "follows the map" per range). Requests for a
+    range that does not follow the map survive a map change.
+  - Checked: `request.json` and `brief.md` for every kind (two targets, new variant, push
+    allowed) byte-identical before and after (temporary dump test, removed); new tests for an
+    items-like domain and the world domain; `ctest` 340/340 in `macos-arm64-mueditor`, the
+    editor tests also in `macos-arm64`; `./Main --editor --world 1` opens Lorencia offline,
+    finds the repository and captures a frame. Not exercised at run time: a reload of a model
+    outside the world range (nothing allows one yet; I6 does).
+  - Found for I1: the shipped `Item_Eng.bmd` loads as the legacy format (30-byte names,
+    946 items).
 
 ## 8. Later options
 

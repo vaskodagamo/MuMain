@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 
-// Where the Map Editor keeps durable copies of what it saves.
+// Where the editors keep durable copies of what they save.
 //
 // The game reads its files from the Data folder next to the executable, which the
 // build copies from the repository's src/bin/Data and overwrites whenever
@@ -18,7 +18,7 @@
 // <repo>/out/editor-backups/<YYYYMMDD-HHMMSS>/Data/... (out/ is not in git).
 //
 // Only the file system is touched here (no engine or UI), so it can be tested on
-// its own; MapEditorFileUtil wires it to the editor.
+// its own; EditorFiles wires it to the editor.
 namespace Editor::Files
 {
 // The repository the editor mirrors into, or an empty root with the reason.

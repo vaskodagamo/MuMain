@@ -19,15 +19,16 @@ namespace Editor::Assets
 {
 namespace
 {
+constexpr const char* ASSETS_FOLDER = "assets-work";
 constexpr const char* REQUESTS_FOLDER = "requests";
 constexpr const char* REQUEST_FILE = "request.json";
 constexpr const char* BRIEF_FILE = "brief.md";
 constexpr const char* CAPTURES_FOLDER = "captures";
 constexpr const char* MODEL_EXTENSION = ".bmd";
 
-fs::path RepoObjectDir(const fs::path& repoRoot, int world)
+fs::path RepoModelDir(const fs::path& repoRoot, const std::string& dataDir)
 {
-    return repoRoot / "src" / "bin" / "Data" / ("Object" + std::to_string(world));
+    return repoRoot / "src" / "bin" / "Data" / Editor::Text::Utf8Path(dataDir);
 }
 
 std::string ReadText(const fs::path& file)
@@ -93,16 +94,16 @@ void AddOtherNewModels(const fs::path& requestsDir, std::set<std::string>& taken
 }
 } // namespace
 
-fs::path RequestsDir(const fs::path& repoRoot, int world)
+fs::path RequestsDir(const fs::path& repoRoot, const RequestDomain& domain)
 {
-    return WorldAssetsDir(repoRoot, world) / REQUESTS_FOLDER;
+    return repoRoot / ASSETS_FOLDER / Editor::Text::Utf8Path(domain.assetsFolder) / REQUESTS_FOLDER;
 }
 
-std::vector<std::string> ExistingRequestIds(const fs::path& repoRoot, int world)
+std::vector<std::string> ExistingRequestIds(const fs::path& repoRoot, const RequestDomain& domain)
 {
     std::vector<std::string> ids;
     std::error_code ec;
-    for (fs::directory_iterator it(RequestsDir(repoRoot, world), ec), end; !ec && it != end; it.increment(ec))
+    for (fs::directory_iterator it(RequestsDir(repoRoot, domain), ec), end; !ec && it != end; it.increment(ec))
     {
         if (it->is_directory(ec))
             ids.push_back(Editor::Text::PathToUtf8(it->path().filename()));
@@ -111,26 +112,30 @@ std::vector<std::string> ExistingRequestIds(const fs::path& repoRoot, int world)
     return ids;
 }
 
-std::set<std::string> TakenModelNames(const fs::path& repoRoot, int world, const Catalog& catalog)
+std::set<std::string> TakenModelNames(const fs::path& repoRoot, const RequestDomain& domain, const Catalog& catalog)
 {
     std::set<std::string> taken;
     for (const CatalogModel& model : catalog.models)
         taken.insert(ToLower(model.name));
-    std::error_code ec;
-    for (fs::directory_iterator it(RepoObjectDir(repoRoot, world), ec), end; !ec && it != end; it.increment(ec))
+    for (const std::string& dataDir : domain.modelDataDirs)
     {
-        const fs::path& file = it->path();
-        if (ToLower(Editor::Text::PathToUtf8(file.extension())) == MODEL_EXTENSION)
-            taken.insert(ToLower(Editor::Text::PathToUtf8(file.stem())));
+        std::error_code ec;
+        for (fs::directory_iterator it(RepoModelDir(repoRoot, dataDir), ec), end; !ec && it != end;
+             it.increment(ec))
+        {
+            const fs::path& file = it->path();
+            if (ToLower(Editor::Text::PathToUtf8(file.extension())) == MODEL_EXTENSION)
+                taken.insert(ToLower(Editor::Text::PathToUtf8(file.stem())));
+        }
     }
-    AddOtherNewModels(RequestsDir(repoRoot, world), taken);
+    AddOtherNewModels(RequestsDir(repoRoot, domain), taken);
     return taken;
 }
 
 bool WriteRequestFolder(const fs::path& repoRoot, const RequestDraft& draft, const std::vector<std::uint8_t>& jpeg,
                         fs::path& folder, std::string& error)
 {
-    folder = RequestsDir(repoRoot, draft.world) / draft.id;
+    folder = RequestsDir(repoRoot, draft.domain) / draft.id;
     if (draft.captures.empty() != jpeg.empty())
     {
         error = "the capture and its image do not match";

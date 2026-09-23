@@ -28,7 +28,7 @@ if(NOT ENABLE_EDITOR)
             -P "${CMAKE_CURRENT_SOURCE_DIR}/test_leak.cmake")
 endif()
 
-# Where the Map Editor copies its saves (the repository's src/bin/Data, with
+# Where the editors copy their saves (the repository's src/bin/Data, with
 # backups) is plain file-system code, so it is tested on its own, also in
 # builds without the editor. The test compiles that one file itself; nothing
 # of the editor goes into MuClient.
@@ -36,7 +36,7 @@ mu_add_test(
     NAME editor_repo_mirror_tests
     SOURCES
         test_repo_mirror.cpp
-        ${PROJECT_SOURCE_DIR}/src/MuEditor/UI/MapEditor/MapEditorRepoMirror.cpp
+        ${PROJECT_SOURCE_DIR}/src/MuEditor/Core/RepoMirror.cpp
         ${PROJECT_SOURCE_DIR}/src/MuEditor/Assets/EditorText.cpp
 )
 target_compile_definitions(editor_repo_mirror_tests PRIVATE _EDITOR)
