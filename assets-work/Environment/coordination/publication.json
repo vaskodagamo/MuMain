@@ -1,0 +1,24 @@
+{
+  "branch": "codex/dungeon-static-remake",
+  "checkpoint": "cea300f4",
+  "draft_pr": "https://github.com/vaskodagamo/MuMain/pull/13",
+  "accepted_replacements": [
+    "Object28",
+    "Object29"
+  ],
+  "retained": [
+    "Object21",
+    "Object22",
+    "Object30"
+  ],
+  "client_verification": "pending for all new changes",
+  "published_worker_branches": {
+    "codex/dungeon-pottery": "15a1a4c4",
+    "codex/dungeon-coffins": "6cd41d24"
+  },
+  "active_batches": [
+    "Walls01",
+    "Pier01"
+  ],
+  "lorencia_draft_pr": "https://github.com/vaskodagamo/MuMain/pull/12"
+}
