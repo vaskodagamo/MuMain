@@ -1,0 +1,36 @@
+00:01.143  blend            | Read blend: "/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-supports/assets-work/World2/Supports01/Object13/source.blend"
+skipping reference object 'Object13.001' (REF_ collection or mu_reference)
+
+Blender Source Tools: exporting Object13_mu_export
+- Baking...
+- /private/var/folders/5c/gyglnk2d6mx3v2m0frrgvl2w0000gn/T/mu_export_fu9lhz_s/Object13_mu_export.smd
+- Exported 1 bones
+- Exported 1 frames
+- Exported 134 polys
+- Exported 2 materials
+   deep_wall04.jpg
+   deep_wall01.jpg
+- SMD export took 0.009217023849487305 
+
+
+Blender Source Tools: exporting Object13_skeleton
+- Baking...
+- /private/var/folders/5c/gyglnk2d6mx3v2m0frrgvl2w0000gn/T/mu_export_fu9lhz_s/anims/Object13_a00.smd
+- Exported 1 bones
+- Exported 1 frames
+- SMD export took 0.0006809234619140625 
+
+2 files exported in 0.0 seconds
+Info: 2 files exported in 0.0 seconds
+wrote /Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-supports/assets-work/World2/Supports01/Object13/exports/Object13.bmd (1 action(s))
+model /Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-supports/assets-work/World2/Supports01/Object13/exports/Object13.bmd
+  name field: Data2\Object2\\xb5\xb9\xb1\xe2\xb5\xd5.smd  version: 12
+  meshes: 2  bones: 1  actions: 1  triangles: 134
+  bounds (bind pose): min -58.82 -59.20 -300.16  max 58.79 59.00 -0.00  size 117.61 118.20 300.16
+  mesh 0: triangles=132 vertices=101 normals=96 uvs=93 texture=deep_wall04.jpg
+  mesh 1: triangles=2 vertices=4 normals=1 uvs=4 texture=deep_wall01.jpg
+  bone 0: "Box13" parent=-1
+  action 0: keys=1 lock=0
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:49:19)
+
+Blender quit
