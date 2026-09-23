@@ -40,7 +40,7 @@ Linux/WSL with MinGW-w64.
 
 A native Apple Silicon build produces a playable client as an app bundle: the
 engine plus the `osx-arm64` network library, rendered through SDL GPU/Metal.
-The in-game editor does not build on macOS yet (see the guide).
+The in-game editor builds with its own preset, `macos-arm64-mueditor` (see the guide).
 
 | Setup | Guide |
 |-------|-------|
@@ -58,7 +58,7 @@ buildable for them. See the per-platform notes when that work lands.
 | Linux | x64 | on / off | `MUnique.Client.Library.so` (linux-x64 AOT) | Full client |
 | Windows | x64 | on / off | `MUnique.Client.Library.dll` (win-x64 AOT) | Full client |
 | Windows | x86 | on / off | `MUnique.Client.Library.dll` (win-x86 AOT) | Full client |
-| macOS | arm64 | off | `MUnique.Client.Library.dylib` (osx-arm64 AOT) | Full client; editor build not ported yet |
+| macOS | arm64 | on / off | `MUnique.Client.Library.dylib` (osx-arm64 AOT) | Full client |
 | Linux | x86 | - | none | Not supported (see below) |
 
 Actions validate Windows native x64 Release, Linux x64 Release, and macOS arm64

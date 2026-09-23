@@ -136,6 +136,15 @@
       "cacheVariables": {
         "ENABLE_EDITOR": "OFF"
       }
+    },
+    {
+      "name": "macos-arm64-mueditor",
+      "displayName": "macOS arm64 MuEditor",
+      "description": "Native macOS Apple Silicon build with editor features",
+      "inherits": "macos-arm64",
+      "cacheVariables": {
+        "ENABLE_EDITOR": "ON"
+      }
     }
   ],
   "buildPresets": [
@@ -209,6 +218,18 @@
       "name": "macos-arm64-release",
       "displayName": "macOS arm64 Release",
       "configurePreset": "macos-arm64",
+      "configuration": "Release"
+    },
+    {
+      "name": "macos-arm64-mueditor-debug",
+      "displayName": "macOS arm64 MuEditor Debug",
+      "configurePreset": "macos-arm64-mueditor",
+      "configuration": "Debug"
+    },
+    {
+      "name": "macos-arm64-mueditor-release",
+      "displayName": "macOS arm64 MuEditor Release",
+      "configurePreset": "macos-arm64-mueditor",
       "configuration": "Release"
     }
   ]
