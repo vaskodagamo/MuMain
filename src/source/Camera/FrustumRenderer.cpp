@@ -31,6 +31,9 @@ constexpr int MAX_EDGE_SEGMENTS = 32;
 // Camera position marker is drawn as an axis-aligned cross with arms this long.
 constexpr float CAMERA_MARKER_HALF_LENGTH = 50.0f;
 
+// Width on screen of every line of the visualization.
+constexpr float LINE_WIDTH_PIXELS = 1.5f;
+
 mu::Vertex3D MakeVertex(const vec3_t position, std::uint32_t color)
 {
     return {position[0], position[1], position[2], 0.f, 0.f, 1.f, 0.f, 0.f, color};
@@ -120,7 +123,7 @@ void RenderPyramidWireframe(const vec3_t v[8], const vec3_t apex)
         MakeVertex(apex, sideColor), MakeVertex(v[5], sideColor), MakeVertex(apex, sideColor),
         MakeVertex(v[6], sideColor), MakeVertex(apex, sideColor), MakeVertex(v[7], sideColor),
     };
-    mu::GetRenderer().RenderLines(lines, 0);
+    mu::GetRenderer().RenderScreenLines(lines, LINE_WIDTH_PIXELS);
 }
 
 void RenderPyramidFilled(const vec3_t v[8], const vec3_t apex)
@@ -185,7 +188,7 @@ void RenderGroundProjection(const Frustum& frustum)
             AppendLine(lines, sx0, sy0, z0, sx1, sy1, z1, color);
         }
     }
-    mu::GetRenderer().RenderLines(lines, 0);
+    mu::GetRenderer().RenderScreenLines(lines, LINE_WIDTH_PIXELS);
 }
 
 // Draw a terrain-hugging horizontal line between two ground hit points.
@@ -253,7 +256,7 @@ void RenderFovGroundIntersect(const vec3_t apex, const vec3_t v[8])
         const std::uint32_t color = mu::PackABGR(1.f, 1.f, 0.f, 0.9f);
         AppendGroundSegment(lines, topLx, topLy, topRx, topRy, color);
     }
-    mu::GetRenderer().RenderLines(lines, 0);
+    mu::GetRenderer().RenderScreenLines(lines, LINE_WIDTH_PIXELS);
 }
 
 void RenderCameraMarker(const vec3_t apex)
@@ -267,7 +270,7 @@ void RenderCameraMarker(const vec3_t apex)
         {apex[0], apex[1], apex[2] - CAMERA_MARKER_HALF_LENGTH, 0.f, 0.f, 1.f, 0.f, 0.f, color},
         {apex[0], apex[1], apex[2] + CAMERA_MARKER_HALF_LENGTH, 0.f, 0.f, 1.f, 0.f, 0.f, color},
     };
-    mu::GetRenderer().RenderLines(lines, 0);
+    mu::GetRenderer().RenderScreenLines(lines, LINE_WIDTH_PIXELS);
 }
 } // namespace
 

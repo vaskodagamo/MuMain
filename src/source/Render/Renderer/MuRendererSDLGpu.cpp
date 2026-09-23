@@ -35,6 +35,7 @@
 #include "DrawCommandHistory.h"
 #include "MuRenderer.h"
 #include "QuadTopology.h"
+#include "ScreenLineRibbons.h"
 #include "SdlGpuPixelFormat.h"
 #include "SdlGpuReplayState.h"
 #include "SdlGpuValidation.h"
@@ -43,6 +44,7 @@
 #include "Core/Utilities/Log/MuLogger.h"
 #ifdef _EDITOR
 #include "Core/MuEditorCore.h"
+#include "SdlGpuEditorOverlayPipeline.h"
 #endif
 
 #include <algorithm>
@@ -76,7 +78,7 @@ namespace
 {
 
 // Maximum number of quads supported by the static quad index buffer.
-constexpr int k_MaxQuads = 4096;
+constexpr int k_MaxQuads = static_cast<int>(Render::Topology::MAX_QUADS_PER_DRAW);
 // Initial vertex capacity. CPU staging grows so stress frames keep late UI draws.
 constexpr Uint32 k_InitialVertexBufferSize = 64u * 1024u * 1024u;
 constexpr Uint32 k_InitialBoneBufferSize = 64u * 1024u;
@@ -84,6 +86,9 @@ constexpr Uint32 k_InitialBoneBufferSize = 64u * 1024u;
 constexpr int k_PipelineCount = 9;
 // Pipeline index for "blend disabled".
 constexpr int k_PipelineDisabled = 8;
+// Depth buffer format of the main pass (and of editor offscreen captures). Every
+// pipeline drawn into those passes must declare the same format.
+constexpr SDL_GPUTextureFormat k_DepthFormat = SDL_GPU_TEXTUREFORMAT_D32_FLOAT;
 
 // Story 7.9.7 (AC-7): Vertex uniform layout matching cbuffer Transform in HLSL.
 // Contains MVP matrix + fog params, pushed per-draw via SDL_PushGPUVertexUniformData.
@@ -820,6 +825,9 @@ static void ReplayDrawCommand(const RenderCmd& command, bool boneDataReady, cons
 // Copied to GPU in one shot in EndFrame before the render pass.
 static std::vector<Uint16> s_stripIdxScratch;
 
+// View-space quads RenderScreenLines builds, reused from call to call (main render thread only).
+static std::vector<mu::Vertex3D> s_screenLineQuads;
+
 // ---------------------------------------------------------------------------
 // Deferred texture updates.
 // Queued during the frame when CPU-side BITMAP_t.Buffer changes. Processed in
@@ -880,6 +888,10 @@ static Uint32 s_offscreenCaptureHeight = 0u;
 static SDL_GPUTexture* s_offscreenDepthTexture = nullptr;
 static Uint32 s_offscreenDepthW = 0u;
 static Uint32 s_offscreenDepthH = 0u;
+
+// Dear ImGui's pipeline rebuilt for the main pass's colour and depth formats (see
+// CreateEditorOverlayPipeline). nullptr lets ImGui fall back to its own pipeline.
+static SDL_GPUGraphicsPipeline* s_editorOverlayPipeline = nullptr;
 #endif
 
 // Story 4.3.2 (AC-10): Fog uniform buffer and transfer buffer.
@@ -1425,6 +1437,9 @@ public:
 
         // Shaders are no longer needed after pipelines are created.
         ReleaseShaders();
+#ifdef _EDITOR
+        CreateEditorOverlayPipeline();
+#endif
 
         // Allocate per-frame vertex scratch buffers.
         if (!CreateVertexBuffers())
@@ -2277,6 +2292,8 @@ public:
         cmd.viewport.min_depth = 0.0f;
         cmd.viewport.max_depth = 1.0f;
         s_renderCmds.push_back(cmd);
+        m_screenLineViewportWidth = static_cast<float>(w);
+        m_screenLineViewportHeight = static_cast<float>(h);
     }
 
     // -----------------------------------------------------------------------
@@ -2444,6 +2461,45 @@ public:
 
             RenderQuad3D(verts, textureId);
         }
+    }
+
+    // Camera-facing ribbons of a constant width in (window) pixels, built in view space
+    // and drawn with the projection alone, untextured and on both sides; the caller's
+    // blend and depth state apply. RenderLines above keeps its world-space ribbons.
+    void RenderScreenLines(std::span<const Vertex3D> vertices, float widthPixels) override
+    {
+        if (vertices.size() < 2 || !s_frameActive)
+        {
+            return;
+        }
+
+        Render::Lines::ScreenLineView view;
+        view.modelView = m_modelViewMatrix;
+        view.projection = m_projMatrix;
+        view.viewportWidth =
+            m_screenLineViewportWidth > 0.0f ? m_screenLineViewportWidth : static_cast<float>(s_cachedWinW);
+        view.viewportHeight =
+            m_screenLineViewportHeight > 0.0f ? m_screenLineViewportHeight : static_cast<float>(s_cachedWinH);
+        s_screenLineQuads.clear();
+        Render::Lines::AppendRibbons(vertices, view, widthPixels, s_screenLineQuads);
+        if (s_screenLineQuads.empty())
+        {
+            return;
+        }
+
+        const glm::mat4 mvp = m_mvpMatrix;
+        const bool texture = m_texture2DEnabled;
+        const bool cullFace = m_cullFaceEnabled;
+        m_mvpMatrix = m_projMatrix;
+        m_texture2DEnabled = false; // texture 0 then resolves to the white texture
+        m_cullFaceEnabled = false;
+        // A tile grid has far more segments than one draw holds.
+        Render::Topology::ForEachQuadBatch(std::span<const Vertex3D>(s_screenLineQuads),
+                                           Render::Topology::MAX_QUADS_PER_DRAW,
+                                           [this](std::span<const Vertex3D> batch) { RenderQuad3D(batch, 0u); });
+        m_mvpMatrix = mvp;
+        m_texture2DEnabled = texture;
+        m_cullFaceEnabled = cullFace;
     }
 
     // -----------------------------------------------------------------------
@@ -2698,7 +2754,9 @@ public:
 
 #ifdef _EDITOR
     // Same shape as EnsureTexture, but with COLOR_TARGET usage added so the result
-    // can be rendered into (not just sampled) - needed for offscreen captures.
+    // can be rendered into (not just sampled) - needed for offscreen captures. The
+    // format is the swapchain's (BGRA8 on Metal) because every replayed pipeline
+    // was built for that colour-target format.
     void EnsureOffscreenColorTexture(std::uint32_t textureId, std::uint32_t width, std::uint32_t height)
     {
         if (!s_device || textureId == 0 || width == 0 || height == 0)
@@ -2723,17 +2781,16 @@ public:
             ReleaseOwnedTextureById(textureId);
         }
 
-        SDL_GPUTextureCreateInfo texInfo{};
-        texInfo.type = SDL_GPU_TEXTURETYPE_2D;
-        texInfo.format = SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM;
-        texInfo.usage = SDL_GPU_TEXTUREUSAGE_COLOR_TARGET | SDL_GPU_TEXTUREUSAGE_SAMPLER;
-        texInfo.width = width;
-        texInfo.height = height;
-        texInfo.layer_count_or_depth = 1;
-        texInfo.num_levels = 1;
-        texInfo.sample_count = SDL_GPU_SAMPLECOUNT_1;
+        const auto texInfo =
+            GetSdlGpuFrameCaptureTextureInfo(SDL_GetGPUSwapchainTextureFormat(s_device, s_window), width, height);
+        if (!texInfo)
+        {
+            mu::log::Get("render")->warn("SDL_gpu -- offscreen capture texture {}: unsupported swapchain format",
+                                         textureId);
+            return;
+        }
 
-        SDL_GPUTexture* texture = SDL_CreateGPUTexture(s_device, &texInfo);
+        SDL_GPUTexture* texture = SDL_CreateGPUTexture(s_device, &*texInfo);
         if (!texture)
         {
             mu::log::Get("render")->warn("SDL_gpu -- offscreen capture texture {} creation failed ({}x{}): {}",
@@ -2785,6 +2842,9 @@ public:
             return 0u;
         }
 
+        // A capture replays exactly the command range recorded between Begin and
+        // End, so no draw may merge into a command on the other side of either edge.
+        s_previousDrawCommands.fill(kNoDrawCommand);
         s_offscreenCaptureStart = s_renderCmds.size();
         s_offscreenCaptureTextureId = textureId;
         s_offscreenCaptureWidth = width;
@@ -2803,6 +2863,7 @@ public:
                                               s_offscreenCaptureTextureId, s_offscreenCaptureWidth,
                                               s_offscreenCaptureHeight});
         s_offscreenCaptureTextureId = 0u;
+        s_previousDrawCommands.fill(kNoDrawCommand);
     }
 
     [[nodiscard]] void* GetTexturePointer(std::uint32_t textureId) const override
@@ -3612,6 +3673,9 @@ private:
     bool m_colorWriteEnabled = true;
     bool m_stencilTestEnabled = false;
     int m_boundTextureId = -1;
+    // Size of the last SetViewport, in window pixels: RenderScreenLines widths are in these pixels.
+    float m_screenLineViewportWidth = 0.0f;
+    float m_screenLineViewportHeight = 0.0f;
     FogParams m_fogParams{};
     // Story 4.3.2 (AC-10): CPU-side fog uniform data, uploaded to GPU when dirty.
     FogUniform m_fogUniform{};
@@ -4050,7 +4114,7 @@ private:
         // Story 7.9.7 (AC-3): Enable depth-stencil target so pipelines match
         // the render pass that now includes a depth buffer.
         targetInfo.has_depth_stencil_target = true;
-        targetInfo.depth_stencil_format = SDL_GPU_TEXTUREFORMAT_D32_FLOAT;
+        targetInfo.depth_stencil_format = k_DepthFormat;
 
         // Back-face culling: enable for opaque 3D geometry (depth write ON).
         // Disable for transparent/glow passes (depth write OFF) and all 2D.
@@ -4298,7 +4362,38 @@ private:
                 s_pipelinesSkinnedDepthReadOnly[i] = nullptr;
             }
         }
+#ifdef _EDITOR
+        ReleaseEditorOverlayPipeline();
+#endif
     }
+
+#ifdef _EDITOR
+    // The editor draws Dear ImGui inside the main pass, but ImGui's own pipeline
+    // declares no depth attachment, which Metal's API validation rejects
+    // (MTL_DEBUG_LAYER=1). This builds ImGui's pipeline again for the main pass's
+    // formats. A failure is logged and not fatal: ImGui then uses its own pipeline.
+    static void CreateEditorOverlayPipeline()
+    {
+        const Render::EditorOverlay::PassTargetFormats formats{SDL_GetGPUSwapchainTextureFormat(s_device, s_window),
+                                                               k_DepthFormat};
+        s_editorOverlayPipeline = Render::EditorOverlay::CreatePipeline(s_device, formats);
+        if (!s_editorOverlayPipeline)
+        {
+            mu::log::Get("render")->error("SDL_gpu -- editor overlay pipeline creation failed: {}", SDL_GetError());
+        }
+    }
+
+    static void ReleaseEditorOverlayPipeline()
+    {
+        if (!s_editorOverlayPipeline)
+        {
+            return;
+        }
+
+        SDL_ReleaseGPUGraphicsPipeline(s_device, s_editorOverlayPipeline);
+        s_editorOverlayPipeline = nullptr;
+    }
+#endif
 
     // -----------------------------------------------------------------------
     // Story 7.9.7 (AC-3): CreateOrResizeDepthTexture
@@ -4328,7 +4423,7 @@ private:
 
         SDL_GPUTextureCreateInfo depthInfo{};
         depthInfo.type = SDL_GPU_TEXTURETYPE_2D;
-        depthInfo.format = SDL_GPU_TEXTUREFORMAT_D32_FLOAT;
+        depthInfo.format = k_DepthFormat;
         depthInfo.width = width;
         depthInfo.height = height;
         depthInfo.layer_count_or_depth = 1;
@@ -4372,7 +4467,7 @@ private:
 
         SDL_GPUTextureCreateInfo depthInfo{};
         depthInfo.type = SDL_GPU_TEXTURETYPE_2D;
-        depthInfo.format = SDL_GPU_TEXTUREFORMAT_D32_FLOAT;
+        depthInfo.format = k_DepthFormat;
         depthInfo.width = width;
         depthInfo.height = height;
         depthInfo.layer_count_or_depth = 1;
@@ -4899,6 +4994,15 @@ private:
 {
     return MuRendererSDLGpu::Init(pNativeWindow, fontFamily, normalPointSize, bigPointSize, fixedPointSize);
 }
+
+#ifdef _EDITOR
+SDL_GPUGraphicsPipeline* GetEditorOverlayPipeline()
+{
+    // Without a depth texture the main pass has no depth attachment, which is
+    // what ImGui's own pipeline (returned as nullptr) is built for.
+    return s_depthTexture ? s_editorOverlayPipeline : nullptr;
+}
+#endif
 
 void WaitForSDLGpuIdle()
 {

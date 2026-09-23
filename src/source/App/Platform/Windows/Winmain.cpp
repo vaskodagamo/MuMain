@@ -83,6 +83,7 @@
 
 #ifdef _EDITOR
 #include "../MuEditor/Core/MuEditorCore.h"
+#include "../MuEditor/Core/OfflineWorld.h"
 #include "imgui.h"
 #include "imgui_impl_sdl3.h"
 #include "../MuEditor/Config/MuEditorConfig.h"
@@ -2124,11 +2125,12 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine, int nC
     g_MuEditorCore.Initialize(g_sdlWindow);
 
     // Check for --editor command line flag
-    if (szCmdLine && wcsstr(GetCommandLineW(), L"--editor"))
+    if (wcsstr(lpszCommandLine, L"--editor"))
     {
         g_MuEditorCore.SetEnabled(true);
         fwprintf(stderr, L"[Editor] Starting in editor mode (--editor flag detected)\n");
         std::fflush(stderr);
+        Editor::OfflineWorld::ReadCommandLine(lpszCommandLine);
     }
 #endif
 

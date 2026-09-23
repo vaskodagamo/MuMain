@@ -3,6 +3,7 @@
 #ifdef _EDITOR
 
 #include "MapTextureImport.h"
+#include "MapEditorFileUtil.h"
 
 #include "Core/Globals/_TextureIndex.h"     // BITMAP_MAPTILE
 #include "Render/Sprites/GlobalBitmap.h"     // GL_LINEAR / GL_REPEAT
@@ -14,9 +15,6 @@
 #include <cwctype>
 #include <filesystem>
 #include <vector>
-
-#include <windows.h>
-#include <commdlg.h>
 
 namespace fs = std::filesystem;
 
@@ -50,51 +48,19 @@ namespace
         return buf;
     }
 
-    std::wstring WorldFolder(int world)
-    {
-        return L"Data\\World" + std::to_wstring(world);
-    }
-
     // First ExtTile index (1..16) with no file yet, or -1 if all are taken.
     int FindFreeExtIndex(int world)
     {
-        const std::wstring folder = WorldFolder(world);
+        const fs::path folder = Editor::Files::WorldDir(world);
         for (int i = 1; i <= EXT_COUNT; ++i)
         {
-            const std::wstring base = folder + L"\\" + ExtTileBaseName(i);
+            const std::wstring base = ExtTileBaseName(i);
             std::error_code ec;
-            if (!fs::exists(base + L".OZJ", ec) && !fs::exists(base + L".jpg", ec) &&
-                !fs::exists(base + L".ozj", ec))
+            if (!fs::exists(folder / (base + L".OZJ"), ec) && !fs::exists(folder / (base + L".jpg"), ec) &&
+                !fs::exists(folder / (base + L".ozj"), ec))
                 return i;
         }
         return -1;
-    }
-
-    // MSVC's STL has a non-standard std::ifstream/ofstream(std::wstring, ...)
-    // extension; libstdc++ (GCC/MinGW) has no such overload, so this must use
-    // the wide-path FILE* API (_wfopen) that the rest of the Map Editor's file
-    // I/O already uses, rather than iostreams, to build with both compilers.
-    std::vector<unsigned char> ReadFile(const std::wstring& path)
-    {
-        FILE* fp = _wfopen(path.c_str(), L"rb");
-        if (fp == nullptr)
-            return {};
-
-        fseek(fp, 0, SEEK_END);
-        const long size = ftell(fp);
-        fseek(fp, 0, SEEK_SET);
-        if (size <= 0)
-        {
-            fclose(fp);
-            return {};
-        }
-
-        std::vector<unsigned char> data(static_cast<size_t>(size));
-        const size_t read = fread(data.data(), 1, data.size(), fp);
-        fclose(fp);
-        if (read != data.size())
-            return {};
-        return data;
     }
 
     // Produces the ExtTile OZJ file for the target slot from a .jpg/.jpeg (wrapped
@@ -103,7 +69,7 @@ namespace
     bool WriteExtTileOzj(const std::wstring& destOzj, const std::wstring& sourcePath)
     {
         const std::wstring ext = ToLower(fs::path(sourcePath).extension().wstring());
-        const std::vector<unsigned char> src = ReadFile(sourcePath);
+        const std::vector<unsigned char> src = Editor::Files::ReadWholeFile(sourcePath);
         if (src.empty())
             return false;
 
@@ -133,7 +99,7 @@ namespace
     }
 }
 
-int UseTextureFile(int world, const std::wstring& sourcePath)
+int UseTextureFile(int world, const std::wstring& sourcePath, std::string& outReport)
 {
     const int i = FindFreeExtIndex(world);
     if (i < 0)
@@ -142,11 +108,12 @@ int UseTextureFile(int world, const std::wstring& sourcePath)
         return -1;
     }
 
+    const fs::path folder = Editor::Files::WorldDir(world);
     std::error_code ec;
-    fs::create_directories(WorldFolder(world), ec);
+    fs::create_directories(folder, ec);
 
-    const std::wstring destOzj = WorldFolder(world) + L"\\" + ExtTileBaseName(i) + L".OZJ";
-    if (!WriteExtTileOzj(destOzj, sourcePath))
+    const fs::path destOzj = folder / (ExtTileBaseName(i) + L".OZJ");
+    if (!WriteExtTileOzj(destOzj.wstring(), sourcePath))
     {
         g_MuEditorConsoleUI.LogEditor("[MapEditor] Import failed: source must be a .jpg/.jpeg or .ozj file");
         return -1;
@@ -170,23 +137,8 @@ int UseTextureFile(int world, const std::wstring& sourcePath)
     char msg[128];
     snprintf(msg, sizeof(msg), "[MapEditor] Imported texture into slot %d (ExtTile%02d)", tileIndex, i);
     g_MuEditorConsoleUI.LogEditor(msg);
+    outReport = Editor::Files::DescribeSavedFiles({Editor::Files::MirrorSavedFile(destOzj)});
     return tileIndex;
-}
-
-bool PickImageFile(std::wstring& outPath)
-{
-    wchar_t file[MAX_PATH] = { 0 };
-    OPENFILENAMEW ofn = { 0 };
-    ofn.lStructSize = sizeof(ofn);
-    ofn.lpstrFilter = L"Textures (*.jpg;*.jpeg;*.ozj)\0*.jpg;*.jpeg;*.ozj\0All Files\0*.*\0";
-    ofn.lpstrFile = file;
-    ofn.nMaxFile = MAX_PATH;
-    ofn.lpstrTitle = L"Select a texture to import (JPEG or OZJ)";
-    ofn.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_NOCHANGEDIR;
-    if (!GetOpenFileNameW(&ofn))
-        return false;
-    outPath = file;
-    return true;
 }
 
 } // namespace Editor::TextureImport

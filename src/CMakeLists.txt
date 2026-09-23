@@ -535,6 +535,9 @@ target_include_directories(MuClient PUBLIC
   # the App/Control sources include it, so a player build does not see it.
   $<$<BOOL:${ENABLE_CONTROL_SOCKET}>:${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty>
   $<$<BOOL:${ENABLE_EDITOR}>:${CMAKE_CURRENT_SOURCE_DIR}/MuEditor>
+  # nlohmann/json (single-header json.hpp) for the editor's asset catalog and
+  # regeneration requests; the player build does not use it.
+  $<$<BOOL:${ENABLE_EDITOR}>:${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty>
 )
 
 set_source_files_properties(

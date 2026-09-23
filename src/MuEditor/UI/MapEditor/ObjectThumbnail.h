@@ -39,6 +39,10 @@ public:
     // Drops all cached thumbnails (e.g. on map change, since model slots change).
     void Invalidate();
 
+    // Drops the thumbnail of one model (it was loaded again from disk). Frees its
+    // texture, so call it between frames, never while ImGui may still draw it.
+    void Invalidate(int type);
+
     // Foreign-model (object browser / O.Browse) preview path. Models[] has
     // exactly one scratch slot shared by every candidate file (see
     // MapObjectImport::LoadForPreview) - loading a new model into it overwrites

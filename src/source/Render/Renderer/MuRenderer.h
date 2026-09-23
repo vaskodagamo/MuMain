@@ -233,6 +233,16 @@ public:
     // Vertex count should be even (pairs); odd count logs a warning, last vertex ignored.
     virtual void RenderLines(std::span<const Vertex3D> vertices, std::uint32_t textureId) = 0;
 
+    // Lines `widthPixels` wide on screen whatever their distance and direction, facing
+    // the camera, in their vertex colours only (no texture), never culled. Vertices are
+    // pairs, as for RenderLines, whose world-space look the existing debug lines keep.
+    // For the editor's overlays (brush outlines, tile grid, camera frustum).
+    virtual void RenderScreenLines(std::span<const Vertex3D> vertices, float widthPixels)
+    {
+        (void)widthPixels;
+        RenderLines(vertices, 0u);
+    }
+
     // Query whether the renderer is between BeginFrame() and EndFrame().
     // Used by RenderTitleSceneUI() to self-manage frame submission.
     [[nodiscard]] virtual bool IsFrameActive() const

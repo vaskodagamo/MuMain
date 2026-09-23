@@ -1,5 +1,8 @@
 #include <array>
+#include <cstddef>
 #include <cstdint>
+#include <span>
+#include <vector>
 
 #include <doctest.h>
 
@@ -81,6 +84,56 @@ TEST_CASE("screen-space quads preserve the static index ceiling [render][quad]")
 
     CHECK(Render::Topology::CanMergeQuadDraws(firstOffset, 6, secondOffset, 6, stride, 4096));
     CHECK_FALSE(Render::Topology::CanMergeQuadDraws(firstOffset, 4096 * 6, secondOffset, 6, stride, 4096));
+}
+
+TEST_CASE("quads beyond one draw's capacity are submitted in whole batches, in order [render][quad]")
+{
+    constexpr std::size_t maxQuads = Render::Topology::MAX_QUADS_PER_DRAW;
+    constexpr std::size_t quadCount = 23131; // the attribute overlay's tiles in the offline Lorencia view
+    std::vector<mu::Vertex3D> vertices(quadCount * 4);
+    for (std::size_t i = 0; i < vertices.size(); ++i)
+    {
+        vertices[i].x = static_cast<float>(i);
+    }
+
+    std::vector<std::size_t> batchQuads;
+    std::size_t nextVertex = 0;
+    bool contiguous = true;
+    Render::Topology::ForEachQuadBatch(std::span<const mu::Vertex3D>(vertices), maxQuads,
+                                       [&](std::span<const mu::Vertex3D> batch)
+                                       {
+                                           contiguous = contiguous && batch.size() % 4 == 0 &&
+                                                        batch.front().x == static_cast<float>(nextVertex);
+                                           nextVertex += batch.size();
+                                           batchQuads.push_back(batch.size() / 4);
+                                       });
+
+    CHECK(contiguous);
+    CHECK(nextVertex == vertices.size());
+    REQUIRE(batchQuads.size() == 6);
+    CHECK(batchQuads.front() == maxQuads);
+    CHECK(batchQuads.back() == quadCount - 5 * maxQuads);
+}
+
+TEST_CASE("a batch split submits nothing for no quads and one batch up to the capacity [render][quad]")
+{
+    int calls = 0;
+    const auto count = [&calls](std::span<const mu::Vertex3D>) { ++calls; };
+    const std::vector<mu::Vertex3D> none;
+    const std::vector<mu::Vertex3D> full(Render::Topology::MAX_QUADS_PER_DRAW * 4);
+    const std::vector<mu::Vertex3D> oneMore((Render::Topology::MAX_QUADS_PER_DRAW + 1) * 4);
+
+    Render::Topology::ForEachQuadBatch(std::span<const mu::Vertex3D>(none), Render::Topology::MAX_QUADS_PER_DRAW,
+                                       count);
+    CHECK(calls == 0);
+    Render::Topology::ForEachQuadBatch(std::span<const mu::Vertex3D>(full), Render::Topology::MAX_QUADS_PER_DRAW,
+                                       count);
+    CHECK(calls == 1);
+    Render::Topology::ForEachQuadBatch(std::span<const mu::Vertex3D>(oneMore), Render::Topology::MAX_QUADS_PER_DRAW,
+                                       count);
+    CHECK(calls == 3);
+    Render::Topology::ForEachQuadBatch(std::span<const mu::Vertex3D>(full), 0, count);
+    CHECK(calls == 3);
 }
 
 TEST_CASE("2D and 3D command families retain independent history [render][quad]")

@@ -54,6 +54,7 @@ FrameTimingState g_frameTiming;
 
 #ifdef _EDITOR
 #include "../MuEditor/Core/MuEditorCore.h"
+#include "../MuEditor/Core/OfflineWorld.h"
 #include "imgui.h"
 #endif
 
@@ -956,6 +957,13 @@ static void RenderFpsCounter()
  */
 static void CheckServerConnection()
 {
+#ifdef _EDITOR
+    // A map opened offline never connects, so there is no connection to lose.
+    if (Editor::OfflineWorld::IsActive())
+    {
+        return;
+    }
+#endif
     if (SocketClient != nullptr && SocketClient->IsConnected())
     {
         return;

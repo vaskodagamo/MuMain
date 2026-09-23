@@ -9,10 +9,10 @@
 #include "Core/Globals/_crypt.h"            // BuxConvert
 #include "UI/Console/MuEditorConsoleUI.h"
 
-#include <commdlg.h>   // GetOpenFileNameW (server base picker)
-
 #include <cstdio>
+#include <filesystem>
 #include <memory>
+#include <string>
 #include <vector>
 
 namespace Editor::AttrSave
@@ -29,15 +29,16 @@ namespace
     // The server's TerrainData keeps a 3-byte header before the attribute block.
     constexpr int SERVER_HEADER_BYTES = 3;
 
-    // Writes a dead-simple instructions file next to the server .att.
-    void WriteHowTo(int mapNumber)
+    // Writes a dead-simple instructions file next to the server .att. Returns its
+    // name, or an empty path when it could not be written.
+    std::filesystem::path WriteHowTo(int mapNumber)
     {
         wchar_t howToName[128];
         swprintf_s(howToName, L"terrain_map%d_server_HOWTO.txt", mapNumber);
 
         FILE* fp = _wfopen(howToName, L"wb");
         if (fp == nullptr)
-            return;
+            return {};
 
         fprintf(fp,
 "HOW TO APPLY THIS TERRAIN FILE TO YOUR SERVER\r\n"
@@ -93,6 +94,17 @@ namespace
             mapNumber, mapNumber, mapNumber, mapNumber, mapNumber, mapNumber);
 
         fclose(fp);
+        return howToName;
+    }
+
+    // "  next to the game: <abs>" plus "  repo export: <abs>" for one exported file.
+    std::string DescribeExport(const std::filesystem::path& file)
+    {
+        std::string text = "\n  next to the game: " + Editor::Files::PathToUtf8(Editor::Files::AbsolutePath(file));
+        const std::filesystem::path exported = Editor::Files::CopyToRepoExports(file);
+        if (!exported.empty())
+            text += "\n  repo export:      " + Editor::Files::PathToUtf8(exported);
+        return text;
     }
 }
 
@@ -112,7 +124,7 @@ BYTE StaticAttribute(WORD wall)
     return static_cast<BYTE>((wall & 0xFF) & ~TW_CHARACTER);
 }
 
-bool SaveClientAtt(int world, int mapNumber)
+bool SaveClientAtt(int world, int mapNumber, std::string& outReport)
 {
     auto plain = std::make_unique<BYTE[]>(PLAIN_BYTES);
     plain[0] = ATT_VERSION;
@@ -132,42 +144,27 @@ bool SaveClientAtt(int world, int mapNumber)
     auto enc = std::make_unique<BYTE[]>(PLAIN_BYTES);
     const int encBytes = MapFileEncrypt(enc.get(), plain.get(), PLAIN_BYTES);
 
-    wchar_t fileName[128];
-    swprintf_s(fileName, L"Data\\World%d\\EncTerrain%d.att", world, world);
+    const std::filesystem::path fileName = Editor::Files::TerrainAttributeFile(world);
 
-    FILE* fp = _wfopen(fileName, L"wb");
+    const std::string target = Editor::Files::PathToUtf8(Editor::Files::AbsolutePath(fileName));
+    FILE* fp = _wfopen(fileName.wstring().c_str(), L"wb");
     if (fp == nullptr)
     {
-        g_MuEditorConsoleUI.LogEditor("[MapEditor] SaveClientAtt FAILED: could not open the .att for write");
+        outReport = "Client save FAILED: could not open " + target + " for writing.";
+        g_MuEditorConsoleUI.LogEditor("[MapEditor] SaveClientAtt FAILED: could not open " + target);
         return false;
     }
     const bool ok = fwrite(enc.get(), 1, encBytes, fp) == static_cast<size_t>(encBytes);
-    fclose(fp);
+    const bool closed = fclose(fp) == 0;
 
-    if (!ok)
+    if (!ok || !closed)
     {
-        g_MuEditorConsoleUI.LogEditor("[MapEditor] SaveClientAtt FAILED: write error (disk full?)");
+        outReport = "Client save FAILED: write error (disk full?) in " + target + ".";
+        g_MuEditorConsoleUI.LogEditor("[MapEditor] SaveClientAtt FAILED: write error in " + target);
         return false;
     }
 
-    g_MuEditorConsoleUI.LogEditor("[MapEditor] Saved terrain attributes (encrypted) to EncTerrain.att");
-    Editor::Files::MirrorNextToExe(fileName, world);
-    return true;
-}
-
-bool PickServerBaseAtt(std::wstring& outPath)
-{
-    wchar_t file[MAX_PATH] = { 0 };
-    OPENFILENAMEW ofn = { 0 };
-    ofn.lStructSize = sizeof(ofn);
-    ofn.lpstrFilter = L"Server TerrainData (*.att)\0*.att\0All Files\0*.*\0";
-    ofn.lpstrFile = file;
-    ofn.nMaxFile = MAX_PATH;
-    ofn.lpstrTitle = L"Select the server's current TerrainData (downloaded from the Admin Panel)";
-    ofn.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_NOCHANGEDIR;
-    if (!GetOpenFileNameW(&ofn))
-        return false;
-    outPath = file;
+    outReport = Editor::Files::DescribeSavedFiles({Editor::Files::MirrorSavedFile(fileName)});
     return true;
 }
 
@@ -232,7 +229,7 @@ bool SaveServerAtt(int serverMapNumber,
                    const std::vector<BYTE>& serverBase,
                    const std::vector<BYTE>& baseline,
                    const std::vector<bool>& edited,
-                   std::wstring& outPath,
+                   std::string& outReport,
                    int& outChanged)
 {
     outChanged = 0;
@@ -282,10 +279,11 @@ bool SaveServerAtt(int serverMapNumber,
         return false;
     }
 
-    outPath = fileName;
-
     // Drop a plain-English HOWTO next to it so anyone can apply it without docs.
-    WriteHowTo(serverMapNumber);
+    outReport = Editor::Files::PathToUtf8(std::filesystem::path(fileName).filename()) + DescribeExport(fileName);
+    const std::filesystem::path howTo = WriteHowTo(serverMapNumber);
+    if (!howTo.empty())
+        outReport += "\n" + Editor::Files::PathToUtf8(howTo.filename()) + DescribeExport(howTo);
 
     char msg[128];
     snprintf(msg, sizeof(msg), "[MapEditor] Wrote server .att + HOWTO next to Main.exe (%d tile(s) changed)", outChanged);

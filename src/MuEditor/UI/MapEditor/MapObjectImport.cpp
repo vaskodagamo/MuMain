@@ -3,6 +3,7 @@
 #ifdef _EDITOR
 
 #include "MapObjectImport.h"
+#include "MapEditorFileUtil.h"
 
 #include "Data/DataHandler/LoadData.h"      // gLoadData (AccessModel / OpenTexture)
 #include "Render/Models/ZzzBMD.h"           // BMD / Models[] / Texture_t
@@ -27,7 +28,9 @@ namespace
         return s;
     }
 
-    std::wstring ObjectFolder(int world)
+    // Backslash form for the engine loaders (AccessModel), which resolve it on
+    // every platform. std::filesystem calls use Editor::Files::ObjectDir instead.
+    std::wstring LoaderObjectFolder(int world)
     {
         return L"Data\\Object" + std::to_wstring(world);
     }
@@ -49,13 +52,13 @@ namespace
     // no existing generic file to clobber), or -1 if none.
     int FindFreeSlot(int currentWorld)
     {
-        const std::wstring folder = ObjectFolder(currentWorld);
+        const fs::path folder = Editor::Files::ObjectDir(currentWorld);
         for (int i = 0; i < MAX_WORLD_OBJECTS; ++i)
         {
             if (Models[MODEL_WORLD_OBJECT + i].Meshs != nullptr)
                 continue;
             std::error_code ec;
-            if (fs::exists(folder + L"\\" + ObjectBmdStem(i) + L".bmd", ec))
+            if (fs::exists(folder / (ObjectBmdStem(i) + L".bmd"), ec))
                 continue;
             return i;
         }
@@ -83,14 +86,16 @@ namespace
         return referenced;  // already OZJ/OZT/OZB/etc.
     }
 
-    void CopyIfPresent(const std::wstring& from, const std::wstring& to, bool overwrite)
+    // Returns true when `to` was written (it is then copied into the repository).
+    bool CopyIfPresent(const fs::path& from, const fs::path& to, bool overwrite)
     {
         std::error_code ec;
         if (!fs::exists(from, ec))
-            return;
+            return false;
         const auto opt = overwrite ? fs::copy_options::overwrite_existing
                                    : fs::copy_options::skip_existing;
-        fs::copy_file(from, to, opt, ec);
+        const bool copied = fs::copy_file(from, to, opt, ec);
+        return copied && !ec;
     }
 }
 
@@ -100,7 +105,7 @@ int LoadForPreview(int sourceWorld, const std::wstring& bmdFile)
     // memory and sits outside the world-object range (0..159), so it never shows
     // up as a placeable model on the current map.
     const int scratch = MAX_MODELS;
-    const std::wstring srcDir = ObjectFolder(sourceWorld) + L"\\";
+    const std::wstring srcDir = LoaderObjectFolder(sourceWorld) + L"\\";
     const std::wstring srcSub = L"Object" + std::to_wstring(sourceWorld) + L"\\";
     const std::wstring stem   = fs::path(bmdFile).stem().wstring();
 
@@ -114,7 +119,7 @@ int LoadForPreview(int sourceWorld, const std::wstring& bmdFile)
 std::vector<std::wstring> ListModelFiles(int sourceWorld)
 {
     std::vector<std::wstring> out;
-    const fs::path folder = ObjectFolder(sourceWorld);
+    const fs::path folder = Editor::Files::ObjectDir(sourceWorld);
     std::error_code ec;
     if (!fs::is_directory(folder, ec))
         return out;
@@ -127,7 +132,7 @@ std::vector<std::wstring> ListModelFiles(int sourceWorld)
     return out;
 }
 
-int UseModelOnCurrentMap(int currentWorld, int sourceWorld, const std::wstring& bmdFile)
+int UseModelOnCurrentMap(int currentWorld, int sourceWorld, const std::wstring& bmdFile, std::string& outReport)
 {
     const int slot = FindFreeSlot(currentWorld);
     if (slot < 0)
@@ -137,7 +142,7 @@ int UseModelOnCurrentMap(int currentWorld, int sourceWorld, const std::wstring& 
     }
 
     // srcDir is the full folder; srcSub is the Data-relative form OpenTexture wants.
-    const std::wstring srcDir = ObjectFolder(sourceWorld) + L"\\";
+    const std::wstring srcDir = LoaderObjectFolder(sourceWorld) + L"\\";
     const std::wstring srcSub = L"Object" + std::to_wstring(sourceWorld) + L"\\";
     const std::wstring stem   = fs::path(bmdFile).stem().wstring();
 
@@ -153,11 +158,15 @@ int UseModelOnCurrentMap(int currentWorld, int sourceWorld, const std::wstring& 
 
     // Copy the model + its textures into the current map's Object folder so the
     // placement survives a reload (the map re-loads Object{slot+1}.bmd from here).
-    const std::wstring dstDir = ObjectFolder(currentWorld) + L"\\";
+    const fs::path srcFolder = Editor::Files::ObjectDir(sourceWorld);
+    const fs::path dstFolder = Editor::Files::ObjectDir(currentWorld);
     std::error_code ec;
-    fs::create_directories(dstDir, ec);
+    fs::create_directories(dstFolder, ec);
 
-    CopyIfPresent(srcDir + bmdFile, dstDir + ObjectBmdStem(slot) + L".bmd", /*overwrite*/ true);
+    std::vector<Editor::Files::SavedFile> written;
+    const fs::path bmdCopy = dstFolder / (ObjectBmdStem(slot) + L".bmd");
+    if (CopyIfPresent(srcFolder / bmdFile, bmdCopy, /*overwrite*/ true))
+        written.push_back(Editor::Files::MirrorSavedFile(bmdCopy));
 
     for (int k = 0; k < Models[slot].NumMeshs; ++k)
     {
@@ -166,12 +175,14 @@ int UseModelOnCurrentMap(int currentWorld, int sourceWorld, const std::wstring& 
             continue;
         const std::wstring real = RealTextureFile(NarrowToWide(fn));
         // Don't clobber an existing current-map texture of the same name.
-        CopyIfPresent(srcDir + real, dstDir + real, /*overwrite*/ false);
+        if (CopyIfPresent(srcFolder / real, dstFolder / real, /*overwrite*/ false))
+            written.push_back(Editor::Files::MirrorSavedFile(dstFolder / real));
     }
 
     char msg[96];
     snprintf(msg, sizeof(msg), "[MapEditor] Imported object into model slot %d", slot);
     g_MuEditorConsoleUI.LogEditor(msg);
+    outReport = Editor::Files::DescribeSavedFiles(written);
     return slot;
 }
 

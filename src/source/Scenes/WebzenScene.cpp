@@ -11,6 +11,9 @@
 #include "Engine/Object/ZzzOpenData.h"
 #include "UI/Legacy/UIMng.h"
 #include "UI/NewUI/NewUISystem.h"
+#ifdef _EDITOR
+#include "../MuEditor/Core/OfflineWorld.h"
+#endif
 
 // External declarations
 extern EGameScene SceneFlag;
@@ -132,6 +135,14 @@ void WebzenScene(HDC hDC)
     UnloadTitleBitmaps();
 
     g_ErrorReport.Write(L"> Loading ok.\r\n");
+
+#ifdef _EDITOR
+    // "--editor --world N" opens that map right away, without server or login.
+    if (Editor::OfflineWorld::TryEnter())
+    {
+        return;
+    }
+#endif
 
     SceneFlag = LOG_IN_SCENE;
 }

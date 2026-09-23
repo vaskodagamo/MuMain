@@ -95,6 +95,7 @@ private:
 #ifdef _EDITOR
     std::unique_ptr<ICamera> m_pFreeFlyCamera;
     ICamera* m_pSpectatedCamera = nullptr;  // Camera being spectated while in FreeFly mode
+    bool m_bFreeFlyCullsWorld = false;      // see SetFreeFlyCullsWorld()
 
     // Saved g_Camera state for the spectated camera, so its Update() sees its own
     // previous state instead of FreeFly's values (which would corrupt yaw, distance, etc.)
@@ -120,5 +121,20 @@ public:
 #ifdef _EDITOR
     ICamera* GetSpectatedCamera() const { return m_pSpectatedCamera; }
     bool GetSpectatedCameraState(vec3_t outPos, vec3_t outAngle) const;
+
+    // While the editor drives the FreeFly camera (Map Editor open, offline
+    // world), FreeFly culls terrain and objects with its own frustum, so the
+    // map stays drawn wherever it flies. Otherwise FreeFly is a spectator and
+    // the world is culled as the spectated game camera sees it.
+    void SetFreeFlyCullsWorld(bool enabled)
+    {
+        m_bFreeFlyCullsWorld = enabled;
+    }
+    // The camera whose frustum culls the world while FreeFly is active: FreeFly
+    // itself (see SetFreeFlyCullsWorld) or the spectated camera (may be null).
+    const ICamera* GetFreeFlyCullingCamera() const
+    {
+        return m_bFreeFlyCullsWorld ? m_pActiveCamera : m_pSpectatedCamera;
+    }
 #endif
 };

@@ -26,6 +26,9 @@
 #include "Engine/Object/ZzzInterface.h"
 #include "Camera/CameraProjection.h"
 #include "UI/Scaling/UITransform.h"
+#ifdef _EDITOR
+#include "../MuEditor/Core/OfflineWorld.h"
+#endif
 
 
 extern  int     WaterTextureNumber;
@@ -343,7 +346,13 @@ namespace battleCastle
         Vector(0.f, 0.f, 0.f, Angle);
         Vector(0.f, 0.f, 0.f, Position);
 
-        SocketClient->ToGameServer()->SendGuildLogoOfCastleOwnerRequest();
+#ifdef _EDITOR
+        // A map opened offline in the editor (--world) has no server to ask.
+        if (!Editor::OfflineWorld::IsActive())
+#endif
+        {
+            SocketClient->ToGameServer()->SendGuildLogoOfCastleOwnerRequest();
+        }
 
         OpenMonsterModel(MONSTER_MODEL_BATTLE_GUARD2);
 
