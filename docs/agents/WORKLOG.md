@@ -1055,3 +1055,17 @@ screenshots (studio, DK swords by tier, grid, sync, launcher, unchanged `--world
 validation clean, ~75 fps with 959 items.
 
 **Open / next:** hand test by the owner; I4 preview (level/excellent/ancient, equipped).
+
+## 2026-09-23 - Item concept image tool (Claude Opus 5.5)
+**Goal:** Owner's idea: generate 2-3 concept variants for 10-20 items in parallel through the
+OpenAI Images API, pick the best, and hand the pick to Codex for Blender modeling.
+
+**Done:** `tools/item_editor/concepts.py` (plan, refs, run, sheet, pick) with presets
+explore (gpt-image-2.5-flare medium) and final (gpt-image-2.5-sunburst high), cost caps and key
+safety; docs in `assets-work/Items/concepts/README.md`. Model choice researched from OpenAI's
+docs and the owner's pricing page.
+
+**Verified:** 82 Python tests against a mock server; reference renders checked by eye.
+
+**Open / next:** the owner sets `OPENAI_API_KEY` and a project budget limit, then a first real
+explore batch (study top 10 x 3); compare estimated and actual `usage`.
