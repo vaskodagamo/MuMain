@@ -1,0 +1,27 @@
+{
+  "source_hashes": {
+    "src/source/Engine/Object/ZzzObject.cpp": "ba109edd3142592e389aadfcdf512bc3e77d4884442c1d6a6709c7af844fbca9",
+    "src/source/Render/Effects/ZzzEffectFireLeave.cpp": "9799cceca3a5733291bc1939a9f5b6db7cf2b9f9fd6e0bf9e9872c1aa0096c71"
+  },
+  "placement_file": {
+    "path": "src/bin/Data/World2/EncTerrain2.obj",
+    "sha256": "5ada58ff8defadf4eadf669dc92bd308832d5f9b7e666234813ec5799405eb53",
+    "revision": "7c25cce6911a0e3f8737e3214dcd12c982c18728"
+  },
+  "local_anchors": {
+    "Object42": [
+      0,
+      -30,
+      240
+    ],
+    "Object43": [
+      0,
+      0,
+      190
+    ]
+  },
+  "transform": "Euler XYZ rotation plus placement position; CreateFire does NOT apply object scale",
+  "jitter": "Independent random [-8,7] per axis after rotation/translation",
+  "placements_checked": 120,
+  "status": "All original records and 120 retained anchors preserved exactly"
+}

@@ -1,0 +1,65 @@
+    case WD_1DUNGEON:
+        switch (o->Type)
+        {
+        case 52:
+            if (rand_fps_check(3))
+                CreateEffect(MODEL_DUNGEON_STONE01, o->Position, o->Angle, o->Light);
+            //CreateEffect(MODEL_STONE1,o->Position,o->Angle,o->Light);
+            o->HiddenMesh = -2;
+            break;
+        case 22:
+        case 23:
+        case 24:
+            Models[o->Type].StreamMesh = 1;
+            o->BlendMeshTexCoordV = -(float)((int)WorldTime % 1000) * 0.001f;
+            break;
+        case 41:
+            CreateFire(0, o, 0.f, -30.f, 240.f);
+            break;
+        case 42:
+            CreateFire(0, o, 0.f, 0.f, 190.f);
+            break;
+        case 39:
+        case 40:
+        case 51:
+            o->HiddenMesh = -2;
+            break;
+        }
+        break;
+    case WD_2DEVIAS:
+        switch (o->Type)
+        {
+        case 78:
+            o->BlendMe
+void CreateFire(int Type, OBJECT* o, float x, float y, float z)
+{
+    vec3_t Light;
+    vec3_t p, Position;
+    float Luminosity;
+    float Matrix[3][4];
+    AngleMatrix(o->Angle, Matrix);
+    Vector(x, y, z, p);
+    VectorRotate(p, Matrix, Position);
+    VectorAdd(Position, o->Position, Position);
+    Position[0] += Random::RangeFloat(-8, 7);
+    Position[1] += Random::RangeFloat(-8, 7);
+    Position[2] += Random::RangeFloat(-8, 7);
+    switch (Type)
+    {
+    case 0:
+        Luminosity = Random::RangeFloat(6, 11) * 0.1f;
+        Vector(Luminosity, Luminosity * 0.6f, Luminosity * 0.4f, Light);
+        if (rand_fps_check(2))
+            CreateParticle(BITMAP_FIRE, Position, o->Angle, Light, Random::RangeInt(0, 3));
+        AddTerrainLight(Position[0], Position[1], Light, 4, PrimaryTerrainLight);
+        break;
+    case 1:
+        if (rand_fps_check(2))
+            CreateParticle(BITMAP_SMOKE, Position, o->Angle, o->Light);
+        break;
+    case 2:
+        if (rand_fps_check(2))
+            CreateParticle(BITMAP_SMOKE, Position, o->Angle, o->Light, 2);
+        break;
+    }
+}

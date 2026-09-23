@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "images": [
+    {
+      "texture": "wood01.jpg",
+      "size": [
+        256,
+        256
+      ],
+      "packed_payload_sha256": "b48ebfe2ff782114145775b0800d98ed4903be6a57d483719dfd4937db8177a3"
+    },
+    {
+      "texture": "fire0a.jpg",
+      "size": [
+        32,
+        32
+      ],
+      "packed_payload_sha256": "b52f605eae307dc6c9ab6759c4315d637351c2f8fc92130018e03c4312ba94b6"
+    }
+  ],
+  "reference_collection": "REF_ORIGINAL hidden and retained"
+}

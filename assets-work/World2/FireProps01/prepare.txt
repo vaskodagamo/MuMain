@@ -1,0 +1,4 @@
+/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-hearths/assets-work/World2/FireProps01/Object42/textures/wood01.jpg
+/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-hearths/assets-work/World2/FireProps01/Object42/textures/fire0a.jpg
+/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-hearths/assets-work/World2/FireProps01/Object43/textures/wood01.jpg
+/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-hearths/assets-work/World2/FireProps01/Object43/textures/fire0a.jpg
