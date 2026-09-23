@@ -1,0 +1,41 @@
+{
+  "status": "PASS_OFFLINE_INTEGRATION",
+  "base_main": "c40d0b0d313b44b99a4fd84bcac0a81e476f3ed7",
+  "game_path": "src/bin/Data/Object2/Object48.bmd",
+  "changed_game_paths_in_pull_request": [
+    "src/bin/Data/Object2/Object48.bmd"
+  ],
+  "baseline_sha256_on_main": "17921ffd7b933790593e3f7cb21b1a2ca76ebbb863e3b17be3461b1651b2d686",
+  "reviewed_export_sha256": "9c62a9eafb5eb7822490bd45ce6b8c049a343b270142e3fca62c23f05eafc11a",
+  "integrated_game_file_sha256": "9c62a9eafb5eb7822490bd45ce6b8c049a343b270142e3fca62c23f05eafc11a",
+  "export_byte_match": true,
+  "baseline_matched_main_before_install": true,
+  "placement_count": 385,
+  "triangles": {
+    "baseline": 284,
+    "candidate": 428
+  },
+  "converter_info": {
+    "bones": 1,
+    "actions": 1,
+    "material": "bons.jpg"
+  },
+  "official_converter_validation": {
+    "integrated_static_model_exit_code": 0,
+    "integrated_animation_exit_code": 0,
+    "records": "Object48/validation/integration/"
+  },
+  "blender_authoring_and_export": "Official Blender importer/exporter and Blender Python mesh API; accepted reviewer report is assets-work/World2/Remains48/independent-final-review.json.",
+  "placement_bounds": "All 385 whole-model placement bounds match the baseline exactly; edited component support error is at most 0.0000019074 world units.",
+  "texture": {
+    "path": "src/bin/Data/Object2/bons.OZJ",
+    "sha256": "0ed1d9cb1c8da9e0f128d51a607a7b4ecab8ee89bfdab67917ba0e7116542ec5",
+    "unchanged": true,
+    "texture_container_check": "PASS",
+    "resolution_report": "assets-work/World2/Remains48/integrated-texture-resolution.json",
+    "resolved_models": 63
+  },
+  "reviewer_manifest_files_verified": 99,
+  "client_verified": false,
+  "runtime_installed": false
+}

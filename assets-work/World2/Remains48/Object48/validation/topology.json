@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "baseline_components": [
+    32,
+    36,
+    32,
+    42,
+    32,
+    36,
+    32,
+    42
+  ],
+  "candidate_components": [
+    176,
+    36,
+    32,
+    42,
+    32,
+    36,
+    32,
+    42
+  ],
+  "edited_component_euler_characteristic": 2,
+  "edited_component_closed_oriented_manifold": true
+}

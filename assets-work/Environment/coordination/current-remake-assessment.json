@@ -1,0 +1,32 @@
+{
+  "accepted_replacements_merged_to_main": 25,
+  "as_of": "2026-09-23",
+  "client_verification_for_new_changes": "pending",
+  "current_next_priority": "Continue Lorencia artistic quality assessment and production before expanding later-map production.",
+  "dungeon": {
+    "merged_replacements": [
+      "Object28",
+      "Object29",
+      "Object01"
+    ],
+    "object48": {
+      "client_verification": "pending",
+      "placements": 385,
+      "pull_request": "https://github.com/vaskodagamo/MuMain/pull/16",
+      "status": "independent review accepted; PR #16 open and ready for review"
+    },
+    "pull_request_13": "https://github.com/vaskodagamo/MuMain/pull/13"
+  },
+  "lorencia": {
+    "accepted_replacements": 22,
+    "artistic_completion": false,
+    "baseline_client_verification": "User-reported working in game; not personally observed.",
+    "first_pass_retention_decisions": 84,
+    "interpretation": "Coverage and retention decisions from the first pass; they do not establish consistent-quality completion.",
+    "new_client_verification": "pending",
+    "pull_request": "https://github.com/vaskodagamo/MuMain/pull/12",
+    "status": "merged first-pass checkpoint; quality production continues"
+  },
+  "overall_status": "in_progress",
+  "staged_later_map_review": "Dungeon baseline queue and Object51 direction remain documented; no further Dungeon production is claimed here."
+}

@@ -1,0 +1,190 @@
+{
+  "Object49": {
+    "source_sha256": "6d6684c2c894741d6bcaee73ba103cbfb18afd6e545c0b25cb90afdf4f0cedde",
+    "meshes": [
+      {
+        "name": "Object49",
+        "vertices": 209,
+        "triangles": 398,
+        "bounds": [
+          [
+            -48.38359832763672,
+            -38.011199951171875,
+            -0.3192000091075897
+          ],
+          [
+            41.09830093383789,
+            23.867000579833984,
+            161.54490661621094
+          ]
+        ],
+        "dimensions": [
+          89.48189926147461,
+          61.87820053100586,
+          161.86410662531853
+        ],
+        "ground_vertices": [
+          16
+        ],
+        "boundary_edges": 18,
+        "nonmanifold_edges": 0,
+        "materials": [
+          "TileRock01.jpg"
+        ],
+        "uv_layers": 1,
+        "vertex_influence_counts": [
+          1
+        ],
+        "groups": [
+          "Cone01"
+        ],
+        "transform": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "packed_images": [
+          "TileRock01.jpg"
+        ]
+      }
+    ],
+    "rigs": [
+      {
+        "name": "Object49_skeleton",
+        "bones": [
+          [
+            "Cone01",
+            null
+          ]
+        ],
+        "metadata": {
+          "mu_bone_order": [
+            "Cone01"
+          ],
+          "mu_action_meta": {
+            "Object49_a00": {
+              "index": 0,
+              "lock": false
+            }
+          },
+          "mu_source_bmd": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-remake/src/bin/Data/Object2/Object49.bmd"
+        }
+      }
+    ]
+  },
+  "Object50": {
+    "source_sha256": "d901b012aab9f616bb07d2a2d3c6f5f308b54c707955e8badc29da9c81687058",
+    "meshes": [
+      {
+        "name": "Object50",
+        "vertices": 209,
+        "triangles": 398,
+        "bounds": [
+          [
+            -35.22060012817383,
+            -31.843399047851562,
+            -0.17730000615119934
+          ],
+          [
+            32.36690139770508,
+            32.72850036621094,
+            68.2322998046875
+          ]
+        ],
+        "dimensions": [
+          67.5875015258789,
+          64.5718994140625,
+          68.4095998108387
+        ],
+        "ground_vertices": [
+          16
+        ],
+        "boundary_edges": 18,
+        "nonmanifold_edges": 0,
+        "materials": [
+          "TileRock01.jpg"
+        ],
+        "uv_layers": 1,
+        "vertex_influence_counts": [
+          1
+        ],
+        "groups": [
+          "Cone02"
+        ],
+        "transform": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "packed_images": [
+          "TileRock01.jpg"
+        ]
+      }
+    ],
+    "rigs": [
+      {
+        "name": "Object50_skeleton",
+        "bones": [
+          [
+            "Cone02",
+            null
+          ]
+        ],
+        "metadata": {
+          "mu_bone_order": [
+            "Cone02"
+          ],
+          "mu_action_meta": {
+            "Object50_a00": {
+              "index": 0,
+              "lock": false
+            }
+          },
+          "mu_source_bmd": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-remake/src/bin/Data/Object2/Object50.bmd"
+        }
+      }
+    ]
+  }
+}

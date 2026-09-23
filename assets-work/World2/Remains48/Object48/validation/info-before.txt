@@ -1,0 +1,7 @@
+model assets-work/World2/Remains48/Object48/baseline/Object48.bmd
+  name field: Data2\Object2\ÇØ°ñe.smd  version: 10
+  meshes: 1  bones: 1  actions: 1  triangles: 284
+  bounds (bind pose): min -47.02 -89.52 -2.42  max 43.88 50.08 20.61  size 90.90 139.60 23.03
+  mesh 0: triangles=284 vertices=158 normals=158 uvs=76 texture=bons.jpg
+  bone 0: "Box14" parent=-1
+  action 0: keys=1 lock=0

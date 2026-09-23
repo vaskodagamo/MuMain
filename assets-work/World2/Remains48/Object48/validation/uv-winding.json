@@ -1,0 +1,63 @@
+{
+  "status": "PASS",
+  "triangles": 428,
+  "minimum_area": 0.19938058027876387,
+  "unchanged_legacy_faces": [
+    {
+      "triangle": 268,
+      "baseline_triangle": 124,
+      "material": "bons.jpg",
+      "uv_area": 0.018525480000000004,
+      "min_normal_dot": -0.33910372518342796
+    },
+    {
+      "triangle": 272,
+      "baseline_triangle": 128,
+      "material": "bons.jpg",
+      "uv_area": 0.009523440000000001,
+      "min_normal_dot": -0.14903600896771138
+    },
+    {
+      "triangle": 281,
+      "baseline_triangle": 137,
+      "material": "bons.jpg",
+      "uv_area": 0.004292015000000001,
+      "min_normal_dot": -0.4500872256428743
+    },
+    {
+      "triangle": 283,
+      "baseline_triangle": 139,
+      "material": "bons.jpg",
+      "uv_area": 0.00987215,
+      "min_normal_dot": -0.35117888381523876
+    },
+    {
+      "triangle": 410,
+      "baseline_triangle": 266,
+      "material": "bons.jpg",
+      "uv_area": 0.018525480000000004,
+      "min_normal_dot": -0.360827416376722
+    },
+    {
+      "triangle": 414,
+      "baseline_triangle": 270,
+      "material": "bons.jpg",
+      "uv_area": 0.009523440000000001,
+      "min_normal_dot": -0.13572984481336933
+    },
+    {
+      "triangle": 423,
+      "baseline_triangle": 279,
+      "material": "bons.jpg",
+      "uv_area": 0.004292015000000001,
+      "min_normal_dot": -0.4551269953968403
+    },
+    {
+      "triangle": 425,
+      "baseline_triangle": 281,
+      "material": "bons.jpg",
+      "uv_area": 0.00987215,
+      "min_normal_dot": -0.34169829326416307
+    }
+  ]
+}
