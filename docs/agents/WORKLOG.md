@@ -1145,8 +1145,10 @@ window set `SetHoveringUI`.
 backend kept from re-showing the OS pointer (`NoMouseCursorChange`). Replaces I5b's studio-only
 rule (PR #35), which is now one condition in `IsMouseOverEditorUI()`.
 
-**Verified:** 395/395 ctest (editor build); `./Main --editor --world 1` with posted mouse moves
-and full-screen captures: game cursor only over the world, OS arrow over palette images, gaps
-between tiles, panel text, toolbar and console gap, text beam over console text.
+**Verified:** 408/408 ctest (editor build, after merging main with I5b); `./Main --editor --world 1`
+with posted mouse moves and full-screen captures (`screencapture -R` leaves the pointer out, `-m`
+does not): game cursor only over the world, OS arrow over palette images, gaps between tiles,
+panel text, toolbar and console gap, text beam over console text.
 
-**Open / next:** Windows build not compiled here.
+**Open / next:** Windows build not compiled here; the item studio (`--items`) not re-run by eye
+after the merge (the owner was using the mouse).
