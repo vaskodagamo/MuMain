@@ -1,0 +1,18 @@
+{
+  "source": "src/bin/Data/Object2/Object49.bmd",
+  "sha256": "5f0d7b50389c225c83db9752ed1d29dfa72b4c16ef1623709f415b91b719e91d",
+  "dependencies": {
+    "src/bin/Data/Object2/Object49.bmd": "5f0d7b50389c225c83db9752ed1d29dfa72b4c16ef1623709f415b91b719e91d",
+    "src/bin/Data/Object2/TileRock01.OZJ": "f15e66b577b29c6e9ba33aeb886db9bd8a1c0717ae8aeab359ec550b5dbe2d15"
+  },
+  "purpose": "Read-only baseline triage, not an accepted remake",
+  "evidence": {
+    "baseline.blend": "6d6684c2c894741d6bcaee73ba103cbfb18afd6e545c0b25cb90afdf4f0cedde",
+    "baseline.png": "34e2bb181f6939d43612d2b614567045af913e69dfdb50a49abf7a33ddaba5cb"
+  },
+  "supplemental_evidence": {
+    "individual/baseline-front.png": "0bfa47e191a69501c7bbc260fd99d9093bd0ababb4c21d0b3708b3c62f179a8b",
+    "individual/baseline-reduced.png": "98176612bbe5435496901798eb828581206e2d5ae538edfef03e57840e3d8b63",
+    "individual/baseline-reverse.png": "e99569964ecc3f813ec849b6d2e8e723e95b48062ddda00f22dbdd0f046c7d40"
+  }
+}
