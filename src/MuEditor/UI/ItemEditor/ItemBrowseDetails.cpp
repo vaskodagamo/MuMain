@@ -4,6 +4,7 @@
 
 #include "ItemBrowseDetails.h"
 
+#include "ConceptsPanel.h"
 #include "ItemOwnerActions.h"
 #include "ItemPreview.h"
 
@@ -124,7 +125,10 @@ void RenderItemDetails(const Items::BrowseRow& row, const std::string& catalogNo
     ImGui::TextColored(NOTE_COLOR, "%s (type %d)", row.key.c_str(), row.type);
     g_ItemPreview.Render(row, filterClass, filterStage);
     if (row.catalog != nullptr && catalog != nullptr)
+    {
         RenderOwnerActions(*row.catalog, *catalog);
+        g_ConceptsPanel.Render(*row.catalog, *catalog);
+    }
 
     if (ImGui::BeginTable("ItemFacts", 2, ImGuiTableFlags_SizingStretchProp))
     {

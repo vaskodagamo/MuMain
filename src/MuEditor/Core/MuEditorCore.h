@@ -47,6 +47,16 @@ public:
     // -/+ buttons in the toolbar. Applied between frames, not mid-frame.
     void  SetUIScale(float scale);
     float GetUIScale() const { return m_UIScale; }
+    // The owner's choice on the toolbar: applied and kept for the next start (MuEditor.ini).
+    void ChooseUIScale(float scale);
+
+    // The item studio's full screen (toolbar button and shortcut; remembered).
+    bool IsFullscreen() const;
+    void ToggleFullscreen();
+
+    // The OS pointer stays visible: over editor UI, and everywhere in the item studio
+    // (the game's own cursor would be drawn under the studio's panels).
+    bool WantsOsCursor() const;
 
     // The game window the editor draws into; OS dialogs (file pickers) attach to it.
     // nullptr until Initialize() succeeded.
@@ -60,6 +70,10 @@ private:
     ~CMuEditorCore();
 
     void ApplyUIScale();
+    // The studio's remembered window state and first UI scale (once the offline studio is up).
+    void UpdateStudioPreferences();
+    // The game's cursor sprite and the OS pointer for this frame.
+    void UpdateCursors(bool captureFrame);
     // The editor windows of this frame; with the editor closed only the Map Editor's
     // hand-back of the game's edit mode.
     void RenderEditorWindows();
@@ -82,6 +96,8 @@ private:
 
     float m_UIScale;        // 1.0 = default ImGui size
     bool  m_bScaleDirty;    // apply the new scale at the start of the next frame
+    bool  m_bStudioScaleChecked = false; // the studio's first-start UI scale was considered
+    bool  m_bKeepsOsCursor = false;      // the studio made the OS pointer visible
 
     SDL_Window* m_pWindow; // game window passed to Initialize()
 };

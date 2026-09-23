@@ -7,6 +7,8 @@
 #include "imgui.h"
 #include "../MuEditor/Core/MuEditorCore.h"
 #include "../MuEditor/Config/MuEditorConfig.h"
+#include "../MuEditor/Core/OfflineWorld.h"
+#include "../MuEditor/Core/StudioWindow.h"
 #include "Data/GameConfig/GameConfig.h"
 #include "I18N/All.h"
 
@@ -173,16 +175,26 @@ void CMuEditorUI::RenderToolbarFull(bool& editorEnabled, bool& showItemEditor, b
         // Global editor UI scale (affects every MuEditor window, not just this one).
         ImGui::SameLine();
         if (ImGui::Button("-##uiscale"))
-            g_MuEditorCore.SetUIScale(g_MuEditorCore.GetUIScale() - UI_SCALE_STEP);
+            g_MuEditorCore.ChooseUIScale(g_MuEditorCore.GetUIScale() - UI_SCALE_STEP);
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip("Smaller editor UI");
         ImGui::SameLine();
         ImGui::Text("%d%%", (int)(g_MuEditorCore.GetUIScale() * 100.0f + 0.5f));
         ImGui::SameLine();
         if (ImGui::Button("+##uiscale"))
-            g_MuEditorCore.SetUIScale(g_MuEditorCore.GetUIScale() + UI_SCALE_STEP);
+            g_MuEditorCore.ChooseUIScale(g_MuEditorCore.GetUIScale() + UI_SCALE_STEP);
         if (ImGui::IsItemHovered())
-            ImGui::SetTooltip("Bigger editor UI");
+            ImGui::SetTooltip("Bigger editor UI (kept for the next start)");
+
+        // The item studio's full screen (remembered for the next start).
+        if (Editor::OfflineWorld::IsItemStudio())
+        {
+            ImGui::SameLine();
+            if (ImGui::Button(g_MuEditorCore.IsFullscreen() ? "Window" : "Full screen"))
+                g_MuEditorCore.ToggleFullscreen();
+            if (ImGui::IsItemHovered())
+                ImGui::SetTooltip("Full screen on or off (%s)", Editor::StudioWindow::FullscreenShortcutLabel());
+        }
 
         // Console toggle
         ImGui::SameLine();

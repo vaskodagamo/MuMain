@@ -331,13 +331,16 @@ TEST_CASE("Accept and reject write owner-decision.json for a delivered request o
 TEST_CASE("The capture plan: turntable, inventory, worn and +level glow [editor][item-requests]")
 {
     using namespace Editor::Preview;
-    const std::vector<CaptureShot> excellent = PlanItemCaptures(true);
+    const std::vector<CaptureShot> excellent = PlanItemCaptures(true, FaceYawDegrees(8));
     REQUIRE(excellent.size() == 9);
     CHECK(excellent[0].slug == "front");
     CHECK(excellent[0].angle == 0.0f);
+    CHECK(excellent[0].yawDegrees == 270.0f); // armour faces -Y like the character
     CHECK(excellent[1].angle == 90.0f);
+    CHECK(excellent[1].yawDegrees == 0.0f);
     CHECK(excellent[2].angle == 180.0f);
     CHECK(excellent[3].angle == 45.0f);
+    CHECK(excellent[3].yawDegrees == 315.0f);
     CHECK(excellent[4].view == CaptureView::Inventory);
     CHECK(excellent[5].requestView == "equipped-front");
     CHECK(excellent[5].onlyWhenWorn);
@@ -345,8 +348,16 @@ TEST_CASE("The capture plan: turntable, inventory, worn and +level glow [editor]
     CHECK(excellent[8].level == 13);
     CHECK(excellent[8].excellent);
 
-    const std::vector<CaptureShot> plain = PlanItemCaptures(false);
+    // Swords and shields show their broad face from +X: that is their front.
+    CHECK(FaceYawDegrees(0) == 0.0f);
+    CHECK(FaceYawDegrees(6) == 0.0f);
+    CHECK(FaceYawDegrees(12) == 270.0f);
+    const std::vector<CaptureShot> plain = PlanItemCaptures(false, FaceYawDegrees(6));
     REQUIRE(plain.size() == 8);
+    CHECK(plain[0].yawDegrees == 0.0f);
+    CHECK(plain[2].yawDegrees == 180.0f);
+    CHECK(plain[2].angle == 180.0f);
+    CHECK(plain[3].yawDegrees == 45.0f);
     CHECK(plain[6].slug == "glow-9");
     CHECK_FALSE(plain[7].excellent);
     CHECK(CaptureFileName(7, "glow-9") == "07-glow-9.jpg");

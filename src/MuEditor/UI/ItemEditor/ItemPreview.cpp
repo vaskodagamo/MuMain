@@ -5,6 +5,7 @@
 #include "ItemPreview.h"
 
 #include "Core/ScopedOffscreenCapture.h"
+#include "Editing/ItemCapturePlan.h" // FaceYawDegrees
 #include "Editing/PreviewOutfit.h"
 #include "Editing/PreviewSlot.h"
 
@@ -28,10 +29,6 @@ constexpr int HIGHEST_RENDER_LEVEL = 4;
 // Frames without the preview on screen before its target and character are freed.
 constexpr int FRAMES_BEFORE_RELEASE = 3;
 
-// Camera sides for the buttons (yaw around Z; a character faces -Y).
-constexpr float FRONT_YAW = 270.0f;
-constexpr float SIDE_YAW = 0.0f;
-constexpr float BACK_YAW = 90.0f;
 constexpr float BUTTON_PITCH = 10.0f;
 
 constexpr ImU32 PICTURE_BORDER = IM_COL32(110, 110, 120, 255);
@@ -179,16 +176,18 @@ void CItemPreview::HandlePictureInput()
 
 void CItemPreview::RenderCameraButtons()
 {
+    // Front is the item's broad face, as in the request captures (Editing/ItemCapturePlan.h).
+    const float front = Preview::FaceYawDegrees(m_subject.itemType / Editor::Assets::ITEMS_PER_GROUP);
     const struct
     {
         const char* label;
-        float yaw;
-    } sides[] = {{"Front", FRONT_YAW}, {"Side", SIDE_YAW}, {"Back", BACK_YAW}};
+        float offset;
+    } sides[] = {{"Front", 0.0f}, {"Side", Preview::SIDE_OFFSET_DEGREES}, {"Back", Preview::BACK_OFFSET_DEGREES}};
     for (const auto& side : sides)
     {
         if (ImGui::SmallButton(side.label))
         {
-            m_orbit.yawDegrees = side.yaw;
+            m_orbit.yawDegrees = front + side.offset;
             m_orbit.pitchDegrees = BUTTON_PITCH;
             m_autoTurn = false;
         }

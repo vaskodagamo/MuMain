@@ -4,7 +4,9 @@
 
 #include "ItemBrowseTab.h"
 
+#include "ConceptLibrary.h"
 #include "ItemBrowseDetails.h"
+#include "ItemBrowseSelection.h"
 #include "ItemRequestWatch.h"
 #include "ItemThumbnailView.h"
 
@@ -34,9 +36,11 @@ constexpr int CLASS_BUTTONS_PER_LINE = 4;
 constexpr float STATUS_DOT_RADIUS = 5.0f;
 constexpr float NAME_COLUMN_WEIGHT = 3.0f;
 constexpr float CLASSES_COLUMN_WEIGHT = 2.0f;
-constexpr int LIST_COLUMN_COUNT = 8;
+constexpr int LIST_COLUMN_COUNT = 10;
 constexpr float KEY_COLUMN_WIDTH = 56.0f;     // "13-127"
 constexpr float STATUS_COLUMN_WIDTH = 95.0f;  // a dot and "delivered"
+constexpr float CONCEPT_COLUMN_WIDTH = 90.0f; // "12 concepts"
+constexpr float TILE_CHIP_INSET = 3.0f;       // the grid tile's check box from its corner
 constexpr float SORT_COMBO_WIDTH = 170.0f;
 constexpr float SCROLL_TARGET_RATIO = 0.3f; // a selected item scrolled to sits in the upper third
 constexpr float TIER_DRAG_SPEED = 0.05f;    // tiers per pixel of mouse drag
@@ -90,6 +94,8 @@ constexpr ImVec4 NOTE_COLOR{0.75f, 0.75f, 0.75f, 1.0f};
 constexpr ImVec4 WARNING_COLOR{1.0f, 0.8f, 0.4f, 1.0f};
 constexpr ImVec4 ACTIVE_BUTTON_COLOR{0.2f, 0.5f, 0.9f, 1.0f};
 constexpr ImVec4 SELECTED_TILE_COLOR{0.3f, 0.5f, 0.8f, 0.45f};
+constexpr ImVec4 PICKED_COLOR{0.45f, 0.85f, 0.45f, 1.0f};
+constexpr ImU32 BADGE_BACKGROUND = IM_COL32(20, 20, 24, 200);
 
 float Scaled(float pixels)
 {
@@ -196,6 +202,9 @@ void CItemBrowseTab::UpdateShown()
     if (!m_shownDirty && m_filter == m_shownFilter && m_order == m_shownOrder)
         return;
     m_shown = Editor::Items::FilterAndSort(m_rows, m_filter, m_order);
+    m_shownTypes.clear();
+    for (const int row : m_shown)
+        m_shownTypes.push_back(m_rows[row].type);
     m_familyCounts = Editor::Items::CountFamilies(m_rows, m_filter);
     m_shownFilter = m_filter;
     m_shownOrder = m_order;
@@ -204,15 +213,23 @@ void CItemBrowseTab::UpdateShown()
 
 const BrowseRow* CItemBrowseTab::RowOfType(int type) const
 {
-    const auto it = std::lower_bound(m_rows.begin(), m_rows.end(), type,
-                                     [](const BrowseRow& row, int value) { return row.type < value; });
-    return it != m_rows.end() && it->type == type ? &*it : nullptr;
+    return Editor::ItemEditor::BrowseSelection::FindRow(m_rows, type);
 }
 
-void CItemBrowseTab::Select(int type, int& selectedType)
+void CItemBrowseTab::Click(int type, int& selectedType)
 {
-    selectedType = type;
-    m_lastSelected = type;
+    // ImGui reports the Mac's Cmd key as Ctrl.
+    const ImGuiIO& io = ImGui::GetIO();
+    m_selection.Click(type, {io.KeyCtrl, io.KeyShift}, m_shownTypes);
+    selectedType = m_selection.Primary();
+    m_lastSelected = selectedType;
+}
+
+void CItemBrowseTab::ToggleSelected(int type, int& selectedType)
+{
+    m_selection.Toggle(type);
+    selectedType = m_selection.Primary();
+    m_lastSelected = selectedType;
 }
 
 void CItemBrowseTab::Render(int& selectedType)
@@ -227,7 +244,9 @@ void CItemBrowseTab::Render(int& selectedType)
     }
     if (selectedType != m_lastSelected)
     {
-        m_lastSelected = selectedType; // picked in the Stats table
+        m_lastSelected = selectedType; // picked in the Stats table or the Requests tab
+        if (selectedType >= 0)
+            m_selection.SelectOnly(selectedType);
         m_scrollToSelected = true;
     }
     g_ObjectThumbnail.BeginFrame();
@@ -243,6 +262,8 @@ void CItemBrowseTab::Render(int& selectedType)
     const float middleWidth = ImGui::GetContentRegionAvail().x - detailsWidth - ImGui::GetStyle().ItemSpacing.x;
     ImGui::BeginChild("BrowseItems", ImVec2(middleWidth, 0.0f), ImGuiChildFlags_Borders);
     RenderResultBar();
+    Editor::ItemEditor::BrowseSelection::RenderBar(m_selection, m_rows, m_shownTypes, selectedType);
+    m_lastSelected = selectedType;
     if (m_gridView)
         RenderGrid(selectedType);
     else
@@ -397,6 +418,7 @@ void CItemBrowseTab::RenderList(int& selectedType)
         return;
     const float thumbSize = Scaled(LIST_THUMB_SIZE);
     ImGui::TableSetupScrollFreeze(0, 1);
+    ImGui::TableSetupColumn("##Selected", ImGuiTableColumnFlags_WidthFixed, ImGui::GetFrameHeight());
     ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthFixed, thumbSize);
     ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch, NAME_COLUMN_WEIGHT);
     ImGui::TableSetupColumn("Key", ImGuiTableColumnFlags_WidthFixed, Scaled(KEY_COLUMN_WIDTH));
@@ -405,6 +427,7 @@ void CItemBrowseTab::RenderList(int& selectedType)
     ImGui::TableSetupColumn("Req lvl", ImGuiTableColumnFlags_WidthFixed);
     ImGui::TableSetupColumn("Classes", ImGuiTableColumnFlags_WidthStretch, CLASSES_COLUMN_WEIGHT);
     ImGui::TableSetupColumn("Status", ImGuiTableColumnFlags_WidthFixed, Scaled(STATUS_COLUMN_WIDTH));
+    ImGui::TableSetupColumn("Concept", ImGuiTableColumnFlags_WidthFixed, Scaled(CONCEPT_COLUMN_WIDTH));
     ImGui::TableHeadersRow();
 
     ImGuiListClipper clipper;
@@ -435,9 +458,13 @@ void CItemBrowseTab::RenderListRow(const BrowseRow& row, int& selectedType, floa
     ImGui::TableNextColumn();
     const ImVec2 cellStart = ImGui::GetCursorScreenPos();
     constexpr ImGuiSelectableFlags selectFlags = ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowOverlap;
-    if (ImGui::Selectable("##row", row.type == selectedType, selectFlags, ImVec2(0.0f, thumbSize)))
-        Select(row.type, selectedType);
+    if (ImGui::Selectable("##row", m_selection.Contains(row.type), selectFlags, ImVec2(0.0f, thumbSize)))
+        Click(row.type, selectedType);
     ImGui::SetCursorScreenPos(cellStart);
+    bool checked = m_selection.Contains(row.type);
+    if (ImGui::Checkbox("##check", &checked))
+        ToggleSelected(row.type, selectedType);
+    ImGui::TableNextColumn();
     Editor::ItemEditor::DrawItemThumbnail(row, thumbSize);
 
     ImGui::TableNextColumn();
@@ -454,6 +481,8 @@ void CItemBrowseTab::RenderListRow(const BrowseRow& row, int& selectedType, floa
     ImGui::TextUnformatted(Editor::Items::ClassSummary(row.requireClass).c_str());
     ImGui::TableNextColumn();
     DrawStatusDot(row.status);
+    ImGui::TableNextColumn();
+    RenderConceptBadge(row);
     ImGui::PopID();
 }
 
@@ -500,26 +529,56 @@ void CItemBrowseTab::RenderGridTile(const BrowseRow& row, int& selectedType, flo
     ImGui::BeginGroup();
     const ImVec2 corner = ImGui::GetCursorScreenPos();
     const float tileHeight = tileSize + ImGui::GetTextLineHeightWithSpacing();
-    if (row.type == selectedType)
+    const bool selected = m_selection.Contains(row.type);
+    if (selected)
     {
         ImGui::GetWindowDrawList()->AddRectFilled(corner, ImVec2(corner.x + tileSize, corner.y + tileHeight),
                                                   ImGui::GetColorU32(SELECTED_TILE_COLOR));
     }
+    ImGui::SetNextItemAllowOverlap();
     if (ImGui::InvisibleButton("##tile", ImVec2(tileSize, tileHeight)))
-        Select(row.type, selectedType);
+        Click(row.type, selectedType);
     const bool hovered = ImGui::IsItemHovered();
     ImGui::SetCursorScreenPos(corner);
     Editor::ItemEditor::DrawItemThumbnail(row, tileSize);
+    // The selection chip: a check box in the tile's corner, shown on selected or hovered tiles.
+    const float inset = Scaled(TILE_CHIP_INSET);
+    ImGui::SetCursorScreenPos(ImVec2(corner.x + inset, corner.y + inset));
+    bool checked = selected;
+    const bool pointedAt = ImGui::IsMouseHoveringRect(corner, ImVec2(corner.x + tileSize, corner.y + tileHeight));
+    if ((selected || pointedAt) && ImGui::Checkbox("##chip", &checked))
+        ToggleSelected(row.type, selectedType);
     // The caption is drawn, not laid out, so a long name cannot widen the tile.
     const std::string caption = TierLabel(row) + " " + DisplayName(row);
     const ImVec2 captionAt(corner.x, corner.y + tileSize);
     const ImVec4 clip(corner.x, corner.y, corner.x + tileSize, corner.y + tileHeight);
     ImGui::GetWindowDrawList()->AddText(nullptr, 0.0f, captionAt, ImGui::GetColorU32(ImGuiCol_Text), caption.c_str(),
                                         nullptr, 0.0f, &clip);
+    if (const Editor::Concepts::ConceptSummary* concepts = g_ConceptLibrary.Find(row.key))
+    {
+        // The concept badge in the tile's top-right corner.
+        const std::string badge = Editor::Concepts::SummaryLabel(*concepts);
+        const ImVec2 size = ImGui::CalcTextSize(badge.c_str());
+        const ImVec2 at(corner.x + tileSize - size.x - inset, corner.y + inset);
+        ImDrawList* drawList = ImGui::GetWindowDrawList();
+        drawList->AddRectFilled(at, ImVec2(at.x + size.x, at.y + size.y), BADGE_BACKGROUND);
+        drawList->AddText(at, ImGui::GetColorU32(concepts->picked ? PICKED_COLOR : NOTE_COLOR), badge.c_str());
+    }
+    ImGui::SetCursorScreenPos(corner);
+    ImGui::Dummy(ImVec2(tileSize, tileHeight));
     ImGui::EndGroup();
     if (hovered)
         ImGui::SetTooltip("%s (%s)\n%s", DisplayName(row), row.key.c_str(), Editor::Items::StatusLabel(row.status));
     ImGui::PopID();
+}
+
+void CItemBrowseTab::RenderConceptBadge(const BrowseRow& row) const
+{
+    const Editor::Concepts::ConceptSummary* concepts = g_ConceptLibrary.Find(row.key);
+    if (concepts == nullptr)
+        return;
+    const std::string label = Editor::Concepts::SummaryLabel(*concepts);
+    ImGui::TextColored(concepts->picked ? PICKED_COLOR : NOTE_COLOR, "%s", label.c_str());
 }
 
 void CItemBrowseTab::RenderDetailsPanel(int selectedType)

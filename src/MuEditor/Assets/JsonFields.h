@@ -21,6 +21,8 @@ std::optional<std::string> OptionalText(const json& object, const char* key);
 // The string entries of an array field.
 std::vector<std::string> TextList(const json& object, const char* key);
 int Int(const json& object, const char* key, int fallback);
+// Any JSON number (integer or not).
+double Number(const json& object, const char* key, double fallback);
 bool Bool(const json& object, const char* key, bool fallback);
 // An object field, or an empty object.
 const json& Member(const json& object, const char* key);
