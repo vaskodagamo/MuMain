@@ -12,6 +12,9 @@
 #include "ViewCapture.h"
 #include "../Config/MuEditorConfig.h"
 #include "../MuEditor/UI/Common/MuEditorCenterPaneUI.h"
+#include "../MuEditor/UI/ItemEditor/ConceptImageCache.h"
+#include "../MuEditor/UI/ItemEditor/ConceptJob.h"
+#include "../MuEditor/UI/ItemEditor/ConceptJobPanel.h"
 #include "../MuEditor/UI/ItemEditor/ItemPreview.h"
 #include "../MuEditor/UI/ItemEditor/MuItemEditorUI.h"
 #include "../MuEditor/UI/SkillEditor/MuSkillEditorUI.h"
@@ -441,6 +444,9 @@ void CMuEditorCore::Shutdown()
 
     // The Item Editor preview's render target and character, while the renderer and engine still run.
     g_ItemPreview.Release();
+    // A running concepts job stops as after Cancel (its in-flight requests finish); its images are kept.
+    g_ConceptJob.Shutdown();
+    g_ConceptImages.ReleaseAll();
 
     mu::WaitForSDLGpuIdle();
     ImGui_ImplSDLGPU3_Shutdown();
@@ -467,6 +473,10 @@ void CMuEditorCore::Update()
     // Model reloads asked for in the Assets tab also run between frames: they free
     // textures that the previous frame's draws and ImGui draw lists used.
     Editor::Assets::HotReload::RunPending();
+
+    // The background concepts job reads its child's events every frame, whether or
+    // not the Item Editor is shown.
+    g_ConceptJob.Poll();
 
     // Only start a new frame if we haven't already
     if (!m_bFrameStarted)
@@ -604,6 +614,9 @@ void CMuEditorCore::RenderEditorWindows()
         g_DevEditorUI.Render(&m_bShowDevEditor);
     }
 
+    // The concepts job's window, also while the Item Editor window is closed.
+    Editor::ItemEditor::ConceptJobPanel::Render();
+
     // Render Map Editor. Called every frame (not gated on the show flag) so
     // it can restore the game to normal mode the frame after it is closed;
     // it owns EditFlag while its window is open.
@@ -630,6 +643,9 @@ void CMuEditorCore::Render()
     // hovered, and that click would otherwise select, place or paint behind the window.
     const bool popupOpen = m_bEditorMode && Editor::Shortcuts::IsPopupOpen();
     m_bHoveringUI = m_popupMouseGuard.Update(popupOpen, AnyMouseButtonDown());
+
+    // Concept images not drawn for a while give their textures back (before this frame draws any).
+    g_ConceptImages.BeginFrame();
 
     // Render toolbar (handles both open and closed states)
     g_MuEditorUI.RenderToolbar(m_bEditorMode, m_bShowItemEditor, m_bShowSkillEditor, m_bShowDevEditor, m_bShowMapEditor, m_bShowConsole);
