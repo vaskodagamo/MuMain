@@ -2,7 +2,7 @@
   "accepted_replacements_merged_to_main": 26,
   "as_of": "2026-09-23",
   "client_verification_for_new_changes": "pending",
-  "current_next_priority": "Continue Dungeon inventory through actual placements, then select the next coherent static production family. Current retention checkpoints are documented; new client verification remains pending.",
+  "current_next_priority": "Independently review the bounded Object44 skeleton-silhouette prototype at actual Dungeon scale; integrate only if the exported result clearly improves normal/reduced placement reading. If it fails, retain the baseline and continue static inventory triage.",
   "dungeon": {
     "merged_replacements": [
       "Object28",
@@ -87,5 +87,5 @@
     }
   },
   "overall_status": "in_progress",
-  "staged_later_map_review": "Continue the Dungeon static inventory with actual placement context. No client verification for new environment changes. See dungeon-assessment.json, progress.md and handoff.md."
+  "staged_later_map_review": "Lorencia offline art gate remains accepted at bb641d04; new client verification is pending. Dungeon has four merged replacements and merged retention checkpoints #17\u2013#20, #22 and #23. Object44 is an exploratory single-asset production test. Continue actual-placement review across the remaining Dungeon static inventory; do not infer art completion from inventory coverage."
 }

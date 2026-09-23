@@ -1,10 +1,10 @@
 # Current environment remake board — 2026-09-23
 
-The overall goal remains in progress. Lorencia's independent final artistic/offline gate passed at `bb641d04`: 22 accepted replacements and 84 individually justified retained assets cover all 106 in-scope assets. This was not 106 remakes. New client verification remains pending; prior baseline client success is user-reported only.
+The overall goal remains in progress. Lorencia's independent offline gate at `bb641d04` covers 22 accepted replacements and 84 individually justified retained assets across all 106 in-scope models; this is not 106 remakes. A fresh read-only challenge at main `0cc611bc` found no additional placed-scale production batch. The three masonry assemblies have now been regenerated and hash-bound in `World1/coordination/masonry-retention-contexts/`; client verification remains pending and the prior baseline client result is user-reported only.
 
-Four Dungeon replacements are merged to main: Object28, Object29, Object01 and Object48. PRs #17–#20 are merged retention checkpoints for Object49/50, Object51, Object37, and Object42/43. Open PR #22 records Objects45–47; PR #23 preserves rejected support/collar studies for Objects06/13/15 after independent review. The next work returns to the unassessed static inventory; no game assets changed in these retention checkpoints.
+Four Dungeon replacements are merged: Object28, Object29, Object01 and Object48. Retention PRs #17–#20 and #22 are merged, covering Objects49/50, Object51, Object37, Objects42/43 and Objects45–47. PR #23 is merged and preserves the rejected Object06/13/15 studies with unchanged baselines. These retention checkpoints changed evidence, not game assets.
 
-See `current-remake-assessment.json` for goal status, `dungeon-assessment.json` for asset-level state, and `progress.md` for dated checkpoints.
+Latest production direction: a single bounded Object44 skeletal-silhouette prototype is underway from main `0cc611bc`; textures and neighboring assets are frozen. Current inventory checks found no coherent batch in Objects16–20, 19/20, 31/55/56, or 32/33/35/39/44. Object44 is an exploratory single-asset test, not a family-wide production approval. See `dungeon-assessment.json`, `current-remake-assessment.json`, and `progress.md` for the exact next action and limits.
 
 ## Accepted and proposed checkpoints
 
@@ -14,8 +14,8 @@ See `current-remake-assessment.json` for goal status, `dungeon-assessment.json` 
 | Dungeon | PR #13 and #16 merged | 4 replacements | Object28, Object29, Object01 and Object48 |
 | Dungeon | PR #17 merged | 2 retained baselines | Object49 and Object50 |
 | Dungeon | PR #18–#20 merged | 4 retained baselines | Object51, Object37, Object42 and Object43 |
-| Dungeon | PR #22 open and ready for review | 3 retained baselines | Object45, Object46 and Object47 |
-| Dungeon | PR #23 open; independent review passed | 3 rejected production studies; baseline retained | Object06, Object13 and Object15 |
+| Dungeon | PR #22 merged | 3 retained baselines | Object45, Object46 and Object47 |
+| Dungeon | PR #23 merged; independent review passed | 3 rejected production studies; baseline retained | Object06, Object13 and Object15 |
 
 Client verification for new environment changes remains pending. Accepted exports and sources are indexed in `accepted-exports.json`.
 
