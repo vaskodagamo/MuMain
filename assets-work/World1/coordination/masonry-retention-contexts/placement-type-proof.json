@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "counts": {
+    "south-gate-placements.json": 10,
+    "house-stack-placements.json": 2,
+    "siege-wall-placements.json": 5
+  },
+  "map_sha256": "78b6c1446556c0ed7e12a4ed9eeb7f3e4a074e92d8bd5327c2c31b21a89fbec6"
+}
