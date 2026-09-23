@@ -75,10 +75,11 @@ CItemPreview& CItemPreview::GetInstance()
 void CItemPreview::Render(const Editor::Items::BrowseRow& row, int filterClass, int filterStage)
 {
     UpdateSubject(row, filterClass, filterStage);
+    m_renderedVersion = m_settingsVersion;
     m_showsModel = row.hasModel;
     RenderViewChoice();
     const float side = ImGui::GetContentRegionAvail().x;
-    m_wantedSize = Preview::TargetSize(side);
+    m_wantedSize = m_targetOverride > 0 ? m_targetOverride : Preview::TargetSize(side);
     RenderPicture(side);
     if (UsesOrbit(m_view))
         RenderCameraButtons();
@@ -99,7 +100,8 @@ void CItemPreview::UpdateSubject(const Editor::Items::BrowseRow& row, int filter
     m_subject.look.ancientDiscriminator = m_ancient ? PREVIEW_ANCIENT_DISCRIMINATOR : 0;
     m_subject.showEveryEffect = m_showEveryEffect;
     m_subject.safeZone = m_safeZone;
-    m_classChoice = Preview::PreviewClass(row.requireClass, filterClass, filterStage);
+    m_classChoice =
+        m_classOverride ? *m_classOverride : Preview::PreviewClass(row.requireClass, filterClass, filterStage);
     m_subject.characterClass = Preview::ClassAtStage(m_classChoice.baseClass, m_classChoice.stage);
     m_slotCellsWide = std::max(1, static_cast<int>(ItemAttribute[row.type].Width));
     m_slotCellsHigh = std::max(1, static_cast<int>(ItemAttribute[row.type].Height));
@@ -112,7 +114,7 @@ void CItemPreview::RenderViewChoice()
         if (&choice != &VIEW_CHOICES[0])
             ImGui::SameLine();
         if (ImGui::RadioButton(choice.label, m_view == choice.view))
-            m_view = choice.view;
+            SetView(choice.view);
     }
 }
 
@@ -260,6 +262,7 @@ void CItemPreview::RenderPending()
         return;
 
     PrepareIfChanged();
+    KeepPinnedOrbit();
     const int size = m_wantedSize;
     const std::uint32_t texture = mu::GetRenderer().BeginOffscreenCapture(m_texture, size, size);
     if (texture == 0)
@@ -269,6 +272,93 @@ void CItemPreview::RenderPending()
     m_textureSize = size;
     const Preview::View camera = Preview::OrbitView(m_frame.center, m_frame.radius, m_orbit, 1.0f);
     m_scene.Draw(m_subject, camera, size, m_pointerInSlot);
+    m_drawnVersion = m_renderedVersion;
+}
+
+// A scripted orbit wins over the framing PrepareIfChanged() gives a new subject,
+// until the subject it was set for has been drawn.
+void CItemPreview::KeepPinnedOrbit()
+{
+    if (!m_pinnedOrbit)
+        return;
+    m_orbit = *m_pinnedOrbit;
+    if (m_renderedVersion >= m_pinnedVersion)
+        m_pinnedOrbit.reset();
+}
+
+CItemPreview::Settings CItemPreview::GetSettings() const
+{
+    Settings settings;
+    settings.view = m_view;
+    settings.orbit = m_orbit;
+    settings.level = m_level;
+    settings.excellent = m_excellent;
+    settings.ancient = m_ancient;
+    settings.showEveryEffect = m_showEveryEffect;
+    settings.safeZone = m_safeZone;
+    settings.autoTurn = m_autoTurn;
+    settings.characterClass = m_classOverride;
+    settings.targetSize = m_targetOverride;
+    return settings;
+}
+
+void CItemPreview::ApplySettings(const Settings& settings)
+{
+    m_view = settings.view;
+    m_level = std::clamp(settings.level, 0, MAX_ITEM_LEVEL);
+    m_excellent = settings.excellent;
+    m_ancient = settings.ancient;
+    m_showEveryEffect = settings.showEveryEffect;
+    m_safeZone = settings.safeZone;
+    m_classOverride = settings.characterClass;
+    m_targetOverride = settings.targetSize;
+    SetOrbit(settings.orbit);
+    m_autoTurn = settings.autoTurn;
+}
+
+void CItemPreview::SetView(PreviewView view)
+{
+    m_view = view;
+    Changed();
+}
+
+void CItemPreview::SetOrbit(const Preview::Orbit& orbit)
+{
+    m_orbit = orbit;
+    m_autoTurn = false;
+    Changed();
+    m_pinnedOrbit = orbit;
+    m_pinnedVersion = m_settingsVersion;
+}
+
+void CItemPreview::SetLevel(int level)
+{
+    m_level = std::clamp(level, 0, MAX_ITEM_LEVEL);
+    Changed();
+}
+
+void CItemPreview::SetExcellent(bool excellent)
+{
+    m_excellent = excellent;
+    Changed();
+}
+
+void CItemPreview::SetAncient(bool ancient)
+{
+    m_ancient = ancient;
+    Changed();
+}
+
+void CItemPreview::SetCharacterClass(const std::optional<Preview::ClassChoice>& choice)
+{
+    m_classOverride = choice;
+    Changed();
+}
+
+void CItemPreview::SetTargetSize(int pixels)
+{
+    m_targetOverride = pixels > 0 ? Preview::TargetSize(static_cast<float>(pixels)) : 0;
+    Changed();
 }
 
 void CItemPreview::Release()

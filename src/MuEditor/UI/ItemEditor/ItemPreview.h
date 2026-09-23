@@ -11,6 +11,7 @@
 #include "imgui.h"
 
 #include <cstdint>
+#include <optional>
 
 // The live 3D preview in the Item Editor's Browse details: the selected item drawn
 // by the engine (see ItemPreviewScene.h for the four views) into a render target
@@ -43,6 +44,45 @@ public:
     std::uint32_t Texture() const { return m_texture; }
     int TextureSize() const { return m_textureSize; }
 
+    // Everything the panel's controls choose, so a script (the request captures)
+    // can change them and put the owner's choice back afterwards.
+    struct Settings
+    {
+        Editor::ItemEditor::PreviewView view = Editor::ItemEditor::PreviewView::Turntable;
+        Editor::Preview::Orbit orbit;
+        int level = 0;
+        bool excellent = false;
+        bool ancient = false;
+        bool showEveryEffect = false;
+        bool safeZone = false;
+        bool autoTurn = true;
+        std::optional<Editor::Preview::ClassChoice> characterClass; // none: the Browse class filter's
+        int targetSize = 0;                                         // 0: the panel's size
+    };
+    Settings GetSettings() const;
+    // Takes effect with the next Render(); the orbit is kept over the new subject's
+    // own framing.
+    void ApplySettings(const Settings& settings);
+
+    void SetView(Editor::ItemEditor::PreviewView view);
+    void SetOrbit(const Editor::Preview::Orbit& orbit); // also stops the automatic turn
+    void SetLevel(int level);
+    void SetExcellent(bool excellent);
+    void SetAncient(bool ancient);
+    void SetCharacterClass(const std::optional<Editor::Preview::ClassChoice>& choice);
+    void SetTargetSize(int pixels); // the picture's side; 0: the panel's size
+
+    // Counts setting changes; DrawnSettings() reaches SettingsVersion() once the
+    // picture (Texture()) shows them.
+    std::uint64_t SettingsVersion() const { return m_settingsVersion; }
+    std::uint64_t DrawnSettings() const { return m_drawnVersion; }
+
+    // The item the panel showed last (its type), -1 before the first one.
+    int ShownItem() const { return m_subject.itemType; }
+
+    // How the Equipped view wears the item (after it was drawn in that view).
+    Editor::Preview::Wearing Wearing() const { return m_scene.Wearing(); }
+
 private:
     CItemPreview() = default;
 
@@ -55,6 +95,8 @@ private:
     void RenderEquippedControls(int filterClass);
     void UpdateSubject(const Editor::Items::BrowseRow& row, int filterClass, int filterStage);
     void PrepareIfChanged();
+    void KeepPinnedOrbit();
+    void Changed() { ++m_settingsVersion; }
 
     Editor::ItemEditor::CItemPreviewScene m_scene;
     Editor::ItemEditor::PreviewSubject m_subject;  // what Render() asks for
@@ -74,6 +116,15 @@ private:
     bool m_dragging = false;
     bool m_pointerInSlot = false;
     Editor::Preview::ClassChoice m_classChoice;
+    std::optional<Editor::Preview::ClassChoice> m_classOverride;
+    int m_targetOverride = 0;
+
+    // A scripted orbit, kept over the framing of the subject it was set for.
+    std::optional<Editor::Preview::Orbit> m_pinnedOrbit;
+    std::uint64_t m_pinnedVersion = 0;
+    std::uint64_t m_settingsVersion = 0;
+    std::uint64_t m_renderedVersion = 0; // the settings the last Render() recorded
+    std::uint64_t m_drawnVersion = 0;    // the settings the last drawn picture shows
     bool m_showsModel = false;
     int m_slotCellsWide = 1;
     int m_slotCellsHigh = 1;
