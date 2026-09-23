@@ -1,3 +1,7 @@
+## Next Dungeon family — baseline triage only
+
+Read-only baseline renders now cover Object45–48 and a six-object actual Object47/48 debris cluster. These are confirmed static skeletal remains: 510 total placements, one root and one one-key action per model. All four use frozen `bons.OZJ`, whose nine consumers require a full visual scope review before any texture edit. Objects45/46 share raw index topology but have different posed bounds and raw bone names; no reuse is established. No owner or remake has been assigned. See `assets-work/World2/Readiness02/notes.md`, provenance JSON and hash-bound images. Next step is close actual-scene visual review and candidate value decision after active wall/pier review.
+
 ## Current checkpoint — 2026-09-23
 
 Dungeon pottery is independently accepted and integrated at 6d0323d7: Object28 and Object29 have rounder ceramic shoulders and modeled lips, with original interiors, bases and broken pieces preserved. Object30 remains unchanged on its own visual merits. Both original coffins, Object21 and Object22, are retained after candidate studies failed to demonstrate sufficient artistic improvement. These are two replacements and three individually justified retained assets, not full Dungeon coverage. All new client checks are pending.
