@@ -1092,19 +1092,6 @@ docs and the owner's pricing page.
 **Open / next:** the owner sets `OPENAI_API_KEY` and a project budget limit, then a first real
 explore batch (study top 10 x 3); compare estimated and actual `usage`.
 
-## 2026-09-23 - Item editor I5: Ask Codex, captures, Requests tab (Claude Opus 5.5)
-**Goal:** Milestone I5 of `ITEM_EDITOR_PLAN.md`.
-
-**Done:** editor-only texture read-back and scripted clean captures, the Ask Codex dialog writing
-validated `mu-item-regen-request/1` folders with the picked concept, verdicts, the Requests tab
-with withdraw / accept / reject / re-file, live request status; the catalog check ignores request
-status.
-
-**Verified:** 395/395 editor-build, 394/394 player-build, 87 tools tests; scripted in-client run
-of every acceptance point; Metal validation clean.
-
-**Open / next:** owner files the first real request (I7 pilot); I5b concepts inside the editor.
-
 ## 2026-09-23 - Item concepts backend for the editor (I5b part 1) (Claude Opus 5.5)
 **Goal:** Let the Item Editor drive `concepts.py`: the owner asked for concepts inside the editor
 (select items, generate, pick or refine with a comment, hand to Codex).
@@ -1121,3 +1108,15 @@ batch locks; `list`/`discard`/`undiscard`; refine from a variant with a comment
 subprocess cancellation); a real `plan --json` found the Keychain key without printing it.
 
 **Open / next:** I5b editor panel on top of I5 (PR #33) and this branch.
+## 2026-09-23 - Item editor I5: Ask Codex, captures, Requests tab (Claude Opus 5.5)
+**Goal:** Milestone I5 of `ITEM_EDITOR_PLAN.md`.
+
+**Done:** editor-only texture read-back and scripted clean captures, the Ask Codex dialog writing
+validated `mu-item-regen-request/1` folders with the picked concept, verdicts, the Requests tab
+with withdraw / accept / reject / re-file, live request status; the catalog check ignores request
+status.
+
+**Verified:** 395/395 editor-build, 394/394 player-build, 87 tools tests; scripted in-client run
+of every acceptance point; Metal validation clean.
+
+**Open / next:** owner files the first real request (I7 pilot); I5b concepts inside the editor.
