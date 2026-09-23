@@ -11,6 +11,7 @@
 #include <sstream>
 
 #ifdef _EDITOR
+#include "ItemFileSnapshot.h"
 #include "UI/Console/MuEditorConsoleUI.h"
 #include "Core/Utilities/StringUtils.h"
 #endif
@@ -114,6 +115,11 @@ bool ItemDataLoader::LoadFormat(FILE* fp, const wchar_t* formatName)
 
     // Decrypt buffer
     DataFileIO::DecryptBuffer(buffer.get(), config);
+
+#ifdef _EDITOR
+    // The editor's save writes this layout and these bytes back.
+    ItemFileSnapshot::Remember(buffer.get(), Size, MAX_ITEM);
+#endif
 
     // Copy items
     BYTE* pSeek = buffer.get();

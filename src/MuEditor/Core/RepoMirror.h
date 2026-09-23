@@ -73,6 +73,11 @@ std::filesystem::path RepoExportDir(const std::filesystem::path& repoRoot);
 MirrorOutcome MirrorIntoRepo(const std::filesystem::path& runtimeFile, const std::filesystem::path& dataRelative,
                              const std::filesystem::path& repoRoot, const std::string& stamp);
 
+// `path` with every element spelled as the entry on disk that matches it without
+// regard to letter case (Data/Local/Eng/Item_Eng.bmd -> Data/Local/Eng/item_eng.bmd),
+// so a save names the file git tracks. Elements with no such entry are kept.
+std::filesystem::path OnDiskSpelling(const std::filesystem::path& path);
+
 // True when both files exist and hold the same bytes.
 bool SameFileContents(const std::filesystem::path& a, const std::filesystem::path& b);
 
