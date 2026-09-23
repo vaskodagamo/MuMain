@@ -1,4 +1,4 @@
-// Local stream socket transport (AF_UNIX), for Windows and Linux alike.
+// Local stream socket transport (AF_UNIX), for Windows, Linux and macOS alike.
 //
 // A listener bound to a filesystem path, serving line-oriented text to local
 // processes of the same user. Everything is non-blocking: the owner polls it
