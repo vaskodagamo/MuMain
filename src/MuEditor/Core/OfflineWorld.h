@@ -2,6 +2,8 @@
 
 #ifdef _EDITOR
 
+#include <string>
+
 // Offline world mode: "Main --editor --world N" opens the client's map folder
 // Data/World{N} straight in the main scene - no server, no login, no character -
 // looking through the editor's free-fly camera with the Map Editor open.
@@ -19,6 +21,12 @@ void ReadCommandLine(const wchar_t* commandLine);
 // returns true; returns false (and logs why) when no map was requested or its
 // folder is incomplete, so the caller continues with the login scene.
 bool TryEnter();
+
+// Switches the offline session to Data/World{world} (control socket: map-open). The
+// Map Editor drops the old map's selection and undo steps, and the camera goes to the
+// new map's start view. False, with the reason in `error`, when no map is open offline
+// or the folder is missing a file; the loaded map then stays as it is.
+bool Open(int world, std::string& error);
 
 // True once a map was opened offline. The client then runs without a server
 // connection and without a hero, so network and game-HUD paths stay off.

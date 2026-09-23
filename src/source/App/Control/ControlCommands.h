@@ -1,6 +1,10 @@
 // The control socket's command implementations, one file per family:
 // Session (login/select-char/logout/quit), World (movement, combat, chat,
-// party) and Query (state/nearby/scene/screenshot/hotkey/click-ui).
+// party), Query (state/nearby/scene/screenshot/hotkey/click-ui) and, in editor
+// builds, Map (map-open/map-info/map-camera, MapData: map-export/map-query,
+// MapCapture: the editor's screenshots, MapEdit: map-apply/map-undo/map-redo/
+// map-history/map-save/map-revert, MapNew: map-new/map-server-export, Gates:
+// gate-list/gate-add/gate-remove/gate-show).
 //
 // Every handler answers with an encoded response line, or takes over the
 // dispatcher's single act slot for a command that needs several frames.
@@ -52,4 +56,36 @@ std::string Say(const Request& request, std::unique_ptr<Act>& act);
 std::string Whisper(const Request& request, std::unique_ptr<Act>& act);
 std::string Party(const Request& request, std::unique_ptr<Act>& act);
 std::string Halt(const Request& request, std::unique_ptr<Act>& act);
+
+#ifdef _EDITOR
+// Map family: the Map Editor's view of the loaded map (editor builds only).
+std::string MapOpen(const Request& request, std::unique_ptr<Act>& act);
+std::string MapInfo(const Request& request, std::unique_ptr<Act>& act);
+std::string MapCamera(const Request& request, std::unique_ptr<Act>& act);
+std::string MapExport(const Request& request, std::unique_ptr<Act>& act);
+std::string MapQuery(const Request& request, std::unique_ptr<Act>& act);
+std::string MapTab(const Request& request, std::unique_ptr<Act>& act);
+
+// MapEdit: edit scripts, the undo history and the map's files (editor builds only).
+std::string MapApply(const Request& request, std::unique_ptr<Act>& act);
+std::string MapUndo(const Request& request, std::unique_ptr<Act>& act);
+std::string MapRedo(const Request& request, std::unique_ptr<Act>& act);
+std::string MapHistory(const Request& request, std::unique_ptr<Act>& act);
+std::string MapSave(const Request& request, std::unique_ptr<Act>& act);
+std::string MapRevert(const Request& request, std::unique_ptr<Act>& act);
+
+// MapNew and Gates: new maps, the gates between maps and the OpenMU export (editor
+// builds only).
+std::string MapNew(const Request& request, std::unique_ptr<Act>& act);
+std::string MapServerExport(const Request& request, std::unique_ptr<Act>& act);
+std::string GateList(const Request& request, std::unique_ptr<Act>& act);
+std::string GateAdd(const Request& request, std::unique_ptr<Act>& act);
+std::string GateRemove(const Request& request, std::unique_ptr<Act>& act);
+std::string GateShow(const Request& request, std::unique_ptr<Act>& act);
+
+// `screenshot` with `clean`, `region` or a .png `out`, which the editor's own
+// capture serves.
+[[nodiscard]] bool WantsEditorScreenshot(const Request& request);
+std::string EditorScreenshot(const Request& request, std::unique_ptr<Act>& act);
+#endif
 } // namespace App::Control::Commands

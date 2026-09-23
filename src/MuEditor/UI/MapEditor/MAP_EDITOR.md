@@ -54,6 +54,13 @@ the Mac; everything after it is reference.
    (`git add assets-work/World1/requests/<id>`, `git commit -m "docs(assets): file request <id>"`)
    and push it to `main` on your fork (`origin`). Codex only sees requests on `main`, and the commit
    your checkout was on must be pushed too (the dialog warns when it is not).
+11. **Grow the world:** a map is always 256 x 256 tiles, so the world grows by adding maps and
+   joining them with gates. **New map...** (next to Outliner) makes map 82, 83, ... as a copy of
+   another map or as flat ground, in `Data/World83`, `Data/World84`, ... (the folder is the map
+   number + 1); open it offline with `--world 83`. The **Gates** tab joins maps: draw an area on the
+   ground, choose the map and the spot it leads to, **Add gate**. **Export this map for OpenMU**
+   writes what the server needs; nothing is applied to a server. See [New maps](#new-maps) and
+   [Gates](#gates).
 
 **Known limits:** offline there are no monsters, NPCs or game HUD. With the camera close to the ground
 (under about 1000 units) objects near the bottom of the view can vanish: fly back a little. Brushes act
@@ -161,7 +168,8 @@ On Windows: `Main.exe --editor --world 1`. `--world=1` works too; without `--edi
 option is ignored.
 
 - **The number is the map's folder in the client's `Data` directory:** `--world 1` opens
-  `Data/World1` (Lorencia), `--world 3` Devias, `--world 4` Noria, and so on (1 to 82).
+  `Data/World1` (Lorencia), `--world 3` Devias, `--world 4` Noria, and so on: any folder that
+  exists, 1 to 255, new maps included (`--world 83` opens map 82, see [New maps](#new-maps)).
   The game itself counts maps from 0 (Lorencia is map 0, which is also the number OpenMU
   uses, see gotcha 6), but here you always give the folder number. Event maps whose levels
   share one folder open with that folder's number: Blood Castle `12`, Chaos Castle `19`,
@@ -205,6 +213,44 @@ option is ignored.
   model type -515`). Saving the objects of such a map writes the file without that record.
 - **Leaving:** close the window.
 
+### Letting a script or an AI agent look at and edit the map
+
+The editor build has the developer control socket (`docs/control-socket.md`). Start the
+offline map with the socket's path in `MU_CONTROL_SOCKET`:
+
+```sh
+MU_CONTROL_SOCKET=/tmp/mu-editor.sock ./Main --editor --world 1
+```
+
+A script (or an agent such as Claude or Codex) then sends one JSON line per command:
+`map-open` switches to another map folder, `map-info` reports the map (name, objects,
+gates, which files have unsaved edits), `map-camera` frames a tile or looks straight down
+on a rectangle, `screenshot` with `"clean": true` captures the 3D view without the editor
+panels (with `region`, cropped to a rectangle), `map-export` writes the map's layers as
+one pixel per tile images with a legend and `objects.json`, and `map-query` answers the
+same facts as numbers. The owner can keep working in other apps meanwhile: the client
+keeps answering and drawing while its window is minimized, hidden or covered. Details and
+examples: `docs/control-socket.md`, section "Editor commands".
+
+The agent can also edit: `map-apply` runs an **edit script** (JSON, `"schema": "mu-map-edit/1"`)
+that raises, flattens, ramps, smooths or roughens the ground, paints textures, walkability and
+light over circles, rectangles, polygons and paths, and places, scatters (seeded, keeping off
+roads and other objects), moves, turns, scales or deletes objects. The whole script is checked
+first and applied as **one step of the same undo history** the panel's Undo/Redo buttons use
+(the button then reads "Undo: <the script's label>"); a dry run only reports what would change.
+`map-undo`, `map-redo`, `map-history`, `map-save` (the same saves as the tabs' Save buttons,
+repository copy and backup included) and `map-revert` (read the files back, dropping unsaved
+edits and the history) complete it. While you hold a brush stroke or a drag, these commands
+answer `busy`; your selection stays as it is (objects a script deletes drop out of it). The
+agent's entry point, with the prompt template to give it and a worked example:
+`docs/agents/AI_MAP_EDITING.md`; the agent drives the client with `tools/world_editor/mapctl.py`
+(for example `python3 tools/world_editor/mapctl.py launch --world 1`, then `info`, `shot`, `apply`).
+
+The agent can also grow the world: `map-new` makes a new map (the New map window's work),
+`gate-list`, `gate-add` and `gate-remove` read and change the gates (the Gates tab's work;
+every change saves `Gate.bmd` at once), `gate-show` opens the Gates tab on a gate so you see
+what the agent means, and `map-server-export` writes the OpenMU export.
+
 ---
 
 ## 1. The core idea
@@ -235,7 +281,7 @@ All under `src/MuEditor/UI/MapEditor/`:
 
 | File | Responsibility |
 |---|---|
-| `MapEditorUI.h/.cpp` | The panel + all tabs (Texture, Objects, Height, Attribute, Light, T. Browse, Minimap, O. Browse, Assets). Owns UI state, edit-mode selection, input capture and the texture and walkability strokes; draws the Undo/Redo bar. |
+| `MapEditorUI.h/.cpp` | The panel + all tabs (Texture, Objects, Height, Attribute, Light, Gates, T. Browse, Minimap, O. Browse, Assets). Owns UI state, edit-mode selection, input capture and the texture and walkability strokes; draws the Undo/Redo bar. |
 | `MapBrushControls.h/.cpp` | `Editor::BrushControls` — what the round brushes share: the cursor on the ground (`TerrainBrushInput`), the Radius and Strength sliders, the **[** **]** keys, the brush circle and its outline on the ground. |
 | `MapHeightTool.h/.cpp` | `CMapHeightTool` — the Height tab's brush (raise/lower, flatten, smooth, set height) and its stroke. |
 | `MapGroundFollowers.h/.cpp` | `CMapGroundFollowers` — "Objects follow terrain": moves the objects standing on sculpted ground with it and hands their moves to the stroke's undo step (without selecting them). |
@@ -249,6 +295,7 @@ All under `src/MuEditor/UI/MapEditor/`:
 | `MapOutliner.h/.cpp` | `CMapOutliner` — the **Outliner** window listing the map's objects. |
 | `MapEditorShortcuts.h/.cpp` | `Editor::Shortcuts` — the editor's keys (undo, redo, delete, duplicate, Esc, the brushes' [ ]), quiet while the user types; Esc is left to an open popup. |
 | `MapEditorSave.h/.cpp` | `Editor::MapSave` — **encrypting** save of the terrain mapping (`.map`). |
+| `MapHeightSave.h/.cpp` | `Editor::HeightSave` — the Height tab's Save height (and `map-save`'s): `TerrainHeight.OZB` through the engine's `SaveTerrainHeight`, refused on maps with 24-bit heights. |
 | `MapAttributeSave.h/.cpp` | `Editor::AttrSave` — **encrypting** save of the walkability `.att` (client) **and** the plain `.att` for OpenMU's Admin Panel + a HOWTO text file (server). |
 | `MapTextureBrowser.h/.cpp` | **T. Browse** tab — preview a chosen world's tile textures; "Use"/"Upload" a texture onto the current map. |
 | `MapTextureImport.h/.cpp` | `Editor::TextureImport` — put a `.jpg`/`.ozj` into a free `ExtTile` slot and load it live. |
@@ -256,6 +303,8 @@ All under `src/MuEditor/UI/MapEditor/`:
 | `MapEditorFileUtil.h/.cpp` | `Editor::Files` — portable `Data/World{N}` / `Data/Object{N}` paths, whole-file read, `MirrorSavedFile` (the repository copy of each save, or the copy next to the executable without a repository) and the status-line text listing what was written. |
 | `MapEditorRepoMirror.h/.cpp` | `Editor::Files` — finds the repository (`MU_EDITOR_REPO_ROOT` or the first folder above the game with `src/bin/Data` and `.git`) and copies a saved file into `src/bin/Data`, backing up the file it replaces in `out/editor-backups/`. File system only; unit-tested in `tests/editor/test_repo_mirror.cpp`. |
 | `MapEditorStatusLine.h/.cpp` | `Editor::StatusLine` — the wrapped result line under a tab's buttons. |
+| `MapGatesTab.h/.cpp` | `CMapGatesTab` — the **Gates** tab: the map's gates in a table and on the ground, the drawn area, new gates, moving and removing the editor's gates, the OpenMU export button. |
+| `MapNewMapWindow.h/.cpp` | `CMapNewMapWindow` — the **New map** window: number, name, flat or copy, models, Check / Create / Open it now. |
 | `MapObjectPlace.h/.cpp` | `Editor::ObjectPlace` — enumerate loaded models, placement position, reposition/remove objects, save `.obj`, and the one walk over the live objects (`ForEachLiveObject`) the Outliner, the undo steps and "Objects follow terrain" share. |
 | `MapObjectImport.h/.cpp` | `Editor::ObjectImport` — cross-map object import (copy `.bmd` + textures into the current map's `Object` folder, load live), plus preview-load into a scratch slot. |
 | `MapObjectBrowser.h/.cpp` | **O. Browse** tab — thumbnail grid of any map's object models; import onto current map. |
@@ -266,7 +315,36 @@ All under `src/MuEditor/UI/MapEditor/`:
 
 Outside that folder, `MuEditor/Core/OfflineWorld.h/.cpp` (`Editor::OfflineWorld`) opens a
 map for `--world N` without a server: it checks the map's files, loads the map, enters the
-main scene with an inactive hidden hero and points the FreeFly camera at the start view.
+main scene with an inactive hidden hero and points the FreeFly camera at the start view;
+`Open` switches the offline session to another map (the control socket's `map-open`).
+`MuEditor/Core/LiveMap.h/.cpp` (`Editor::LiveMap`) hands the loaded map (terrain arrays,
+saved objects in save order, gates, tile textures, asset catalog) to `MuEditor/MapInspect/`,
+the file-only part of the control socket's map commands, unit-tested in
+`tests/editor/test_map_inspect.cpp`: layer images and their legend (`LayerImage`,
+`AttributePalette`, `TilePalette`, `MapExport`, `PngFile`), area numbers (`AreaStats`), the
+object list (`MapObjectList`), the camera framing math (`CameraFraming`) and the fingerprints
+behind `map-info`'s unsaved flags (`MapDigest`, `SavedMapState`; every save notes itself
+through `LiveMap::NoteSaved`). The edit scripts of `map-apply` are `MuEditor/MapScript/`, again
+without ImGui or engine state and unit-tested in `tests/editor/test_map_script.cpp`: parsing and
+checking a script (`ScriptParser`, `ScriptReader`, `ShapeParser`, `SurfaceOpParser`,
+`ObjectOpParser`, `NameResolver`), shapes and their soft or hard edges (`ScriptShape`), the ops
+on plain arrays (`TerrainOps`, `SurfaceOps`, `ObjectOps` with `ScatterRules`, run by
+`ScriptRunner`), seeded
+randomness (`ScriptRandom`, `ValueNoise`, `PoissonScatter`, `PointGrid`), the walkability rules
+(`AttributeRules`) and what a script changed (`ScriptDiff`, `ScriptReport`).
+`MuEditor/Core/LiveMapEdit.h/.cpp` (`Editor::LiveMapEdit`) runs a script on a copy of the loaded
+map and turns what it changed into one step of the undo history (a `TerrainStroke` over the
+changed layers and an `ObjectEditCommand`); `MuEditor/Core/LiveMapFiles.h/.cpp`
+(`Editor::LiveMapFiles`) saves through the tabs' own saves and reads the files back for
+`map-revert`.
+New maps, gates and the OpenMU export are file-only units too, without ImGui or engine state and
+unit-tested in `tests/editor/test_new_map.cpp` and `test_gates.cpp`: `MuEditor/NewMap/` (the
+files of a new map: renumbered copies of a template's `EncTerrain` files, flat maps, Lorencia's
+named models under their numbered names, writing with the repository copy), `MuEditor/Gates/`
+(`Gate.bmd` read and written byte for byte, the gate edits, the checks) and
+`MuEditor/ServerExport/` (OpenMU's walk-map layout, the gates and map JSON, `HOWTO.md`,
+`openmu.sql`). `MuEditor/Core/NewMapFiles`, `LiveGates` and `ServerExportFiles` connect them to the
+running client (its `Data` folder, the loaded gate table `GateAttribute`, the ciphers).
 `MuEditor/Core/EditorCamera.h/.cpp` switches to the FreeFly camera (start view, Prev/Next),
 and `MuEditor/Core/ViewCapture.h/.cpp` takes the request screenshot: one frame without the
 editor overlay, the game cursor and the on-screen camera text. `MuEditor/Core/ModelHotReload.h/.cpp`
@@ -292,7 +370,8 @@ step made of several parts), object steps (`ObjectEditCommand`, `ObjectWorld`), 
 projection, drag and rotation math (`GizmoMath`, `ObjectTransform`) and the round brushes: the
 circle, its falloff and its clipped footprint (`TerrainBrush`), height and light values
 (`FieldBrush`: add, move towards a target, smooth, clamp) and the overlay texture and hard-edged
-cells (`SurfaceBrush`), and `PopupMouseGuard`, which keeps the mouse from the world while a popup
+cells (`SurfaceBrush`), each also for a brush of any shape (`WeightMask`, the edit scripts'),
+and `PopupMouseGuard`, which keeps the mouse from the world while a popup
 is open and until the click that closes it is released (`test_popup_mouse_guard.cpp`).
 
 **Engine files touched (kept minimal, all editor-gated where possible):**
@@ -304,9 +383,10 @@ is open and until the click that closes it is released (`test_popup_mouse_guard.
 | `Render/Sprites/GlobalBitmap.h/.cpp` | `RefreshCacheEntry(index)` — invalidate one quick-cache slot (see gotcha #4). Editor only: `ReloadImage(index, file)` reads a texture from disk into the same index, keeping the other models' references (A/B compare). |
 | `Camera/DefaultCamera.cpp`, `Camera/OrbitalCamera.cpp` | Their editor-only on-screen camera text is left out of a view-capture frame. |
 | `src/CMakeLists.txt` | Editor build only: `src/ThirdParty` on the include path for nlohmann's `json.hpp` (catalog and request files). |
-| `Camera/FreeFlyCamera.h/.cpp` | Widened `MAX_PITCH` to `-2` (near straight-down); `SnapTopDown()`; `RotateYaw()`; `LookAt()` (start view of an offline map). |
+| `Camera/FreeFlyCamera.h/.cpp` | Widened `MAX_PITCH` to `-0.3` (near straight-down); `SnapTopDown()`; `RotateYaw()`; `LookAt()` (start view of an offline map); `GetPose()` (the pose `map-camera` reports). |
 | `Camera/CameraManager.h` | `SetFreeFlyCullsWorld()` / `GetFreeFlyCullingCamera()`: while the Map Editor is open or a map is open offline, FreeFly culls with its own frustum instead of the spectated game camera's. |
-| `Render/Terrain/ZzzLodTerrain.cpp/.h` | `g_bMapEditorFullTerrain` flag; `RenderTerrain()` forces `ResetFrustrumBoundsFullTerrain()` when set. Also `g_bMapEditorAttrOverlay` + `RenderAttributeOverlay()` (tints tiles by their `TerrainWall` bits, submitted in runs of 4096 quads so a wide or top-down view is tinted completely) and the Texture tab's square highlight, both drawn with the renderer and `TerrainOverlayState` (no `glPushAttrib`); the edit pass draws the round brushes' outline. FreeFly terrain/object culling uses `GetFreeFlyCullingCamera()`; the tile grid and the debug spheres and boxes (editor toggles) use screen-space lines. Player build too: `CreateTerrainNormal(_Part)` rebuild each normal from zero (see Height); new `CreateTerrainNormal_Rect` / `CreateTerrainLight_Rect` rebuild a rectangle exactly as the whole-map versions do (`CreateTerrainLight` shares their per-cell code and gives the same values as before, unit-tested). |
+| `Render/Terrain/ZzzLodTerrain.cpp/.h` | `g_bMapEditorFullTerrain` flag; `RenderTerrain()` forces `ResetFrustrumBoundsFullTerrain()` when set. Also `g_bMapEditorAttrOverlay` + `RenderAttributeOverlay()` (tints tiles by their `TerrainWall` bits, submitted in runs of 4096 quads so a wide or top-down view is tinted completely) and the Texture tab's square highlight, both drawn with the renderer and `TerrainOverlayState` (no `glPushAttrib`); the edit pass draws the round brushes' outline. FreeFly terrain/object culling uses `GetFreeFlyCullingCamera()`; the tile grid and the debug spheres and boxes (editor toggles) use screen-space lines. Player build too: `CreateTerrainNormal(_Part)` rebuild each normal from zero (see Height); new `CreateTerrainNormal_Rect` / `CreateTerrainLight_Rect` rebuild a rectangle exactly as the whole-map versions do (`CreateTerrainLight` shares their per-cell code and gives the same values as before, unit-tested). Player build too, bounds fixes: a mapping (`.map`) or 24-bit height file (`OpenTerrainHeightNew`) cut short is refused with a log line instead of being read past its end (`Render::Terrain::Files`), and the tiles of the map's last row read their top corners from that row instead of past the terrain arrays (`Render::Terrain::TileIndex`); stock maps load and draw exactly as before (all unit-tested in `tests/engine/test_terrain_files.cpp`). |
+| `Render/Textures/ZzzTexture.h/.cpp`, `JpegFloatDecode.h/.cpp` | Player build too: `OpenJpegBuffer` takes the size of the buffer it fills and refuses a `TerrainLight.OZJ` of any other size (logged) instead of writing past `TerrainLight`; every shipped light map is 256 x 256. |
 | `Render/Terrain/TerrainOverlayState.h/.cpp` | Editor only: the render state of the overlays on the ground (vertex colours, alpha blend, no depth writes, both faces), set and put back through the `ZzzOpenglUtil` wrappers so their state caches stay true. |
 | `Render/Terrain/TerrainBrushOutline.h/.cpp` | Editor only: `Render::Terrain::BrushOutline`, the round brushes' circle on the ground (outer rim, and a fainter ring where a soft brush starts to fade). |
 | `Render/Renderer/MuRenderer.h`, `MuRendererSDLGpu.cpp`, `ScreenLineRibbons.h/.cpp`, `QuadTopology.h` | `RenderScreenLines(vertices, widthPixels)`: lines a given number of pixels wide, facing the camera from any angle (also straight down), untextured, never culled; the ribbons are built in view space (`Render::Lines`, unit-tested in `tests/render/test_screen_lines.cpp`) and submitted in runs of at most one draw's capacity (`Render::Topology::ForEachQuadBatch`, 4096 quads), so a whole tile grid draws. `RenderLines` keeps its old world-space ribbons for the existing debug draws. |
@@ -314,10 +394,15 @@ is open and until the click that closes it is released (`test_popup_mouse_guard.
 | `Camera/FrustumRenderer.cpp` | Editor only: the FreeFly frustum wireframe uses screen-space lines. |
 | `Engine/Object/ObjectReferences.h/.cpp` | Player build too: `Engine::Object::ReleaseReferencesTo` drops a world object's `Operates[]` entries (and the operate under the cursor) and ends the effects, joints and particles attached to it, before the object is freed. |
 | `Engine/Object/w_ObjectInfo.h/.cpp` | `OBJECT::SaveOrder`, the object's place in a saved `EncTerrain{N}.obj` (the record index it was loaded from, or after them for objects the editor added), also the name the undo steps use. Only the editor build sets it; the field is in every build so `OBJECT` has one layout (tests built with `_EDITOR` link the player's `MuClient`). |
-| `Engine/Object/ZzzObject.h/.cpp` | Editor only: `g_MapEditorSelectedObjects` (every selected object gets an outline: the primary yellow, the rest orange); the loader sets `SaveOrder` and `SaveObjects` writes the records in that order. `g_MapEditorHighlightedTypes`, the Assets tab's "Highlight all" outline; `ObjectListGeneration()`, which `DeleteAllObjects` bumps, so the Map Editor notices a map unload and drops its selection and undo steps. Player build too: `DeleteObject` releases those references first; `DeleteAllObjects` does it for all objects in one pass (map change). `OpenObjectsEnc` and `SaveObjects` share `WorldObjectFile`; `SaveObjects` writes the encrypted file once, checks `fopen`/`fwrite`, counts only the records written and leaves out objects a map spawns at run time. |
-| `Engine/Object/WorldObjectFile.h/.cpp` | The `.obj` record layout (encode/decode) and `InSaveOrder` (records sorted by their save order; without one, as collected), unit-tested in `tests/engine/`. |
-| `World/MapInfra/MapManager.cpp` | `DeleteObjects` frees the map's objects with `DeleteAllObjects`. |
-| `Scenes/MainScene.cpp` | Suppress the FreeFly frustum wireframe while `g_bMapEditorFullTerrain` is set (clean minimap shot) or while FreeFly culls the world itself. Offline (`--world`): no game HUD or HUD input. |
+| `Engine/Object/ZzzObject.h/.cpp` | Editor only: `g_MapEditorSelectedObjects` (every selected object gets an outline: the primary yellow, the rest orange); the loader sets `SaveOrder` and `SaveObjects` writes the records in that order. `g_MapEditorHighlightedTypes`, the Assets tab's "Highlight all" outline; `ObjectListGeneration()`, which `DeleteAllObjects` bumps, so the Map Editor notices a map unload and drops its selection and undo steps. Player build too: `DeleteObject` releases those references first; `DeleteAllObjects` does it for all objects in one pass (map change). `OpenObjectsEnc` and `SaveObjects` share `WorldObjectFile`; `SaveObjects` writes the encrypted file once, checks `fopen`/`fwrite`, counts only the records written and leaves out objects a map spawns at run time (`IsSavedWorldObject`, which the control socket's object list uses too). |
+| `Engine/Object/WorldObjectFile.h/.cpp` | The `.obj` record layout (encode/decode) and `InSaveOrder` (records sorted by their save order; without one, as collected; `SaveOrderIndices` gives the same order for any list), unit-tested in `tests/engine/`. |
+| `World/MapInfra/MapManager.cpp` | `DeleteObjects` frees the map's objects with `DeleteAllObjects`. Editor builds only (`#ifdef _EDITOR`): `GetMapName` asks `World::MapNames` for the name of a map numbered 82 or higher (its `MapName.txt`) before its old fallback; the game's own maps are unchanged, and the player build's behaviour is unchanged until the owner decides otherwise. |
+| `World/MapInfra/CustomMapName.h/.cpp`, `MapNumbers.h` | Compiled in every build, called by editor builds only: the names of new maps (read once per map from `Data/World{N}/MapName.txt`, unit-tested in `tests/engine/test_map_names.cpp`) and the map-number limits (82 to 254 for new maps, folder = number + 1). |
+| `Render/Terrain/TerrainGroundRects.h/.cpp` | Editor only: `Render::Terrain::GroundRects`, the Gates tab's rectangles on the ground (fill and outline following the terrain), drawn by `RenderTerrain` after the attribute overlay. |
+| `App/Control/ControlCommandsGates.cpp`, `ControlCommandsMapNew.cpp` | Editor builds with the control socket: `gate-list`, `gate-add`, `gate-remove`, `gate-show`, `map-new` and `map-server-export`, thin handlers over `Editor::LiveGates`, `Editor::NewMapFiles` and `Editor::ServerExportFiles`. |
+| `Scenes/MainScene.cpp` | Suppress the FreeFly frustum wireframe while `g_bMapEditorFullTerrain` is set (clean minimap shot) or while FreeFly culls the world itself. Offline (`--world`): no game HUD or HUD input. No game HUD in a clean view-capture frame. |
+| `App/Control/ControlCommandsMap*.cpp`, `ControlMapArguments.h/.cpp` | Editor builds with the control socket: the `map-*` commands and `screenshot`'s `clean`/`region`/PNG path, thin handlers over `Editor::LiveMap`, `Editor::Camera` and `MapInspect/`; `ControlCommandsMapEdit.cpp` the edit commands (`map-apply`, `map-undo`, `map-redo`, `map-history`, `map-save`, `map-revert`) over `Editor::LiveMapEdit` and `Editor::LiveMapFiles`. |
+| `Render/Renderer/HiddenWindowTarget.h/.cpp` | Builds with the control socket, while it serves: a frame whose window is minimized, hidden or covered is drawn offscreen instead of waiting for the window. |
 | `Scenes/WebzenScene.cpp` | After the start-up loading, `--world N` opens the map offline instead of going to the login screen. |
 | `Scenes/SceneManager.cpp` | Offline: no "connection lost" check. |
 | `World/GameMaps/GMBattleCastle.cpp` | Offline: skip the castle-owner request to the server while World31 loads. |
@@ -506,6 +591,8 @@ buttons at the top of the Map Editor name the step they would apply ("Undo: Rota
   step changed, and a re-created object gets back its place in the saved file. Undoing a height
   or light step rebuilds the lighting exactly as it was.
 - **Changing map** (or reloading the same one) clears the history.
+- **Scripted edits** (the control socket's `map-apply`) are steps of this history too, one per
+  script, named after the script's label; `map-revert` clears the history.
 - If a step no longer matches the map (should not happen), the history is cleared and a yellow
   line says so.
 
@@ -546,7 +633,9 @@ tools:
   after the login and character screens, and every sculpt stroke) made them longer and washed
   out the slope shading. Since M3 each load looks like a first load, in the game too.
 - **Save** → engine `SaveTerrainHeight` → `Data\World{N}\TerrainHeight.OZB` (4 prefix
-  bytes followed by a plain BMP; the save keeps the file's existing prefix).
+  bytes followed by a plain BMP; the save keeps the file's existing prefix). On the few maps whose
+  height file stores 24 bits per corner (Doppelganger 2, the PK field, ChangeUp 3rd) the save is
+  refused with a status line: it would have written an 8-bit file the map cannot load.
 - **Height is capped at `255 * factor`** (factor 1.5 normally, 3.0 on the login scene):
   the file stores one byte per cell as `height / factor`, so anything higher can't be
   saved and collapses to a flat plateau on reload. The sculpt clamps `BackTerrainHeight`
@@ -617,6 +706,127 @@ objects are lit from the light map under them too.
 - Some maps load another light map in some states: Battle Castle (World31) `TerrainLight2.OZJ`
   during the siege, Crywolf (World35) `TerrainLight1/2.OZJ` when occupied or at war. The Light
   tab always saves `TerrainLight.OZJ`.
+
+### New maps
+
+A MU map is always 256 x 256 tiles: the game sends every position as one byte. The world grows
+the way MU always grew, by adding maps and joining them with gates ([Gates](#gates)).
+
+- **Numbers:** a new map takes a number from **82 to 254**. OpenMU, `Gate.bmd` and the gates use
+  that number; the client keeps the map in the folders **`Data/World{number + 1}`** and
+  **`Data/Object{number + 1}`** (map 82: `World83`, `Object83`), and `--world` takes the folder
+  number (`./Main --editor --world 83`). The game's own maps use 0 to 81 (54, 55, 73, 74, 77 and 78
+  are the login and character screens, and the gaps in between have code of their own); the client
+  reads a map number as one byte, and the map files repeat the folder number in one byte, so 255 is
+  the last folder.
+- **New map...** (next to **Outliner** at the top of the Map Editor) opens the window. **Map
+  number** starts at the next free one; the line under it shows both numbers. **Name** is what the
+  game shows (on the map's HUD line, in the party window, "Welcome to ...").
+  - **Flat:** one **Height** (0 to 382.5), one **Texture** (a slot of the tile set, e.g.
+    TileGrass01), one **Walkability** (walkable, safezone, blocked, void, water) and one **Light**
+    everywhere; **Textures from** picks the map whose tile set (all its `Tile*`, `ExtTile*` and
+    grass textures) is copied, so you can paint with those later.
+  - **Copy of a map:** its ground, heights, walkability, light, objects and textures (and, with
+    the box ticked, its minimap). The three `EncTerrain` files are copied with the new folder number
+    written into them (the client refuses a map file whose number is not its folder's).
+  - **Models from:** the map whose models are copied into `Data/Object{N}` ("none" for an empty
+    folder; a copy takes the template's by default). Lorencia names its models (`Tree01.bmd`) where
+    every other map numbers them (`Object01.bmd`); its models are copied under the numbered names of
+    their types, so the copied objects show the same models.
+  - **Check** lists what would be written (and the notes below) without writing; **Create map**
+    writes it; **Open it now** (offline sessions) switches to it.
+- **What gets written:** `Data/World{N}` (the three `EncTerrain{N}` files, `TerrainHeight.OZB`,
+  `TerrainLight.OZJ`, the textures, `MapName.txt`) and `Data/Object{N}`, into the game's `Data` and
+  into the repository's `src/bin/Data` ([Where saves go](#where-saves-go)). A new map never
+  replaces anything: it is refused when either folder exists in either place. Git ignores the new
+  files until you add them: `git add -f src/bin/Data/World83 src/bin/Data/Object83`.
+- **The name** is the first line of `Data/World{N}/MapName.txt` (UTF-8, at most 64 bytes). The
+  editor build shows it for maps 82 and up; the game's own maps keep their names. The player build
+  does not read the file yet (it keeps its old fallback name for unknown map numbers) until the
+  owner decides it should: the lookup sits behind `_EDITOR` in `CMapManager::GetMapName`.
+- **What does not come along:** what the game ties to a map number in code. A copy of Lorencia has
+  no fires, street lights, bonfire or fountain effects, and the parts of models that Lorencia's
+  code blends (the glowing windows of some houses, the carriage, the street lights) draw as black
+  shapes: delete those objects or replace their models. A new map is silent (no music or ambient
+  sound) and its fog is black. Maps whose height file stores 24 bits a corner (Doppelganger 2, the
+  PK field, ChangeUp 3rd) cannot be copied; event maps that share a folder are copied by folder.
+- **A map without models** logs one "AccessModel failed" line per model number at each load;
+  import models with **O. Browse**, which puts them into `Data/Object{N}`.
+- **Removing a new map:** remove its gates first (Gates tab), then delete `Data/World{N}` and
+  `Data/Object{N}` in the game's `Data` and in `src/bin/Data`.
+- The server needs the map too: see [OpenMU export](#openmu-export).
+
+### Gates
+
+A gate is an area on a map: a player who walks into it is moved to another area, usually on
+another map. The client watches for it: every frame it looks up `Data/Gate.bmd` for an enter gate
+of the current map under the hero and sends that gate's **number** to the server, which looks the
+number up among the map's enter gates and moves the player to its target. So the client's and the
+server's gate numbers must agree, and a gate only works online.
+
+- **Kinds:** an **enter** gate (walk in to warp) names its **arrival** gate (where the warp lands,
+  with the direction the player faces; OpenMU calls it an exit gate). **Spawn** records are areas
+  the server puts players in, such as a town.
+- **The Gates tab** lists the loaded map's gates: number, kind, area and where each leads (an
+  enter gate) or which way arriving players face (an arrival), then the **ways in**, enter gates on
+  other maps that land here. On the ground, enter gates are orange, arrivals and spawn areas blue,
+  the selected gate has a white outline and the area you draw is yellow. The walkability overlay is
+  always on in this tab (gates need walkable tiles). **Look at it** points the camera at the
+  selected gate.
+- **Draw an area:** tick **Draw an area on the ground** and left-drag over the ground, or type the
+  corners into **Area x1 y1 x2 y2** (tiles, both corners included). When you let go, the lines
+  under the tab say how many tiles of it are blocked or without ground.
+- **New gate:** with an area drawn, choose **Arrives on map** (every map folder, new maps
+  included), the **Arrival** rectangle there, the direction players **face on arrival** (OpenMU's
+  names: west, south, east, north, ...) and the **Level needed**, then **Add gate**. The tab takes
+  the two lowest free numbers (the enter gate, then its arrival) and saves at once. A gate goes one
+  way: for the way back, open the other map and add a gate there. The lines under the tab warn
+  about blocked arrival tiles, and about an arrival inside an enter gate (players would be sent on
+  at once) or areas that overlap other gates. Two pairs are refused because players would be
+  stuck: an arrival area with no walkable tile, and an arrival that overlaps its own enter area
+  (the control socket's `gate-add` takes `"allow_trap": true` to add one anyway). The direction is
+  the way players face when they arrive.
+- **Gates you added** (numbers **345 and up**) can be moved to the drawn area (**Move it to the
+  drawn area**) or removed (**Remove it**; its arrival goes too when no other gate lands there).
+  The game's own gates (0 to 344; 344 is a spawn area of Karutan 2) are shown, never changed.
+- **Saving:** every change writes `Data/Gate.bmd` at once (the file as it is spelled on disk:
+  the repository keeps it as `gate.bmd`), into the game's `Data` and `src/bin/Data`, the file it
+  replaces kept in `out/editor-backups/<time>/`. Before a change the editor reads the file again,
+  so a second client started from the same folder (or a checkout) that changed it in the
+  meantime is not overwritten. Gate changes are not steps of the undo history: remove a gate to
+  take it back, or copy the backup over. Git tracks the file as `src/bin/Data/gate.bmd`:
+  `git add src/bin/Data/gate.bmd`.
+- **Offline** there is no hero, so walking into a gate is tried online only, after the server has
+  the gates too ([OpenMU export](#openmu-export)).
+
+### OpenMU export
+
+**Export this map for OpenMU** (bottom of the Gates tab; the control socket's `map-server-export`)
+writes `out/openmu-export/map{number}/` in the repository. **Nothing is applied to a server.**
+
+- `HOWTO.md`: the Admin Panel steps with this map's numbers filled in: create the game map
+  (Number, name, safe-zone map, upload the walk map), add it to the game server's **Maps**, create
+  the exit and enter gates on every map involved (an enter gate's Number is its `Gate.bmd` number),
+  optional monsters and /move entry, restart the game server.
+- `terrain_map{number}_server.att`: a new map's walk map in OpenMU's layout (the upload for its
+  **Terrain Data**; without it OpenMU lets players walk only on rows y < 128). For the game's own
+  maps the export leaves it out: their server walk map differs from the client's on purpose, so use
+  the Attribute tab's **Save server .att** there.
+- `map.json` (the game map definition), `gates.json` (the gates grouped by map, with OpenMU's
+  ExitGate and EnterGate field names), and `openmu.sql`, the same steps as one transaction for
+  OpenMU's PostgreSQL database, marked as not applied: read it, back the database up, run it
+  yourself with psql (it stops at the first error; the map name is written as hex bytes, so no name
+  can break its quoting). The two JSON files are to read while you fill in the Admin Panel; do
+  **not** load them with the Admin Panel Map Editor's **Import** button, which replaces the map's
+  monster spawns and ignores gates (their own `FormatVersion` makes that import stop before it
+  deletes anything).
+- Only the gates the editor added (345 and up) are exported, for the game's own maps too: the
+  game's own gates are on the server already, and some of their `Gate.bmd` records differ from
+  OpenMU's seed (other areas, corners the other way round, spawn flags), so creating them again
+  would add wrong exit and spawn gates. An added gate that lands on one of the game's own arrivals
+  (a hand-edited `Gate.bmd`) makes the SQL look that arrival up, never create it.
+- The safe-zone map (where players who die there return) is the map the new map's first gate leads
+  to, else Lorencia.
 
 ### Minimap
 - **Generate minimap from tiles** builds the map's `mini_map.OZT` (drop-in) **and** an
@@ -775,6 +985,8 @@ Files live in `Data\World{N}\`. **World folder = world enum value + 1**
 | Height | `TerrainHeight.OZB` | **4 prefix bytes**, then a plain **BMP**: 1080-byte header + 256×256 8-bit grayscale (66620 bytes in all); `height = byte × 1.5` (× 3.0 on the login scene). The loader requires the prefix and remembers it. Loader appends `OZB` to the `.bmp` name. | Engine `SaveTerrainHeight` — call directly. It rewrites the target file's own prefix (or the last loaded one for a new file). Any external writer must keep the prefix. |
 | Light map | `TerrainLight.OZJ` | 24 prefix bytes (a copy of the JPEG's first 24), then a 256×256 RGB JPEG, decoded bottom row first: pixel row 0 of the decoded buffer is the map's row y = 0; light = byte / 255. | `Editor::LightSave` (Light tab) encodes quality 100, 4:4:4, and reads the file back. The engine `SaveTerrainLight` writes no prefix — not loadable. |
 | Minimap | `mini_map.OZT` | 4-byte header `00 00 02 00` + 18-byte TGA header + BGRA pixels, **bottom-origin**, 32-bit, **no footer**. 1024×1024 for Arena. | Wrapped externally (strip 4 bytes → TGA to edit; prepend them back → OZT). |
+| Gates | `Data\Gate.bmd` (one file for all maps) | 512 records of 14 bytes (`GATE_ATTRIBUTE`), each `BuxConvert`ed on its own: flag (1 enter, 2 arrival, 0 spawn area or free), map, x1, y1, x2, y2, target (u16), direction, a padding byte, level (u16), max level (u16, 400). A record's number is its place in the file. | Gates tab / `gate-*`: `Editor::Gates` reads and writes it byte for byte (unit test on the shipped file). |
+| Map name | `Data\World{N}\MapName.txt` (maps 82 and up) | UTF-8 text; the first line with text is the name, at most 64 bytes. | Written by New map / `map-new`; edit it by hand to rename (the client reads it at the next start). |
 
 **Tile slots:** a mapping cell stores an index 0–29 → `BITMAP_MAPTILE + index`.
 Slots 0–13 are the fixed `Tile*` set, 14–29 are `ExtTile01..16` (the spare slots the
@@ -812,6 +1024,9 @@ model + its textures live in `Data\Object{N}\`.
    **And the server disagrees with the client:** OpenMU keys maps by `"Number"` =
    the raw world **enum** (Lorencia `0`, Arena `6`), while the client folder is
    `enum + 1` (`World1`, `World7`). Mixing them up is the #1 way to write the wrong map.
+   New maps follow the same rule: map 82 lives in `World83`/`Object83` and opens with `--world 83`,
+   while OpenMU, `Gate.bmd` and the gate commands call it 82. The New map window and every answer
+   of the socket commands show both numbers.
 7. **MSVC comment trap.** A `//` comment ending in a backslash (`...Data\`) continues onto
    the next line and silently eats it. Bit us twice — don't end comments with `\`.
 8. **Thumbnails use the renderer's offscreen capture, not OpenGL.** There is no GL

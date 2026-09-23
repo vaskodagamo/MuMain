@@ -41,6 +41,7 @@
 #include "Camera/FrustumRenderer.h"
 #include "Camera/CameraDebugLog.h"
 #include "../MuEditor/Core/OfflineWorld.h"
+#include "../MuEditor/Core/ViewCapture.h"
 #endif
 
 // External declarations
@@ -614,6 +615,9 @@ static void RenderMainSceneUI()
 #ifdef _EDITOR
     // A map opened offline has no hero, character data or server: the game HUD stays off.
     if (Editor::OfflineWorld::IsActive())
+        return;
+    // A clean view capture (regeneration requests, clean scripted screenshots) shows the world only.
+    if (Editor::ViewCapture::IsCleanFrame())
         return;
 #endif
     Input::Selection::SelectObjects();

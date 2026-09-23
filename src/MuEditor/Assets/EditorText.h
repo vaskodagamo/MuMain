@@ -40,6 +40,14 @@ std::string Trim(std::string_view text);
 
 // One item per line of `text`, trimmed; lines with nothing else are left out.
 std::vector<std::string> NonEmptyLines(std::string_view text);
+
+// True when `text` is well-formed UTF-8 (shortest forms, no surrogates, up to U+10FFFF).
+bool IsValidUtf8(std::string_view text);
+
+// `text` as well-formed UTF-8, which JSON needs. Valid UTF-8 comes back unchanged; any
+// other text is taken as a legacy code page (the Korean CP949 bytes many of the game's
+// model names hold) and each byte outside ASCII is written as "%XX", its hex value.
+std::string ValidUtf8(std::string_view text);
 } // namespace Editor::Text
 
 #endif // _EDITOR

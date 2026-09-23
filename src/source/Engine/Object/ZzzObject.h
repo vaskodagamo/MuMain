@@ -108,6 +108,10 @@ void RenderBoundingBox(OBJECT* pObj, std::uint32_t darkColor = 0xFF333333u, std:
                        std::uint32_t lightColor = 0xFF666666u);
 #endif // CSK_DEBUG_RENDER_BOUNDINGBOX
 
+// The objects SaveObjects writes: live ones the map file placed or the Map Editor
+// added, not the ones a map spawns at run time.
+bool IsSavedWorldObject(const OBJECT* object);
+
 #ifdef _EDITOR
 // Map Editor selection/hover highlight: draws pObj's own mesh pushed outward
 // along its vertex normals with reversed winding ("inflated hull"), so only

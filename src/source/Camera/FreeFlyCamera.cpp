@@ -114,6 +114,13 @@ void FreeFlyCamera::LookAt(const vec3_t target, float yaw, float pitch, float di
     VectorMA(m_Position, -distance, forward, m_Position);
 }
 
+void FreeFlyCamera::GetPose(vec3_t outPosition, float& outYaw, float& outPitch) const
+{
+    VectorCopy(m_Position, outPosition);
+    outYaw = m_Yaw;
+    outPitch = m_Pitch;
+}
+
 void FreeFlyCamera::SnapTopDown()
 {
     // Map is TERRAIN_SIZE tiles of TERRAIN_SCALE units; centre it in view.

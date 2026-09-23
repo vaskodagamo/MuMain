@@ -5,9 +5,11 @@
 #include "OfflineWorld.h"
 
 #include "EditorCamera.h"
+#include "LiveMap.h"
 #include "MuEditorCore.h"
 #include "UI/Console/MuEditorConsoleUI.h"
 #include "UI/MapEditor/MapEditorFileUtil.h"
+#include "UI/MapEditor/MapEditorUI.h"
 
 #include "Camera/FreeFlyCamera.h"
 #include "Core/Utilities/StringUtils.h"
@@ -20,6 +22,7 @@
 #include "Scenes/SceneCore.h"             // SceneFlag
 #include "UI/Legacy/UIMng.h"
 #include "World/MapInfra/MapManager.h"
+#include "World/MapInfra/MapNumbers.h"
 
 #include <algorithm>
 #include <cstdio>
@@ -38,9 +41,10 @@ constexpr int DECIMAL_BASE = 10;
 constexpr int NO_WORLD = 0;
 
 // Data folders count from 1 (World1 = Lorencia), the engine's map index
-// (gMapManager.WorldActive) from 0, and the client knows NUM_WD maps.
-constexpr int FIRST_WORLD_FOLDER = 1;
-constexpr int LAST_WORLD_FOLDER = NUM_WD;
+// (gMapManager.WorldActive) from 0. Any folder that exists opens, up to the last one a
+// map number can have, so new maps (82 and up, World83 and up) open like the game's own.
+constexpr int FIRST_WORLD_FOLDER = World::MapNumbers::FIRST_FOLDER;
+constexpr int LAST_WORLD_FOLDER = World::MapNumbers::LAST_FOLDER;
 
 // Start view. The hidden hero and the camera target sit at the start point
 // (see FindStartPoint). The camera looks along the game camera's heading,
@@ -160,6 +164,16 @@ void PlaceHiddenHero()
     GroundPosition(s_startPoint, hero.Position);
     VectorCopy(hero.Position, hero.StartPosition);
 }
+
+// After a map loaded: the hidden hero and the camera go to its start point, and the
+// map as loaded becomes what "unsaved" edits are measured against.
+void ShowStartView()
+{
+    s_startPoint = FindStartPoint();
+    PlaceHiddenHero();
+    ResetCamera();
+    Editor::LiveMap::SyncWithLoadedMap();
+}
 } // namespace
 
 void ReadCommandLine(const wchar_t* commandLine)
@@ -202,12 +216,38 @@ bool TryEnter()
     s_active = true;
     LoadMap(world);
     StartMainSceneWithoutServer();
-    s_startPoint = FindStartPoint();
-    PlaceHiddenHero();
-    ResetCamera();
+    ShowStartView();
     g_MuEditorCore.ShowMapEditor();
 
     Log(L"[Editor] Opened World" + std::to_wstring(world) + L" offline: no server, no login, free-fly camera.");
+    return true;
+}
+
+bool Open(int world, std::string& error)
+{
+    if (!s_active)
+    {
+        error = "no map is open offline; start the client with --editor --world N";
+        return false;
+    }
+    if (world < FIRST_WORLD_FOLDER || world > LAST_WORLD_FOLDER)
+    {
+        error = "the map folder number runs from " + std::to_string(FIRST_WORLD_FOLDER) + " to " +
+                std::to_string(LAST_WORLD_FOLDER);
+        return false;
+    }
+    const std::filesystem::path missing = FindMissingWorldFile(world);
+    if (!missing.empty())
+    {
+        error = StringUtils::WideToNarrow(missing.wstring().c_str()) + " is missing";
+        return false;
+    }
+
+    LoadMap(world);
+    // Loading freed every object: the selection and the undo steps went with them.
+    g_MapEditorUI.ForgetUnloadedMap();
+    ShowStartView();
+    Log(L"[Editor] Switched to World" + std::to_wstring(world) + L" offline.");
     return true;
 }
 

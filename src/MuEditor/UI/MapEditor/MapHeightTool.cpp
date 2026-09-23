@@ -8,11 +8,11 @@
 #include "MapObjectPlace.h"
 #include "MapTerrainLayers.h"
 
+#include "Core/LiveMap.h"
 #include "Editing/EditCommandGroup.h"
 #include "Editing/FieldBrush.h"
 #include "Render/Renderer/RenderUtils.h" // mu::PackABGR
 #include "Render/Terrain/ZzzLodTerrain.h"
-#include "World/MapInfra/MapManager.h" // gMapManager.WorldActive
 
 #include "imgui.h"
 
@@ -29,20 +29,15 @@ namespace
 {
 // Raise/Lower adds up to this much height per frame at the brush's core (world units).
 constexpr Editor::BrushControls::Range STRENGTH_RANGE = {1.0f, 40.0f, 1.0f};
-// TerrainHeight.OZB stores one byte per corner as height / factor, so nothing above
-// 255 * factor survives a save (factor 3 on the login scene, 1.5 elsewhere).
-constexpr float HEIGHT_BYTE_MAX = 255.0f;
-constexpr float HEIGHT_FACTOR = 1.5f;
-constexpr float LOGIN_SCENE_HEIGHT_FACTOR = 3.0f;
 constexpr float TARGET_SLIDER_WIDTH = 200.0f;
 
 const std::uint32_t OUTLINE_COLOR = mu::PackABGR(1.0f, 0.85f, 0.3f, 0.95f);
 const std::vector<int> HEIGHT_LAYERS = {MAP_LAYER_HEIGHT};
 
+// Nothing above this survives a save (see LiveMap::MaxStoredHeight).
 float MaxHeight()
 {
-    const float factor = (gMapManager.WorldActive == WD_55LOGINSCENE) ? LOGIN_SCENE_HEIGHT_FACTOR : HEIGHT_FACTOR;
-    return HEIGHT_BYTE_MAX * factor;
+    return Editor::LiveMap::MaxStoredHeight();
 }
 
 FloatField Heights()

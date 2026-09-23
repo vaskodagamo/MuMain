@@ -2,6 +2,8 @@
 
 #ifdef _EDITOR
 
+#include "MapEditorFileUtil.h" // SavedFile
+
 #include <string>
 #include <vector>
 
@@ -25,8 +27,9 @@ namespace Editor::AttrSave
 {
     // Writes the encrypted client .att for `world` (folder number) and copies it
     // into the repository. `mapNumber` is the map id byte in the header
-    // (conventionally == world). `outReport` gets the status-line text.
-    bool SaveClientAtt(int world, int mapNumber, std::string& outReport);
+    // (conventionally == world). `outReport` gets the status-line text; `outSaved`,
+    // when given, where the file went.
+    bool SaveClientAtt(int world, int mapNumber, std::string& outReport, Editor::Files::SavedFile* outSaved = nullptr);
 
     // --- Server export -------------------------------------------------------
     //

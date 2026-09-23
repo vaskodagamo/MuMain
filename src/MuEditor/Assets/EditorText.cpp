@@ -47,6 +47,18 @@ constexpr unsigned char CONTINUATION_PATTERN = 0x80;
 constexpr unsigned char CONTINUATION_VALUE_BITS = 0x3F;
 constexpr int CONTINUATION_SHIFT = 6;
 
+// The smallest code point each sequence length may carry (shorter forms are overlong),
+// indexed by the length in bytes.
+constexpr char32_t SHORTEST_FORM_MIN[] = {0, 0, 0x80, 0x800, 0x10000};
+constexpr char32_t SURROGATE_FIRST = 0xD800;
+constexpr char32_t SURROGATE_LAST = 0xDFFF;
+constexpr char32_t LAST_CODE_POINT = 0x10FFFF;
+constexpr const char* HEX_DIGITS = "0123456789ABCDEF";
+constexpr int HIGH_NIBBLE_SHIFT = 4;
+constexpr unsigned char LOW_NIBBLE_MASK = 0x0F;
+constexpr char ESCAPE_MARK = '%';
+constexpr unsigned char LAST_ASCII = 0x7F;
+
 bool IsContinuation(char c)
 {
     return (static_cast<unsigned char>(c) & CONTINUATION_MASK) == CONTINUATION_PATTERN;
@@ -69,6 +81,25 @@ std::optional<CodePoint> DecodeAt(std::string_view text, std::size_t pos)
         value = (value << CONTINUATION_SHIFT) | (static_cast<unsigned char>(text[pos + i]) & CONTINUATION_VALUE_BITS);
     }
     return CodePoint{value, kind->bytes};
+}
+
+// A shortest-form sequence of a Unicode scalar value: what strict UTF-8 readers accept.
+bool IsWellFormed(const CodePoint& codePoint)
+{
+    const bool shortest = codePoint.value >= SHORTEST_FORM_MIN[codePoint.bytes];
+    const bool surrogate = codePoint.value >= SURROGATE_FIRST && codePoint.value <= SURROGATE_LAST;
+    return shortest && !surrogate && codePoint.value <= LAST_CODE_POINT;
+}
+
+bool IsAscii(char c)
+{
+    return static_cast<unsigned char>(c) <= LAST_ASCII;
+}
+
+std::string EscapedByte(char c)
+{
+    const auto byte = static_cast<unsigned char>(c);
+    return {ESCAPE_MARK, HEX_DIGITS[byte >> HIGH_NIBBLE_SHIFT], HEX_DIGITS[byte & LOW_NIBBLE_MASK]};
 }
 
 bool IsWhitespace(const std::optional<CodePoint>& codePoint)
@@ -178,6 +209,32 @@ std::vector<std::string> NonEmptyLines(std::string_view text)
         start = newline + 1;
     }
     return lines;
+}
+
+bool IsValidUtf8(std::string_view text)
+{
+    std::size_t pos = 0;
+    while (pos < text.size())
+    {
+        const std::optional<CodePoint> codePoint = DecodeAt(text, pos);
+        if (!codePoint || !IsWellFormed(*codePoint))
+            return false;
+        pos += codePoint->bytes;
+    }
+    return true;
+}
+
+std::string ValidUtf8(std::string_view text)
+{
+    if (IsValidUtf8(text))
+        return std::string(text);
+    // Not UTF-8, so a legacy code page: every byte outside ASCII is escaped, also the ones
+    // that happen to form a UTF-8 sequence with their neighbours.
+    std::string escaped;
+    escaped.reserve(text.size());
+    for (const char c : text)
+        escaped += IsAscii(c) ? std::string(1, c) : EscapedByte(c);
+    return escaped;
 }
 } // namespace Editor::Text
 

@@ -8,8 +8,10 @@
 
 #include "MapObjectPlace.h"  // Editor::ObjectPlace::ModelEntry
 #include "MapBrushControls.h"
+#include "MapGatesTab.h"
 #include "MapHeightTool.h"
 #include "MapLightTool.h"
+#include "MapNewMapWindow.h"
 #include "Editing/TerrainStroke.h"
 
 class OBJECT;
@@ -41,12 +43,43 @@ public:
     // reaching the game, so the character doesn't walk/attack while editing.
     void CaptureInputForPainting();
 
+    // Drops the selection and the undo history once the map's objects were freed
+    // (a map change or reload), also one that happened while the panel was closed,
+    // and takes the new map as the saved state; see ObjectListGeneration(). Runs at
+    // the start of every panel frame, and right after a scripted map switch.
+    void ForgetUnloadedMap();
+    // Drops the selection, the strokes still held and every undo step now: a scripted
+    // revert reloaded parts of the map from its files.
+    void ForgetEdits();
+
+    // A stroke or drag is still held: undo, redo and scripted edits wait for it.
+    bool IsEditInProgress() const;
+
+    // Around a scripted edit (the control socket's map-apply): before it, the Attribute
+    // tab takes its baseline for the server export if it has none for this map yet;
+    // after it, the tiles in `walls` count as edited, so "Save server .att" writes the
+    // ones that changed.
+    void BeforeScriptedEdit();
+    void NoteScriptedWallEdits(const Editor::Editing::CellRect& walls);
+
+    // Opens the Map Editor on its Gates tab with gate `number` selected (the control
+    // socket's gate-show), so the owner sees the gate an agent talks about.
+    void ShowGate(int number);
+
+    // Opens the Map Editor on the tab called `name` (any case, e.g. "Texture" or "Gates";
+    // the control socket's map-tab). False, and nothing changes, for a name no tab has.
+    bool ShowTab(const std::string& name);
+    // The tab names, in the order the panel shows them.
+    static std::vector<std::string> TabNames();
+
 private:
     CMapEditorUI() = default;
     ~CMapEditorUI() = default;
 
     // The tab bar and the active tab.
     void RenderTabs();
+    // ImGuiTabItemFlags for the tab called `name`: selected this frame when ShowTab asked for it.
+    int TabFlags(const char* name) const;
     void RenderObjectBrowserTab();
     // The Assets tab; stepping to an instance there selects it.
     void RenderAssetsTab();
@@ -63,14 +96,8 @@ private:
     void RenderSaveTargetNote();
     // Keeps this frame's terrain point under the cursor (see m_groundHit).
     void CaptureGroundUnderCursor();
-    // Drops the selection and the undo history once the map's objects were freed
-    // (a map change or reload), also one that happened while the panel was closed;
-    // see ObjectListGeneration().
-    void ForgetUnloadedMap();
     // The Undo/Redo buttons shared by every editing tab (and their shortcuts).
     void RenderHistoryBar();
-    // A stroke or drag is still held: undo and redo are unavailable until it ends.
-    bool IsEditInProgress() const;
     // Ends the brush strokes that are still open, each as one undo step.
     void FinishStrokes();
     // "Convert a .tga to mini_map.OZT...": opens the file dialog, then converts the
@@ -95,10 +122,10 @@ private:
     void SculptHeight();
     // The Light tab: paints and saves the map's light map.
     void RenderLightTab();
+    // The Gates tab: the map's gates over the walkability overlay (MapGatesTab).
+    void RenderGatesTab();
     // The cursor on the ground as the round brushes see it this frame.
     TerrainBrushInput BrushInput() const;
-    // "Save height": writes TerrainHeight.OZB and copies it into the repository.
-    void SaveHeightMap();
 
     // Paints the terrain mapping arrays from the current brush/selection when the
     // mouse is over terrain and pressed. Runs each frame the Texture tab is
@@ -168,6 +195,7 @@ private:
     bool  m_bObjSnap = false;          // snap placement to tile centre
     bool  m_objWasDown = false;        // rising-edge guard so one click = one object
     bool  m_selectAssetsTab = false;   // "Show in Assets tab" was clicked: switch tabs next frame
+    std::string m_selectTab;           // gate-show, map-tab: the tab to switch to next frame (empty: none)
     bool m_showOutliner = false;       // the Outliner window is open
     unsigned int m_objectListGeneration = 0; // ObjectListGeneration() the selection and undo belong to
     int   m_modelsWorld = -1;          // world the cached model list is for
@@ -181,6 +209,11 @@ private:
     // --- Light tab state ---
     bool m_bLightEnabled = false; // master: take EDIT_LIGHT (else walk freely)
     CMapLightTool m_lightTool;
+
+    // --- Gates tab and New map window ---
+    CMapGatesTab m_gatesTab;
+    CMapNewMapWindow m_newMapWindow;
+    bool m_showNewMap = false; // the New map window is open
 
     // Minimap top-down mode: while active (and camera is FreeFly), force the whole
     // terrain to render for a full-map screenshot.

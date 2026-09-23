@@ -7,8 +7,10 @@
 
 #include "Editing/CommandStack.h"
 
+#include <cstddef>
 #include <memory>
 #include <string>
+#include <vector>
 
 // What the Undo/Redo buttons or keys did this frame.
 enum class HistoryStep
@@ -44,6 +46,16 @@ public:
     HistoryStep Render(bool editInProgress);
     bool Undo();
     bool Redo();
+    // The same, saying what happened (a scripted undo or redo answers with it).
+    Editor::Editing::StepResult UndoStep();
+    Editor::Editing::StepResult RedoStep();
+
+    // The steps' labels (see CommandStack) and the memory they keep.
+    const std::string& UndoLabel() const;
+    const std::string& RedoLabel() const;
+    std::vector<std::string> UndoLabels() const;
+    std::vector<std::string> RedoLabels() const;
+    std::size_t MemoryBytes() const;
 
     // The map was unloaded: every step belonged to it.
     void Forget();
@@ -51,7 +63,7 @@ public:
 private:
     CMapEditHistory() = default;
 
-    bool Step(bool undo);
+    Editor::Editing::StepResult Step(bool undo);
     void RenderButton(bool undo, bool enabled, bool& clicked);
 
     // Declared before the stack, so the steps that refer to them go first.

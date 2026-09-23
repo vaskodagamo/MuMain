@@ -5,6 +5,7 @@
 #include "MapEditorUI.h"
 #include "MapEditorSave.h"
 #include "MapAttributeSave.h"
+#include "MapHeightSave.h"
 #include "MapEditorFilePicker.h"
 #include "MapEditorFileUtil.h"
 #include "MapTextureBrowser.h"
@@ -37,16 +38,21 @@
 #include "Render/Terrain/ZzzLodTerrain.h"  // CurrentLayer
 #include "World/MapInfra/MapManager.h"     // gMapManager.WorldActive
 #include "Core/MuEditorCore.h"             // hover flag for input blocking
+#include "Core/LiveMap.h"                  // the saved state of the loaded map
 #include "Core/OfflineWorld.h"             // map opened without a server
 #include "UI/Console/MuEditorConsoleUI.h"
 #include "Core/Utilities/StringUtils.h"    // WideToNarrow (UTF-8 safe, unlike raw truncation)
 #include "Editing/ObjectEditCommand.h"
 #include "Editing/SurfaceBrush.h"
+#include "MapInspect/TilePalette.h"             // tile slot names
 #include "Render/Renderer/RenderUtils.h"        // mu::PackABGR
 #include "Render/Terrain/TerrainBrushOutline.h" // the round brushes' outline
+#include "Render/Terrain/TerrainGroundRects.h"  // the Gates tab's areas
+#include "Assets/EditorText.h"                  // EqualIgnoringCase (tab names)
 
 #include <cstring>
 #include <filesystem>
+#include <iterator>
 
 // Brush/selection globals owned by ZzzInterface.cpp. Declared locally in the
 // same style as EditObjects.cpp rather than pulling in a wide interface header.
@@ -82,9 +88,6 @@ extern vec3_t g_MapEditorPlacementPreviewPos;
 extern float g_MapEditorPlacementPreviewYaw;
 extern float g_MapEditorPlacementPreviewScale;
 
-// Terrain height save (ZzzLodTerrain.cpp).
-bool SaveTerrainHeight(wchar_t* name);
-
 // Live mouse-button states. We capture and clear these before the game consumes
 // them (CaptureInputForPainting) so painting doesn't also move/attack the hero.
 extern bool MouseLButton, MouseLButtonPop, MouseLButtonPush, MouseLButtonDBClick;
@@ -95,24 +98,7 @@ namespace
     // Number of terrain tile slots the loader fills (BITMAP_MAPTILE + 0..29):
     // 14 base Tile* slots followed by 16 ExtTile slots. Index N in a mapping
     // layer selects BITMAP_MAPTILE + N.
-    constexpr int TILE_SLOT_COUNT = 30;
-
-    // Human labels for the fixed base slots; the rest are ExtTile01..16.
-    // Mirrors the slot->filename chain in MapManager::CreateTerrain.
-    const char* TileSlotName(int slot)
-    {
-        static const char* kBase[] = {
-            "TileGrass01", "TileGrass02", "TileGround01", "TileGround02",
-            "TileGround03", "TileWater01", "TileWood01",  "TileRock01",
-            "TileRock02",   "TileRock03",  "TileRock04",  "TileRock05",
-            "TileRock06",   "TileRock07",
-        };
-        if (slot >= 0 && slot < (int)(sizeof(kBase) / sizeof(kBase[0])))
-            return kBase[slot];
-        static char ext[16];
-        snprintf(ext, sizeof(ext), "ExtTile%02d", slot - 13);  // slot 14 -> ExtTile01
-        return ext;
-    }
+    constexpr int TILE_SLOT_COUNT = Editor::MapInspect::TILE_SLOT_COUNT;
 
     // Palette thumbnail size (pixels) and grid width (columns).
     constexpr float TILE_THUMB_SIZE = 56.0f;
@@ -120,11 +106,25 @@ namespace
 
     // The panel is at least this wide (at 100% UI scale), so every tab label, up to
     // "Assets", fits without the tab bar scrolling.
-    constexpr float MIN_PANEL_WIDTH = 610.0f;
+    constexpr float MIN_PANEL_WIDTH = 665.0f;
 
     // The Objects tab's modes (m_objMode).
     constexpr int OBJECT_MODE_PLACE = 0;
     constexpr int OBJECT_MODE_SELECT = 1;
+
+    // The tabs, in the order the panel shows them (ShowTab takes these names).
+    constexpr const char* TAB_TEXTURE = "Texture";
+    constexpr const char* TAB_OBJECTS = "Objects";
+    constexpr const char* TAB_HEIGHT = "Height";
+    constexpr const char* TAB_ATTRIBUTE = "Attribute";
+    constexpr const char* TAB_LIGHT = "Light";
+    constexpr const char* TAB_GATES = "Gates";
+    constexpr const char* TAB_TEXTURE_BROWSER = "T. Browse";
+    constexpr const char* TAB_MINIMAP = "Minimap";
+    constexpr const char* TAB_OBJECT_BROWSER = "O. Browse";
+    constexpr const char* TAB_ASSETS = "Assets";
+    constexpr const char* TAB_NAMES[] = {TAB_TEXTURE,         TAB_OBJECTS, TAB_HEIGHT,         TAB_ATTRIBUTE, TAB_LIGHT,
+                                         TAB_GATES, TAB_TEXTURE_BROWSER, TAB_MINIMAP, TAB_OBJECT_BROWSER, TAB_ASSETS};
 
     // Brush half-size clamp. The painted square is (BrushSize*2 + 1) tiles wide.
     constexpr int MAX_BRUSH_HALF = 10;
@@ -198,6 +198,7 @@ void CMapEditorUI::Render(bool* p_open)
         g_bMapEditorAttrOverlay = false;     // no panel -> no overlay
         g_bMapEditorBrushHighlight = false;  // no panel -> no brush cursor
         Render::Terrain::BrushOutline::Hide();
+        Render::Terrain::GroundRects::Hide();    // no panel -> no gate areas
         g_MapObjectEditor.PublishOutline(false); // no panel -> no selection outline
         g_MapEditorHoveredObject = nullptr;  // no panel -> no hover outline
         g_MapEditorPlacementPreviewActive = false; // no panel -> no placement preview
@@ -214,6 +215,7 @@ void CMapEditorUI::Render(bool* p_open)
     // Picking there readies the Objects tab to move what was picked (not to place more).
     if (g_MapOutliner.Render(&m_showOutliner, ResolveWorldNumber()))
         m_objMode = OBJECT_MODE_SELECT;
+    m_newMapWindow.Render(&m_showNewMap);
     ImGui::SetNextWindowSize(ImVec2(480, 640), ImGuiCond_FirstUseEver);
     ImGui::SetNextWindowSizeConstraints(ImVec2(MIN_PANEL_WIDTH * g_MuEditorCore.GetUIScale(), 0.0f),
                                         ImVec2(FLT_MAX, FLT_MAX));
@@ -246,6 +248,7 @@ void CMapEditorUI::Render(bool* p_open)
     g_bMapEditorAttrOverlay = false;
     g_bMapEditorBrushHighlight = false;
     Render::Terrain::BrushOutline::Hide(); // the active brush tab shows it again
+    Render::Terrain::GroundRects::Hide();  // the Gates tab shows them again
     // Unlike the selection outline (which follows the selection across tabs on
     // purpose), hover only makes sense while the Objects tab's Select mode is
     // actively driving it this frame - reset so switching tabs doesn't leave a
@@ -287,55 +290,86 @@ void CMapEditorUI::RenderTabs()
 {
     if (!ImGui::BeginTabBar("MapEditorTabs"))
         return;
-    if (ImGui::BeginTabItem("Texture"))
+    if (ImGui::BeginTabItem(TAB_TEXTURE, nullptr, TabFlags(TAB_TEXTURE)))
     {
         RenderTextureTab();
         ImGui::EndTabItem();
     }
-    if (ImGui::BeginTabItem("Objects"))
+    if (ImGui::BeginTabItem(TAB_OBJECTS, nullptr, TabFlags(TAB_OBJECTS)))
     {
         RenderObjectsTab();
         ImGui::EndTabItem();
     }
-    if (ImGui::BeginTabItem("Height"))
+    if (ImGui::BeginTabItem(TAB_HEIGHT, nullptr, TabFlags(TAB_HEIGHT)))
     {
         RenderHeightTab();
         ImGui::EndTabItem();
     }
-    if (ImGui::BeginTabItem("Attribute"))
+    if (ImGui::BeginTabItem(TAB_ATTRIBUTE, nullptr, TabFlags(TAB_ATTRIBUTE)))
     {
         RenderAttributeTab();
         ImGui::EndTabItem();
     }
-    if (ImGui::BeginTabItem("Light"))
+    if (ImGui::BeginTabItem(TAB_LIGHT, nullptr, TabFlags(TAB_LIGHT)))
     {
         RenderLightTab();
         ImGui::EndTabItem();
     }
-    if (ImGui::BeginTabItem("T. Browse"))
+    if (ImGui::BeginTabItem(TAB_GATES, nullptr, TabFlags(TAB_GATES)))
+    {
+        RenderGatesTab();
+        ImGui::EndTabItem();
+    }
+    if (ImGui::BeginTabItem(TAB_TEXTURE_BROWSER, nullptr, TabFlags(TAB_TEXTURE_BROWSER)))
     {
         g_MapTextureBrowser.Render(ResolveWorldNumber());
         ImGui::EndTabItem();
     }
-    if (ImGui::BeginTabItem("Minimap"))
+    if (ImGui::BeginTabItem(TAB_MINIMAP, nullptr, TabFlags(TAB_MINIMAP)))
     {
         RenderMinimapTab();
         ImGui::EndTabItem();
     }
-    if (ImGui::BeginTabItem("O. Browse"))
+    if (ImGui::BeginTabItem(TAB_OBJECT_BROWSER, nullptr, TabFlags(TAB_OBJECT_BROWSER)))
     {
         RenderObjectBrowserTab();
         ImGui::EndTabItem();
     }
     // "Show in Assets tab" (Objects tab) switches here for one frame.
-    const ImGuiTabItemFlags assetsTabFlags = m_selectAssetsTab ? ImGuiTabItemFlags_SetSelected : 0;
+    const ImGuiTabItemFlags assetsTabFlags =
+        m_selectAssetsTab ? ImGuiTabItemFlags_SetSelected : static_cast<ImGuiTabItemFlags>(TabFlags(TAB_ASSETS));
     m_selectAssetsTab = false;
-    if (ImGui::BeginTabItem("Assets", nullptr, assetsTabFlags))
+    m_selectTab.clear();
+    if (ImGui::BeginTabItem(TAB_ASSETS, nullptr, assetsTabFlags))
     {
         RenderAssetsTab();
         ImGui::EndTabItem();
     }
     ImGui::EndTabBar();
+}
+
+int CMapEditorUI::TabFlags(const char* name) const
+{
+    return m_selectTab == name ? ImGuiTabItemFlags_SetSelected : ImGuiTabItemFlags_None;
+}
+
+bool CMapEditorUI::ShowTab(const std::string& name)
+{
+    for (const char* tab : TAB_NAMES)
+    {
+        if (!Editor::Text::EqualIgnoringCase(name, tab))
+            continue;
+        g_MuEditorCore.SetEnabled(true);
+        g_MuEditorCore.ShowMapEditor();
+        m_selectTab = tab;
+        return true;
+    }
+    return false;
+}
+
+std::vector<std::string> CMapEditorUI::TabNames()
+{
+    return std::vector<std::string>(std::begin(TAB_NAMES), std::end(TAB_NAMES));
 }
 
 void CMapEditorUI::RenderObjectBrowserTab()
@@ -466,7 +500,7 @@ void CMapEditorUI::RenderTextureTab()
     ImGui::Checkbox("Dropper - pick tile under cursor (or hold Alt)", &m_bDropperMode);
 
     ImGui::Separator();
-    ImGui::Text("Tile palette (selected: %s)", TileSlotName(SelectMapping));
+    ImGui::Text("Tile palette (selected: %s)", Editor::MapInspect::TileSlotName(SelectMapping).c_str());
 
     // Palette of the current world's loaded tile textures. Each cell is the
     // actual GPU texture the terrain samples, so it always matches this map.
@@ -499,7 +533,7 @@ void CMapEditorUI::RenderTextureTab()
             ImGui::PopStyleColor();
 
         if (ImGui::IsItemHovered())
-            ImGui::SetTooltip("%d: %s", slot, TileSlotName(slot));
+            ImGui::SetTooltip("%d: %s", slot, Editor::MapInspect::TileSlotName(slot).c_str());
         if (clicked)
             SelectMapping = slot;
 
@@ -1120,7 +1154,7 @@ void CMapEditorUI::RenderHeightTab()
     ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.6f, 0.2f, 1.0f));
     ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.3f, 0.7f, 0.3f, 1.0f));
     if (ImGui::Button("Save height", ImVec2(-1.0f, 0.0f)))
-        SaveHeightMap();
+        Editor::HeightSave::Save(ResolveWorldNumber(), m_heightStatus);
     ImGui::PopStyleColor(2);
     RenderSaveTargetNote();
     Editor::StatusLine::Render(m_heightStatus);
@@ -1172,21 +1206,6 @@ TerrainBrushInput CMapEditorUI::BrushInput() const
     input.rightDown = m_PaintRDown;
     input.altDown = ImGui::GetIO().KeyAlt;
     return input;
-}
-
-void CMapEditorUI::SaveHeightMap()
-{
-    const int world = ResolveWorldNumber();
-    const std::filesystem::path fileName = Editor::Files::TerrainHeightFile(world);
-    std::wstring saveName = fileName.wstring(); // SaveTerrainHeight takes a mutable buffer
-    if (!SaveTerrainHeight(saveName.data()))
-    {
-        g_MuEditorConsoleUI.LogEditor("[MapEditor] FAILED to save terrain height (disk full / I/O error?)");
-        m_heightStatus = "Save failed - " + Editor::Files::PathToUtf8(Editor::Files::AbsolutePath(fileName)) +
-                         " may be truncated or missing.";
-        return;
-    }
-    m_heightStatus = Editor::Files::DescribeSavedFiles({Editor::Files::MirrorSavedFile(fileName)});
 }
 
 void CMapEditorUI::SculptHeight()
@@ -1353,10 +1372,16 @@ void CMapEditorUI::ForgetUnloadedMap()
     // panel was closed meanwhile. A selection made before (Objects tab, or the Assets
     // tab's Prev/Next) then points at freed memory, and an undo step would write the
     // old map's objects, heights or walls into the new one.
+    Editor::LiveMap::SyncWithLoadedMap();
     const unsigned int generation = ObjectListGeneration();
     if (generation == m_objectListGeneration)
         return;
     m_objectListGeneration = generation;
+    ForgetEdits();
+}
+
+void CMapEditorUI::ForgetEdits()
+{
     g_MapObjectEditor.Forget();
     // A stroke still held down starts over, so it records the new map.
     m_textureStroke.Cancel();
@@ -1366,9 +1391,44 @@ void CMapEditorUI::ForgetUnloadedMap()
     g_MapEditHistory.Forget();
 }
 
+void CMapEditorUI::BeforeScriptedEdit()
+{
+    EnsureAttrBaseline(ResolveWorldNumber());
+}
+
+void CMapEditorUI::NoteScriptedWallEdits(const Editor::Editing::CellRect& walls)
+{
+    if (walls.IsEmpty() || m_attrEdited.size() != CELLS)
+        return;
+    for (int y = walls.minY; y <= walls.maxY; ++y)
+    {
+        for (int x = walls.minX; x <= walls.maxX; ++x)
+            m_attrEdited[TERRAIN_INDEX(x, y)] = true;
+    }
+    m_attrCountDirty = true;
+}
+
+void CMapEditorUI::ShowGate(int number)
+{
+    g_MuEditorCore.SetEnabled(true);
+    g_MuEditorCore.ShowMapEditor();
+    m_selectTab = TAB_GATES;
+    m_gatesTab.Select(number);
+}
+
+void CMapEditorUI::RenderGatesTab()
+{
+    // Gates need walkable ground: the walkability overlay is always on here.
+    g_bMapEditorAttrOverlay = true;
+    m_desiredEditFlag = m_gatesTab.Render(BrushInput());
+}
+
 void CMapEditorUI::RenderHistoryBar()
 {
     ImGui::Checkbox("Outliner", &m_showOutliner);
+    ImGui::SameLine();
+    if (ImGui::Button("New map..."))
+        m_showNewMap = true;
     ImGui::SameLine();
     const HistoryStep step = g_MapEditHistory.Render(IsEditInProgress());
     if (step != HistoryStep::None)

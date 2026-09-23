@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cstring>
+#include <numeric>
 
 namespace Engine::Object::WorldObjectFile
 {
@@ -61,22 +62,33 @@ std::vector<std::uint8_t> Encode(const Contents& contents)
     return out;
 }
 
-std::vector<Record> InSaveOrder(std::vector<OrderedRecord> records)
+std::vector<std::size_t> SaveOrderIndices(const std::vector<int>& orders)
 {
-    const auto comesFirst = [](const OrderedRecord& a, const OrderedRecord& b)
+    const auto comesFirst = [&orders](std::size_t a, std::size_t b)
     {
-        const bool aOrdered = a.order >= 0;
-        const bool bOrdered = b.order >= 0;
+        const bool aOrdered = orders[a] >= 0;
+        const bool bOrdered = orders[b] >= 0;
         if (aOrdered != bOrdered)
             return aOrdered;
-        return aOrdered && a.order < b.order;
+        return aOrdered && orders[a] < orders[b];
     };
-    std::stable_sort(records.begin(), records.end(), comesFirst);
+    std::vector<std::size_t> indices(orders.size());
+    std::iota(indices.begin(), indices.end(), std::size_t{0});
+    std::stable_sort(indices.begin(), indices.end(), comesFirst);
+    return indices;
+}
+
+std::vector<Record> InSaveOrder(std::vector<OrderedRecord> records)
+{
+    std::vector<int> orders;
+    orders.reserve(records.size());
+    for (const OrderedRecord& ordered : records)
+        orders.push_back(ordered.order);
 
     std::vector<Record> sorted;
     sorted.reserve(records.size());
-    for (const OrderedRecord& ordered : records)
-        sorted.push_back(ordered.record);
+    for (std::size_t index : SaveOrderIndices(orders))
+        sorted.push_back(records[index].record);
     return sorted;
 }
 

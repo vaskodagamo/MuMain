@@ -18,6 +18,15 @@ using nlohmann::json;
 
 constexpr char ResponseTerminator = '\n';
 
+// One response line. Text that is not UTF-8 (a name read straight from a game
+// file) goes out with U+FFFD in place of the bad bytes instead of throwing:
+// the strict default would end the client from inside the main loop.
+std::string ResponseLine(const json& response)
+{
+    constexpr int Compact = -1;
+    return response.dump(Compact, ' ', false, json::error_handler_t::replace) + ResponseTerminator;
+}
+
 struct ErrorCodeEntry
 {
     App::Control::ErrorCode code;
@@ -91,6 +100,19 @@ const LoginFailureEntry* FindLoginFailure(int messageCode)
         }
     }
     return nullptr;
+}
+
+// The Map Editor's commands exist only in builds with the editor.
+std::vector<std::string> WithEditorCommands(std::vector<std::string> names)
+{
+#ifdef _EDITOR
+    const std::vector<std::string> mapCommands = {
+        "map-open",          "map-info",  "map-camera",  "map-export",  "map-query",  "map-apply",
+        "map-undo",          "map-redo",  "map-history", "map-save",    "map-revert", "map-new",
+        "map-server-export", "gate-list", "gate-add",    "gate-remove", "gate-show",  "map-tab"};
+    names.insert(names.end(), mapCommands.begin(), mapCommands.end());
+#endif
+    return names;
 }
 
 App::Control::Value FromJson(const json& value)
@@ -191,11 +213,11 @@ const std::vector<std::string>& CommandNames()
     // it can be tested on its own, and including the dispatcher would drag
     // the whole client into that test. The dispatcher checks itself against
     // this list instead (ControlDispatcher.cpp, CommandTable).
-    static const std::vector<std::string> names = {
+    static const std::vector<std::string> names = WithEditorCommands({
         "ping",   "scene", "state",   "nearby", "events",   "wait-for", "screenshot", "login",  "select-char",
         "logout", "quit",  "move",    "warp",   "teleport", "attack",   "skill",      "pickup", "use",
         "equip",  "say",   "whisper", "party",  "halt",     "hotkey",   "click-ui",
-    };
+    });
     return names;
 }
 
@@ -253,6 +275,10 @@ Request Request::Parse(std::string_view line)
             continue;
         }
         request.m_fields.emplace(key, FromJson(value));
+        if (value.is_array() || value.is_object())
+        {
+            request.m_structured.emplace(key, value.dump());
+        }
     }
 
     request.m_valid = true;
@@ -345,6 +371,17 @@ bool Request::GetStringMap(std::string_view key, std::map<std::string, std::stri
     return true;
 }
 
+bool Request::GetStructured(std::string_view key, std::string& encoded) const
+{
+    const auto field = m_structured.find(key);
+    if (field == m_structured.end())
+    {
+        return false;
+    }
+    encoded = field->second;
+    return true;
+}
+
 std::string EncodeResult(std::string_view encodedId, std::string_view resultObject)
 {
     json response;
@@ -364,7 +401,7 @@ std::string EncodeResult(std::string_view encodedId, std::string_view resultObje
     }
     response["result"] = std::move(result);
 
-    return response.dump() + ResponseTerminator;
+    return ResponseLine(response);
 }
 
 std::string EncodeError(std::string_view encodedId, ErrorCode code, std::string_view message,
@@ -390,7 +427,7 @@ std::string EncodeError(std::string_view encodedId, ErrorCode code, std::string_
         }
     }
 
-    return response.dump() + ResponseTerminator;
+    return ResponseLine(response);
 }
 
 std::string_view LoginFailureReason(int messageCode)

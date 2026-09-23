@@ -412,6 +412,9 @@ std::string Ping(const Request& request, std::unique_ptr<Act>&)
     json result;
     result["build"] = BuildIdentifier();
     result["scene"] = CurrentSceneName();
+    // Which process answers, so a launcher can tell its own client from another one
+    // serving the same socket path, and wait for exactly that one to exit.
+    result["pid"] = static_cast<unsigned long>(GetCurrentProcessId());
     return EncodeResult(request.EncodedId(), result.dump());
 }
 
@@ -527,6 +530,19 @@ std::string WaitFor(const Request& request, std::unique_ptr<Act>& act)
 
 std::string Screenshot(const Request& request, std::unique_ptr<Act>& act)
 {
+#ifdef _EDITOR
+    if (WantsEditorScreenshot(request))
+    {
+        return EditorScreenshot(request, act);
+    }
+#else
+    if (request.Has("clean") || request.Has("region"))
+    {
+        return EncodeError(request.EncodedId(), ErrorCode::BadRequest,
+                           "`clean` and `region` need a client built with the editor");
+    }
+#endif
+
     std::string requestedPath;
     std::wstring targetPath;
     if (request.Has("out") && (!request.GetString("out", requestedPath) || requestedPath.empty()))

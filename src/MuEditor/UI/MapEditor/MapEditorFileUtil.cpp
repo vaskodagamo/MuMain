@@ -96,16 +96,6 @@ RepoRootLookup LookUpRepoRoot()
     return lookup;
 }
 
-std::string BackupStamp()
-{
-    const time_t now = time(nullptr);
-    tm local{};
-    localtime_s(&local, &now);
-    char text[BACKUP_STAMP_CHARS] = {};
-    strftime(text, sizeof(text), BACKUP_STAMP_FORMAT, &local);
-    return text;
-}
-
 // Without a repository: the old behaviour, a copy next to the executable that the
 // next build's asset copy does not touch (Data/World7/X -> World7/X).
 fs::path CopyNextToExecutable(const fs::path& dataRelative)
@@ -273,7 +263,7 @@ SavedFile MirrorSavedFile(const fs::path& dataRelative)
     if (repoRoot.root.empty())
         saved.localCopy = CopyNextToExecutable(dataRelative);
     else
-        saved.repo = MirrorIntoRepo(saved.runtimeFile, dataRelative, repoRoot.root, BackupStamp());
+        saved.repo = MirrorIntoRepo(saved.runtimeFile, dataRelative, repoRoot.root, Timestamp());
     LogSavedFile(saved);
     return saved;
 }
@@ -320,6 +310,15 @@ bool OpenWithSystem(const fs::path& path, std::string& error)
     return false;
 }
 
+std::string Timestamp()
+{
+    const time_t now = time(nullptr);
+    tm local{};
+    localtime_s(&local, &now);
+    char text[BACKUP_STAMP_CHARS] = {};
+    strftime(text, sizeof(text), BACKUP_STAMP_FORMAT, &local);
+    return text;
+}
 } // namespace Editor::Files
 
 #endif // _EDITOR

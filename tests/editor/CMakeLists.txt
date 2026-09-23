@@ -43,7 +43,8 @@ target_compile_definitions(editor_repo_mirror_tests PRIVATE _EDITOR)
 target_include_directories(editor_repo_mirror_tests PRIVATE ${PROJECT_SOURCE_DIR}/src/MuEditor)
 
 # The world editor's asset catalog, regeneration request files, git HEAD lookup,
-# capture JPEGs and the light map file (TerrainLight.OZJ) are data code without
+# capture JPEGs, the light map file (TerrainLight.OZJ) and the height file
+# (TerrainHeight.OZB, read back by map-revert) are data code without
 # ImGui or engine state, so they are tested here too, also in builds without the
 # editor. MuClient only supplies OpenSSL (SHA-256) and turbojpeg with their
 # include paths.
@@ -65,6 +66,7 @@ mu_add_test(
         ${MU_EDITOR_ASSETS_DIR}/RequestBrief.cpp
         ${MU_EDITOR_ASSETS_DIR}/RequestFolder.cpp
         ${MU_EDITOR_ASSETS_DIR}/RequestNaming.cpp
+        ${MU_EDITOR_ASSETS_DIR}/TerrainHeightFile.cpp
         ${MU_EDITOR_ASSETS_DIR}/TerrainLightFile.cpp
     LINK_LIBS
         MuClient
@@ -135,3 +137,144 @@ mu_add_test(
 )
 target_compile_definitions(editor_editing_tests PRIVATE _EDITOR)
 target_include_directories(editor_editing_tests PRIVATE ${PROJECT_SOURCE_DIR}/src/MuEditor)
+
+# The Map Editor's read-only map inspection for scripted clients (map-export,
+# map-query, map-camera's framing, map-info's unsaved edits): layer images, legends,
+# statistics, framing math and fingerprints, without ImGui or engine state. MuClient
+# supplies the object file's save order (WorldObjectFile) and the PNG writer's header.
+set(MU_EDITOR_INSPECT_DIR ${PROJECT_SOURCE_DIR}/src/MuEditor/MapInspect)
+mu_add_test(
+    NAME editor_map_inspect_tests
+    SOURCES
+        test_map_inspect.cpp
+        ${MU_EDITOR_INSPECT_DIR}/AreaStats.cpp
+        ${MU_EDITOR_INSPECT_DIR}/AttributePalette.cpp
+        ${MU_EDITOR_INSPECT_DIR}/CameraFraming.cpp
+        ${MU_EDITOR_INSPECT_DIR}/Image.cpp
+        ${MU_EDITOR_INSPECT_DIR}/LayerImage.cpp
+        ${MU_EDITOR_INSPECT_DIR}/MapDigest.cpp
+        ${MU_EDITOR_INSPECT_DIR}/MapExport.cpp
+        ${MU_EDITOR_INSPECT_DIR}/MapObjectList.cpp
+        ${MU_EDITOR_INSPECT_DIR}/PngFile.cpp
+        ${MU_EDITOR_INSPECT_DIR}/SavedMapState.cpp
+        ${MU_EDITOR_INSPECT_DIR}/TileArea.cpp
+        ${MU_EDITOR_INSPECT_DIR}/TilePalette.cpp
+        ${MU_EDITOR_ASSETS_DIR}/EditorText.cpp
+    LINK_LIBS
+        MuClient
+)
+target_compile_definitions(editor_map_inspect_tests PRIVATE _EDITOR)
+target_include_directories(editor_map_inspect_tests PRIVATE
+    ${PROJECT_SOURCE_DIR}/src/MuEditor
+    ${PROJECT_SOURCE_DIR}/src/ThirdParty
+)
+
+# The edit scripts an AI agent applies through the control socket's map-apply: parsing
+# and validation, shapes, seeded scatter and noise, and every op on plain arrays, without
+# ImGui or engine state. MuClient supplies the engine's AngleMatrix, which object turns
+# go through (Editing/GizmoMath).
+set(MU_EDITOR_SCRIPT_DIR ${PROJECT_SOURCE_DIR}/src/MuEditor/MapScript)
+mu_add_test(
+    NAME editor_map_script_tests
+    SOURCES
+        test_map_script.cpp
+        ${MU_EDITOR_SCRIPT_DIR}/AttributeRules.cpp
+        ${MU_EDITOR_SCRIPT_DIR}/EditScript.cpp
+        ${MU_EDITOR_SCRIPT_DIR}/NameResolver.cpp
+        ${MU_EDITOR_SCRIPT_DIR}/ObjectOpParser.cpp
+        ${MU_EDITOR_SCRIPT_DIR}/ObjectOps.cpp
+        ${MU_EDITOR_SCRIPT_DIR}/PointGrid.cpp
+        ${MU_EDITOR_SCRIPT_DIR}/PoissonScatter.cpp
+        ${MU_EDITOR_SCRIPT_DIR}/ScatterRules.cpp
+        ${MU_EDITOR_SCRIPT_DIR}/ScriptCost.cpp
+        ${MU_EDITOR_SCRIPT_DIR}/ScriptDiff.cpp
+        ${MU_EDITOR_SCRIPT_DIR}/ScriptMap.cpp
+        ${MU_EDITOR_SCRIPT_DIR}/ScriptParser.cpp
+        ${MU_EDITOR_SCRIPT_DIR}/ScriptRandom.cpp
+        ${MU_EDITOR_SCRIPT_DIR}/ScriptReader.cpp
+        ${MU_EDITOR_SCRIPT_DIR}/ScriptReport.cpp
+        ${MU_EDITOR_SCRIPT_DIR}/ScriptRunner.cpp
+        ${MU_EDITOR_SCRIPT_DIR}/ScriptShape.cpp
+        ${MU_EDITOR_SCRIPT_DIR}/ShapeParser.cpp
+        ${MU_EDITOR_SCRIPT_DIR}/SurfaceOpParser.cpp
+        ${MU_EDITOR_SCRIPT_DIR}/SurfaceOps.cpp
+        ${MU_EDITOR_SCRIPT_DIR}/TerrainOps.cpp
+        ${MU_EDITOR_SCRIPT_DIR}/ValueNoise.cpp
+        ${MU_EDITOR_EDITING_DIR}/FieldBrush.cpp
+        ${MU_EDITOR_EDITING_DIR}/GizmoMath.cpp
+        ${MU_EDITOR_EDITING_DIR}/ObjectTransform.cpp
+        ${MU_EDITOR_EDITING_DIR}/SurfaceBrush.cpp
+        ${MU_EDITOR_EDITING_DIR}/TerrainBrush.cpp
+        ${MU_EDITOR_INSPECT_DIR}/Image.cpp
+        ${MU_EDITOR_INSPECT_DIR}/TilePalette.cpp
+    LINK_LIBS
+        MuClient
+)
+target_compile_definitions(editor_map_script_tests PRIVATE _EDITOR)
+target_include_directories(editor_map_script_tests PRIVATE
+    ${PROJECT_SOURCE_DIR}/src/MuEditor
+    ${PROJECT_SOURCE_DIR}/src/ThirdParty
+)
+# Built as the client builds the MapScript units (src/CMakeLists.txt): no fused multiply-add,
+# so a seed gives the same map with every compiler.
+if(NOT MSVC)
+    target_compile_options(editor_map_script_tests PRIVATE -ffp-contract=off)
+endif()
+
+# Growing the world (M10): Gate.bmd's reader and writer and the gate edits, the files of a
+# new map (renumbered copies, flat maps, Lorencia's renamed models) and the OpenMU export,
+# without ImGui or engine state. MuClient supplies the object file layout, the terrain
+# file layouts, the map name file parser, turbojpeg for the light map, and the ciphers the
+# tests hand in.
+set(MU_EDITOR_GATES_DIR ${PROJECT_SOURCE_DIR}/src/MuEditor/Gates)
+set(MU_EDITOR_NEW_MAP_DIR ${PROJECT_SOURCE_DIR}/src/MuEditor/NewMap)
+set(MU_EDITOR_SERVER_EXPORT_DIR ${PROJECT_SOURCE_DIR}/src/MuEditor/ServerExport)
+mu_add_test(
+    NAME editor_world_growth_tests
+    SOURCES
+        test_gates.cpp
+        test_new_map.cpp
+        ${MU_EDITOR_GATES_DIR}/GateChecks.cpp
+        ${MU_EDITOR_GATES_DIR}/GateDirection.cpp
+        ${MU_EDITOR_GATES_DIR}/GateFile.cpp
+        ${MU_EDITOR_GATES_DIR}/GateQueries.cpp
+        ${MU_EDITOR_GATES_DIR}/GateRecord.cpp
+        ${MU_EDITOR_GATES_DIR}/GateTableEdit.cpp
+        ${MU_EDITOR_NEW_MAP_DIR}/BlankMap.cpp
+        ${MU_EDITOR_NEW_MAP_DIR}/EncTerrainFile.cpp
+        ${MU_EDITOR_NEW_MAP_DIR}/NamedModels.cpp
+        ${MU_EDITOR_NEW_MAP_DIR}/NewMapPlan.cpp
+        ${MU_EDITOR_NEW_MAP_DIR}/NewMapWriter.cpp
+        ${MU_EDITOR_NEW_MAP_DIR}/WorldFolders.cpp
+        ${MU_EDITOR_SERVER_EXPORT_DIR}/ExportHowTo.cpp
+        ${MU_EDITOR_SERVER_EXPORT_DIR}/ExportInput.cpp
+        ${MU_EDITOR_SERVER_EXPORT_DIR}/ExportSql.cpp
+        ${MU_EDITOR_SERVER_EXPORT_DIR}/OpenMuDocuments.cpp
+        ${MU_EDITOR_SERVER_EXPORT_DIR}/ServerTerrain.cpp
+        ${MU_EDITOR_ASSETS_DIR}/EditorText.cpp
+        ${MU_EDITOR_ASSETS_DIR}/TerrainHeightFile.cpp
+        ${MU_EDITOR_ASSETS_DIR}/TerrainLightFile.cpp
+        ${MU_EDITOR_INSPECT_DIR}/Image.cpp
+        ${MU_EDITOR_INSPECT_DIR}/TilePalette.cpp
+        ${MU_EDITOR_SCRIPT_DIR}/AttributeRules.cpp
+        ${PROJECT_SOURCE_DIR}/src/MuEditor/UI/MapEditor/MapEditorRepoMirror.cpp
+    LINK_LIBS
+        MuClient
+)
+target_compile_definitions(editor_world_growth_tests PRIVATE
+    _EDITOR
+    "MU_REPO_ROOT=\"${PROJECT_SOURCE_DIR}\""
+)
+target_include_directories(editor_world_growth_tests PRIVATE
+    ${PROJECT_SOURCE_DIR}/src/MuEditor
+    ${PROJECT_SOURCE_DIR}/src/ThirdParty
+)
+
+# mapctl, the command line an AI agent drives the Map Editor with over the control socket
+# (tools/world_editor/mapctl.py): argument parsing, request framing against a fake socket and
+# the plan sketches. Plain Python without the client, so it runs in every build; -B keeps
+# bytecode caches out of the source tree.
+add_test(
+    NAME world_editor_mapctl
+    COMMAND "${Python3_EXECUTABLE}" -B "${PROJECT_SOURCE_DIR}/tools/world_editor/tests/test_mapctl.py"
+)

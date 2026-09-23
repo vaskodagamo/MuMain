@@ -53,6 +53,10 @@ std::vector<std::uint8_t> Encode(const Contents& contents);
 // file unchanged, and numbers the objects it adds after them.
 std::vector<Record> InSaveOrder(std::vector<OrderedRecord> records);
 
+// The same order for any list: the positions of `orders` (one per item, each an
+// item's save order or NO_SAVE_ORDER) sorted the way InSaveOrder sorts records.
+std::vector<std::size_t> SaveOrderIndices(const std::vector<int>& orders);
+
 // Parses plain bytes into `out`. Returns false when the header is missing, the
 // count is negative, or the data ends before the last counted record; `out` then
 // holds the header (when present) and the complete records that were there.

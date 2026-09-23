@@ -63,6 +63,10 @@ std::filesystem::path AbsolutePath(const std::filesystem::path& file);
 // Status-line text listing the absolute paths each saved file went to.
 std::string DescribeSavedFiles(const std::vector<SavedFile>& files);
 
+// The local time as YYYYMMDD-HHMMSS: the backup folders' names, and default names of
+// files the editor writes.
+std::string Timestamp();
+
 // Opens a file or folder with the system's default app (Finder or Preview on a
 // Mac, Explorer or the image viewer on Windows). False with `error` when the
 // system refused.
