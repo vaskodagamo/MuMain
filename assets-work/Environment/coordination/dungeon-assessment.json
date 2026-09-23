@@ -118,7 +118,7 @@
       "deep_wall04.jpg"
     ],
     "owner": "architecture",
-    "status": "baseline retained; independent review accepted rejected-study evidence in PR #23",
+    "status": "baseline retained after independent review; rejected studies and original hashes recorded in merged PR #23",
     "client_verified": false,
     "branch": "codex/dungeon-supports-pr02",
     "deliverables": "assets-work/World2/Supports01",
@@ -217,7 +217,7 @@
       "deep_wall01.jpg"
     ],
     "owner": "architecture",
-    "status": "baseline retained; independent review accepted rejected-study evidence in PR #23",
+    "status": "baseline retained after independent review; rejected studies and original hashes recorded in merged PR #23",
     "client_verified": false,
     "branch": "codex/dungeon-supports-pr02",
     "deliverables": "assets-work/World2/Supports01",
@@ -247,7 +247,7 @@
       "deep_wall04.jpg"
     ],
     "owner": "architecture",
-    "status": "baseline retained; independent review accepted rejected-study evidence in PR #23",
+    "status": "baseline retained after independent review; rejected studies and original hashes recorded in merged PR #23",
     "client_verified": false,
     "branch": "codex/dungeon-supports-pr02",
     "deliverables": "assets-work/World2/Supports01",
@@ -680,9 +680,13 @@
       "wood01.jpg",
       "bons.jpg"
     ],
-    "owner": null,
-    "status": "unclaimed; scope and visual assessment pending",
-    "client_verified": false
+    "owner": "furniture",
+    "status": "in progress; one bounded exploratory skeleton-silhouette prototype, not family-wide approval",
+    "client_verified": false,
+    "branch": "codex/dungeon-remains44",
+    "deliverables": "assets-work/World2/Remains44",
+    "worktree": "MuMain-dungeon-remains44",
+    "target_revision": "0cc611bc9165a8f856db88e2bd0f4fe049bcef90"
   },
   {
     "model": "Object45",
@@ -694,7 +698,7 @@
       "bons.jpg"
     ],
     "owner": null,
-    "status": "retained baseline after independent visual review; PR #22 open",
+    "status": "retained baseline after independent individual/cluster review; merged PR #22",
     "client_verified": false,
     "evidence": "assets-work/World2/Readiness02/retention-review.json",
     "branch": "codex/dungeon-bones45-47-retention",
@@ -710,7 +714,7 @@
       "bons.jpg"
     ],
     "owner": null,
-    "status": "retained baseline after independent visual review; PR #22 open",
+    "status": "retained baseline after independent individual/cluster review; merged PR #22",
     "client_verified": false,
     "evidence": "assets-work/World2/Readiness02/retention-review.json",
     "branch": "codex/dungeon-bones45-47-retention",
@@ -726,7 +730,7 @@
       "bons.jpg"
     ],
     "owner": null,
-    "status": "retained baseline after independent visual review; PR #22 open",
+    "status": "retained baseline after independent individual/cluster review; merged PR #22",
     "client_verified": false,
     "evidence": "assets-work/World2/Readiness02/retention-review.json",
     "branch": "codex/dungeon-bones45-47-retention",

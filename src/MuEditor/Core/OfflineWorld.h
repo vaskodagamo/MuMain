@@ -5,14 +5,16 @@
 // Offline world mode: "Main --editor --world N" opens the client's map folder
 // Data/World{N} straight in the main scene - no server, no login, no character -
 // looking through the editor's free-fly camera with the Map Editor open.
+// "Main --editor --items" does the same with the Item Editor open instead of the
+// Map Editor, in World1 unless --world N is given too.
 //
 // N is the Data folder number (World1 = Lorencia, World3 = Devias). If the
 // folder is missing or incomplete, the client logs why and continues with the
 // normal login.
 namespace Editor::OfflineWorld
 {
-// Remembers the map number of "--world N" (or "--world=N"). Only called when
-// --editor is on the command line too.
+// Remembers the map number of "--world N" (or "--world=N") and whether "--items"
+// asks for the Item Editor. Only called when --editor is on the command line too.
 void ReadCommandLine(const wchar_t* commandLine);
 
 // Called once when the start-up data has loaded. Opens the requested map and

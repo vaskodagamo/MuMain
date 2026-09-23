@@ -52,6 +52,11 @@ bool CItemDataHandler::Save(wchar_t* fileName, std::string* outChangeLog)
     return ItemDataSaver::Save(fileName, outChangeLog);
 }
 
+size_t CItemDataHandler::GetMaxNameBytes() const
+{
+    return ItemDataSaver::MaxNameBytes();
+}
+
 bool CItemDataHandler::ExportAsS6E3(wchar_t* fileName)
 {
     return ItemDataExportS6E3::SaveLegacy(fileName);

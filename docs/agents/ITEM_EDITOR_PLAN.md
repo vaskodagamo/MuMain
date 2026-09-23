@@ -237,6 +237,26 @@ Status:
     outside the world range (nothing allows one yet; I6 does).
   - Found for I1: the shipped `Item_Eng.bmd` loads as the legacy format (30-byte names,
     946 items).
+- **I1 done (2026-09-23).** The Item Editor runs on the Mac; usage in
+  `src/MuEditor/UI/ItemEditor/ITEM_EDITOR.md`.
+  - `./Main --editor --items` opens the offline world (1, or `--world N`) with the Item Editor
+    open and the Map Editor closed; `--editor --world N` unchanged.
+  - Save writes the game's `Data/Local/<lang>/item_<lang>.bmd` (spelled as git tracks it) and
+    mirrors it into `src/bin/Data` with a backup; the exports also go to `out/editor-exports`.
+  - **Save keeps the file's layout and bytes:** the saver used to write the 50-byte-name layout,
+    so every save converted the shipped legacy files. Editor builds now keep the loaded records
+    (`ItemData/ItemFileSnapshot`, recorded inside `#ifdef _EDITOR`) and write that layout back,
+    keeping the loaded bytes of every unedited item (the shipped files carry text after names,
+    padding and one non-UTF-8 name that a conversion drops). `editor_item_table_tests`: all four
+    shipped tables save byte-identical; a rename changes only that record and the checksum.
+  - Names are limited to what the layout holds (29 bytes legacy); the three long ticket names
+    (13-121, 13-125, 13-127) overflow into their Two-Hand/Level fields in the shipped file, so
+    those items' stats are not reliable data.
+  - Fixed: the editor console hung the process on the first `std::cout` line.
+  - Checked: 343/343 tests (`macos-arm64-mueditor`), 342/342 in `macos-arm64`; a temporary,
+    uncommitted ImGui-input hook searched, opened Columns, renamed Kris, saved (`git status`
+    showed `item_eng.bmd` modified, backup written), saved again ("No changes"), copied a row,
+    both exports; also under `MTL_DEBUG_LAYER=1`. Not tried by hand; Windows not built.
 - **I2 done (2026-09-23).** Item catalog, tiers and the item request contract; usage in
   `assets-work/Items/README.md`.
   - `tools/item_editor/`: `item_table.py` (both `Item_<lang>.bmd` layouts, checksum,
