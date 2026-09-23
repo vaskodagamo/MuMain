@@ -31,3 +31,13 @@ mu_add_test(
     LINK_LIBS
         MuClient
 )
+
+# The class part of IsRequireEquipItem (which classes and stages may equip an
+# item), shared with the editor's item browser.
+mu_add_test(
+    NAME item_class_rule_tests
+    SOURCES
+        test_item_class_rule.cpp
+    LINK_LIBS
+        MuClient
+)
