@@ -1,0 +1,25 @@
+{
+  "Object06": {
+    "original_exceptional_faces": [],
+    "matched_unchanged_exceptions": [],
+    "minimum_new_area": 0.8014273002907051,
+    "minimum_new_uv_area": 2.7981887567918307e-05
+  },
+  "Object13": {
+    "original_exceptional_faces": [],
+    "matched_unchanged_exceptions": [],
+    "minimum_new_area": 0.8014273002907051,
+    "minimum_new_uv_area": 2.7981887567918307e-05
+  },
+  "Object15": {
+    "original_exceptional_faces": [],
+    "matched_unchanged_exceptions": [],
+    "minimum_new_area": 0.25712110115910997,
+    "minimum_new_uv_area": 8.186925347652974e-06,
+    "continuous_original_upper_lower_edges_retained": [
+      5,
+      4
+    ]
+  },
+  "shared_06_13_profile": "EXACT_ALL_CORNERS_UV_NORMALS"
+}

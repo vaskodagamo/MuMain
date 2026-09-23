@@ -95,8 +95,7 @@ void CRegenRequestDialog::Open(int world, const Catalog& catalog, const std::str
     if (primary == nullptr || repo.empty() || m_stage == Stage::Capturing)
         return;
 
-    m_world = world;
-    m_worldName = catalog.worldName;
+    m_domain = WorldRequestDomain(world, catalog.worldName);
     m_targets.clear();
     RequestTarget first{*primary, Editor::Files::Sha256Hex(repo / primary->bmd), {}};
     const fs::path objectFile = Editor::Files::RepoDataFile(repo, Editor::Files::TerrainObjectFile(world));
@@ -116,7 +115,7 @@ void CRegenRequestDialog::Open(int world, const Catalog& catalog, const std::str
                 m_targets.push_back({*partner, Editor::Files::Sha256Hex(repo / partner->bmd), {}});
         }
     }
-    m_takenNames = TakenModelNames(repo, world, catalog);
+    m_takenNames = TakenModelNames(repo, m_domain, catalog);
     ReadCheckout();
 
     m_kind = static_cast<int>(RequestKind::Repaint);
@@ -313,7 +312,7 @@ void CRegenRequestDialog::RenderWarnings()
 
 void CRegenRequestDialog::RenderDone()
 {
-    const std::string folder = RequestFolderPath(m_world, m_draft.id);
+    const std::string folder = RequestFolderPath(m_domain, m_draft.id);
     ImGui::Text("Request written:");
     ImGui::TextWrapped("%s", Editor::Files::PathToUtf8(m_folder).c_str());
     if (ImGui::Button("Open folder"))
@@ -333,8 +332,8 @@ void CRegenRequestDialog::RenderDone()
     ImGui::TextDisabled("git add %s", folder.c_str());
     ImGui::TextDisabled("git commit -m \"docs(assets): file request %s\"", m_draft.id.c_str());
     ImGui::TextDisabled("git push   (on main; from another branch, cherry-pick the commit onto main)");
-    ImGui::TextWrapped("The coordinator then assigns it to a worker; see assets-work/World%d/requests/README.md.",
-                       m_world);
+    ImGui::TextWrapped("The coordinator then assigns it to a worker; see %s/README.md.",
+                       RequestsFolderPath(m_domain).c_str());
     if (!m_error.empty())
         ImGui::TextColored(COLOR_ERROR, "%s", m_error.c_str());
 }
@@ -378,8 +377,7 @@ bool CRegenRequestDialog::BuildDraft(std::string& error)
     RequestDraft draft;
     const Timestamp now = CurrentTimestamp();
     draft.created = now.dateTime;
-    draft.world = m_world;
-    draft.worldName = m_worldName;
+    draft.domain = m_domain;
     draft.baseCommit = m_headCommit;
     draft.input.kind = Kind();
     draft.input.priority = static_cast<RequestPriority>(m_priority);
@@ -399,7 +397,7 @@ bool CRegenRequestDialog::BuildDraft(std::string& error)
         }
     }
     draft.id = MakeRequestId(now.date, targets.front().model.name, MakeSlug(draft.input.summary),
-                             ExistingRequestIds(repo, m_world));
+                             ExistingRequestIds(repo, m_domain));
     if (m_includeView)
         draft.captures.push_back(CurrentView());
     m_draft = std::move(draft);

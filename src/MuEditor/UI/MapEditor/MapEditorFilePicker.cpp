@@ -38,6 +38,10 @@ constexpr SDL_DialogFileFilter SERVER_ATT_FILTERS[] = {
     {"Server TerrainData", "att"},
     {"All files", "*"},
 };
+constexpr SDL_DialogFileFilter REFERENCE_IMAGE_FILTERS[] = {
+    {"JPEG images", "jpg;jpeg"},
+    {"All files", "*"},
+};
 
 struct DialogSpec
 {
@@ -52,6 +56,8 @@ constexpr std::array<DialogSpec, REQUEST_COUNT> DIALOG_SPECS = {{
     {"Select your edited minimap .tga", MINIMAP_TGA_FILTERS, static_cast<int>(std::size(MINIMAP_TGA_FILTERS))},
     {"Select the server's current TerrainData (downloaded from the Admin Panel)", SERVER_ATT_FILTERS,
      static_cast<int>(std::size(SERVER_ATT_FILTERS))},
+    {"Select a reference image for the request (JPEG)", REFERENCE_IMAGE_FILTERS,
+     static_cast<int>(std::size(REFERENCE_IMAGE_FILTERS))},
 }};
 
 // One result slot per request. SDL may run the dialog callback on another

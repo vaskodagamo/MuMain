@@ -7,11 +7,11 @@
 #include "Assets/EditorText.h"
 #include "Assets/ModelPreflight.h"
 #include "UI/Console/MuEditorConsoleUI.h"
-#include "UI/MapEditor/MapEditorFileUtil.h" // ReadWholeFile, PathToUtf8
+#include "Core/EditorFiles.h" // ReadWholeFile, PathToUtf8
 #include "UI/MapEditor/MapObjectPlace.h"    // LiveObjectsOfType
 #include "UI/MapEditor/ObjectThumbnail.h"
 
-#include "Core/Globals/_enum.h"           // MODEL_WORLD_OBJECT, MAX_WORLD_OBJECTS
+#include "Core/Globals/_enum.h"           // MODEL_WORLD_OBJECT, MAX_WORLD_OBJECTS, MAX_MODELS
 #include "Core/Globals/_TextureIndex.h"   // BITMAP_HIDE, BITMAP_UNKNOWN, BITMAP_NONAMED_TEXTURES_*
 #include "Engine/Object/w_ObjectInfo.h"   // OBJECT
 #include "Render/Models/ZzzBMD.h"         // Models, MAX_MESH, MAX_VERTICES, MAX_BONES
@@ -44,8 +44,9 @@ constexpr std::size_t MAX_RELOADS_PER_FRAME = 8;
 // CGlobalBitmap loads textures up to this size (its MAX_WIDTH and MAX_HEIGHT).
 constexpr int MAX_TEXTURE_SIZE = 1024;
 // World-object textures load like CMapManager::Load's OpenTexture calls load them.
-constexpr GLuint TEXTURE_FILTER = GL_NEAREST;
-constexpr GLuint TEXTURE_WRAP = GL_REPEAT;
+constexpr GLuint WORLD_TEXTURE_FILTER = GL_NEAREST;
+constexpr GLuint WORLD_TEXTURE_WRAP = GL_REPEAT;
+constexpr const char* WORLD_OBJECT_WHAT = "world-object";
 // Between the reasons a file is refused, in one status line.
 constexpr std::string_view PROBLEM_SEPARATOR = "; ";
 
@@ -90,6 +91,7 @@ struct CheckedModel
     std::vector<TextureFile> textures;
 };
 
+std::vector<ModelRange> s_ranges = {WorldObjectRange()};
 std::vector<PendingRequest> s_pending;
 std::vector<Outcome> s_outcomes;
 std::unordered_map<int, LoadedModel> s_loaded;
@@ -99,6 +101,23 @@ std::unordered_set<int> s_emptied;
 // Bitmap index -> file read since the queue was last empty, so a texture that
 // several models of one switch share is read once.
 std::unordered_map<GLuint, std::wstring> s_readInBatch;
+
+const ModelRange* FindRange(int type)
+{
+    const auto range = std::find_if(s_ranges.begin(), s_ranges.end(),
+                                    [&](const ModelRange& r) { return type >= r.first && type < r.end; });
+    return range != s_ranges.end() ? &*range : nullptr;
+}
+
+std::string NotLoadedReason(int type)
+{
+    const ModelRange* range = FindRange(type);
+    if (range == nullptr)
+        return "type " + std::to_string(type) + " is not a model the editor may reload";
+    if (range->followsMap)
+        return "this map has no " + range->what + " model of type " + std::to_string(type) + " loaded";
+    return "no " + range->what + " model of type " + std::to_string(type) + " is loaded";
+}
 
 ModelLimits EngineLimits()
 {
@@ -140,7 +159,7 @@ bool Preflight(const Request& request, CheckedModel& out, std::string& refusal)
     const ModelLimits limits = EngineLimits();
     if (!CanReload(request.type))
     {
-        refusal = "this map has no world-object model of type " + std::to_string(request.type) + " loaded";
+        refusal = NotLoadedReason(request.type);
         return false;
     }
     if (!FitsEnginePath(request.bmdFile, limits))
@@ -236,8 +255,8 @@ std::optional<GLuint> TargetIndex(const std::string& name, const std::wstring& p
 
 // Loads one texture without the fatal error of CLoadData::OpenTexture: a file that
 // cannot be loaded leaves the mesh on BITMAP_UNKNOWN (drawn white) and a problem.
-GLuint LoadTexture(const TextureFile& texture, const fs::path& folder, const std::vector<TextureSlot>& previous,
-                   std::vector<std::string>& problems)
+GLuint LoadTexture(const TextureFile& texture, const fs::path& folder, const ModelRange& range,
+                   const std::vector<TextureSlot>& previous, std::vector<std::string>& problems)
 {
     if (texture.kind == TextureKind::Hidden)
         return BITMAP_HIDE;
@@ -245,12 +264,14 @@ GLuint LoadTexture(const TextureFile& texture, const fs::path& folder, const std
     const std::wstring path = (folder / Editor::Text::Utf8Path(texture.name)).wstring();
     const std::optional<GLuint> target = TargetIndex(texture.name, path, previous);
     GLuint index = BITMAP_UNKNOWN;
+    const GLuint filter = range.textureFilter;
+    const GLuint wrap = range.textureWrap;
     if (!target)
-        index = Bitmaps.LoadImage(path, TEXTURE_FILTER, TEXTURE_WRAP);
+        index = Bitmaps.LoadImage(path, filter, wrap);
     else if (const auto read = s_readInBatch.find(*target); read != s_readInBatch.end() && read->second == path)
-        index = Bitmaps.LoadImage(*target, path, TEXTURE_FILTER, TEXTURE_WRAP) ? *target : BITMAP_UNKNOWN;
+        index = Bitmaps.LoadImage(*target, path, filter, wrap) ? *target : BITMAP_UNKNOWN;
     else
-        index = Bitmaps.ReloadImage(*target, path, TEXTURE_FILTER, TEXTURE_WRAP) ? *target : BITMAP_UNKNOWN;
+        index = Bitmaps.ReloadImage(*target, path, filter, wrap) ? *target : BITMAP_UNKNOWN;
     if (index == BITMAP_UNKNOWN)
     {
         problems.push_back(texture.name + " could not be loaded and draws white");
@@ -261,7 +282,7 @@ GLuint LoadTexture(const TextureFile& texture, const fs::path& folder, const std
 }
 
 void LoadTextures(BMD& model, const std::vector<TextureFile>& textures, const fs::path& folder,
-                  const std::vector<TextureSlot>& previous, std::vector<std::string>& problems)
+                  const ModelRange& range, const std::vector<TextureSlot>& previous, std::vector<std::string>& problems)
 {
     for (int i = 0; i < model.NumMeshs; ++i)
     {
@@ -269,7 +290,7 @@ void LoadTextures(BMD& model, const std::vector<TextureFile>& textures, const fs
         const auto texture = std::find_if(textures.begin(), textures.end(),
                                           [&](const TextureFile& file) { return SameTextureName(file.name, name); });
         model.IndexTexture[i] =
-            texture != textures.end() ? LoadTexture(*texture, folder, previous, problems) : BITMAP_UNKNOWN;
+            texture != textures.end() ? LoadTexture(*texture, folder, range, previous, problems) : BITMAP_UNKNOWN;
     }
 }
 
@@ -334,7 +355,7 @@ Outcome Reload(const Request& request)
     s_emptied.erase(request.type);
     RestoreTuning(model, tuning);
     std::vector<std::string> problems;
-    LoadTextures(model, checked.textures, request.bmdFile.parent_path(), previous, problems);
+    LoadTextures(model, checked.textures, request.bmdFile.parent_path(), *FindRange(request.type), previous, problems);
     ClampObjectAnimations(request.type);
     g_ObjectThumbnail.Invalidate(request.type);
     RememberLoad(request, model);
@@ -344,9 +365,40 @@ Outcome Reload(const Request& request)
 }
 } // namespace
 
+ModelRange WorldObjectRange()
+{
+    ModelRange range;
+    range.first = MODEL_WORLD_OBJECT;
+    range.end = MAX_WORLD_OBJECTS;
+    range.what = WORLD_OBJECT_WHAT;
+    range.textureFilter = WORLD_TEXTURE_FILTER;
+    range.textureWrap = WORLD_TEXTURE_WRAP;
+    range.followsMap = true;
+    return range;
+}
+
+bool AllowRange(const ModelRange& range)
+{
+    if (range.first < 0 || range.end <= range.first || range.end > MAX_MODELS)
+        return false;
+    for (const ModelRange& allowed : s_ranges)
+    {
+        const bool same = allowed.first == range.first && allowed.end == range.end;
+        if (!same && range.first < allowed.end && allowed.first < range.end)
+            return false;
+    }
+    const auto same = std::find_if(s_ranges.begin(), s_ranges.end(),
+                                   [&](const ModelRange& r) { return r.first == range.first && r.end == range.end; });
+    if (same != s_ranges.end())
+        *same = range;
+    else
+        s_ranges.push_back(range);
+    return true;
+}
+
 bool CanReload(int type)
 {
-    if (type < MODEL_WORLD_OBJECT || type >= MAX_WORLD_OBJECTS)
+    if (FindRange(type) == nullptr)
         return false;
     const bool loaded = Models[type].NumMeshs > 0 && Models[type].m_bCompletedAlloc;
     return loaded || s_emptied.contains(type);
@@ -374,11 +426,12 @@ void RunPending()
         const PendingRequest& pending = s_pending[i];
         Outcome outcome;
         outcome.request = pending.request;
-        if (pending.worldActive != gMapManager.WorldActive)
-        {
+        const ModelRange* range = FindRange(pending.request.type);
+        const bool mapChanged = pending.worldActive != gMapManager.WorldActive;
+        if (mapChanged)
             s_readInBatch.clear(); // the map load replaced the bitmaps it lists
+        if (mapChanged && range != nullptr && range->followsMap)
             outcome.message = pending.request.modelName + " not changed: the map changed before the reload ran";
-        }
         else
             outcome = Reload(pending.request);
         Log(outcome.message);

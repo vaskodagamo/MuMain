@@ -1,0 +1,362 @@
+{
+  "camera": {
+    "projection": "orthographic",
+    "orthographic_scale_units": 360.0,
+    "location_units": [
+      260.0,
+      -420.0,
+      210.0
+    ],
+    "target_units": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "render_px": [
+      1024,
+      1024
+    ]
+  },
+  "object_scale": 1.0,
+  "display_recentered_per_preview": true,
+  "lighting": "shared 3-area-light neutral studio with fixed positions and energies",
+  "previews": [
+    {
+      "name": "sword",
+      "path": "sword.png",
+      "source_blends": [
+        "Item/Sword01.blend"
+      ],
+      "mesh_object_count": 1,
+      "display_recenter_translation_units": [
+        -0.0492,
+        27.2039,
+        0.5047
+      ],
+      "geometry_bounds_after_recenter": {
+        "min": [
+          -1.722,
+          -37.5215,
+          -8.7495
+        ],
+        "max": [
+          1.722,
+          37.5215,
+          8.7495
+        ]
+      }
+    },
+    {
+      "name": "axe",
+      "path": "axe.png",
+      "source_blends": [
+        "Item/Axe01.blend"
+      ],
+      "mesh_object_count": 1,
+      "display_recenter_translation_units": [
+        -0.4782,
+        40.2891,
+        8.3021
+      ],
+      "geometry_bounds_after_recenter": {
+        "min": [
+          -2.7439,
+          -53.6045,
+          -13.9488
+        ],
+        "max": [
+          2.7439,
+          53.6045,
+          13.9488
+        ]
+      }
+    },
+    {
+      "name": "mace",
+      "path": "mace.png",
+      "source_blends": [
+        "Item/Mace01.blend"
+      ],
+      "mesh_object_count": 1,
+      "display_recenter_translation_units": [
+        -0.3049,
+        34.3951,
+        0.4628
+      ],
+      "geometry_bounds_after_recenter": {
+        "min": [
+          -20.4159,
+          -54.9324,
+          -21.8715
+        ],
+        "max": [
+          20.4159,
+          54.9324,
+          21.8715
+        ]
+      }
+    },
+    {
+      "name": "spear",
+      "path": "spear.png",
+      "source_blends": [
+        "Item/Spear01.blend"
+      ],
+      "mesh_object_count": 1,
+      "display_recenter_translation_units": [
+        0.0263,
+        -23.4527,
+        -0.1089
+      ],
+      "geometry_bounds_after_recenter": {
+        "min": [
+          -8.898,
+          -160.8811,
+          -7.3801
+        ],
+        "max": [
+          8.898,
+          160.8811,
+          7.3801
+        ]
+      }
+    },
+    {
+      "name": "bow",
+      "path": "bow.png",
+      "source_blends": [
+        "Item/Bow01.blend"
+      ],
+      "mesh_object_count": 1,
+      "display_recenter_translation_units": [
+        -2.4095,
+        4.5786,
+        15.4042
+      ],
+      "geometry_bounds_after_recenter": {
+        "min": [
+          -2.3772,
+          -60.1006,
+          -46.1099
+        ],
+        "max": [
+          2.3772,
+          60.1006,
+          46.1099
+        ]
+      }
+    },
+    {
+      "name": "staff",
+      "path": "staff.png",
+      "source_blends": [
+        "Item/Staff01.blend"
+      ],
+      "mesh_object_count": 1,
+      "display_recenter_translation_units": [
+        1.2805,
+        12.0925,
+        1.7553
+      ],
+      "geometry_bounds_after_recenter": {
+        "min": [
+          -19.1279,
+          -72.1541,
+          -15.3341
+        ],
+        "max": [
+          19.1279,
+          72.1541,
+          15.3341
+        ]
+      }
+    },
+    {
+      "name": "shield",
+      "path": "shield.png",
+      "source_blends": [
+        "Item/Shield01.blend"
+      ],
+      "mesh_object_count": 1,
+      "display_recenter_translation_units": [
+        -19.0226,
+        -0.0022,
+        -11.7598
+      ],
+      "geometry_bounds_after_recenter": {
+        "min": [
+          -10.8226,
+          -26.9893,
+          -26.9893
+        ],
+        "max": [
+          10.8226,
+          26.9893,
+          26.9893
+        ]
+      }
+    },
+    {
+      "name": "wing-gen1",
+      "path": "wing-gen1.png",
+      "source_blends": [
+        "Item/Wing01.blend"
+      ],
+      "mesh_object_count": 1,
+      "display_recenter_translation_units": [
+        -0.0664,
+        -5.7952,
+        -0.0731
+      ],
+      "geometry_bounds_after_recenter": {
+        "min": [
+          -93.3889,
+          -2.411,
+          -58.4805
+        ],
+        "max": [
+          93.3889,
+          2.411,
+          58.4805
+        ]
+      }
+    },
+    {
+      "name": "wing-gen2",
+      "path": "wing-gen2.png",
+      "source_blends": [
+        "Item/Wing04.blend"
+      ],
+      "mesh_object_count": 1,
+      "display_recenter_translation_units": [
+        0.3925,
+        -19.1646,
+        4.3245
+      ],
+      "geometry_bounds_after_recenter": {
+        "min": [
+          -153.5638,
+          -3.0084,
+          -122.8326
+        ],
+        "max": [
+          153.5638,
+          3.0084,
+          122.8326
+        ]
+      }
+    },
+    {
+      "name": "wing-gen3",
+      "path": "wing-gen3.png",
+      "source_blends": [
+        "Item/Wing08.blend"
+      ],
+      "mesh_object_count": 1,
+      "display_recenter_translation_units": [
+        -12.4036,
+        23.7608,
+        -55.783
+      ],
+      "geometry_bounds_after_recenter": {
+        "min": [
+          -164.7567,
+          -57.4038,
+          -117.1634
+        ],
+        "max": [
+          164.7567,
+          57.4038,
+          117.1634
+        ]
+      }
+    },
+    {
+      "name": "armour-set-male-01",
+      "path": "armour-set-male-01.png",
+      "source_blends": [
+        "Player/HelmMale01.blend",
+        "Player/ArmorMale01.blend",
+        "Player/PantMale01.blend",
+        "Player/GloveMale01.blend",
+        "Player/BootMale01.blend"
+      ],
+      "mesh_object_count": 5,
+      "display_recenter_translation_units": [
+        0.0471,
+        -6.9384,
+        -90.8321
+      ],
+      "geometry_bounds_after_recenter": {
+        "min": [
+          -34.632,
+          -69.0832,
+          -91.9902
+        ],
+        "max": [
+          34.632,
+          69.0832,
+          91.9902
+        ]
+      }
+    },
+    {
+      "name": "armour-set-male-20",
+      "path": "armour-set-male-20.png",
+      "source_blends": [
+        "Player/HelmMaleTest20.blend",
+        "Player/ArmorMaleTest20.blend",
+        "Player/PantMaleTest20.blend",
+        "Player/GloveMaleTest20.blend",
+        "Player/BootMaleTest20.blend"
+      ],
+      "mesh_object_count": 5,
+      "display_recenter_translation_units": [
+        0.0599,
+        -3.7688,
+        -98.5616
+      ],
+      "geometry_bounds_after_recenter": {
+        "min": [
+          -40.4886,
+          -31.3139,
+          -99.2372
+        ],
+        "max": [
+          40.4886,
+          31.3139,
+          99.2372
+        ]
+      }
+    },
+    {
+      "name": "armour-set-lucky-62",
+      "path": "armour-set-lucky-62.png",
+      "source_blends": [
+        "Player/LuckyItem/62/new_Helm01.blend",
+        "Player/LuckyItem/62/new_Armor01.blend",
+        "Player/LuckyItem/62/new_Pant01.blend",
+        "Player/LuckyItem/62/new_Glove01.blend",
+        "Player/LuckyItem/62/new_Boot01.blend"
+      ],
+      "mesh_object_count": 5,
+      "display_recenter_translation_units": [
+        2.5522,
+        -6.9384,
+        -90.1564
+      ],
+      "geometry_bounds_after_recenter": {
+        "min": [
+          -40.3027,
+          -69.0832,
+          -91.3145
+        ],
+        "max": [
+          40.3027,
+          69.0832,
+          91.3145
+        ]
+      }
+    }
+  ]
+}

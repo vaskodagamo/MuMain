@@ -3,8 +3,7 @@
 #ifdef _EDITOR
 
 #include "EditorText.h"
-
-#include <json.hpp>
+#include "JsonFields.h"
 
 #include <fstream>
 #include <iterator>
@@ -17,15 +16,11 @@ namespace Editor::Assets
 {
 namespace
 {
-constexpr const char* CLIENT_REVIEW_FILE_NAME = "client-review.json";
-constexpr const char* TEMP_SUFFIX = ".tmp";
-constexpr int JSON_INDENT = 2;
+// Hide Editor::Text (the namespace) behind the JSON field readers.
+using Json::Text;
 
-std::string Text(const json& object, const char* key)
-{
-    const auto it = object.find(key);
-    return it != object.end() && it->is_string() ? it->get<std::string>() : std::string();
-}
+constexpr const char* CLIENT_REVIEW_FILE_NAME = "client-review.json";
+constexpr int JSON_INDENT = 2;
 
 // The file as a JSON object: an empty object when it does not exist yet.
 bool ReadDocument(const fs::path& file, json& out, std::string& error)
@@ -44,31 +39,11 @@ bool ReadDocument(const fs::path& file, json& out, std::string& error)
     return true;
 }
 
-// Writes next to the file first, so a failed write never leaves half a file.
 bool WriteDocument(const fs::path& file, const json& document, std::string& error)
 {
-    fs::path temp = file;
-    temp += TEMP_SUFFIX;
-    std::error_code ec;
-    fs::create_directories(file.parent_path(), ec);
-    {
-        std::ofstream stream(temp, std::ios::binary | std::ios::trunc);
-        // Invalid UTF-8 in a typed note becomes U+FFFD instead of failing the save.
-        stream << document.dump(JSON_INDENT, ' ', false, json::error_handler_t::replace) << '\n';
-        if (!stream)
-        {
-            error = "cannot write " + Editor::Text::PathToUtf8(temp);
-            return false;
-        }
-    }
-    fs::rename(temp, file, ec);
-    if (ec)
-    {
-        error = "cannot replace " + Editor::Text::PathToUtf8(file) + ": " + ec.message();
-        fs::remove(temp, ec);
-        return false;
-    }
-    return true;
+    // Invalid UTF-8 in a typed note becomes U+FFFD instead of failing the save.
+    const std::string text = document.dump(JSON_INDENT, ' ', false, json::error_handler_t::replace) + '\n';
+    return Json::ReplaceFileText(file, text, error);
 }
 } // namespace
 

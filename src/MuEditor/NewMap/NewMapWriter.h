@@ -4,7 +4,7 @@
 
 #include "NewMapPlan.h"
 
-#include "UI/MapEditor/MapEditorRepoMirror.h" // MirrorOutcome
+#include "Core/RepoMirror.h" // MirrorOutcome
 
 #include <filesystem>
 #include <string>

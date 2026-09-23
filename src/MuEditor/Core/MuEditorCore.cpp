@@ -9,9 +9,15 @@
 #include "imgui_impl_sdlgpu3.h"
 #include "ModelHotReload.h"
 #include "MuInputBlockerCore.h"
+#include "OfflineWorld.h"
+#include "StudioWindow.h"
 #include "ViewCapture.h"
 #include "../Config/MuEditorConfig.h"
 #include "../MuEditor/UI/Common/MuEditorCenterPaneUI.h"
+#include "../MuEditor/UI/ItemEditor/ConceptImageCache.h"
+#include "../MuEditor/UI/ItemEditor/ConceptJob.h"
+#include "../MuEditor/UI/ItemEditor/ConceptJobPanel.h"
+#include "../MuEditor/UI/ItemEditor/ItemPreview.h"
 #include "../MuEditor/UI/ItemEditor/MuItemEditorUI.h"
 #include "../MuEditor/UI/SkillEditor/MuSkillEditorUI.h"
 #include "../MuEditor/UI/DevEditor/DevEditorUI.h"
@@ -152,6 +158,41 @@ void CMuEditorCore::SetUIScale(float scale)
         return;
     m_UIScale = scale;
     m_bScaleDirty = true;   // applied in Update(), before the next NewFrame
+}
+
+void CMuEditorCore::ChooseUIScale(float scale)
+{
+    SetUIScale(scale);
+    g_MuEditorConfig.SetUIScale(m_UIScale);
+    g_MuEditorConfig.Save();
+}
+
+bool CMuEditorCore::IsFullscreen() const
+{
+    return Editor::StudioWindow::IsFullscreen(m_pWindow);
+}
+
+void CMuEditorCore::ToggleFullscreen()
+{
+    Editor::StudioWindow::SetFullscreen(m_pWindow, !IsFullscreen());
+}
+
+bool CMuEditorCore::WantsOsCursor() const
+{
+    return m_bHoveringUI || (m_bEditorMode && Editor::OfflineWorld::IsItemStudio());
+}
+
+void CMuEditorCore::UpdateStudioPreferences()
+{
+    if (!Editor::OfflineWorld::IsItemStudio())
+        return;
+    Editor::StudioWindow::Update(m_pWindow);
+    if (m_bStudioScaleChecked)
+        return;
+    m_bStudioScaleChecked = true;
+    // The first start on a large display: readable without looking for the + button.
+    if (g_MuEditorConfig.GetUIScale() <= 0.0f)
+        SetUIScale(Editor::StudioWindow::DefaultUIScale(m_pWindow));
 }
 
 void CMuEditorCore::ApplyUIScale()
@@ -422,6 +463,8 @@ void CMuEditorCore::Initialize(SDL_Window* window)
     // init or it'll overwrite the game-side selection.
     g_MuEditorConfig.Load();
     g_MuEditorConsoleUI.LogEditor(std::string("Active locale: ") + I18N::GetCurrentLocale());
+    if (g_MuEditorConfig.GetUIScale() > 0.0f)
+        SetUIScale(g_MuEditorConfig.GetUIScale()); // the toolbar's last choice
 
     fwprintf(stderr, L"[MuEditor] Initialize() completed\n");
     fflush(stderr);
@@ -438,6 +481,12 @@ void CMuEditorCore::Shutdown()
     // Save skill editor preferences before shutting down
     g_MuSkillEditorUI.SaveColumnPreferences();
 
+    // The Item Editor preview's render target and character, while the renderer and engine still run.
+    g_ItemPreview.Release();
+    // A running concepts job stops as after Cancel (its in-flight requests finish); its images are kept.
+    g_ConceptJob.Shutdown();
+    g_ConceptImages.ReleaseAll();
+
     mu::WaitForSDLGpuIdle();
     ImGui_ImplSDLGPU3_Shutdown();
     ImGui_ImplSDL3_Shutdown();
@@ -453,6 +502,8 @@ void CMuEditorCore::Update()
     if (!m_bInitialized)
         return;
 
+    UpdateStudioPreferences();
+
     // Apply a pending UI scale change between frames (never mid-frame).
     if (m_bScaleDirty)
     {
@@ -463,6 +514,10 @@ void CMuEditorCore::Update()
     // Model reloads asked for in the Assets tab also run between frames: they free
     // textures that the previous frame's draws and ImGui draw lists used.
     Editor::Assets::HotReload::RunPending();
+
+    // The background concepts job reads its child's events every frame, whether or
+    // not the Item Editor is shown.
+    g_ConceptJob.Poll();
 
     // Only start a new frame if we haven't already
     if (!m_bFrameStarted)
@@ -600,6 +655,9 @@ void CMuEditorCore::RenderEditorWindows()
         g_DevEditorUI.Render(&m_bShowDevEditor);
     }
 
+    // The concepts job's window, also while the Item Editor window is closed.
+    Editor::ItemEditor::ConceptJobPanel::Render();
+
     // Render Map Editor. Called every frame (not gated on the show flag) so
     // it can restore the game to normal mode the frame after it is closed;
     // it owns EditFlag while its window is open.
@@ -627,6 +685,9 @@ void CMuEditorCore::Render()
     const bool popupOpen = m_bEditorMode && Editor::Shortcuts::IsPopupOpen();
     m_bHoveringUI = m_popupMouseGuard.Update(popupOpen, AnyMouseButtonDown());
 
+    // Concept images not drawn for a while give their textures back (before this frame draws any).
+    g_ConceptImages.BeginFrame();
+
     // Render toolbar (handles both open and closed states)
     g_MuEditorUI.RenderToolbar(m_bEditorMode, m_bShowItemEditor, m_bShowSkillEditor, m_bShowDevEditor, m_bShowMapEditor, m_bShowConsole);
 
@@ -634,6 +695,8 @@ void CMuEditorCore::Render()
 
     // After the editors, which leave Esc alone while a popup is open (Editor::Shortcuts).
     CloseMenusOnEscape();
+    if (m_bEditorMode && Editor::OfflineWorld::IsItemStudio() && Editor::StudioWindow::FullscreenShortcutPressed())
+        ToggleFullscreen();
 
     // Store current hover state for next frame's input blocking
     m_bPreviousFrameHoveringUI = m_bHoveringUI;
@@ -642,33 +705,7 @@ void CMuEditorCore::Render()
     // overlay and the game cursor (the Map Editor's Assets tab asked for it).
     const bool captureFrame = Editor::ViewCapture::IsCleanFrame();
 
-    // Control game cursor rendering via global flag
-    // When hovering UI, hide game cursor; otherwise show it
-    extern bool g_bRenderGameCursor;
-    g_bRenderGameCursor = !m_bHoveringUI && !captureFrame;
-
-#ifdef _WIN32
-    // Manage Windows cursor visibility
-    // Windows maintains an internal display counter - cursor is visible when counter >= 0
-    // We need to loop to force the counter to the correct state.
-    // Off Windows the SDL/ImGui backend drives the OS cursor itself, and the
-    // ShowCursor stub returns a constant so these loops would never terminate.
-    static bool lastHoveringState = false;
-    if (m_bHoveringUI != lastHoveringState)
-    {
-        if (m_bHoveringUI)
-        {
-            // Force cursor visible (counter >= CURSOR_VISIBLE_THRESHOLD)
-            while (ShowCursor(TRUE) < CURSOR_VISIBLE_THRESHOLD);
-        }
-        else
-        {
-            // Force cursor hidden (counter < CURSOR_VISIBLE_THRESHOLD)
-            while (ShowCursor(FALSE) >= CURSOR_VISIBLE_THRESHOLD);
-        }
-        lastHoveringState = m_bHoveringUI;
-    }
-#endif
+    UpdateCursors(captureFrame);
 
     // Finalize draw data. Task 4.2 uploads and renders it inside the engine's
     // existing SDL GPU pass; starting another pass here would break ownership.
@@ -681,6 +718,48 @@ void CMuEditorCore::Render()
 
     // Frame is complete, reset for next frame
     m_bFrameStarted = false;
+}
+
+void CMuEditorCore::UpdateCursors(bool captureFrame)
+{
+    // The game draws its cursor sprite where the pointer is not over editor UI; in the
+    // item studio it would sit under the panels (over the preview, in the gaps), so
+    // the studio keeps the OS pointer instead.
+    const bool osCursor = WantsOsCursor();
+    extern bool g_bRenderGameCursor;
+    g_bRenderGameCursor = !osCursor && !captureFrame;
+
+#ifdef _WIN32
+    // Manage Windows cursor visibility
+    // Windows maintains an internal display counter - cursor is visible when counter >= 0
+    // We need to loop to force the counter to the correct state.
+    static bool lastOsCursorState = false;
+    if (osCursor != lastOsCursorState)
+    {
+        if (osCursor)
+        {
+            // Force cursor visible (counter >= CURSOR_VISIBLE_THRESHOLD)
+            while (ShowCursor(TRUE) < CURSOR_VISIBLE_THRESHOLD);
+        }
+        else
+        {
+            // Force cursor hidden (counter < CURSOR_VISIBLE_THRESHOLD)
+            while (ShowCursor(FALSE) >= CURSOR_VISIBLE_THRESHOLD);
+        }
+        lastOsCursorState = osCursor;
+    }
+#else
+    // Off Windows the SDL/ImGui backend drives the pointer over editor UI; the game
+    // hid the OS pointer at start (a blank cursor), so the studio shows it once
+    // (ShowCursor keeps a counter; the stub returns it) and hides it again when the
+    // editor closes.
+    const bool studio = m_bEditorMode && Editor::OfflineWorld::IsItemStudio();
+    if (studio != m_bKeepsOsCursor)
+    {
+        ShowCursor(studio ? TRUE : FALSE);
+        m_bKeepsOsCursor = studio;
+    }
+#endif
 }
 
 void CMuEditorCore::PrepareDrawData(SDL_GPUCommandBuffer* commandBuffer)

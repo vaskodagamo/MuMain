@@ -1,0 +1,12 @@
+00:00.848  blend            | Read blend: "/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-supports/assets-work/World2/Supports01/Object06/source.blend"
+00:01.149  blend            | Read blend: "/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-supports/assets-work/World2/Supports01/Object13/source.blend"
+00:01.430  blend            | Read blend: "/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-supports/assets-work/World2/Supports01/Object15/source.blend"
+Object06 PASS 132 triangles
+Object13 PASS 134 triangles
+Object15 PASS 27 triangles
+All original Object2 data and exported texture bytes unchanged
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:49:19)
+
+Blender quit
+/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-supports/assets-work/World2/Supports01/audit.py:53: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
+  if material.use_nodes:

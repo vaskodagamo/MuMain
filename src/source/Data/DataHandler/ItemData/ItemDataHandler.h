@@ -12,6 +12,7 @@ public:
 
 #ifdef _EDITOR
     bool Save(wchar_t* fileName, std::string* outChangeLog = nullptr);
+    size_t GetMaxNameBytes() const; // the longest name (UTF-8 bytes) Save can write
     bool ExportAsS6E3(wchar_t* fileName);
     bool ExportToCsv(wchar_t* fileName);
 #endif

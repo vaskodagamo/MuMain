@@ -1,0 +1,1 @@
+Official unchanged-source roundtrip CONTROL ONLY. Not an art candidate or installation file. Mesh1 raw serialization differs from the frozen original; retain the original game BMD byte-for-byte. See ../../notes.md and ../validation/contracts.json.

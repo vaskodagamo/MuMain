@@ -1,20 +1,23 @@
 # Current environment remake board — 2026-09-23
 
-The overall goal remains in progress. PR #12 is merged with 22 accepted Lorencia replacements and 84 first-pass retention decisions. These records do not establish that Lorencia has reached consistent art quality; further assessment and production remain the top priority. The user reports that the prior Lorencia baseline worked in game. New changes have not been checked in the client.
+The overall goal remains in progress. Lorencia's independent offline gate at `bb641d04` covers 22 accepted replacements and 84 individually justified retained assets across all 106 in-scope models; this is not 106 remakes. A fresh read-only challenge at main `0cc611bc` found no additional placed-scale production batch. The three masonry assemblies have now been regenerated and hash-bound in `World1/coordination/masonry-retention-contexts/`; client verification remains pending and the prior baseline client result is user-reported only.
 
-PR #13 is merged with three independently accepted Dungeon replacements: Object28, Object29 and Object01. Object48 is a bounded one-component refinement with independent offline acceptance; this branch contains its integrated export and focused review evidence. Client verification is pending. The next production work returns to Lorencia before expanding Dungeon work.
+Four Dungeon replacements are merged: Object28, Object29, Object01 and Object48. Retention PRs #17–#20 and #22 are merged, covering Objects49/50, Object51, Object37, Objects42/43 and Objects45–47. PR #23 is merged and preserves the rejected Object06/13/15 studies with unchanged baselines. These retention checkpoints changed evidence, not game assets.
 
-See current-remake-assessment.json for the active goal status, dungeon-assessment.json for asset-level status, and progress.md for dated checkpoints.
+Latest production direction: a single bounded Object44 skeletal-silhouette prototype is underway from main `0cc611bc`; textures and neighboring assets are frozen. Current inventory checks found no coherent batch in Objects16–20, 19/20, 31/55/56, or 32/33/35/39/44. Object44 is an exploratory single-asset test, not a family-wide production approval. See `dungeon-assessment.json`, `current-remake-assessment.json`, and `progress.md` for the exact next action and limits.
 
 ## Accepted and proposed checkpoints
 
 | Map | State | Count | Scope |
 |---|---|---:|---|
-| Lorencia | PR #12 merged; quality work remains open | 22 replacements, 84 first-pass retention decisions | World1 static environment |
-| Dungeon | PR #13 merged | 3 replacements | Object28, Object29 and Object01 |
-| Dungeon | PR #16 open and ready for review | 1 replacement | Object48; bounds and texture contract preserved |
+| Lorencia | PR #12 merged; independent offline gate passed | 22 replacements, 84 retained assets | World1 static environment |
+| Dungeon | PR #13 and #16 merged | 4 replacements | Object28, Object29, Object01 and Object48 |
+| Dungeon | PR #17 merged | 2 retained baselines | Object49 and Object50 |
+| Dungeon | PR #18–#20 merged | 4 retained baselines | Object51, Object37, Object42 and Object43 |
+| Dungeon | PR #22 merged | 3 retained baselines | Object45, Object46 and Object47 |
+| Dungeon | PR #23 merged; independent review passed | 3 rejected production studies; baseline retained | Object06, Object13 and Object15 |
 
-New client verification remains pending. The accepted exports and their source packages are indexed in accepted-exports.json. The prior coordination snapshot follows as historical record.
+Client verification for new environment changes remains pending. Accepted exports and sources are indexed in `accepted-exports.json`.
 
 ---
 

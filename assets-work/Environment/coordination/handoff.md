@@ -1,28 +1,24 @@
 # Current environment remake handoff — 2026-09-23
 
-The goal remains active. Lorencia is not artistically complete. Its 22 accepted replacements and 84 retention decisions in merged PR #12 are first-pass records, not a final quality gate. Continue with Lorencia assessment and production before starting another Dungeon production batch. The user reports that the previous Lorencia baseline worked in game; new changes remain client-unverified.
+The overall goal remains active. The owner-fork main is `0cc611bc`; I explicitly pulled it into the isolated integration worktree. The primary checkout still contains unrelated user edits and was left untouched. Lorencia's independent offline gate records 22 replacements plus 84 justified retentions across 106 models; new client verification is pending. A fresh current-hash and visual challenge found no additional justified Lorencia batch. The three masonry retention contexts are regenerated as portable, hash-bound evidence in `assets-work/World1/coordination/masonry-retention-contexts/`.
 
-Dungeon PR #13 merged three replacements (Object28, Object29 and Object01). Object48 is in focused PR #16, open and ready for review. Its independent review and integration report are included. No client or runtime checks were performed for these new assets.
+Four Dungeon replacements are merged: Object28, Object29, Object01 and Object48. Retention PRs #17–#20 and #22 are merged; they cover Objects49/50, 51, 37, 42/43 and 45–47. PR #23 is merged; Objects06/13/15 retain their unchanged baselines after rejected geometry studies. No game files changed in these retention PRs.
 
-## Current branches and pull requests
+## Active production
 
-- PR #12: merged to main in vaskodagamo/MuMain; 22 Lorencia replacements and 84 first-pass retention decisions.
-- PR #13: merged to main; Object28, Object29 and Object01.
-- Object48: branch codex/dungeon-remains48-accepted from refreshed main c40d0b0d; one BMD path differs, and all 63 Object2 model textures resolve.
-- The primary checkout has unrelated local edits. Keep all work in isolated task worktrees.
+Furniture is preparing one bounded geometry prototype for Object44's exposed skeletal silhouette on `codex/dungeon-remains44`, from `0cc611bc`. Object44 alone is writable; `bons.OZJ` and `wood01.OZJ` are frozen. The goal is broad shape improvement in actual placements, not additional small detail. If reduced/normal placement views do not show a clear gain, retain the baseline and publish the rejection/evidence.
 
-## Next work
+Read-only candidate checks found no coherent 3–5 asset remodeling batch in Objects16–20, Objects19/20, Objects31/55/56, or Objects32/33/35/39/44. Their scoped reports and previews remain in `/tmp` while triage continues; they are not yet repository evidence. Effects, animated models, hidden markers and interactive content remain excluded or specially classified in `next-dungeon-brief.md`.
 
-1. Start the next Lorencia quality batch from the current owner-fork main in a dedicated worktree. Reassess assets for visible quality gaps despite earlier acceptance labels; use placement frequency and prominence to prioritize.
-2. Keep the remaining Dungeon baseline queue documented while Lorencia is unfinished.
-3. For each accepted focused batch, commit and open one ready-for-review PR; do not merge it for the user.
+## Current evidence and validation limits
 
-Historical production notes and the prior handoff snapshot follow.
+Lorencia's fresh audit confirmed Object1 game files are unchanged since the offline gate and checked current export hashes and selected assemblies. Three older masonry image references pointed to removed worktree paths; their regenerated current-main evidence will be committed with relative paths and exact placement provenance. All new environment changes remain client-pending. Do not describe offline renders as client evidence.
+
+Use Blender's official Python importer/exporter and preserve original model-name bytes, bindings, actions, UVs, normals, contacts, and placement transforms. Open focused, non-draft PRs on `vaskodagamo/MuMain` only after validation and independent review. Never push upstream, force-push, or merge main for the user.
 
 ---
 
 ## Historical handoff snapshot before Object48 integration
-
 # Dungeon environment production — current status, 2026-09-23
 
 Lorencia remains separately accepted offline at d3ce9acf in draft PR12. The user reports that earlier Lorencia baseline working in game; newly changed assets have no client verification.

@@ -974,6 +974,166 @@ buttons by hand; Windows/Linux builds untested.
 **Verified:** The integrated BMD matches the reviewed export hash; the official converter validates its static and animation SMDs; the frozen texture container passes; all 63 Object2 models resolve their texture dependencies. Exactly one Object2 game path changes in this branch. Client and runtime verification remain pending.
 **Open / next:** Opened [PR #16](https://github.com/vaskodagamo/MuMain/pull/16), ready for review and mergeable against main. Resume production with a Lorencia quality batch from refreshed main.
 
+## 2026-09-23 - Item editor I0: shared request/save/reload code (Claude Opus 5.5)
+**Goal:** Milestone I0 of `ITEM_EDITOR_PLAN.md`: make the Map Editor's request, repo-mirror and
+hot-reload code usable by a second editor without changing the Map Editor.
+
+**Done:** `RequestDomain` for request folders, branches, schema and protected paths
+(`WorldRequestDomain` for maps); `Core/RepoMirror` and `Core/EditorFiles` moved out of
+`UI/MapEditor`; `HotReload::ModelRange`/`AllowRange`. Details in the plan's Status list.
+
+**Verified:** golden dump of `request.json` + `brief.md` byte-identical before/after; 340/340
+tests (`macos-arm64-mueditor`), editor tests in `macos-arm64`; offline Lorencia run with a frame
+capture.
+
+**Open / next:** I1 (Item Editor on the Mac + `--items`) and I2 (item catalog tools) can start in
+parallel. Reload of a non-world range is untested until I6 allows one.
+
+## 2026-09-23 — Dungeon inventory review checkpoints
+
+**Goal:** Continue the environment remake after the user merged PR #12, and publish bounded, reviewable updates against the owner-fork main.
+
+**Done:** Confirmed PRs #13, #16 and #17 are merged. Opened retention checkpoints #18–#20 and #22; the user has since merged PRs #18–#20. PR #21, an unrelated editor-docs change, also merged. PR #23 now records the rejected Object06/13/15 studies after independent review. Updated the current assessment and Dungeon handoff to distinguish merged replacements, retained baselines, active inventory and offline-only evidence.
+
+**Verified:** Pulled owner-fork main at `1256aeed` after those merges. Object45–47 source BMDs, shared `bons.OZJ`, packed Blender scenes and rendered previews are hash-bound; six exact Object47/Object48 cluster records match the main placement manifest. PR #20 independently passed 181 evidence-hash checks and all 120 placement records; its protected raw fire meshes and anchors remain unchanged. PR #23 independent review checked 218 evidence hashes and 446 placements. Lorencia's final offline gate remains `bb641d04`: 22 replacements and 84 retentions cover all 106 in-scope assets. New client verification remains pending.
+
+**Open / next:** Owner review of PRs #22 and #23; continue the Dungeon static inventory with actual-placement context. The latest triage found no coherent next 3–5 asset production batch among Object05/07/08/09/10/11/14; keep Object09's animated Object12 clearance dependency explicit.
+
+## 2026-09-23 - Item editor I1: Item Editor on the Mac, offline --items (Claude Opus 5.5)
+**Goal:** Milestone I1 of `ITEM_EDITOR_PLAN.md`.
+
+**Done:** portable Item Editor paths, saves mirrored into the repository with a backup,
+`--editor --items`, byte-preserving save of the item table in the layout it was loaded from,
+29-byte name limit for the legacy layout, console `std::cout` hang fixed, `ITEM_EDITOR.md`.
+
+**Verified:** `editor_item_table_tests` (four shipped tables byte-identical, rename changes one
+record + checksum); 343/343 editor-build tests, 342/342 player-build tests; scripted in-client
+run (search, columns, rename, save, no-change save, copy, exports), screenshots.
+
+**Open / next:** hand test by the owner; I3 browse tab. Item stats of 13-121/125/127 are
+corrupted in the shipped file (long names spill into later fields).
+## 2026-09-23 — Merged review checkpoints and portable Lorencia evidence (ASTRA / Codex)
+
+**Goal:** Continue the environment remake after the user merged PR #12, keeping owner-fork checkpoints current and reviewable.
+
+**Done:** Pulled owner-fork main into the isolated integration worktree after the user's merge; main is now `0cc611bc`. PRs #12, #13, and #16–#24 are merged. Preserved portable, hash-bound Blender-imported contexts for the HouseEtc stack, south gate, and siege wall after identifying stale workstation-only image links. Independent challenge review still supports the existing Lorencia retention decisions; the 22 accepted replacements plus 84 justified retentions represent coverage of 106 assets, not 106 remakes.
+
+**Verified:** The 52 files in the portable masonry evidence package match its SHA-256 manifest. The independent review revalidated 29 model/texture appearances, all 17 selected placement transforms and model types, and exact old/current composition bounds. It found no additional placed-scale defect or production batch. This is selective offline evidence; newly changed game assets still need client verification.
+
+**Open / next:** Object44 has one bounded skeleton-silhouette prototype in progress on `codex/dungeon-remains44`, with `bons.OZJ`, `wood01.OZJ`, and neighboring models frozen. Independently review actual reduced/normal placement views before accepting it. Continue the Dungeon inventory and publish focused, ready-for-review PRs against `vaskodagamo/MuMain` as checkpoints pass.
+
+## 2026-09-23 - Item editor I2: item catalog, tiers, request contract (Claude Opus 5.5)
+**Goal:** Milestone I2 of `ITEM_EDITOR_PLAN.md`.
+
+**Done:** `tools/item_editor/` (item table decoder, model table generator, BMD facts, tiers,
+OpenMU export, catalog builder), `assets-work/Items/` (catalog, OpenMU export, tiers/assignments
+files, request README/schema/validator).
+
+**Verified:** 56 Python tests, registered in ctest; catalog `--check`; OpenMU export from the
+local database (read-only, no credentials).
+
+**Open / next:** I3 browse tab reads the catalog; I5 writes requests in this contract. Engine
+check for `ItemSetType` "no set" = 0 vs `0xFF`.
+
+## 2026-09-23 - Item art baseline study (Codex)
+**Goal:** Inventory the item and player armor BMD families, create comparable offline "before" renders, and record a style/rework baseline without modifying game assets.
+
+**Done:** Added `assets-work/Items/study/baseline.json`, README, collection/UV/finalization scripts and 13 fixed-camera previews for seven gear families, three wing generations and three five-part armor sets. The inventory covers 207 Item-folder models and 463 Player armor-part models, with bmdconv structure, texture sizes/sharing and a model-level UV review screen. Recorded family scores, 20 model/set rework targets, a tier palette and geometry/texture budgets, and risks for shared textures, origins, mesh order and armor compatibility. Updated the Blender importer to skip action-manifest parsing when `--no-anims` is requested so legacy non-UTF-8 manifests do not block static imports.
+
+**Verified:** `bmdconv info` completed for 670/670 scoped models; 0 unresolved texture references; 131 shared texture files recorded. UV conversion completed for all 670 models. Blender imported the 25 representative BMD parts and rendered all 13 previews at 1024×1024, orthographic scale 360, model scale 1.0. Checked representative PNG output visually. No files under `src/` changed.
+
+**Open / next:** Offline baseline only; review candidates and palettes with the owner, and use the running client to verify pivots, equipped placement, alpha and glow before accepting any future item rework. PR opened against `main` on `vaskodagamo/MuMain`; not merged.
+
+## 2026-09-23 - Item editor I3: Browse tab, studio mode, launcher (Claude Opus 5.5)
+**Goal:** Milestone I3 of `ITEM_EDITOR_PLAN.md`, with the owner's studio mode and launcher.
+
+**Done:** item studio for `--editor --items`, `MU Item Editor.app`, Browse tab (filters, tier
+sort, list/grid thumbnails, details), shared class rule `CanClassEquip`, Unicode search.
+
+**Verified:** 366/366 editor-build and 365/365 player-build tests; scripted in-client run with
+screenshots (studio, DK swords by tier, grid, sync, launcher, unchanged `--world 1`), Metal
+validation clean, ~75 fps with 959 items.
+
+**Open / next:** hand test by the owner; I4 preview (level/excellent/ancient, equipped).
+
+## 2026-09-23 - Item style pilot: Axe01, Shield01 and Wing01 (Codex)
+**Goal:** Prepare faithful A and bolder B offline style variants for three item attachment types so the owner can choose an art direction before mass rework.
+
+**Done:** Created six editable Blender sources, exported BMDs and matching 256×256 game texture containers, before/A/B study-camera renders, per-item comparison sheets and an owner review README under `assets-work/Items/pilot/`. Preserved the original model paths, one-mesh layout, attachment bounds/transforms, bone order and action key counts. Pulled and fast-forwarded to `origin/main` at `6f93a708` before finalizing the pilot.
+
+**Verified:** `bmdconv validate` passed for all six mesh and action exports; `bmdconv compare` ran against each original and confirmed matching mesh/skeleton/action structure and bone motion (geometry differences are intentional); all six texture containers passed `mu_texture.py check`. All variants are below 1500 triangles and use 256×256 maps. Nothing was installed under `src/bin/Data`; no client check was performed.
+
+**Open / next:** Owner review and per-item A/B selection. Route chosen assets through the item editor request flow, then verify equipped placement and in-client materials before acceptance.
+
+## 2026-09-23 - Item editor I4: live 3D preview (Claude Opus 5.5)
+**Goal:** Milestone I4 of `ITEM_EDITOR_PLAN.md`.
+
+**Done:** turntable, inventory, ground and equipped views with +level, excellent and ancient,
+drawn by the game's own code on a preview character of its own; `RenderDroppedItem` /
+`PlaceItemOnGround` shared with the game (same behaviour).
+
+**Verified:** 382/382 editor-build and 381/381 player-build tests; scripted in-client run with
+screenshots of every acceptance view; Metal validation clean; ~75 fps.
+
+**Open / next:** owner hand test; compare the inventory slot scale and sword stance with the game;
+I5 needs a texture readback for clean captures.
+
+## 2026-09-23 - Item concept image tool (Claude Opus 5.5)
+**Goal:** Owner's idea: generate 2-3 concept variants for 10-20 items in parallel through the
+OpenAI Images API, pick the best, and hand the pick to Codex for Blender modeling.
+
+**Done:** `tools/item_editor/concepts.py` (plan, refs, run, sheet, pick) with presets
+explore (gpt-image-2.5-flare medium) and final (gpt-image-2.5-sunburst high), cost caps and key
+safety; docs in `assets-work/Items/concepts/README.md`. Model choice researched from OpenAI's
+docs and the owner's pricing page.
+
+**Verified:** 82 Python tests against a mock server; reference renders checked by eye.
+
+**Open / next:** the owner sets `OPENAI_API_KEY` and a project budget limit, then a first real
+explore batch (study top 10 x 3); compare estimated and actual `usage`.
+
+## 2026-09-23 - Item concepts backend for the editor (I5b part 1) (Claude Opus 5.5)
+**Goal:** Let the Item Editor drive `concepts.py`: the owner asked for concepts inside the editor
+(select items, generate, pick or refine with a comment, hand to Codex).
+
+**Done:** key from `$OPENAI_API_KEY` or the macOS Keychain item `openai-api-key` (an app started
+from Finder does not read `~/.zshrc`); Python 3.9 support (Apple's `/usr/bin/python3`); paths
+from the repository root; a versioned JSON protocol (`--json` one-shot, `--json-progress` JSON
+Lines, exit codes incl. 5 no key, 6 busy, 130 cancelled); SIGTERM cancellation with resume;
+batch locks; `list`/`discard`/`undiscard`; refine from a variant with a comment
+(`run --from <batch>/<key>/vN --note ...`, editable `## refine` prompt). Protocol in
+`assets-work/Items/concepts/README.md`.
+
+**Verified:** 113 tests on Python 3.9.6 and 3.12.6 (mock server, injected Keychain runner,
+subprocess cancellation); a real `plan --json` found the Keychain key without printing it.
+
+**Open / next:** I5b editor panel on top of I5 (PR #33) and this branch.
+## 2026-09-23 - Item editor I5: Ask Codex, captures, Requests tab (Claude Opus 5.5)
+**Goal:** Milestone I5 of `ITEM_EDITOR_PLAN.md`.
+
+**Done:** editor-only texture read-back and scripted clean captures, the Ask Codex dialog writing
+validated `mu-item-regen-request/1` folders with the picked concept, verdicts, the Requests tab
+with withdraw / accept / reject / re-file, live request status; the catalog check ignores request
+status.
+
+**Verified:** 395/395 editor-build, 394/394 player-build, 87 tools tests; scripted in-client run
+of every acceptance point; Metal validation clean.
+
+**Open / next:** owner files the first real request (I7 pilot); I5b concepts inside the editor.
+
+## 2026-09-23 - Item editor I5b: concepts in the editor (Claude Opus 5.5)
+**Goal:** The owner's workflow inside the Item Editor: select items, generate concept images,
+pick or refine with a comment, hand the pick to Codex; plus pointer, full screen and UI size.
+
+**Done:** multi-select, Generate dialog with the real estimate, background job with cancel and
+resume, Concepts section (pick, refine, discard), concept in Ask Codex, visible pointer in the
+studio, full screen, remembered UI scale, front captures show the broad face.
+
+**Verified:** 408/408 and 407/407 tests, 114 tools tests; scripted in-client run against a local
+fake API (no spending) with the owner's real concept batch copied in.
+
+**Open / next:** the owner's first real generate from the editor; I6 A/B compare; I7 pilot.
+
 ## 2026-09-23 - M8: eyes for an AI agent (Claude Opus 5.5, branch feat/ai-map-editing)
 **Goal:** Let an agent see a map through the control socket on the Mac editor build, keep the client
 answering while its window is hidden, and fix the terrain loaders' memory-safety bugs.

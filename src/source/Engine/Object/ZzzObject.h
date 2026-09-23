@@ -78,7 +78,12 @@ void RenderPartObjectEdge2(BMD* b, OBJECT* o, int Flag, bool Translate, float Sc
 void RenderPartObjectEdgeLight(BMD* b, OBJECT* o, int Flag, bool Translate, float Scale);
 
 void RenderItems();
+// One item lying on the ground as RenderItems draws it (`index` is its Items[] slot; it
+// only varies the bobbing on maps where items float).
+void RenderDroppedItem(ITEM_t* item, int index);
 void MoveItems();
+// A dropped item that reached the ground: its resting height and angle.
+void PlaceItemOnGround(OBJECT* o);
 int SelectItem();
 int GetScreenWidth();
 void ClearItems();

@@ -1,6 +1,6 @@
 # Current checkpoint — 2026-09-23
 
-PR #12 and PR #13 are merged; Object48 is in ready-for-review PR #16. The Lorencia goal remains open: its 22 accepted replacements and 84 retained decisions are first-pass coverage. New client verification is pending. Object48 passed bounded independent review and has been integrated in its own branch; the integrated BMD, export and texture-resolution evidence are recorded under assets-work/World2/Remains48. Next production priority is Lorencia.
+Current owner-fork main is `1256aeed`. The Lorencia independent artistic/offline gate is complete at `bb641d04` (22 replacements plus 84 justified retention decisions); new client verification remains pending. Four Dungeon replacements are merged. Retention PRs #17–#20 have also merged: Objects49/50, Object51, Object37 and Object42/43 remain unchanged. PR #22 records Objects45–47; PR #23 documents rejected support studies for Objects06/13/15 and passed independent review. PR #21, editor documentation, also merged. Continue Dungeon's actual-placement inventory before selecting another production batch.
 
 # Environment production progress
 
@@ -113,3 +113,9 @@ Per replacement require untouched references, packed source.blend with REF_ORIGI
 ## First prototype directions
 
 Object29 rounded shoulder and thick open ceramic lip passed independent direction review at782 triangles with exact original interior and all tilted support bounds; a lower-density16-side version is being checked before shared family propagation. The first Object22 lid passed its authored export audit but paired context showed weak artistic gain, and a separate tilted-placement audit caught up to1.635 units of horizontal expansion. That study is rejected for final acceptance. The artist is correcting its profile and focusing on tangible Object21 wall/rim construction, then reviewing the pair. No Dungeon game file is accepted or installed in integration yet.
+
+## 2026-09-23 — Merged checkpoints and portable Lorencia review evidence
+
+Owner-fork main was pulled into the isolated integration worktree after the user merged PR #12 and subsequent review checkpoints; it is now at `0cc611bc`. The primary checkout, including its user edits, was left untouched. PRs #12, #13, and #16–#24 are merged. The refreshed Lorencia challenge reviewed all final accepted/retained status claims and recovered three masonry placement contexts whose earlier evidence links pointed to removed worktrees. Current BMDs and all 17 selected placement records were re-imported using the official Blender importer; all 52 packaged evidence files pass their SHA-256 manifest. The independent offline finding remains retention: no new placed-scale defect or additional production batch was demonstrated. This is not live-client verification.
+
+Dungeon inventory continues independently. Object44 has one bounded exposed-skeleton silhouette test in progress on `codex/dungeon-remains44`; its shared textures and neighboring models are frozen. No outcome is accepted yet. Continue actual-placement review of remaining static assets and publish the next accepted or rejected checkpoint as a focused, review-ready owner-fork PR.

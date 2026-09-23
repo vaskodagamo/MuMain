@@ -1,0 +1,47 @@
+{
+  "Object01": {
+    "src/bin/Data/Object2/Object01.bmd": "aea82532ebb824c2aac1cbbe277135ad96a7379f3f9a615a6a1b9ccfcae1ee01",
+    "src/bin/Data/Object2/deep_wall01.OZJ": "78379458cc441ce547c482f20656e13f6672fd565c39373865de7fb9ebb9504a",
+    "src/bin/Data/Object2/deep_wall02.OZJ": "56690fc74a00d9b1b59a80f1a9c9ffc5222680aa20822cbdc79016d7b17c9457"
+  },
+  "Object02": {
+    "src/bin/Data/Object2/Object02.bmd": "a163f19298daa41e05f152331654e2e1c8fa0b87d3a693ff16dbd95b715c9493",
+    "src/bin/Data/Object2/cobweb.OZT": "a96e8317b545d326a0b94faffbd46fdd6fe3a8b7a8541103a423535036b98d91"
+  },
+  "Object04": {
+    "src/bin/Data/Object2/Object04.bmd": "e0df1c4477e02bb37d59155dbf56a5f1f7bacaa064bb34568ce738de07c8ae1f",
+    "src/bin/Data/Object2/deep_wall01.OZJ": "78379458cc441ce547c482f20656e13f6672fd565c39373865de7fb9ebb9504a",
+    "src/bin/Data/Object2/deep_wall03.OZJ": "dee54424992a14b93c9732599c4190c164932c7f98708e9aa21ca03a21f63168"
+  },
+  "Object17": {
+    "src/bin/Data/Object2/Object17.bmd": "ab347c35e3132b4c3f73247580458c7d6bf34342bf4d29c92f3764c3ea4f8ced",
+    "src/bin/Data/Object2/deep_wall06.OZJ": "8fcac31bf1d1bf5883d7782edbdca4f7466021927bc59ee41f82011d8f586917",
+    "src/bin/Data/Object2/deep_wall03.OZJ": "dee54424992a14b93c9732599c4190c164932c7f98708e9aa21ca03a21f63168",
+    "src/bin/Data/Object2/deep_wall01.OZJ": "78379458cc441ce547c482f20656e13f6672fd565c39373865de7fb9ebb9504a",
+    "src/bin/Data/Object2/deep_dragon.OZJ": "be26e720f92584d13c212f452eac4f1f13e20f5f716e5acae7d0b285099dda49",
+    "src/bin/Data/Object2/wire_netting01.OZJ": "03e1e421fe948aedcacae122dab6c777d0990069a4b97a7cd6994c889b73f4aa"
+  },
+  "Object18": {
+    "src/bin/Data/Object2/Object18.bmd": "16fab1b3d2cc50849841ebe2a66414433fde2682cdd6b877a3eac294b7def38b",
+    "src/bin/Data/Object2/steel_02.OZT": "7c7f109f7fcab32aaa1c1a25fc59a6be3db1bd25516aa1f07f768a76fde0d286"
+  },
+  "Object21": {
+    "src/bin/Data/Object2/Object21.bmd": "6e4a0e4324cedc6f9b25f0f865f4943b9b81319dde6ef3b92f69182134457653",
+    "src/bin/Data/Object2/wood01.OZJ": "e54a1ed261bc161b055d3127c97b300faa0a93cdbac72fec84d95c26322842fa"
+  },
+  "Object28": {
+    "src/bin/Data/Object2/Object28.bmd": "167441ae9389aafe70e9785214b7a6302db7fadeabdb213c18f94f8b4bf80919",
+    "src/bin/Data/Object2/flower_vase.OZJ": "620c869c532746414e8a48677940ba9c7fa32b419953699d153ec6784453b9f3",
+    "src/bin/Data/Object2/deep_wall04.OZJ": "83037896d1e2825447e840b4af780ed3608b12c5971c8369eccdfc0f4fb21505"
+  },
+  "Object42": {
+    "src/bin/Data/Object2/Object42.bmd": "63a03874ca7f76b8152362530b7e114365b322919849609f819e04d12f90f4da",
+    "src/bin/Data/Object2/wood01.OZJ": "e54a1ed261bc161b055d3127c97b300faa0a93cdbac72fec84d95c26322842fa",
+    "src/bin/Data/Object2/fire0a.OZJ": "33a99dc310a146e62f6b04d439a46c2c7baee37606725a22bbcca1470dd993ac"
+  },
+  "Object43": {
+    "src/bin/Data/Object2/Object43.bmd": "d21ee62c9bc56b26848c5d21dd11ba728dc73582a70421d86f63f97e42048ce0",
+    "src/bin/Data/Object2/wood01.OZJ": "e54a1ed261bc161b055d3127c97b300faa0a93cdbac72fec84d95c26322842fa",
+    "src/bin/Data/Object2/fire0a.OZJ": "33a99dc310a146e62f6b04d439a46c2c7baee37606725a22bbcca1470dd993ac"
+  }
+}

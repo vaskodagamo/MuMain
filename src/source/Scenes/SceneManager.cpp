@@ -53,6 +53,7 @@ FrameTimingState g_frameTiming;
 #include "Camera/CameraMode.h"
 
 #ifdef _EDITOR
+#include "../MuEditor/Core/ItemStudio.h"
 #include "../MuEditor/Core/MuEditorCore.h"
 #include "../MuEditor/Core/OfflineWorld.h"
 #include "imgui.h"
@@ -547,6 +548,17 @@ static void SetWorldClearColor()
     };
 
     const int world = gMapManager.WorldActive;
+
+#ifdef _EDITOR
+    // The editor's item studio (--editor --items) shows a plain backdrop instead of the map.
+    if (Editor::ItemStudio::ShowsBackdropOnly())
+    {
+        const Editor::ItemStudio::Color backdrop = Editor::ItemStudio::BACKDROP_COLOR;
+        SetClearAndFogColor(backdrop.r, backdrop.g, backdrop.b);
+        mu::GetRenderer().ClearScreen();
+        return;
+    }
+#endif
 
     if (world == WD_0LORENCIA)
         rgb8(10, 20, 14);                              // Dark green

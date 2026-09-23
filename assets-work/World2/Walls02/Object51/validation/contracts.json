@@ -1,0 +1,87 @@
+{
+  "status": "PASS",
+  "counts": [
+    56,
+    66
+  ],
+  "frozen_triangles": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49
+  ],
+  "placements_checked": 178,
+  "maximum_support_bounds_error": 0,
+  "minimum_corner_normal_dot": 0.9999732833344951,
+  "minimum_uv_area": 0.00030501319200000165,
+  "raw_bindings": [
+    {
+      "file": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-wall51/assets-work/World2/Walls02/Object51/baseline/Object51.bmd",
+      "mesh_bindings": [
+        {
+          "mesh": 0,
+          "material": "deep_wall12.jpg",
+          "vertex_to_normal_node_mismatch_corner_counts": {}
+        }
+      ]
+    },
+    {
+      "file": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-wall51/assets-work/World2/Walls02/Object51/exports/Object51.bmd",
+      "mesh_bindings": [
+        {
+          "mesh": 0,
+          "material": "deep_wall12.jpg",
+          "vertex_to_normal_node_mismatch_corner_counts": {}
+        }
+      ]
+    }
+  ],
+  "raw32_name": "44617461325c4f626a656374325cbcaebbd4baae30332e736d64000000000000",
+  "metadata_header_equal": true,
+  "exact_nodes_and_all_action_rows": true,
+  "texture_frozen": true
+}

@@ -328,9 +328,10 @@ static void BlitTextureToSwapchain(SDL_GPUCommandBuffer* commandBuffer, SDL_GPUT
     SDL_BlitGPUTexture(commandBuffer, &blit);
 }
 
-[[nodiscard]] static std::optional<FramePixelDownload> EncodeFramePixelDownload(SDL_GPUCommandBuffer* commandBuffer,
-                                                                                SDL_GPUTexture* sourceTexture,
-                                                                                SDL_GPUTextureFormat format)
+[[nodiscard]] static std::optional<FramePixelDownload> EncodePixelDownload(SDL_GPUCommandBuffer* commandBuffer,
+                                                                           SDL_GPUTexture* sourceTexture,
+                                                                           SDL_GPUTextureFormat format, Uint32 width,
+                                                                           Uint32 height)
 {
     const auto channelOrder = GetSdlGpuPixelChannelOrder(format);
     if (!channelOrder)
@@ -339,16 +340,16 @@ static void BlitTextureToSwapchain(SDL_GPUCommandBuffer* commandBuffer, SDL_GPUT
         return std::nullopt;
     }
 
-    const std::uint64_t rowBytes = static_cast<std::uint64_t>(s_swapW) * FrameReadbackBytesPerPixel;
+    const std::uint64_t rowBytes = static_cast<std::uint64_t>(width) * FrameReadbackBytesPerPixel;
     const std::uint64_t alignedRowPitch =
         (rowBytes + FrameReadbackRowAlignment - 1u) & ~(static_cast<std::uint64_t>(FrameReadbackRowAlignment) - 1u);
     const std::uint64_t maximumByteCount = std::numeric_limits<Uint32>::max();
-    if (s_swapW == 0u || s_swapH == 0u || alignedRowPitch > maximumByteCount / s_swapH)
+    if (width == 0u || height == 0u || alignedRowPitch > maximumByteCount / height)
     {
-        mu::log::Get("render")->warn("SDL_gpu -- invalid frame readback dimensions {}x{}", s_swapW, s_swapH);
+        mu::log::Get("render")->warn("SDL_gpu -- invalid frame readback dimensions {}x{}", width, height);
         return std::nullopt;
     }
-    const std::uint64_t byteCount = alignedRowPitch * s_swapH;
+    const std::uint64_t byteCount = alignedRowPitch * height;
 
     SDL_GPUTransferBufferCreateInfo transferInfo{};
     transferInfo.usage = SDL_GPU_TRANSFERBUFFERUSAGE_DOWNLOAD;
@@ -370,14 +371,14 @@ static void BlitTextureToSwapchain(SDL_GPUCommandBuffer* commandBuffer, SDL_GPUT
 
     SDL_GPUTextureRegion source{};
     source.texture = sourceTexture;
-    source.w = s_swapW;
-    source.h = s_swapH;
+    source.w = width;
+    source.h = height;
     source.d = 1u;
 
     SDL_GPUTextureTransferInfo destination{};
     destination.transfer_buffer = transferBuffer;
     destination.pixels_per_row = static_cast<Uint32>(alignedRowPitch) / FrameReadbackBytesPerPixel;
-    destination.rows_per_layer = s_swapH;
+    destination.rows_per_layer = height;
 
     SDL_DownloadFromGPUTexture(copyPass, &source, &destination);
     SDL_EndGPUCopyPass(copyPass);
@@ -386,14 +387,24 @@ static void BlitTextureToSwapchain(SDL_GPUCommandBuffer* commandBuffer, SDL_GPUT
                               *channelOrder};
 }
 
-[[nodiscard]] static bool SubmitFramePixelDownload(SDL_GPUCommandBuffer* commandBuffer, SDL_GPUTexture* sourceTexture,
-                                                   SDL_GPUTextureFormat format)
+enum class PixelDownloadResult
 {
-    const auto download = EncodeFramePixelDownload(commandBuffer, sourceTexture, format);
+    NotSubmitted, // nothing was encoded; the command buffer is still the caller's
+    Failed,       // the command buffer was submitted, but no pixels came back
+    Completed,
+};
+
+// Downloads `sourceTexture` (width x height) at the end of `commandBuffer`, submits
+// it and waits for the GPU, then converts the bytes to top-down RGB.
+[[nodiscard]] static PixelDownloadResult SubmitPixelDownload(SDL_GPUCommandBuffer* commandBuffer,
+                                                             SDL_GPUTexture* sourceTexture,
+                                                             SDL_GPUTextureFormat format, Uint32 width,
+                                                             Uint32 height, FramePixels& pixels)
+{
+    const auto download = EncodePixelDownload(commandBuffer, sourceTexture, format, width, height);
     if (!download)
     {
-        s_frameReadbackState.Fail();
-        return false;
+        return PixelDownloadResult::NotSubmitted;
     }
 
     SDL_GPUFence* fence = SDL_SubmitGPUCommandBufferAndAcquireFence(commandBuffer);
@@ -401,8 +412,7 @@ static void BlitTextureToSwapchain(SDL_GPUCommandBuffer* commandBuffer, SDL_GPUT
     {
         mu::log::Get("render")->warn("SDL_gpu -- frame readback fence acquisition failed: {}", SDL_GetError());
         SDL_ReleaseGPUTransferBuffer(s_device, download->transferBuffer);
-        s_frameReadbackState.Fail();
-        return true;
+        return PixelDownloadResult::Failed;
     }
 
     SDL_GPUFence* fences[] = {fence};
@@ -417,12 +427,11 @@ static void BlitTextureToSwapchain(SDL_GPUCommandBuffer* commandBuffer, SDL_GPUT
         mu::log::Get("render")->warn("SDL_gpu -- frame readback map failed: {}", SDL_GetError());
     }
 
-    FramePixels pixels;
     bool converted = false;
     if (mapped)
     {
         const auto* bytes = static_cast<const std::uint8_t*>(mapped);
-        converted = ConvertToTopDownRgb(std::span<const std::uint8_t>(bytes, download->byteCount), s_swapW, s_swapH,
+        converted = ConvertToTopDownRgb(std::span<const std::uint8_t>(bytes, download->byteCount), width, height,
                                         download->rowPitch, download->channelOrder, false, pixels);
         SDL_UnmapGPUTransferBuffer(s_device, download->transferBuffer);
     }
@@ -436,12 +445,27 @@ static void BlitTextureToSwapchain(SDL_GPUCommandBuffer* commandBuffer, SDL_GPUT
         {
             mu::log::Get("render")->warn("SDL_gpu -- frame readback pixel conversion failed");
         }
-        s_frameReadbackState.Fail();
-        return true;
+        return PixelDownloadResult::Failed;
     }
+    return PixelDownloadResult::Completed;
+}
 
-    s_frameReadbackState.Complete(std::move(pixels));
-    return true;
+// Returns whether `commandBuffer` was submitted.
+[[nodiscard]] static bool SubmitFramePixelDownload(SDL_GPUCommandBuffer* commandBuffer, SDL_GPUTexture* sourceTexture,
+                                                   SDL_GPUTextureFormat format)
+{
+    FramePixels pixels;
+    const PixelDownloadResult result =
+        SubmitPixelDownload(commandBuffer, sourceTexture, format, s_swapW, s_swapH, pixels);
+    if (result == PixelDownloadResult::Completed)
+    {
+        s_frameReadbackState.Complete(std::move(pixels));
+    }
+    else
+    {
+        s_frameReadbackState.Fail();
+    }
+    return result != PixelDownloadResult::NotSubmitted;
 }
 
 // Diagnostics: per-frame counters, reset in BeginFrame, logged every 300 frames.
@@ -897,6 +921,11 @@ static Uint32 s_offscreenCaptureHeight = 0u;
 static SDL_GPUTexture* s_offscreenDepthTexture = nullptr;
 static Uint32 s_offscreenDepthW = 0u;
 static Uint32 s_offscreenDepthH = 0u;
+
+// The one texture whose pixels RequestTexturePixels() asked for; read back after
+// the next submitted frame (see ReadBackRequestedTexture).
+static FrameReadbackState s_textureReadbackState;
+static std::uint32_t s_textureReadbackId = 0u;
 
 // Dear ImGui's pipeline rebuilt for the main pass's colour and depth formats (see
 // CreateEditorOverlayPipeline). nullptr lets ImGui fall back to its own pipeline.
@@ -2161,6 +2190,10 @@ public:
             s_cmdBuf = nullptr;
         }
 
+#ifdef _EDITOR
+        ReadBackRequestedTexture();
+#endif
+
         if (IsFrameTimingEnabled())
         {
             s_submitTime = std::chrono::steady_clock::now();
@@ -2902,6 +2935,32 @@ public:
     [[nodiscard]] bool HasPendingOffscreenCaptures() const override
     {
         return !s_pendingOffscreenCaptures.empty();
+    }
+
+    [[nodiscard]] bool RequestTexturePixels(std::uint32_t textureId) override
+    {
+        if (textureId == 0u || !s_ownedTextureIds.contains(textureId) || !s_textureReadbackState.Request())
+        {
+            return false;
+        }
+        s_textureReadbackId = textureId;
+        return true;
+    }
+
+    [[nodiscard]] bool IsTexturePixelsPending() const override
+    {
+        return s_textureReadbackState.IsPending();
+    }
+
+    [[nodiscard]] bool ConsumeTexturePixels(FramePixels& pixels) override
+    {
+        FramePixels completed = s_textureReadbackState.Consume();
+        if (completed.rgb.empty())
+        {
+            return false;
+        }
+        pixels = std::move(completed);
+        return true;
     }
 #endif // _EDITOR
 
@@ -4568,6 +4627,45 @@ private:
         s_offscreenDepthW = width;
         s_offscreenDepthH = height;
         return true;
+    }
+
+    // Reads the texture RequestTexturePixels() asked for, as this frame's
+    // offscreen captures left it: a copy pass in a command buffer of its own,
+    // submitted after the frame's, whose fence the CPU waits for. Offscreen
+    // capture targets have the swapchain's format (EnsureOffscreenColorTexture).
+    void ReadBackRequestedTexture()
+    {
+        if (!s_textureReadbackState.IsPending())
+        {
+            return;
+        }
+        const auto texture = s_textureMap.find(s_textureReadbackId);
+        const auto size = s_textureSizes.find(s_textureReadbackId);
+        SDL_GPUCommandBuffer* commandBuffer =
+            texture != s_textureMap.end() && size != s_textureSizes.end() ? SDL_AcquireGPUCommandBuffer(s_device)
+                                                                           : nullptr;
+        if (!commandBuffer)
+        {
+            s_textureReadbackState.Fail();
+            return;
+        }
+
+        FramePixels pixels;
+        const PixelDownloadResult result = SubmitPixelDownload(
+            commandBuffer, static_cast<SDL_GPUTexture*>(texture->second),
+            SDL_GetGPUSwapchainTextureFormat(s_device, s_window), size->second.first, size->second.second, pixels);
+        if (result == PixelDownloadResult::NotSubmitted)
+        {
+            SDL_SubmitGPUCommandBuffer(commandBuffer);
+        }
+        if (result == PixelDownloadResult::Completed)
+        {
+            s_textureReadbackState.Complete(std::move(pixels));
+        }
+        else
+        {
+            s_textureReadbackState.Fail();
+        }
     }
 
     // Replays each pending offscreen capture's recorded command range (see

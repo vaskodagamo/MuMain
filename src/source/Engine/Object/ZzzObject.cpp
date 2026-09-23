@@ -6468,7 +6468,7 @@ static void HandleItemFalling(OBJECT* o)
 }
 
 // Helper: Handle item on ground (set angle and camera rotation)
-static void HandleItemOnGround(OBJECT* o)
+void PlaceItemOnGround(OBJECT* o)
 {
     o->Position[2] = RequestTerrainHeight(o->Position[0], o->Position[1]) + 30.f;
     if (o->Type >= MODEL_SWORD && o->Type < MODEL_STAFF + MAX_ITEM_INDEX)
@@ -6508,7 +6508,7 @@ void MoveItems()
             // Check if item is on ground or still falling
             if (o->Position[2] <= groundHeight)
             {
-                HandleItemOnGround(o);
+                PlaceItemOnGround(o);
             }
             else
             {
@@ -6548,7 +6548,7 @@ void RenderZen(int itemIndex, ITEM_t* item, vec3_t light)
     vec3_t tempPosition;
     VectorCopy(o->Position, tempPosition);
 
-    int coinCount = static_cast<int>(sqrtf(static_cast<float>(Items[k].Item.Level))) / 2;
+    int coinCount = static_cast<int>(sqrtf(static_cast<float>(item->Item.Level))) / 2;
 
     coinCount = std::max<int>(std::min<int>(coinCount, MaxRenderedZenCoins), 3);
 
@@ -6594,6 +6594,62 @@ void RenderZen(int itemIndex, ITEM_t* item, vec3_t light)
 }
 
 // Render dropped items and fall animation and camera rotation for items on the ground
+void RenderDroppedItem(ITEM_t* item, int index)
+{
+    OBJECT* o = &item->Object;
+    int Type = o->Type;
+    if (o->Type >= MODEL_HELM && o->Type < MODEL_BOOTS + MAX_ITEM_INDEX)
+        Type = MODEL_PLAYER;
+    else if (o->Type == MODEL_POTION + 12)
+    {
+        int Level = item->Item.Level;
+        if (Level == 0)
+            Type = MODEL_EVENT;
+        else if (Level == 2)
+            Type = MODEL_EVENT + 1;
+    }
+    BMD* b = &Models[Type];
+    b->CurrentAction = 0;
+    b->Skin = gCharacterManager.GetBaseClass(Hero->Class); // ???
+    b->CurrentAction = o->CurrentAction;
+    VectorCopy(o->Position, b->BodyOrigin);
+    ItemHeight(o->Type, b);
+    b->Animation(BoneTransform, o->AnimationFrame, o->PriorAnimationFrame, o->PriorAction, o->Angle, o->HeadAngle, false, false);
+
+    if (o->Type >= MODEL_HELM && o->Type < MODEL_BOOTS + MAX_ITEM_INDEX)
+        Type = o->Type;
+    b = &Models[Type];
+    vec3_t Light;
+    RequestTerrainLight(o->Position[0], o->Position[1], Light);
+    VectorAdd(Light, o->Light, Light);
+    if (o->Type == MODEL_ZEN) // Zen
+    {
+        RenderZen(index, item, Light);
+    }
+    else if (o->Type == MODEL_CAPE_OF_OVERRULE)
+    {
+        Vector(1.0f, 1.0f, 1.0f, Light);
+    }
+
+    vec3_t vBackup;
+    VectorCopy(o->Position, vBackup);
+    if (gMapManager.WorldActive == WD_10HEAVEN)
+    {
+        o->Position[2] += 10.0f * (float)sinf((float)(index * 1237 + WorldTime) * 0.002f);
+    }
+    else if (gMapManager.WorldActive == WD_39KANTURU_3RD && g_Direction.m_CKanturu.IsMayaScene())
+    {
+        o->Position[2] += 10.0f * (float)sinf((float)(index * 1237 + WorldTime) * 0.002f);
+    }
+    else if (gMapManager.InHellas() == true)
+    {
+        o->Position[2] = GetWaterTerrain(o->Position[0], o->Position[1]) + 180;
+    }
+
+    RenderPartObject(o, o->Type, NULL, Light, o->Alpha, item->Item.Level, item->Item.ExcellentFlags, item->Item.AncientDiscriminator, true, true, true);
+    VectorCopy(vBackup, o->Position);
+}
+
 void RenderItems()
 {
     for (int i = 0; i < MAX_ITEMS; i++)
@@ -6618,57 +6674,7 @@ void RenderItems()
 
             if (o->Visible)
             {
-                int Type = o->Type;
-                if (o->Type >= MODEL_HELM && o->Type < MODEL_BOOTS + MAX_ITEM_INDEX)
-                    Type = MODEL_PLAYER;
-                else if (o->Type == MODEL_POTION + 12)
-                {
-                    int Level = Items[i].Item.Level;
-                    if (Level == 0)
-                        Type = MODEL_EVENT;
-                    else if (Level == 2)
-                        Type = MODEL_EVENT + 1;
-                }
-                BMD* b = &Models[Type];
-                b->CurrentAction = 0;
-                b->Skin = gCharacterManager.GetBaseClass(Hero->Class); // ???
-                b->CurrentAction = o->CurrentAction;
-                VectorCopy(o->Position, b->BodyOrigin);
-                ItemHeight(o->Type, b);
-                b->Animation(BoneTransform, o->AnimationFrame, o->PriorAnimationFrame, o->PriorAction, o->Angle, o->HeadAngle, false, false);
-
-                if (o->Type >= MODEL_HELM && o->Type < MODEL_BOOTS + MAX_ITEM_INDEX)
-                    Type = o->Type;
-                b = &Models[Type];
-                vec3_t Light;
-                RequestTerrainLight(o->Position[0], o->Position[1], Light);
-                VectorAdd(Light, o->Light, Light);
-                if (o->Type == MODEL_ZEN) // Zen
-                {
-                    RenderZen(i, &Items[i], Light);
-                }
-                else if (o->Type == MODEL_CAPE_OF_OVERRULE)
-                {
-                    Vector(1.0f, 1.0f, 1.0f, Light);
-                }
-
-                vec3_t vBackup;
-                VectorCopy(o->Position, vBackup);
-                if (gMapManager.WorldActive == WD_10HEAVEN)
-                {
-                    o->Position[2] += 10.0f * (float)sinf((float)(i * 1237 + WorldTime) * 0.002f);
-                }
-                else if (gMapManager.WorldActive == WD_39KANTURU_3RD && g_Direction.m_CKanturu.IsMayaScene())
-                {
-                    o->Position[2] += 10.0f * (float)sinf((float)(i * 1237 + WorldTime) * 0.002f);
-                }
-                else if (gMapManager.InHellas() == true)
-                {
-                    o->Position[2] = GetWaterTerrain(o->Position[0], o->Position[1]) + 180;
-                }
-
-                RenderPartObject(o, o->Type, NULL, Light, o->Alpha, Items[i].Item.Level, Items[i].Item.ExcellentFlags, Items[i].Item.AncientDiscriminator, true, true, true);
-                VectorCopy(vBackup, o->Position);
+                RenderDroppedItem(&Items[i], i);
 
 #ifdef _EDITOR
                 // Debug visualization: OBB used by SelectItem for ray-vs-pickup test.

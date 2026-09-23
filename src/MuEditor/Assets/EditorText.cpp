@@ -102,6 +102,89 @@ std::string EscapedByte(char c)
     return {ESCAPE_MARK, HEX_DIGITS[byte >> HIGH_NIBBLE_SHIFT], HEX_DIGITS[byte & LOW_NIBBLE_MASK]};
 }
 
+// The small letter of a capital in the scripts FoldCase covers; other code points unchanged.
+constexpr char32_t LATIN1_CAPITAL_FIRST = 0xC0;
+constexpr char32_t LATIN1_CAPITAL_LAST = 0xDE;
+constexpr char32_t MULTIPLICATION_SIGN = 0xD7;
+constexpr char32_t LATIN_EXTENDED_A_FIRST = 0x100;
+constexpr char32_t LATIN_EXTENDED_A_LAST = 0x17F;
+constexpr char32_t DOTTED_CAPITAL_I = 0x130; // folds to plain 'i' (its small form is ASCII)
+constexpr char32_t ODD_PAIRS_FIRST = 0x139;  // from here to 0x148 and 0x179..0x17E the capital is odd
+constexpr char32_t ODD_PAIRS_LAST = 0x148;
+constexpr char32_t ODD_PAIRS_TAIL_FIRST = 0x179;
+constexpr char32_t ODD_PAIRS_TAIL_LAST = 0x17E;
+constexpr char32_t CAPITAL_Y_DIAERESIS = 0x178;
+constexpr char32_t SMALL_Y_DIAERESIS = 0xFF;
+constexpr char32_t PAIRLESS_IN_EXTENDED_A[] = {0x131, 0x138, 0x149, 0x17F};
+constexpr char32_t GREEK_CAPITAL_FIRST = 0x391;
+constexpr char32_t GREEK_CAPITAL_LAST = 0x3A9;
+constexpr char32_t GREEK_UNUSED = 0x3A2;
+constexpr char32_t CYRILLIC_CAPITAL_FIRST = 0x410;
+constexpr char32_t CYRILLIC_CAPITAL_LAST = 0x42F;
+constexpr char32_t CYRILLIC_EXTRA_CAPITAL_FIRST = 0x400; // Ѐ..Џ: their small letters are 0x50 higher
+constexpr char32_t CYRILLIC_EXTRA_CAPITAL_LAST = 0x40F;
+constexpr char32_t CASE_OFFSET = 0x20; // capital -> small in ASCII, Latin-1, Greek and basic Cyrillic
+constexpr char32_t CYRILLIC_EXTRA_OFFSET = 0x50;
+
+bool InRange(char32_t value, char32_t first, char32_t last)
+{
+    return value >= first && value <= last;
+}
+
+char32_t FoldLatinExtendedA(char32_t value)
+{
+    if (value == DOTTED_CAPITAL_I)
+        return U'i';
+    if (value == CAPITAL_Y_DIAERESIS)
+        return SMALL_Y_DIAERESIS;
+    if (std::find(std::begin(PAIRLESS_IN_EXTENDED_A), std::end(PAIRLESS_IN_EXTENDED_A), value) !=
+        std::end(PAIRLESS_IN_EXTENDED_A))
+        return value;
+    const bool capitalIsOdd =
+        InRange(value, ODD_PAIRS_FIRST, ODD_PAIRS_LAST) || InRange(value, ODD_PAIRS_TAIL_FIRST, ODD_PAIRS_TAIL_LAST);
+    const bool isOdd = (value & 1U) != 0;
+    return isOdd == capitalIsOdd ? value + 1 : value;
+}
+
+char32_t FoldCodePoint(char32_t value)
+{
+    if (InRange(value, U'A', U'Z'))
+        return value + CASE_OFFSET;
+    if (InRange(value, LATIN1_CAPITAL_FIRST, LATIN1_CAPITAL_LAST) && value != MULTIPLICATION_SIGN)
+        return value + CASE_OFFSET;
+    if (InRange(value, LATIN_EXTENDED_A_FIRST, LATIN_EXTENDED_A_LAST))
+        return FoldLatinExtendedA(value);
+    if (InRange(value, GREEK_CAPITAL_FIRST, GREEK_CAPITAL_LAST) && value != GREEK_UNUSED)
+        return value + CASE_OFFSET;
+    if (InRange(value, CYRILLIC_CAPITAL_FIRST, CYRILLIC_CAPITAL_LAST))
+        return value + CASE_OFFSET;
+    if (InRange(value, CYRILLIC_EXTRA_CAPITAL_FIRST, CYRILLIC_EXTRA_CAPITAL_LAST))
+        return value + CYRILLIC_EXTRA_OFFSET;
+    return value;
+}
+
+// Appends the UTF-8 sequence of `value` (at most U+FFFF: FoldCodePoint never
+// changes a code point into a longer sequence than 3 bytes).
+constexpr char32_t ONE_BYTE_LIMIT = 0x80;
+constexpr char32_t TWO_BYTE_LIMIT = 0x800;
+void AppendUtf8(std::string& out, char32_t value)
+{
+    if (value < ONE_BYTE_LIMIT)
+    {
+        out += static_cast<char>(value);
+        return;
+    }
+    if (value < TWO_BYTE_LIMIT)
+    {
+        out += static_cast<char>(LEAD_BYTES[1].pattern | (value >> CONTINUATION_SHIFT));
+        out += static_cast<char>(CONTINUATION_PATTERN | (value & CONTINUATION_VALUE_BITS));
+        return;
+    }
+    out += static_cast<char>(LEAD_BYTES[2].pattern | (value >> (2 * CONTINUATION_SHIFT)));
+    out += static_cast<char>(CONTINUATION_PATTERN | ((value >> CONTINUATION_SHIFT) & CONTINUATION_VALUE_BITS));
+    out += static_cast<char>(CONTINUATION_PATTERN | (value & CONTINUATION_VALUE_BITS));
+}
+
 bool IsWhitespace(const std::optional<CodePoint>& codePoint)
 {
     if (!codePoint)
@@ -175,6 +258,29 @@ bool ContainsIgnoringCase(std::string_view text, std::string_view needle)
     const auto found = std::search(text.begin(), text.end(), needle.begin(), needle.end(),
                                    [](char a, char b) { return LowerAscii(a) == LowerAscii(b); });
     return found != text.end() || needle.empty();
+}
+
+std::string FoldCase(std::string_view text)
+{
+    std::string folded;
+    folded.reserve(text.size());
+    std::size_t pos = 0;
+    while (pos < text.size())
+    {
+        const std::optional<CodePoint> codePoint = DecodeAt(text, pos);
+        if (!codePoint)
+        {
+            folded += text[pos++]; // not UTF-8: kept byte by byte
+            continue;
+        }
+        const char32_t lower = FoldCodePoint(codePoint->value);
+        if (lower == codePoint->value)
+            folded.append(text.substr(pos, codePoint->bytes));
+        else
+            AppendUtf8(folded, lower);
+        pos += codePoint->bytes;
+    }
+    return folded;
 }
 
 std::string Join(const std::vector<std::string>& items, std::string_view separator)

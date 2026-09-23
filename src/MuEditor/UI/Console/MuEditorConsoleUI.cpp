@@ -94,7 +94,8 @@ std::streambuf::int_type ConsoleStreamBuf::overflow(int_type c)
         // If we hit a newline, flush the buffer
         if (c == '\n')
         {
-            std::lock_guard<std::mutex> lock(g_consoleMutex);
+            // No lock here: LogGame takes g_consoleMutex itself, and taking it twice
+            // hung the process on the first line written to std::cout/std::cerr.
 
             // Remove trailing newline for our buffer
             std::string line = m_buffer;
@@ -293,8 +294,8 @@ void CMuEditorConsoleUI::LogGame(const std::string& message)
 void CMuEditorConsoleUI::Render()
 {
     ImGuiIO& io = ImGui::GetIO();
-    ImVec2 bottom_pos = ImVec2(0, io.DisplaySize.y - 200);
-    ImVec2 bottom_size = ImVec2(io.DisplaySize.x, 200);
+    ImVec2 bottom_pos = ImVec2(0, io.DisplaySize.y - HEIGHT);
+    ImVec2 bottom_size = ImVec2(io.DisplaySize.x, HEIGHT);
 
     ImGui::SetNextWindowPos(bottom_pos, ImGuiCond_Always);
     ImGui::SetNextWindowSize(bottom_size, ImGuiCond_Always);

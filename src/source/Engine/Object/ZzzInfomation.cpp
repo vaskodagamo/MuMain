@@ -21,6 +21,7 @@
 #include "GameLogic/Items/CSItemOption.h"
 #include "GameLogic/Pets/GIPetManager.h"
 #include "GameLogic/Items/CComGem.h"
+#include "GameLogic/Items/ItemClassRule.h"
 #include "UI/NewUI/Inventory/NewUIInventoryCtrl.h"
 #include "Network/Server/SocketSystem.h"
 #include "UI/NewUI/NewUISystem.h"
@@ -2212,27 +2213,12 @@ bool IsRequireEquipItem(ITEM* pItem)
         return false;
     }
 
-    ITEM_ATTRIBUTE* pItemAttr = &ItemAttribute[pItem->Type];
-
-    bool bEquipable = false;
-
-    if (pItemAttr->RequireClass[gCharacterManager.GetBaseClass(Hero->Class)]) {
-        bEquipable = true;
-    }
-    else if (gCharacterManager.GetBaseClass(Hero->Class) == CLASS_DARK && pItemAttr->RequireClass[CLASS_WIZARD]
-        && pItemAttr->RequireClass[CLASS_KNIGHT]) {
-        bEquipable = true;
-    }
-
-    BYTE byFirstClass = gCharacterManager.GetBaseClass(Hero->Class);
-    BYTE byStepClass = gCharacterManager.GetStepClass(Hero->Class);
-    if (pItemAttr->RequireClass[byFirstClass] > byStepClass)
+    const ITEM_ATTRIBUTE* pItemAttr = &ItemAttribute[pItem->Type];
+    if (!GameLogic::Items::CanClassEquip(pItemAttr->RequireClass, gCharacterManager.GetBaseClass(Hero->Class),
+                                         gCharacterManager.GetStepClass(Hero->Class)))
     {
         return false;
     }
-
-    if (bEquipable == false)
-        return false;
 
     WORD wStrength = CharacterAttribute->Strength + CharacterAttribute->AddStrength;
     WORD wDexterity = CharacterAttribute->Dexterity + CharacterAttribute->AddDexterity;
@@ -2280,7 +2266,7 @@ bool IsRequireEquipItem(ITEM* pItem)
         }
     }
 
-    return bEquipable;
+    return true;
 }
 
 void PlusSpecial(WORD* Value, int Special, ITEM* Item)

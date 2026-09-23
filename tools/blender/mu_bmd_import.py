@@ -171,7 +171,7 @@ def main() -> None:
     os.makedirs(unwrap_dir, exist_ok=True)
 
     common.run_bmdconv(bmdconv, "bmd2smd", bmd_path, work)
-    actions = read_manifest(os.path.join(work, stem + ".actions.txt"))
+    actions = [] if args.no_anims else read_manifest(os.path.join(work, stem + ".actions.txt"))
 
     clear_scene()
     reference_smd = os.path.join(work, stem + ".smd")

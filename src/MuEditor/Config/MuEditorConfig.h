@@ -28,6 +28,14 @@ public:
     const std::map<std::string, bool>& GetAllColumnVisibility() const { return m_columnVisibility; }
     void SetAllColumnVisibility(const std::map<std::string, bool>& visibility) { m_columnVisibility = visibility; }
 
+    // The editor UI scale of the toolbar's - / + buttons; 0 until the owner chose one.
+    float GetUIScale() const { return m_uiScale; }
+    void SetUIScale(float scale) { m_uiScale = scale; }
+
+    // Whether the item studio (--editor --items) fills the screen.
+    bool GetStudioFullscreen() const { return m_studioFullscreen; }
+    void SetStudioFullscreen(bool fullscreen) { m_studioFullscreen = fullscreen; }
+
     // Skill Editor column visibility settings
     const std::map<std::string, bool>& GetSkillEditorColumnVisibility() const { return m_skillEditorColumnVisibility; }
     void SetSkillEditorColumnVisibility(const std::map<std::string, bool>& visibility) { m_skillEditorColumnVisibility = visibility; }
@@ -40,6 +48,8 @@ private:
 
     // Settings storage
     std::string m_language;
+    float m_uiScale = 0.0f;
+    bool m_studioFullscreen = false;
     std::map<std::string, bool> m_columnVisibility;  // Item Editor columns
     std::map<std::string, bool> m_skillEditorColumnVisibility;  // Skill Editor columns
 

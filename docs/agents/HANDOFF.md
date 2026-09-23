@@ -167,11 +167,16 @@ out/build/macos-arm64/tools/bmdconv/Release/bmdconv compare src/bin/Data/Item/Sw
      UI checks, a driver library loaded with `DYLD_INSERT_LIBRARIES` must switch off the ImGui SDL3
      backend's global-mouse fallback, or a focused client window replaces the scripted cursor with
      the real one.
-3. **Audio data**: add `Data/Sound/*.wav` and `Data/Music/*.mp3` (formats the code expects).
-4. **CI hygiene**: `cppcheck` from Homebrew reports pre-existing findings in
+3. **Item editor** (plan in [`ITEM_EDITOR_PLAN.md`](ITEM_EDITOR_PLAN.md)): browse every item
+   with the game's own rendering, filter by class, sort basic -> rare, and file item
+   regeneration requests for Codex. Milestones I0-I7, one Codex task and PR each; I0 (shared
+   refactor) first, then the C++ lane (I1, I3-I6) and the tools lane (I2) in parallel. Nothing
+   implemented yet; the plan's section 7 has the task prompt.
+4. **Audio data**: add `Data/Sound/*.wav` and `Data/Music/*.mp3` (formats the code expects).
+5. **CI hygiene**: `cppcheck` from Homebrew reports pre-existing findings in
    `src/source/Render/Models/ZzzBMD.cpp` (old-style casts, a `%ld` format); CI's cppcheck version
    may differ, so check the CI run of the first PR that touches that file.
-5. Later phases: static objects, items, characters, terrain, new content (see the plan).
+6. Later phases: static objects, items, characters, terrain, new content (see the plan).
 
 ## 7. Logs and where to look when something fails
 

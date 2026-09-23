@@ -30,6 +30,9 @@ class CMuEditorConsoleUI
 public:
     static CMuEditorConsoleUI& GetInstance();
 
+    // The console is a strip of this height along the bottom of the window.
+    static constexpr float HEIGHT = 200.0f;
+
     void Initialize();
     void Shutdown();
 

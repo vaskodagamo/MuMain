@@ -1,0 +1,149 @@
+{
+  "review_date": "2026-09-23",
+  "main_base": "7c25cce6911a0e3f8737e3214dcd12c982c18728",
+  "decision": "RETAIN_BASELINE",
+  "review_type": "READ_ONLY_BASELINE_AND_PLACED_CONTEXT",
+  "assets": {
+    "Object45": {
+      "placement_count": 21,
+      "result": "RETAIN_BASELINE",
+      "rationale": [
+        "Tall collapsed pose, skull and separated limbs stay readable at reduced scale.",
+        "Flat rib/pelvis planes and angular feet are close-view limits; a placed-scale correction was not demonstrated."
+      ],
+      "placed_context": "No actual neighbor assembly was established for this model."
+    },
+    "Object46": {
+      "placement_count": 25,
+      "result": "RETAIN_BASELINE",
+      "rationale": [
+        "The seated arm-and-knee silhouette is distinct in reduced view.",
+        "Extra rounding and ribs showed no demonstrated game-scale payoff."
+      ],
+      "placed_context": "No actual neighbor assembly was established for this model."
+    },
+    "Object47": {
+      "placement_count": 79,
+      "result": "RETAIN_BASELINE",
+      "rationale": [
+        "The loose skull cluster is coherent beside Object48 in the actual remains pile.",
+        "Angular skull crowns are visible close-up, but no placed-scale smoothing benefit was established."
+      ],
+      "placed_context": "Two exact placements are included in the Object47/Object48 cluster evidence."
+    }
+  },
+  "family": {
+    "total_placements": 125,
+    "shared_texture": "src/bin/Data/Object2/bons.OZJ",
+    "shared_texture_sha256": "0ed1d9cb1c8da9e0f128d51a607a7b4ecab8ee89bfdab67917ba0e7116542ec5",
+    "texture_scope": "Frozen; existing shared consumers are unchanged."
+  },
+  "source_placement_manifest": "assets-work/Environment/coordination/dungeon-readiness.json",
+  "source_placement_manifest_sha256": "9e63f1be62cc32850bacd67b12499fda528cb18628af9e39d28a74147bbb44bb",
+  "reviewed_context_records": [
+    {
+      "asset": "Object47",
+      "index": 133,
+      "position": [
+        174.60829162597656,
+        5419.44873046875,
+        207.68467712402344
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        750.0
+      ],
+      "scale": 1.0
+    },
+    {
+      "asset": "Object48",
+      "index": 126,
+      "position": [
+        167.93907165527344,
+        5423.0009765625,
+        213.3578338623047
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1170.0
+      ],
+      "scale": 1.0
+    },
+    {
+      "asset": "Object48",
+      "index": 125,
+      "position": [
+        250.03765869140625,
+        5476.1650390625,
+        200.98489379882812
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1080.0
+      ],
+      "scale": 1.0
+    },
+    {
+      "asset": "Object48",
+      "index": 135,
+      "position": [
+        251.18392944335938,
+        5372.14794921875,
+        187.202392578125
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        750.0
+      ],
+      "scale": 1.0
+    },
+    {
+      "asset": "Object47",
+      "index": 124,
+      "position": [
+        250.0,
+        5100.0,
+        210.75723266601562
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1170.0
+      ],
+      "scale": 1.0
+    },
+    {
+      "asset": "Object48",
+      "index": 134,
+      "position": [
+        316.17193603515625,
+        5147.9921875,
+        199.06471252441406
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        750.0
+      ],
+      "scale": 1.0
+    }
+  ],
+  "context_evidence": {
+    "candidate.png": "92c9c66b330c514ff827c19bacf952ef570147d431d22d8d40cd2c8eeb2d6d08",
+    "candidate-small.png": "d921fbf407e8e13c790e259973cadd2e9bc13cccf8ed5c4a83f0891a2b48084e",
+    "candidate-reverse.png": "7d62bf5c5abda47572a54a09e4e69aedfaac5b51d98b991d9abcaa904364e716",
+    "evidence.json": "df8a5e045aa1e0b66dc9a9514cb510148a814121861e7d5ee36cd84634862820"
+  },
+  "context_object48_bmd_sha256": "9c62a9eafb5eb7822490bd45ce6b8c049a343b270142e3fca62c23f05eafc11a",
+  "independent_review": {
+    "result": "RETAIN_BASELINE",
+    "scope": "Individual front, reverse and reduced Blender renders for Objects45–47; actual placed cluster for Object47 and Object48.",
+    "limits": "Not every placement was reviewed in rendered context. Objects45 and 46 lack actual-neighbor assemblies. No terrain render or live client test."
+  },
+  "game_assets_changed": false,
+  "client_verified": false
+}

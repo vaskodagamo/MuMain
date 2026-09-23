@@ -1,0 +1,47 @@
+{
+  "status": "PASS",
+  "authored": {
+    "maximum_position_delta": 0,
+    "maximum_uv_delta": 6.336060650786549e-07,
+    "maximum_normal_delta": 0.0001439218983203286,
+    "matched": 132
+  },
+  "protected": {
+    "maximum_position_delta": 0,
+    "maximum_uv_delta": 0,
+    "maximum_normal_delta": 0.00029710800785318504,
+    "matched": 41
+  },
+  "triangles": 132,
+  "bounds": [
+    [
+      -58.82099914550781,
+      -59.19919967651367,
+      -300.1600036621094
+    ],
+    [
+      58.79119873046875,
+      58.99720001220703,
+      -0.0029959999956190586
+    ]
+  ],
+  "placements": {
+    "count": 179,
+    "maximum_transformed_bounds_delta": 0
+  },
+  "original_vertex_contact_anchor_max_delta": 0.0,
+  "raw_name_hex": "44617461325c4f626a656374325cb5b9b4d9b8ae30312e736d64000000000000",
+  "raw_world_normal_max_delta": 5.960464477539062e-07,
+  "raw_motion_byte_exact": false,
+  "maximum_motion_delta": 0.0,
+  "raw_bindings": {
+    "file": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-supports/assets-work/World2/Supports01/Object06/exports/Object06.bmd",
+    "mesh_bindings": [
+      {
+        "mesh": 0,
+        "material": "deep_wall04.jpg",
+        "vertex_to_normal_node_mismatch_corner_counts": {}
+      }
+    ]
+  }
+}

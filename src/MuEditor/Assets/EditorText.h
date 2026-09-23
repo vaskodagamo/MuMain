@@ -29,6 +29,12 @@ bool EqualIgnoringCase(std::string_view a, std::string_view b);
 // `needle` occurs in `text`, ignoring ASCII case; an empty needle always does.
 bool ContainsIgnoringCase(std::string_view text, std::string_view needle);
 
+// `text` in lower case for searching: A-Z and the capitals of Latin-1, Latin
+// Extended-A, Greek and Cyrillic (the letters item names in the shipped
+// languages use) become their small letters; everything else, including bytes
+// that are not UTF-8, stays as it is. Search a folded needle in a folded text.
+std::string FoldCase(std::string_view text);
+
 // The items with `separator` between them; empty for no items.
 std::string Join(const std::vector<std::string>& items, std::string_view separator);
 

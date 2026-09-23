@@ -1,0 +1,263 @@
+{
+  "kind": "OFFLINE_ACTUAL_PLACEMENT_STATIC_ASSEMBLY",
+  "purpose": "Read-only Object37 placement context; no terrain, lighting bake, or client.",
+  "placement_source": "assets-work/Environment/coordination/dungeon-readiness.json",
+  "placement_source_sha256": "9e63f1be62cc32850bacd67b12499fda528cb18628af9e39d28a74147bbb44bb",
+  "members": [
+    [
+      "Object37",
+      {
+        "index": 310,
+        "position": [
+          1250.0,
+          24350.0,
+          169.49998474121094
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": 1.0
+      }
+    ],
+    [
+      "Object37",
+      {
+        "index": 311,
+        "position": [
+          1250.0,
+          24750.0,
+          169.50001525878906
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": 1.0
+      }
+    ],
+    [
+      "Object37",
+      {
+        "index": 312,
+        "position": [
+          650.0,
+          24750.0,
+          169.5
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": 1.0
+      }
+    ],
+    [
+      "Object37",
+      {
+        "index": 313,
+        "position": [
+          650.0,
+          24350.0,
+          169.49996948242188
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": 1.0
+      }
+    ],
+    [
+      "Object37",
+      {
+        "index": 567,
+        "position": [
+          1850.0,
+          24750.0,
+          169.49996948242188
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": 1.0
+      }
+    ],
+    [
+      "Object37",
+      {
+        "index": 568,
+        "position": [
+          1850.0,
+          24350.0,
+          169.50003051757812
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": 1.0
+      }
+    ],
+    [
+      "Object01",
+      {
+        "index": 317,
+        "position": [
+          1450.0,
+          25050.0,
+          169.4999542236328
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          1080.0
+        ],
+        "scale": 1.0
+      }
+    ],
+    [
+      "Object01",
+      {
+        "index": 318,
+        "position": [
+          1150.0,
+          25050.0,
+          169.49998474121094
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          1080.0
+        ],
+        "scale": 1.0
+      }
+    ],
+    [
+      "Object01",
+      {
+        "index": 319,
+        "position": [
+          850.0,
+          25050.0,
+          169.50001525878906
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": 1.0
+      }
+    ],
+    [
+      "Object04",
+      {
+        "index": 320,
+        "position": [
+          650.0,
+          25050.0,
+          169.49998474121094
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": 1.0
+      }
+    ],
+    [
+      "Object04",
+      {
+        "index": 604,
+        "position": [
+          1650.0,
+          25050.0,
+          169.49998474121094
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": 1.0
+      }
+    ],
+    [
+      "Object08",
+      {
+        "index": 307,
+        "position": [
+          850.0,
+          24300.0,
+          169.49998474121094
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          720.0
+        ],
+        "scale": 1.0
+      }
+    ]
+  ],
+  "sources": {
+    "Object01": {
+      "src/bin/Data/Object2/Object01.bmd": "aea82532ebb824c2aac1cbbe277135ad96a7379f3f9a615a6a1b9ccfcae1ee01",
+      "src/bin/Data/Object2/deep_wall01.OZJ": "78379458cc441ce547c482f20656e13f6672fd565c39373865de7fb9ebb9504a",
+      "src/bin/Data/Object2/deep_wall02.OZJ": "56690fc74a00d9b1b59a80f1a9c9ffc5222680aa20822cbdc79016d7b17c9457"
+    },
+    "Object04": {
+      "src/bin/Data/Object2/Object04.bmd": "e0df1c4477e02bb37d59155dbf56a5f1f7bacaa064bb34568ce738de07c8ae1f",
+      "src/bin/Data/Object2/deep_wall01.OZJ": "78379458cc441ce547c482f20656e13f6672fd565c39373865de7fb9ebb9504a",
+      "src/bin/Data/Object2/deep_wall03.OZJ": "dee54424992a14b93c9732599c4190c164932c7f98708e9aa21ca03a21f63168"
+    },
+    "Object08": {
+      "src/bin/Data/Object2/Object08.bmd": "528967303b2e3d0cf464a36593a6148340dc65cfdd5f1c8bda851e16a3034ba2",
+      "src/bin/Data/Object2/deep_wall05.OZJ": "97ace385566332600d20ad56a009e239db44d49f04dc24bfb5df0e1b00ad4da1",
+      "src/bin/Data/Object2/deep_wall04.OZJ": "83037896d1e2825447e840b4af780ed3608b12c5971c8369eccdfc0f4fb21505"
+    },
+    "Object37": {
+      "src/bin/Data/Object2/Object37.bmd": "73f72c6b8efb1d6bf1a02c98d3441dd7af8bc164b57478e32abe22630bc614b0",
+      "src/bin/Data/Object2/deep_wall08.OZJ": "c44154dda257201ed30f1a184e24d64e15ed6b11df5186ff963848d066ffff33",
+      "src/bin/Data/Object2/deep_wall07.OZJ": "dc55fcfc282ca780dfed2f3f5c649acac0007765b1a43f4f3fc7ecd864f510ab",
+      "src/bin/Data/Object2/deep_wall01.OZJ": "78379458cc441ce547c482f20656e13f6672fd565c39373865de7fb9ebb9504a"
+    }
+  },
+  "anchor": [
+    1250.0,
+    24750.0,
+    169.5
+  ],
+  "bounds": [
+    [
+      -658.64501953125,
+      -549.995361328125,
+      -121.86681365966797
+    ],
+    [
+      649.9896850585938,
+      358.272216796875,
+      317.20001220703125
+    ]
+  ],
+  "blend_inputs": {
+    "Object37": "fcfbe3f93e3a06dacf398a35b29edc468e1d132ad2e8783471399ae7ccf65a98",
+    "Object01": "355d41b02b44abab190e0b5ad8b643bd2345f09b85c93949723ab05e4b0f6964",
+    "Object04": "747dc289d825321263f39e61c28072e7ecc28e63d3f344d392fc0edacefe85a2",
+    "Object08": "19eb287a3ae5102954b28fab8298f91b5e4ef4c23c22f8d79c05c44618f84c79"
+  },
+  "images": {
+    "baseline-reverse.png": "5114342e5702e77987522daa841e3e01b0d0907e34d549b815f02055bc2d0972",
+    "baseline-small.png": "2b690217401e519df7d5d9db8b353083a6c39e300ac339b30163d3dd5d99987a",
+    "baseline.png": "ab46aeaa86a2df98eab59ca3afa4eef901b3ed1e31f97553f0cc52a52b747467"
+  }
+}

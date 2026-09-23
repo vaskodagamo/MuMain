@@ -1,0 +1,90 @@
+{
+  "kind": "OFFLINE_BASELINE_ACTUAL_PLACEMENTS",
+  "records": [
+    [
+      "Object04",
+      {
+        "index": 9,
+        "position": [
+          1250.0,
+          50.0,
+          169.49998474121094
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          540.0
+        ],
+        "scale": 1.0
+      }
+    ],
+    [
+      "Object06",
+      {
+        "index": 14,
+        "position": [
+          1250.0,
+          50.0,
+          169.49998474121094
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          540.0
+        ],
+        "scale": 1.0
+      }
+    ]
+  ],
+  "bounds": [
+    [
+      -58.791202545166016,
+      -58.997230529785156,
+      -300.1600036621094
+    ],
+    [
+      58.82101058959961,
+      100.47810363769531,
+      317.20001220703125
+    ]
+  ],
+  "anchor": [
+    1250.0,
+    50.0,
+    169.49998474121094
+  ],
+  "sources": {
+    "Object04": {
+      "source": "src/bin/Data/Object2/Object04.bmd",
+      "sha256": "e0df1c4477e02bb37d59155dbf56a5f1f7bacaa064bb34568ce738de07c8ae1f",
+      "purpose": "Read-only baseline triage, not an accepted remake",
+      "dependencies": {
+        "src/bin/Data/Object2/Object04.bmd": "e0df1c4477e02bb37d59155dbf56a5f1f7bacaa064bb34568ce738de07c8ae1f",
+        "src/bin/Data/Object2/deep_wall01.OZJ": "78379458cc441ce547c482f20656e13f6672fd565c39373865de7fb9ebb9504a",
+        "src/bin/Data/Object2/deep_wall03.OZJ": "dee54424992a14b93c9732599c4190c164932c7f98708e9aa21ca03a21f63168"
+      },
+      "evidence": {
+        "baseline.blend": "747dc289d825321263f39e61c28072e7ecc28e63d3f344d392fc0edacefe85a2",
+        "baseline.png": "7fb7a2ed5ea984da6fff541005453adfbe8973024704bccd6de085d46688a5f5"
+      }
+    },
+    "Object06": {
+      "source": "src/bin/Data/Object2/Object06.bmd",
+      "sha256": "130a34571f79c3fd28fe5cac0a51c54a2cc3e011cba2b1e483934e7e7026be05",
+      "purpose": "Read-only baseline triage, not an accepted remake",
+      "dependencies": {
+        "src/bin/Data/Object2/Object06.bmd": "130a34571f79c3fd28fe5cac0a51c54a2cc3e011cba2b1e483934e7e7026be05",
+        "src/bin/Data/Object2/deep_wall04.OZJ": "83037896d1e2825447e840b4af780ed3608b12c5971c8369eccdfc0f4fb21505"
+      },
+      "evidence": {
+        "baseline.blend": "37fe801382fbbbd7007965b5decfb851b777dff3771784c950aa5d362447517c",
+        "baseline.png": "4dbd7e0e9b6f591c1072e1d96b9bf3034c38703527f8f3b093a9e3294b447215"
+      }
+    }
+  },
+  "images": {
+    "baseline-reverse.png": "c46a2d9aaa5dbd8c371bcbbeacc63aa28878000b6dd530325efeaafa28e5c3ca",
+    "baseline.png": "a1b77b07ed0041d2ae55930e8dcfd5312de7a7a20e3826d4d535c08ff144d829",
+    "baseline-small.png": "5989cecb9aa3a13b51329e33d972f76fd5799b7f3d25d195caa226a92bf62b95"
+  }
+}

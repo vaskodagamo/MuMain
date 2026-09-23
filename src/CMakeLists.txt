@@ -296,6 +296,11 @@ else()
 endif()
 target_compile_features(Main PUBLIC cxx_std_20)
 target_link_libraries(Main PRIVATE MuClient::MuClient)
+
+# "MU Item Editor.app" next to Main.app: double-click starts the Item Editor.
+if(APPLE AND ENABLE_EDITOR)
+  include("${REPO_ROOT}/cmake/ItemEditorLauncher.cmake")
+endif()
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND MU_LINK_SDL_PLATFORM_BACKENDS)
   target_link_libraries(Main PRIVATE Vulkan::Vulkan)
 endif()
