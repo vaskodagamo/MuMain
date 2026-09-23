@@ -61,6 +61,7 @@ mu_add_test(
         ${MU_EDITOR_ASSETS_DIR}/EditorText.cpp
         ${MU_EDITOR_ASSETS_DIR}/FileDigest.cpp
         ${MU_EDITOR_ASSETS_DIR}/GitCheckout.cpp
+        ${MU_EDITOR_ASSETS_DIR}/JsonFields.cpp
         ${MU_EDITOR_ASSETS_DIR}/RegenRequest.cpp
         ${MU_EDITOR_ASSETS_DIR}/RequestBrief.cpp
         ${MU_EDITOR_ASSETS_DIR}/RequestFolder.cpp
@@ -74,6 +75,30 @@ target_compile_definitions(editor_asset_request_tests PRIVATE
     "MU_REPO_ROOT=\"${PROJECT_SOURCE_DIR}\""
 )
 target_include_directories(editor_asset_request_tests PRIVATE
+    ${PROJECT_SOURCE_DIR}/src/MuEditor
+    ${PROJECT_SOURCE_DIR}/src/ThirdParty
+)
+
+# The Item Editor's item catalog (assets-work/Items/catalog.json) and its Browse
+# tab's filters and sort order. File-only code as well; MuClient supplies the
+# engine's class rule (GameLogic::Items::CanClassEquip) the class filter calls.
+mu_add_test(
+    NAME editor_item_browse_tests
+    SOURCES
+        test_item_browse.cpp
+        test_item_catalog.cpp
+        ${MU_EDITOR_ASSETS_DIR}/EditorText.cpp
+        ${MU_EDITOR_ASSETS_DIR}/ItemBrowse.cpp
+        ${MU_EDITOR_ASSETS_DIR}/ItemCatalog.cpp
+        ${MU_EDITOR_ASSETS_DIR}/JsonFields.cpp
+    LINK_LIBS
+        MuClient
+)
+target_compile_definitions(editor_item_browse_tests PRIVATE
+    _EDITOR
+    "MU_REPO_ROOT=\"${PROJECT_SOURCE_DIR}\""
+)
+target_include_directories(editor_item_browse_tests PRIVATE
     ${PROJECT_SOURCE_DIR}/src/MuEditor
     ${PROJECT_SOURCE_DIR}/src/ThirdParty
 )
@@ -92,6 +117,7 @@ mu_add_test(
         ${MU_EDITOR_ASSETS_DIR}/CaptureImage.cpp
         ${MU_EDITOR_ASSETS_DIR}/EditorText.cpp
         ${MU_EDITOR_ASSETS_DIR}/FileDigest.cpp
+        ${MU_EDITOR_ASSETS_DIR}/JsonFields.cpp
         ${MU_EDITOR_ASSETS_DIR}/ModelPreflight.cpp
     LINK_LIBS
         MuClient
@@ -106,9 +132,10 @@ target_include_directories(editor_model_preflight_tests PRIVATE
 )
 
 # The Map Editor's undo history (commands, terrain strokes), object selection,
-# transform gizmo math, terrain brushes and popup mouse guard: logic without
-# ImGui or engine state, tested against stand-in objects and terrain. MuClient
-# supplies the engine's AngleMatrix, which the gizmo's turns must agree with.
+# transform gizmo math, terrain brushes, popup mouse guard and the model
+# thumbnails' camera framing: logic without ImGui or engine state, tested
+# against stand-in objects and terrain. MuClient supplies the engine's
+# AngleMatrix, which the gizmo's turns must agree with.
 set(MU_EDITOR_EDITING_DIR ${PROJECT_SOURCE_DIR}/src/MuEditor/Editing)
 mu_add_test(
     NAME editor_editing_tests
@@ -118,6 +145,7 @@ mu_add_test(
         test_object_selection.cpp
         test_popup_mouse_guard.cpp
         test_terrain_brush.cpp
+        test_thumbnail_framing.cpp
         ${MU_EDITOR_EDITING_DIR}/CommandStack.cpp
         ${MU_EDITOR_EDITING_DIR}/EditCommandGroup.cpp
         ${MU_EDITOR_EDITING_DIR}/FieldBrush.cpp
@@ -130,6 +158,7 @@ mu_add_test(
         ${MU_EDITOR_EDITING_DIR}/TerrainBrush.cpp
         ${MU_EDITOR_EDITING_DIR}/TerrainPatchCommand.cpp
         ${MU_EDITOR_EDITING_DIR}/TerrainStroke.cpp
+        ${MU_EDITOR_EDITING_DIR}/ThumbnailFraming.cpp
     LINK_LIBS
         MuClient
 )

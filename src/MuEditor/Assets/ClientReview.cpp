@@ -3,8 +3,7 @@
 #ifdef _EDITOR
 
 #include "EditorText.h"
-
-#include <json.hpp>
+#include "JsonFields.h"
 
 #include <fstream>
 #include <iterator>
@@ -17,15 +16,12 @@ namespace Editor::Assets
 {
 namespace
 {
+// Hide Editor::Text (the namespace) behind the JSON field readers.
+using Json::Text;
+
 constexpr const char* CLIENT_REVIEW_FILE_NAME = "client-review.json";
 constexpr const char* TEMP_SUFFIX = ".tmp";
 constexpr int JSON_INDENT = 2;
-
-std::string Text(const json& object, const char* key)
-{
-    const auto it = object.find(key);
-    return it != object.end() && it->is_string() ? it->get<std::string>() : std::string();
-}
 
 // The file as a JSON object: an empty object when it does not exist yet.
 bool ReadDocument(const fs::path& file, json& out, std::string& error)

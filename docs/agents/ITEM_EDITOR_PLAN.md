@@ -90,6 +90,10 @@ change and an OpenMU definition; they are out of scope until section 8.
 +---------------------------------------------+-----------------------------------------------+
 ```
 
+- **Studio mode** (owner, 2026-09-23): the Item Editor is its own tool, not part of the map. With
+  `--items` no map is drawn, the backdrop is plain, and the Item Editor fills the window under the
+  MU Editor toolbar (the other editors stay reachable there). `MU Item Editor.app`, built next to
+  `Main.app`, starts `Main --editor --items` with a double-click (and can go into the Dock).
 - **Browse** is the new default tab: a virtualised list (ImGui clipper) or thumbnail grid of every
   item that has a model; the old table stays as the **Attributes** tab.
 - **Class filter:** buttons per class plus a stage choice (base / 2nd / 3rd); "only usable"
@@ -187,7 +191,7 @@ preset, `ctest` green, and an offline visual check; the player build stays behav
 | I0 | **Shared refactor**: move `MapEditorRepoMirror` + `MirrorSavedFile` to `MuEditor/Core`; give `RegenRequest`/`RequestFolder`/`RequestBrief` a *domain* (asset root, data folders, branch prefix, schema) with `World{N}` as one domain; `ModelHotReload` takes an allowed type range and a "survives map change" flag. No behaviour change for the Map Editor. | Existing editor tests pass; a World1 request written before/after is byte-identical apart from timestamps. |
 | I1 | **Item Editor on the Mac + offline**: current table runs on macOS; Save mirrors into `src/bin/Data/Local/...` with backup; `./Main --editor --items` opens the offline scene with the Item Editor open (reusing `OfflineWorld`). | Open, edit a name, save, see the change in `git status`; revert. |
 | I2 | **Item catalog + tiers (tools)**: `tools/item_editor/build_item_catalog.py` decodes `Item_<lang>.bmd`, maps each item to its model/texture files (table generated once from `OpenItems`, checked into `tools/item_editor/item_models.json` and verified by a test that parses `ZzzOpenData.cpp`), reads BMD facts through `bmdconv info`, folds in an optional OpenMU export (`tools/item_editor/export_openmu_items.py` reading the admin backup JSON), computes tiers; schema + validator + README for requests. | `assets-work/Items/catalog.json` covers every item with a model; unit tests for the XOR/checksum decoder, the tier rules and the validator. |
-| I3 | **Browse tab**: list/grid, class + stage filter using `IsRequireEquipItem`, family/group filter, search, sort by tier and the other keys, status column, thumbnails through a generalised `ObjectThumbnail`. | Filter DK stage 1, sort by tier: swords run Kris -> ... -> top tier; screenshot. |
+| I3 | **Browse tab + studio mode + launcher**: list/grid, class + stage filter using `IsRequireEquipItem`, family/group filter, search, sort by tier and the other keys, status column, thumbnails through a generalised `ObjectThumbnail`. `--items` draws no map (plain studio backdrop) and the Item Editor fills the window; a double-clickable `MU Item Editor.app` next to `Main.app` starts it. | Filter DK stage 1, sort by tier: swords run Short Sword/Kris -> ... -> top tier; screenshot of studio mode; the launcher opens it. |
 | I4 | **Preview viewport**: offscreen render through `RenderPartObject` with +level, excellent and ancient controls; inventory-slot view via `RenderObjectScreen`; ground; turntable with orbit; equipped view on the offline hero (weapon in hand, shield, wings on back, full armour set). | Screenshots of one sword at +0/+9/+13 exc, one wing on the hero, one armour set. |
 | I5 | **Ask Codex**: request dialog, captures, reference images, `client-review.json` verdicts, Requests tab listing every item request with status, Accept / Reject-with-notes that write the owner's decision file (never the ledger). | `validate_request.py` OK on a Sword01 `upscale` request; test data removed. |
 | I6 | **A/B**: `materialize_variant.py original --items`, current/original/as-built switch per item/family/all, split view. | Sword01 toggled original/current in the running client; memory and texture count return to the start after a round trip. |
@@ -283,6 +287,33 @@ Status:
     `IsRequireEquipItem`; I5's request JSON must write the item target shape of the README.
     Possible engine bug, not changed: `ItemSetType.bmd` marks "no set" with 0, while
     `CSItemOption::IsChangeSetItem` tests only for `0xFF`.
+- **I3 done (2026-09-23).** Browse tab, studio mode and launcher; usage in `ITEM_EDITOR.md`.
+  - **Studio:** `--editor --items` draws no map (flat backdrop, `Core/ItemStudio`; World1 is
+    still loaded but not drawn, because the Map Editor on the toolbar needs a loaded map and I4's
+    hidden hero needs ground and light) and the Item Editor fills the window. Opening the Map
+    Editor shows the map and floats the Item Editor; closing it restores the studio.
+    `--items --world N` shows the map behind a floating Item Editor; `--world N` unchanged.
+  - **Launcher:** `MU Item Editor.app` next to `Main.app` (`cmake/ItemEditorLauncher.cmake`,
+    `if(APPLE AND ENABLE_EDITOR)`); runs `./Main --editor --items` from the game's folder, also
+    when moved elsewhere.
+  - **Browse:** class buttons + class stage (the engine's rule, now shared as
+    `GameLogic::Items::CanClassEquip`; `IsRequireEquipItem` calls it, same result), family list
+    with counts, tier range, status (original / changed / at Codex), search in any letter case
+    (`EditorText::FoldCase`), sorts (tier default, key, name, drop/required level, status), list
+    and grid with thumbnails framed from each model's bounds; details panel with a marked place
+    for I4's preview; selection synced with the **Stats table** tab (which now scrolls to the
+    exact row). Data: `Assets/ItemCatalog`, `Assets/ItemBrowse`, `Assets/JsonFields`.
+  - Checked: 366/366 tests (`macos-arm64-mueditor`), 365/365 (`macos-arm64`); in the client with
+    a temporary, uncommitted ImGui-input hook: studio, DK stage 1 swords Short Sword ... Sword of
+    Destruction (Blade Master reaches T7 Knight/Bone Blade), grid, selection sync both ways,
+    launcher via `open`, `--world 1` and `--items --world 1` unchanged, `MTL_DEBUG_LAYER=1`
+    clean, ~75 fps (vsync) scrolling all 959 items with thumbnails. Not tried by hand; Dock
+    drag not tried; Windows/Linux not built.
+  - For I4: draw the preview in `RenderPreviewArea` (`ItemBrowseDetails.cpp`); offscreen renders
+    in the studio run from `ItemStudio::RenderInsteadOfWorld()`. For I5: "at Codex" comes from
+    the catalog's requests, so rebuild the catalog after filing.
+  - Found, not changed: Map Editor object thumbnails always use a fallback frame (the engine
+    never fills the model bounds they read).
 
 ## 8. Later options
 

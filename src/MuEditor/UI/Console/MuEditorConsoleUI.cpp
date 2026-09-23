@@ -294,8 +294,8 @@ void CMuEditorConsoleUI::LogGame(const std::string& message)
 void CMuEditorConsoleUI::Render()
 {
     ImGuiIO& io = ImGui::GetIO();
-    ImVec2 bottom_pos = ImVec2(0, io.DisplaySize.y - 200);
-    ImVec2 bottom_size = ImVec2(io.DisplaySize.x, 200);
+    ImVec2 bottom_pos = ImVec2(0, io.DisplaySize.y - HEIGHT);
+    ImVec2 bottom_size = ImVec2(io.DisplaySize.x, HEIGHT);
 
     ImGui::SetNextWindowPos(bottom_pos, ImGuiCond_Always);
     ImGui::SetNextWindowSize(bottom_size, ImGuiCond_Always);

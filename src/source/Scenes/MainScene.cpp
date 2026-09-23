@@ -40,6 +40,7 @@
 #ifdef _EDITOR
 #include "Camera/FrustumRenderer.h"
 #include "Camera/CameraDebugLog.h"
+#include "../MuEditor/Core/ItemStudio.h"
 #include "../MuEditor/Core/OfflineWorld.h"
 #endif
 
@@ -607,6 +608,22 @@ static void RenderGameWorld(BYTE& byWaterMap, int width, int height)
 }
 
 /**
+ * @brief Renders the 3D content of the frame: the game world, or in the editor's
+ *        item studio (--editor --items) nothing but a plain backdrop.
+ */
+static void RenderSceneContent(BYTE& byWaterMap, int width, int height)
+{
+#ifdef _EDITOR
+    if (Editor::ItemStudio::ShowsBackdropOnly())
+    {
+        Editor::ItemStudio::RenderInsteadOfWorld();
+        return;
+    }
+#endif
+    RenderGameWorld(byWaterMap, width, height);
+}
+
+/**
  * @brief Renders UI elements and overlays for the main scene.
  */
 static void RenderMainSceneUI()
@@ -708,7 +725,7 @@ bool RenderMainScene()
     }
 
     SetupMainSceneViewport(width, height, byWaterMap, cameraPos);
-    RenderGameWorld(byWaterMap, width, height);
+    RenderSceneContent(byWaterMap, width, height);
 
 #ifdef _EDITOR
     // Render spectated camera frustum wireframe when in FreeFly mode while it is

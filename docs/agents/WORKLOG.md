@@ -1043,3 +1043,15 @@ check for `ItemSetType` "no set" = 0 vs `0xFF`.
 **Verified:** `bmdconv info` completed for 670/670 scoped models; 0 unresolved texture references; 131 shared texture files recorded. UV conversion completed for all 670 models. Blender imported the 25 representative BMD parts and rendered all 13 previews at 1024×1024, orthographic scale 360, model scale 1.0. Checked representative PNG output visually. No files under `src/` changed.
 
 **Open / next:** Offline baseline only; review candidates and palettes with the owner, and use the running client to verify pivots, equipped placement, alpha and glow before accepting any future item rework. PR opened against `main` on `vaskodagamo/MuMain`; not merged.
+
+## 2026-09-23 - Item editor I3: Browse tab, studio mode, launcher (Claude Opus 5.5)
+**Goal:** Milestone I3 of `ITEM_EDITOR_PLAN.md`, with the owner's studio mode and launcher.
+
+**Done:** item studio for `--editor --items`, `MU Item Editor.app`, Browse tab (filters, tier
+sort, list/grid thumbnails, details), shared class rule `CanClassEquip`, Unicode search.
+
+**Verified:** 366/366 editor-build and 365/365 player-build tests; scripted in-client run with
+screenshots (studio, DK swords by tier, grid, sync, launcher, unchanged `--world 1`), Metal
+validation clean, ~75 fps with 959 items.
+
+**Open / next:** hand test by the owner; I4 preview (level/excellent/ancient, equipped).

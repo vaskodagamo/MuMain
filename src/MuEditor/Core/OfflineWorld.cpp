@@ -42,7 +42,10 @@ constexpr int NO_WORLD = 0;
 // (gMapManager.WorldActive) from 0, and the client knows NUM_WD maps.
 constexpr int FIRST_WORLD_FOLDER = 1;
 constexpr int LAST_WORLD_FOLDER = NUM_WD;
-constexpr int ITEM_EDITOR_WORLD = 1; // --items without --world: Lorencia
+// --items without --world: the studio. It loads Lorencia without drawing it, so
+// the Map Editor still has a map to open from the toolbar and the hidden hero
+// stands on lit ground (see ItemStudio.h).
+constexpr int ITEM_STUDIO_WORLD = 1;
 
 // Start view. The hidden hero and the camera target sit at the start point
 // (see FindStartPoint). The camera looks along the game camera's heading,
@@ -61,8 +64,10 @@ struct GroundPoint
 };
 
 int s_requestedWorld = NO_WORLD;
-bool s_itemEditor = false; // --items: open the Item Editor, not the Map Editor
+bool s_itemEditor = false;     // --items: open the Item Editor, not the Map Editor
+bool s_itemStudioAsked = false; // --items without --world
 bool s_active = false;
+bool s_itemStudio = false;
 GroundPoint s_startPoint{MAP_CENTRE, MAP_CENTRE};
 
 void Log(const std::wstring& message)
@@ -190,6 +195,18 @@ void ShowStartEditor()
     else
         g_MuEditorCore.ShowMapEditor();
 }
+void LogOpened(int world)
+{
+    if (s_itemStudio)
+    {
+        Log(L"[Editor] Opened the Item Editor studio offline: no map drawn (World" + std::to_wstring(world) +
+            L" loaded for the Map Editor), no server, no login.");
+        return;
+    }
+    const std::wstring withEditor = s_itemEditor ? L" with the Item Editor" : L"";
+    Log(L"[Editor] Opened World" + std::to_wstring(world) + L" offline" + withEditor +
+        L": no server, no login, free-fly camera.");
+}
 } // namespace
 
 void ReadCommandLine(const wchar_t* commandLine)
@@ -199,10 +216,11 @@ void ReadCommandLine(const wchar_t* commandLine)
 
     s_itemEditor = wcsstr(commandLine, ITEMS_OPTION) != nullptr;
     const wchar_t* option = wcsstr(commandLine, WORLD_OPTION);
+    s_itemStudioAsked = s_itemEditor && option == nullptr;
     if (option != nullptr)
         s_requestedWorld = ReadWorldNumber(option + wcslen(WORLD_OPTION));
     else if (s_itemEditor)
-        s_requestedWorld = ITEM_EDITOR_WORLD;
+        s_requestedWorld = ITEM_STUDIO_WORLD;
 }
 
 bool TryEnter()
@@ -222,22 +240,25 @@ bool TryEnter()
 
     // Active before loading, so map set-up code already knows there is no server.
     s_active = true;
+    s_itemStudio = s_itemStudioAsked;
     LoadMap(world);
     StartMainSceneWithoutServer();
     s_startPoint = FindStartPoint();
     PlaceHiddenHero();
     ResetCamera();
     ShowStartEditor();
-
-    const std::wstring withEditor = s_itemEditor ? L" with the Item Editor" : L"";
-    Log(L"[Editor] Opened World" + std::to_wstring(world) + L" offline" + withEditor +
-        L": no server, no login, free-fly camera.");
+    LogOpened(world);
     return true;
 }
 
 bool IsActive()
 {
     return s_active;
+}
+
+bool IsItemStudio()
+{
+    return s_itemStudio;
 }
 
 void ResetCamera()
