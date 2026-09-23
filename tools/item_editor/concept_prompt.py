@@ -3,6 +3,8 @@
 The template is owned by the owner: plain text sections under `## <name>` headings, with
 `$placeholders` (string.Template). The tier palette and material rules come from the art study's
 style guide (assets-work/Items/study/baseline.json), so the prompt follows the study's T1-T7 plan.
+A refine prompt (a new round from one picked variant plus the owner's comment) is built from the
+`## refine` section instead of `## base` and the variant hints.
 """
 
 from pathlib import Path
@@ -16,6 +18,7 @@ TEMPLATE_FILE = HERE / 'concept_prompt.md'
 SECTION_PREFIX = '## '
 SECTION_BASE = 'base'
 SECTION_NOTE = 'note'
+SECTION_REFINE = 'refine'
 FAMILY_DEFAULT = 'default'
 HINTS_SAME = 'same'
 HINTS_DISTINCT = 'distinct'
@@ -76,25 +79,43 @@ def distinct_hint_count(sections):
     return count
 
 
-def build_prompt(sections, style, subject, view, hints, variant=1, note=None):
-    """The prompt text of one request (one variant hint) for one subject."""
+def family_part(sections, subject):
+    return sections.get(f'family {subject["family"]}') or section(sections, f'family {FAMILY_DEFAULT}')
+
+
+def prompt_values(style, subject, note):
     tiers, materials = style
     role, palette = tiers[subject['tier']]
-    family_section = f'family {subject["family"]}'
+    return {
+        'name': subject['name'], 'keys': ', '.join(subject['keys']),
+        'family': concept_select.family_label(subject['family']), 'tier': subject['tier'],
+        'tier_role': role, 'palette': palette, 'materials': materials, 'note': note or '',
+    }
+
+
+def substitute(parts, values):
+    try:
+        return '\n\n'.join(Template(part).substitute(values) for part in parts)
+    except (KeyError, ValueError) as error:
+        raise PromptError(f'{TEMPLATE_FILE.name}: bad placeholder {error}') from None
+
+
+def build_prompt(sections, style, subject, view, hints, variant=1, note=None):
+    """The prompt text of one request (one variant hint) for one subject."""
     parts = [
         section(sections, SECTION_BASE),
-        sections.get(family_section) or section(sections, f'family {FAMILY_DEFAULT}'),
+        family_part(sections, subject),
         section(sections, f'view {view}'),
         variant_section(sections, hints, variant),
     ]
     if note:
         parts.append(section(sections, SECTION_NOTE))
-    values = {
-        'name': subject['name'], 'keys': ', '.join(subject['keys']),
-        'family': concept_select.family_label(subject['family']), 'tier': subject['tier'],
-        'tier_role': role, 'palette': palette, 'materials': materials, 'note': note or '',
-    }
-    try:
-        return '\n\n'.join(Template(part).substitute(values) for part in parts)
-    except (KeyError, ValueError) as error:
-        raise PromptError(f'{TEMPLATE_FILE.name}: bad placeholder {error}') from None
+    return substitute(parts, prompt_values(style, subject, note))
+
+
+def build_refine_prompt(sections, style, subject, view, note):
+    """The prompt of a refine request: revise the attached concept as the owner's comment says."""
+    if not note:
+        raise PromptError('a refine needs the owner\'s comment (--note)')
+    parts = [section(sections, SECTION_REFINE), family_part(sections, subject), section(sections, f'view {view}')]
+    return substitute(parts, prompt_values(style, subject, note))

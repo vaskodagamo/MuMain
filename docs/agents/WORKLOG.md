@@ -1092,6 +1092,22 @@ docs and the owner's pricing page.
 **Open / next:** the owner sets `OPENAI_API_KEY` and a project budget limit, then a first real
 explore batch (study top 10 x 3); compare estimated and actual `usage`.
 
+## 2026-09-23 - Item concepts backend for the editor (I5b part 1) (Claude Opus 5.5)
+**Goal:** Let the Item Editor drive `concepts.py`: the owner asked for concepts inside the editor
+(select items, generate, pick or refine with a comment, hand to Codex).
+
+**Done:** key from `$OPENAI_API_KEY` or the macOS Keychain item `openai-api-key` (an app started
+from Finder does not read `~/.zshrc`); Python 3.9 support (Apple's `/usr/bin/python3`); paths
+from the repository root; a versioned JSON protocol (`--json` one-shot, `--json-progress` JSON
+Lines, exit codes incl. 5 no key, 6 busy, 130 cancelled); SIGTERM cancellation with resume;
+batch locks; `list`/`discard`/`undiscard`; refine from a variant with a comment
+(`run --from <batch>/<key>/vN --note ...`, editable `## refine` prompt). Protocol in
+`assets-work/Items/concepts/README.md`.
+
+**Verified:** 113 tests on Python 3.9.6 and 3.12.6 (mock server, injected Keychain runner,
+subprocess cancellation); a real `plan --json` found the Keychain key without printing it.
+
+**Open / next:** I5b editor panel on top of I5 (PR #33) and this branch.
 ## 2026-09-23 - Item editor I5: Ask Codex, captures, Requests tab (Claude Opus 5.5)
 **Goal:** Milestone I5 of `ITEM_EDITOR_PLAN.md`.
 

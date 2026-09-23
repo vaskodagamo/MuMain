@@ -6,7 +6,8 @@ then render_concept_refs.py (in Blender) renders them with the study's render_pr
 armour set is rendered as its five parts together.
 
 Output: <refs dir>/<key>.png plus <key>.json (the models and their sha256). A reference is
-re-rendered only when a model's sha256 or RENDER_VERSION changed.
+re-rendered only when a model's sha256 or RENDER_VERSION changed. Model paths resolve from the
+repository root passed in (concept_paths), never from the working directory.
 """
 
 from pathlib import Path
@@ -22,8 +23,8 @@ import concept_select
 
 HERE = Path(__file__).resolve().parent
 ROOT = concept_select.ROOT
-DATA_ROOT = ROOT / 'src' / 'bin' / 'Data'
-STUDY_PREPARE = ROOT / 'assets-work' / 'Items' / 'study' / 'prepare_previews.py'
+DATA_SUBDIR = Path('src') / 'bin' / 'Data'
+STUDY_PREPARE = Path('assets-work') / 'Items' / 'study' / 'prepare_previews.py'
 RENDER_SCRIPT = HERE / 'render_concept_refs.py'
 DEFAULT_BLENDER = Path('/Applications/Blender.app/Contents/MacOS/Blender')
 BLENDER_ENV = 'MU_BLENDER'
@@ -38,6 +39,14 @@ BLEND_SUFFIX = '.blend'
 
 class RefError(RuntimeError):
     pass
+
+
+class RenderCancelled(RefError):
+    pass
+
+
+def never_cancelled():
+    return False
 
 
 def sha256_file(path):
@@ -55,9 +64,9 @@ def find_tool(explicit, env, candidates, what, hint):
     raise RefError(f'{what} not found; pass {hint} or set ${env}')
 
 
-def find_bmdconv(explicit=None):
-    candidates = sorted(str(p) for p in ROOT.glob(BMDCONV_GLOB))
-    candidates += sorted(str(p) for p in (ROOT.parent / SIBLING_CHECKOUT).glob(BMDCONV_GLOB))
+def find_bmdconv(explicit=None, root=ROOT):
+    candidates = sorted(str(p) for p in root.glob(BMDCONV_GLOB))
+    candidates += sorted(str(p) for p in (root.parent / SIBLING_CHECKOUT).glob(BMDCONV_GLOB))
     return find_tool(explicit, BMDCONV_ENV, candidates, 'bmdconv', '--bmdconv')
 
 
@@ -69,54 +78,60 @@ def ref_path(refs_dir, key):
     return Path(refs_dir) / f'{key}.png'
 
 
-def model_hashes(subject):
+def model_hashes(subject, root=ROOT):
     hashes = {}
     for bmd in subject['models']:
-        path = ROOT / bmd
+        path = root / bmd
         if not path.is_file():
             raise RefError(f'{subject["key"]}: model {bmd} does not exist')
         hashes[bmd] = sha256_file(path)
     return hashes
 
 
-def cache_record(subject):
-    return {'key': subject['key'], 'render_version': RENDER_VERSION, 'models': model_hashes(subject)}
+def cache_record(subject, root=ROOT):
+    return {'key': subject['key'], 'render_version': RENDER_VERSION, 'models': model_hashes(subject, root)}
 
 
-def is_current(refs_dir, subject):
+def is_current(refs_dir, subject, root=ROOT):
     record_file = Path(refs_dir) / f'{subject["key"]}.json'
     if not (ref_path(refs_dir, subject['key']).is_file() and record_file.is_file()):
         return False
-    return json.loads(record_file.read_text(encoding='utf-8')) == cache_record(subject)
+    return json.loads(record_file.read_text(encoding='utf-8')) == cache_record(subject, root)
 
 
-def load_study_prepare():
-    spec = importlib.util.spec_from_file_location('study_prepare_previews', STUDY_PREPARE)
+def stale_subjects(subjects, refs_dir, root=ROOT, force=False):
+    return [s for s in subjects if force or not is_current(refs_dir, s, root)]
+
+
+def load_study_prepare(root):
+    spec = importlib.util.spec_from_file_location('study_prepare_previews', root / STUDY_PREPARE)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
 
 
-def data_relative(bmd):
-    return (ROOT / bmd).relative_to(DATA_ROOT).as_posix()
+def data_relative(bmd, root=ROOT):
+    return (root / bmd).relative_to(root / DATA_SUBDIR).as_posix()
 
 
-def import_models(subjects, blender, bmdconv, imports_dir):
-    prepare = load_study_prepare()
+def import_models(subjects, blender, bmdconv, imports_dir, root=ROOT, cancelled=never_cancelled):
+    prepare = load_study_prepare(root)
     args = SimpleNamespace(blender=blender, bmdconv=bmdconv, imports_dir=Path(imports_dir))
     for bmd in sorted({bmd for subject in subjects for bmd in subject['models']}):
-        prepare.import_model(data_relative(bmd), args, DATA_ROOT)
+        if cancelled():
+            raise RenderCancelled('cancelled while importing models')
+        prepare.import_model(data_relative(bmd, root), args, root / DATA_SUBDIR)
 
 
-def render_jobs(subjects):
+def render_jobs(subjects, root=ROOT):
     return [{'name': subject['key'],
-             'files': [str(Path(data_relative(bmd)).with_suffix(BLEND_SUFFIX)) for bmd in subject['models']]}
+             'files': [str(Path(data_relative(bmd, root)).with_suffix(BLEND_SUFFIX)) for bmd in subject['models']]}
             for subject in subjects]
 
 
-def run_blender(blender, subjects, imports_dir, refs_dir):
+def run_blender(blender, subjects, imports_dir, refs_dir, root=ROOT):
     with tempfile.NamedTemporaryFile('w', suffix='.json', delete=False, encoding='utf-8') as handle:
-        json.dump(render_jobs(subjects), handle)
+        json.dump(render_jobs(subjects, root), handle)
         jobs_file = handle.name
     command = [str(blender), '-b', '--python', str(RENDER_SCRIPT), '--', '--imports-dir', str(imports_dir),
                '--output-dir', str(refs_dir), '--jobs', jobs_file]
@@ -128,20 +143,18 @@ def run_blender(blender, subjects, imports_dir, refs_dir):
         raise RefError(f'Blender render failed (exit {result.returncode}):\n{result.stdout[-4000:]}\n{result.stderr[-4000:]}')
 
 
-def render_refs(subjects, refs_dir, blender, bmdconv, force=False, report=print):
-    """Render the references that are missing or stale; returns the keys rendered."""
+def render_refs(stale, refs_dir, blender, bmdconv, root=ROOT, cancelled=never_cancelled):
+    """Render the given subjects (import, one Blender call, cache records); returns their keys.
+
+    `cancelled` is checked between model imports; the Blender call itself runs to its end.
+    """
     refs_dir = Path(refs_dir)
-    stale = [s for s in subjects if force or not is_current(refs_dir, s)]
-    for subject in subjects:
-        if subject not in stale:
-            report(f'{subject["key"]}: current ({ref_path(refs_dir, subject["key"])})')
-    if not stale:
-        return []
     imports_dir = refs_dir / 'imports'
-    import_models(stale, blender, bmdconv, imports_dir)
-    run_blender(blender, stale, imports_dir, refs_dir)
+    import_models(stale, blender, bmdconv, imports_dir, root, cancelled)
+    if cancelled():
+        raise RenderCancelled('cancelled before the Blender render')
+    run_blender(blender, stale, imports_dir, refs_dir, root)
     for subject in stale:
-        record = cache_record(subject)
+        record = cache_record(subject, root)
         (refs_dir / f'{subject["key"]}.json').write_text(json.dumps(record, indent=1) + '\n', encoding='utf-8')
-        report(f'{subject["key"]}: rendered {ref_path(refs_dir, subject["key"])}')
     return [subject['key'] for subject in stale]
