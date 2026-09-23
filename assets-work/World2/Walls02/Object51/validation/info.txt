@@ -1,0 +1,7 @@
+model /Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-wall51/assets-work/World2/Walls02/Object51/exports/Object51.bmd
+  name field: Data2\Object2\¼®»Ôº®03.smd  version: 12
+  meshes: 1  bones: 1  actions: 1  triangles: 66
+  bounds (bind pose): min -150.06 -108.80 0.00  max 149.94 3.37 291.61  size 300.00 112.17 291.61
+  mesh 0: triangles=66 vertices=48 normals=31 uvs=65 texture=deep_wall12.jpg
+  bone 0: "Box06" parent=-1
+  action 0: keys=1 lock=0

@@ -1,0 +1,2 @@
+/Users/lukasmac/Documents/claude-test-mumain/MuMain-dungeon-wall51/assets-work/World2/Walls02/Object51/validation/new/Object51.smd: bones=1 frames=1 triangles=66 materials=1
+OK
