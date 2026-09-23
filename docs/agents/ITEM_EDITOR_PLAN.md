@@ -287,6 +287,33 @@ Status:
     `IsRequireEquipItem`; I5's request JSON must write the item target shape of the README.
     Possible engine bug, not changed: `ItemSetType.bmd` marks "no set" with 0, while
     `CSItemOption::IsChangeSetItem` tests only for `0xFF`.
+- **I3 done (2026-09-23).** Browse tab, studio mode and launcher; usage in `ITEM_EDITOR.md`.
+  - **Studio:** `--editor --items` draws no map (flat backdrop, `Core/ItemStudio`; World1 is
+    still loaded but not drawn, because the Map Editor on the toolbar needs a loaded map and I4's
+    hidden hero needs ground and light) and the Item Editor fills the window. Opening the Map
+    Editor shows the map and floats the Item Editor; closing it restores the studio.
+    `--items --world N` shows the map behind a floating Item Editor; `--world N` unchanged.
+  - **Launcher:** `MU Item Editor.app` next to `Main.app` (`cmake/ItemEditorLauncher.cmake`,
+    `if(APPLE AND ENABLE_EDITOR)`); runs `./Main --editor --items` from the game's folder, also
+    when moved elsewhere.
+  - **Browse:** class buttons + class stage (the engine's rule, now shared as
+    `GameLogic::Items::CanClassEquip`; `IsRequireEquipItem` calls it, same result), family list
+    with counts, tier range, status (original / changed / at Codex), search in any letter case
+    (`EditorText::FoldCase`), sorts (tier default, key, name, drop/required level, status), list
+    and grid with thumbnails framed from each model's bounds; details panel with a marked place
+    for I4's preview; selection synced with the **Stats table** tab (which now scrolls to the
+    exact row). Data: `Assets/ItemCatalog`, `Assets/ItemBrowse`, `Assets/JsonFields`.
+  - Checked: 366/366 tests (`macos-arm64-mueditor`), 365/365 (`macos-arm64`); in the client with
+    a temporary, uncommitted ImGui-input hook: studio, DK stage 1 swords Short Sword ... Sword of
+    Destruction (Blade Master reaches T7 Knight/Bone Blade), grid, selection sync both ways,
+    launcher via `open`, `--world 1` and `--items --world 1` unchanged, `MTL_DEBUG_LAYER=1`
+    clean, ~75 fps (vsync) scrolling all 959 items with thumbnails. Not tried by hand; Dock
+    drag not tried; Windows/Linux not built.
+  - For I4: draw the preview in `RenderPreviewArea` (`ItemBrowseDetails.cpp`); offscreen renders
+    in the studio run from `ItemStudio::RenderInsteadOfWorld()`. For I5: "at Codex" comes from
+    the catalog's requests, so rebuild the catalog after filing.
+  - Found, not changed: Map Editor object thumbnails always use a fallback frame (the engine
+    never fills the model bounds they read).
 
 ## 8. Later options
 
