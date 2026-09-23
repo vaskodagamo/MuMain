@@ -1120,3 +1120,20 @@ status.
 of every acceptance point; Metal validation clean.
 
 **Open / next:** owner files the first real request (I7 pilot); I5b concepts inside the editor.
+
+## 2026-09-23 - Map Editor: visible pointer over every panel (Claude Opus 5.5)
+**Goal:** The pointer vanished over parts of the Map Editor on macOS (images, child regions, gaps
+between panels): the game cursor is drawn under ImGui, and the OS pointer was only shown where a
+window set `SetHoveringUI`.
+
+**Done:** `CMuEditorCore::UpdateCursors()` shows the OS pointer whenever ImGui has the mouse
+(`WantCaptureMouse`, any hovered window) or a window claimed it, and forces it through the
+`ShowCursor` display counter on every platform; over the world the game cursor, with ImGui's
+backend kept from re-showing the OS pointer (`NoMouseCursorChange`). Same names as PR #35
+(`WantsOsCursor`, `UpdateCursors`); the item studio's rule merges into `IsMouseOverEditorUI()`.
+
+**Verified:** 395/395 ctest (editor build); `./Main --editor --world 1` with posted mouse moves
+and full-screen captures: game cursor only over the world, OS arrow over palette images, gaps
+between tiles, panel text, toolbar and console gap, text beam over console text.
+
+**Open / next:** Windows build not compiled here; resolve the small conflict with PR #35.

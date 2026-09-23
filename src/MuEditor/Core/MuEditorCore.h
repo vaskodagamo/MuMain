@@ -42,6 +42,9 @@ public:
     }
     bool IsHoveringUI() const { return m_bHoveringUI; }
     void SetHoveringUI(bool hovering) { m_bHoveringUI = hovering; }
+    // This frame shows the OS pointer instead of the game's cursor sprite: the mouse is
+    // over an editor window or editor UI owns it. Over the 3D world the game draws its own.
+    bool WantsOsCursor() const { return m_bWantsOsCursor; }
 
     // Global scale for ALL editor UI (fonts + widget/padding sizes). Driven by the
     // -/+ buttons in the toolbar. Applied between frames, not mid-frame.
@@ -60,6 +63,10 @@ private:
     ~CMuEditorCore();
 
     void ApplyUIScale();
+    // Editor UI has the mouse this frame (see WantsOsCursor()); inside the ImGui frame.
+    bool IsMouseOverEditorUI() const;
+    // The game's cursor sprite and the OS pointer for this frame.
+    void UpdateCursors(bool captureFrame);
     // The editor windows of this frame; with the editor closed only the Map Editor's
     // hand-back of the game's edit mode.
     void RenderEditorWindows();
@@ -78,6 +85,9 @@ private:
     bool m_bShowConsole;
     bool m_bHoveringUI;
     bool m_bPreviousFrameHoveringUI;  // Store previous frame's hover state for input blocking
+    bool m_bWantsOsCursor = false;    // this frame's choice, see WantsOsCursor()
+    bool m_bOsCursorShown = false;    // what ShowCursor() was last forced to
+    bool m_bOsCursorApplied = false;  // forced at least once (the game's start state is not known)
     Editor::Editing::PopupMouseGuard m_popupMouseGuard; // an open popup and the click that closes it keep the mouse
 
     float m_UIScale;        // 1.0 = default ImGui size
