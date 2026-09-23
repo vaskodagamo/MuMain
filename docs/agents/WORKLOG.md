@@ -858,3 +858,19 @@ owner a short quick start at the top of [`MAP_EDITOR.md`](../../src/MuEditor/UI/
 - `RenderQuad3D` still clamps other callers above 4096 quads; the player build's logs, including a
   full game session, show no such warning.
 - Windows and Linux were not built; the buttons were not clicked by hand.
+
+## 2026-09-23 - World editor published as PR #15 (Claude Opus 5.5)
+**Goal:** Commit the world editor (M1-M7), bring the branch up to date and open the PR.
+
+**Done:** Split `feat/world-editor` into eight commits (presets, engine/renderer, editor units,
+editor UI, A/B tool, coordination state, catalog and request contract, agent docs). Merged
+`origin/main` (upstream sync PR #14); the only conflict, `OpenObjectsEnc`, keeps the
+`WorldObjectFile` decoder. Deleted the stale hand-configured `out/build/macos-arm64-editor`.
+Opened [PR #15](https://github.com/vaskodagamo/MuMain/pull/15) against `main`.
+
+**Verified:** after the merge, the `macos-arm64-mueditor` and `macos-arm64` builds pass,
+339/339 tests pass, and `./Main --editor --world 1` opens Lorencia under `MTL_DEBUG_LAYER=1`
+with no Metal assertion (screenshot checked).
+
+**Open / next:** owner review of PR #15; try the file dialog and the Open folder / preview
+buttons by hand; Windows/Linux builds untested.
