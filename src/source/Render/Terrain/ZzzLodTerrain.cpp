@@ -12,6 +12,9 @@
 #endif
 #include <math.h>
 #include <iterator>
+#include <optional>
+#include <string>
+#include <vector>
 #include "Render/Textures/ZzzOpenglUtil.h"
 #include "Render/Models/ZzzBMD.h"
 #include "ZzzLodTerrain.h"
@@ -25,6 +28,9 @@
 #include "Render/Renderer/MuRenderer.h"
 #include "Render/Renderer/RenderUtils.h"
 #include "I18N/All.h"
+#include "Core/Utilities/Log/MuLogger.h"
+#include "Render/Terrain/TerrainFiles.h"
+#include "Render/Terrain/TerrainTileIndex.h"
 
 #include "GameLogic/Events/CSChaosCastle.h"
 #include "GameLogic/Events/Cinematic/CMVP1stDirection.h"
@@ -44,6 +50,7 @@
 #ifdef _EDITOR
 #include "Render/Renderer/QuadTopology.h"
 #include "Render/Terrain/TerrainBrushOutline.h"
+#include "Render/Terrain/TerrainGroundRects.h"
 #include "Render/Terrain/TerrainOverlayState.h"
 
 extern "C" bool DevEditor_ShouldShowTileGrid();
@@ -311,49 +318,58 @@ void SetTerrainWaterState(std::list<int>& terrainIndex, int state)
     }
 }
 
-int OpenTerrainMapping(wchar_t* FileName) {
+static_assert(Render::Terrain::Files::CELLS == TERRAIN_SIZE * TERRAIN_SIZE, "terrain files hold 256 x 256 cells");
+static_assert(Render::Terrain::TileIndex::SIDE == TERRAIN_SIZE, "tiles index 256 x 256 terrain arrays");
+
+// A terrain file the loaders refuse instead of reading past its end: the reason goes
+// to the log and the map loads without that file's data.
+static void ReportBadTerrainFile(const wchar_t* fileName, const std::string& reason)
+{
+    mu::log::Get("render")->error("{}: {}", mu_wchar_to_utf8(fileName), reason);
+}
+
+// A whole file's bytes (as many as could be read); nothing when it cannot be opened.
+static std::optional<std::vector<unsigned char>> ReadTerrainFile(const wchar_t* fileName)
+{
+    FILE* fp = _wfopen(fileName, L"rb");
+    if (fp == NULL)
+    {
+        return std::nullopt;
+    }
+    fseek(fp, 0, SEEK_END);
+    const long size = ftell(fp);
+    fseek(fp, 0, SEEK_SET);
+    std::vector<unsigned char> bytes(size > 0 ? static_cast<size_t>(size) : 0);
+    bytes.resize(fread(bytes.data(), 1, bytes.size(), fp));
+    fclose(fp);
+    return bytes;
+}
+
+int OpenTerrainMapping(wchar_t* FileName)
+{
     InitTerrainMappingLayer();
-    FILE* fp = _wfopen(FileName, L"rb");
-    if (fp == NULL) {
+    std::optional<std::vector<unsigned char>> EncData = ReadTerrainFile(FileName);
+    if (!EncData)
+    {
         return -1;
     }
 
-    fseek(fp, 0, SEEK_END);
-    int EncBytes = ftell(fp);
-    fseek(fp, 0, SEEK_SET);
+    std::vector<unsigned char> Data(EncData->size());
+    MapFileDecrypt(Data.data(), EncData->data(), static_cast<int>(EncData->size()));
 
-    auto* EncData = new unsigned char[EncBytes];
-    fread(EncData, 1, EncBytes, fp);
-    fclose(fp);
-
-    int DataBytes = MapFileDecrypt(NULL, EncData, EncBytes);
-    auto* Data = new unsigned char[DataBytes];
-    MapFileDecrypt(Data, EncData, EncBytes);
-    delete[] EncData;
-
-    int DataPtr = 0;
-    DataPtr += 1;
-
-    int iMapNumber = static_cast<int>(*reinterpret_cast<BYTE*>(Data + DataPtr));
-    DataPtr += 1;
-
-    memcpy(TerrainMappingLayer1, Data + DataPtr, 256 * 256);
-    DataPtr += 256 * 256;
-
-    memcpy(TerrainMappingLayer2, Data + DataPtr, 256 * 256);
-    DataPtr += 256 * 256;
-
-    for (int i = 0; i < TERRAIN_SIZE * TERRAIN_SIZE; i++) {
-        BYTE Alpha = *(Data + DataPtr);
-        DataPtr += 1;
-        TerrainMappingAlpha[i] = static_cast<float>(Alpha) / 255.f;
+    std::string error;
+    const Render::Terrain::Files::MappingLayers layers{TerrainMappingLayer1, TerrainMappingLayer2, TerrainMappingAlpha};
+    const int iMapNumber = Render::Terrain::Files::DecodeMapping(Data.data(), Data.size(), layers, error);
+    if (iMapNumber < 0)
+    {
+        ReportBadTerrainFile(FileName, error);
+        return -1;
     }
-
-    delete[] Data;
 
     TerrainGrassEnable = true;
 
-    if (gMapManager.InChaosCastle() || gMapManager.InBattleCastle()) {
+    if (gMapManager.InChaosCastle() || gMapManager.InBattleCastle())
+    {
         TerrainGrassEnable = false;
     }
 
@@ -609,7 +625,7 @@ void CreateTerrainLight_Part(int xi, int yi)
 
 void OpenTerrainLight(wchar_t* FileName)
 {
-    OpenJpegBuffer(FileName, &TerrainLight[0][0]);
+    OpenJpegBuffer(FileName, &TerrainLight[0][0], TERRAIN_SIZE, TERRAIN_SIZE);
     // Apply corrections to the loaded terrain light
     for (int i = 0; i < TERRAIN_SIZE * TERRAIN_SIZE; i++)
     {
@@ -863,8 +879,8 @@ bool OpenTerrainHeightNew(const wchar_t* strFilename)
     wcscat(FileName, NewFileName);
     wcscat(FileName, L"OZB");
 
-    FILE* fp = _wfopen(FileName, L"rb");
-    if (!fp)
+    const std::optional<std::vector<unsigned char>> data = ReadTerrainFile(FileName);
+    if (!data)
     {
         wchar_t Text[256];
         mu_swprintf(Text, L"%ls file not found.", FileName);
@@ -875,42 +891,13 @@ bool OpenTerrainHeightNew(const wchar_t* strFilename)
         return false;
     }
 
-    fseek(fp, 0, SEEK_END);
-    int iBytes = ftell(fp);
-    fseek(fp, 0, SEEK_SET);
-
-    BYTE* pbyData = new BYTE[iBytes];
-    fread(pbyData, 1, iBytes, fp);
-    fclose(fp);
-
-    DWORD dwCurPos = 0;
-    dwCurPos += 4;
-
-    BITMAPINFOHEADER bmiHeader;
-    BITMAPFILEHEADER header;
-
-    memcpy(&header, &pbyData[dwCurPos], sizeof(BITMAPFILEHEADER));
-    dwCurPos += sizeof(BITMAPFILEHEADER);
-
-    memcpy(&bmiHeader, &pbyData[dwCurPos], sizeof(BITMAPINFOHEADER));
-    dwCurPos += sizeof(BITMAPINFOHEADER);
-
-    for (int i = 0; i < TERRAIN_SIZE * TERRAIN_SIZE; ++i)
+    std::string error;
+    if (!Render::Terrain::Files::DecodeExtendedHeight(data->data(), data->size(), g_fMinHeight, BackTerrainHeight,
+                                                      error))
     {
-        BYTE* pbysrc = &pbyData[dwCurPos + i * 3];
-
-        DWORD dwHeight = 0;
-        BYTE* pbyHeight = (BYTE*)&dwHeight;
-
-        pbyHeight[0] = pbysrc[2];
-        pbyHeight[1] = pbysrc[1];
-        pbyHeight[2] = pbysrc[0];
-
-        BackTerrainHeight[i] = (float)dwHeight;
-        BackTerrainHeight[i] += g_fMinHeight;
+        ReportBadTerrainFile(FileName, error);
+        return false;
     }
-
-    delete[] pbyData;
     return true;
 }
 
@@ -1669,14 +1656,21 @@ extern PATH* path;
 
 extern int SelectWall;
 
+// The cells of a tile's other three corners (TerrainTileIndex.h: the tiles of the last
+// row repeat it instead of reading past the terrain arrays).
+static void SetTileCornerIndices(int xi, int yi, int lodi)
+{
+    TerrainIndex2 = Render::Terrain::TileIndex::Corner(xi + lodi, yi);
+    TerrainIndex3 = Render::Terrain::TileIndex::Corner(xi + lodi, yi + lodi);
+    TerrainIndex4 = Render::Terrain::TileIndex::Corner(xi, yi + lodi);
+}
+
 bool RenderTerrainTile(float xf, float yf, int xi, int yi, float lodf, int lodi, bool Flag)
 {
     TerrainIndex1 = TERRAIN_INDEX(xi, yi);
     if ((TerrainWall[TerrainIndex1] & TW_NOGROUND) == TW_NOGROUND && !Flag) return false;
 
-    TerrainIndex2 = TERRAIN_INDEX(xi + lodi, yi);
-    TerrainIndex3 = TERRAIN_INDEX(xi + lodi, yi + lodi);
-    TerrainIndex4 = TERRAIN_INDEX(xi, yi + lodi);
+    SetTileCornerIndices(xi, yi, lodi);
 
     float sx = xf * TERRAIN_SCALE;
     float sy = yf * TERRAIN_SCALE;
@@ -1800,9 +1794,7 @@ bool RenderTerrainTile(float xf, float yf, int xi, int yi, float lodf, int lodi,
 void RenderTerrainTile_After(float xf, float yf, int xi, int yi, float lodf, int lodi, bool Flag)
 {
     TerrainIndex1 = TERRAIN_INDEX(xi, yi);
-    TerrainIndex2 = TERRAIN_INDEX(xi + lodi, yi);
-    TerrainIndex3 = TERRAIN_INDEX(xi + lodi, yi + lodi);
-    TerrainIndex4 = TERRAIN_INDEX(xi, yi + lodi);
+    SetTileCornerIndices(xi, yi, lodi);
 
     float sx = xf * TERRAIN_SCALE;
     float sy = yf * TERRAIN_SCALE;
@@ -3228,6 +3220,7 @@ void RenderTerrain(bool EditFlag)
             RenderTileGridDebug();
         if (g_bMapEditorAttrOverlay)
             RenderAttributeOverlay();
+        Render::Terrain::GroundRects::Render();
 #endif
         DisableDepthTest();
         EnableCullFace();

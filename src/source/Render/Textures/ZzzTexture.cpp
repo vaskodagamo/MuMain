@@ -10,6 +10,7 @@
 #include <string>
 #include <vector>
 #include "ZzzTexture.h"
+#include "JpegFloatDecode.h"
 
 #include "Network/Server/WSclient.h"
 #include "turbojpeg.h"
@@ -160,7 +161,7 @@ void SaveImage(int HeaderSize, wchar_t* Ext, wchar_t* filename, BYTE* PakBuffer,
     }
 }
 
-bool OpenJpegBuffer(wchar_t* filename, float* BufferFloat)
+bool OpenJpegBuffer(wchar_t* filename, float* BufferFloat, int width, int height)
 {
     if (filename == nullptr || BufferFloat == nullptr)
     {
@@ -193,49 +194,25 @@ bool OpenJpegBuffer(wchar_t* filename, float* BufferFloat)
     if (fileSize < 24)
     {
         fclose(compressedFile);
+        mu::log::Get("render")->error("{}: {} bytes, too short for an .OZJ", mu_wchar_to_utf8(fileName.c_str()),
+                                      static_cast<long>(fileSize));
         return false;
     }
 
     fseek(compressedFile, 24, SEEK_SET);
     const auto jpegSize = fileSize - 24;
     std::vector<unsigned char> jpegBuf(static_cast<size_t>(jpegSize));
-    fread(jpegBuf.data(), 1, jpegBuf.size(), compressedFile);
+    jpegBuf.resize(fread(jpegBuf.data(), 1, jpegBuf.size(), compressedFile));
     fclose(compressedFile);
 
-    int jpegWidth = 0;
-    int jpegHeight = 0;
-    int jpegSubsamp = TJSAMP_444;
-    int jpegColorspace = TJCS_RGB;
-
-    auto tjhandle = tjInitDecompress();
-    if (tjhandle == nullptr)
+    // The image must be exactly the size the caller's buffer holds: a larger one
+    // would be written past its end.
+    std::string error;
+    if (!Render::Textures::DecodeJpegToFloats(jpegBuf.data(), jpegBuf.size(), width, height, BufferFloat, error))
     {
+        mu::log::Get("render")->error("{}: {}", mu_wchar_to_utf8(fileName.c_str()), error);
         return false;
     }
-
-    auto result = tjDecompressHeader3(tjhandle, jpegBuf.data(), jpegBuf.size(), &jpegWidth, &jpegHeight, &jpegSubsamp,
-                                      &jpegColorspace);
-    if (result != 0)
-    {
-        tjDestroy(tjhandle);
-        return false;
-    }
-
-    const auto bufferSize = static_cast<size_t>(jpegWidth) * static_cast<size_t>(jpegHeight) * 3;
-    std::vector<unsigned char> buffer(bufferSize);
-    result = tjDecompress2(tjhandle, jpegBuf.data(), jpegBuf.size(), buffer.data(), jpegWidth, 0, jpegHeight, TJPF_RGB,
-                           TJFLAG_BOTTOMUP);
-    tjDestroy(tjhandle);
-    if (result != 0)
-    {
-        return false;
-    }
-
-    for (size_t i = 0; i < bufferSize; ++i)
-    {
-        BufferFloat[i] = static_cast<float>(buffer[i]) / 255.f;
-    }
-
     return true;
 }
 
