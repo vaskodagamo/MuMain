@@ -972,4 +972,4 @@ buttons by hand; Windows/Linux builds untested.
 **Goal:** Publish independently accepted static-asset work in small, mergeable checkpoints while continuing the remake.
 **Done:** Refreshed an isolated worktree from owner-fork main after PR #12 merged. Integrated the reviewed Object48 BMD and recorded export, placement, texture and converter evidence. Updated current assessment: Lorencia remains artistically unfinished despite first-pass 22-replacement and 84-retention counts.
 **Verified:** The integrated BMD matches the reviewed export hash; the official converter validates its static and animation SMDs; the frozen texture container passes; all 63 Object2 models resolve their texture dependencies. Exactly one Object2 game path changes in this branch. Client and runtime verification remain pending.
-**Open / next:** Push the focused Object48 checkpoint and open a ready-for-review PR. Resume production with a Lorencia quality batch from refreshed main.
+**Open / next:** Opened [PR #16](https://github.com/vaskodagamo/MuMain/pull/16), ready for review and mergeable against main. Resume production with a Lorencia quality batch from refreshed main.

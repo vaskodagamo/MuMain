@@ -1,8 +1,4 @@
 {
-  "main_revision": "c40d0b0d313b44b99a4fd84bcac0a81e476f3ed7",
-  "status": "active; checkpointed pull requests target main in vaskodagamo/MuMain",
-  "branch": "codex/dungeon-remains48-accepted",
-  "checkpoint": "Object48 accepted integration",
   "accepted_replacements_in_main": [
     "World1/HouseWall01",
     "World1/HouseWall04",
@@ -30,28 +26,32 @@
     "Object29",
     "Object01"
   ],
-  "lorencia_checkpoint": {
-    "pull_request": "https://github.com/vaskodagamo/MuMain/pull/12",
-    "state": "merged",
-    "accepted_replacements": 22,
-    "first_pass_retention_decisions": 84,
-    "artistic_goal_complete": false
+  "branch": "codex/dungeon-remains48-accepted",
+  "checkpoint": "Object48 integrated review PR #16",
+  "client_verification": "pending for all newly changed assets",
+  "current_asset": {
+    "model": "Object48",
+    "pull_request": "https://github.com/vaskodagamo/MuMain/pull/16",
+    "status": "open, ready for review; mergeable against main"
   },
   "dungeon_merged_checkpoint": {
-    "pull_request": "https://github.com/vaskodagamo/MuMain/pull/13",
-    "state": "merged",
     "accepted_replacements": [
       "Object28",
       "Object29",
       "Object01"
-    ]
+    ],
+    "pull_request": "https://github.com/vaskodagamo/MuMain/pull/13",
+    "state": "merged"
   },
-  "current_asset": {
-    "model": "Object48",
-    "pull_request": "pending creation after this checkpoint is pushed",
-    "status": "offline review accepted; integration validated"
+  "lorencia_checkpoint": {
+    "accepted_replacements": 22,
+    "artistic_goal_complete": false,
+    "first_pass_retention_decisions": 84,
+    "pull_request": "https://github.com/vaskodagamo/MuMain/pull/12",
+    "state": "merged"
   },
+  "main_revision": "c40d0b0d313b44b99a4fd84bcac0a81e476f3ed7",
+  "next_priority": "Lorencia quality production",
   "overall_goal": "in progress",
-  "client_verification": "pending for all newly changed assets",
-  "next_priority": "Lorencia quality production"
+  "status": "active; checkpointed pull requests target main in vaskodagamo/MuMain"
 }

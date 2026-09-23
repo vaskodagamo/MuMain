@@ -718,14 +718,15 @@
       "bons.jpg"
     ],
     "owner": "coordinator",
-    "status": "accepted offline; focused PR ready for review",
+    "status": "accepted offline; PR #16 open and ready for review",
     "client_verified": false,
     "evidence": "assets-work/World2/Remains48/independent-final-review.json",
     "branch": "codex/dungeon-remains48-accepted",
     "deliverables": "assets-work/World2/Remains48",
     "integration_validation": "assets-work/World2/Remains48/Object48/validation/integration/integration-summary.json",
     "accepted_export_sha256": "9c62a9eafb5eb7822490bd45ce6b8c049a343b270142e3fca62c23f05eafc11a",
-    "integration_base": "c40d0b0d313b44b99a4fd84bcac0a81e476f3ed7"
+    "integration_base": "c40d0b0d313b44b99a4fd84bcac0a81e476f3ed7",
+    "pull_request": "https://github.com/vaskodagamo/MuMain/pull/16"
   },
   {
     "model": "Object49",

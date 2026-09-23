@@ -12,7 +12,7 @@ See current-remake-assessment.json for the active goal status, dungeon-assessmen
 |---|---|---:|---|
 | Lorencia | PR #12 merged; quality work remains open | 22 replacements, 84 first-pass retention decisions | World1 static environment |
 | Dungeon | PR #13 merged | 3 replacements | Object28, Object29 and Object01 |
-| Dungeon | Independently accepted; focused PR in progress | 1 replacement | Object48; bounds and texture contract preserved |
+| Dungeon | PR #16 open and ready for review | 1 replacement | Object48; bounds and texture contract preserved |
 
 New client verification remains pending. The accepted exports and their source packages are indexed in accepted-exports.json. The prior coordination snapshot follows as historical record.
 

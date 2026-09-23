@@ -1,6 +1,6 @@
 # Current checkpoint — 2026-09-23
 
-PR #12 and PR #13 are merged. The Lorencia goal remains open: its 22 accepted replacements and 84 retained decisions are first-pass coverage. New client verification is pending. Object48 passed bounded independent review and has been integrated in its own branch; the integrated BMD, export and texture-resolution evidence are recorded under assets-work/World2/Remains48. Next production priority is Lorencia.
+PR #12 and PR #13 are merged; Object48 is in ready-for-review PR #16. The Lorencia goal remains open: its 22 accepted replacements and 84 retained decisions are first-pass coverage. New client verification is pending. Object48 passed bounded independent review and has been integrated in its own branch; the integrated BMD, export and texture-resolution evidence are recorded under assets-work/World2/Remains48. Next production priority is Lorencia.
 
 # Environment production progress
 

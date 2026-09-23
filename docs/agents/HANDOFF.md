@@ -13,8 +13,9 @@ PR #12 merged into owner-fork main at c40d0b0d. It contains 22 accepted Lorencia
 replacements and 84 first-pass retention decisions. Lorencia remains artistically unfinished:
 the historical 106/106 offline label is first-pass inventory coverage, not consistent-quality
 completion. The user reports the prior baseline worked in game; new changes have not been
-checked in the client. Continue Lorencia quality assessment and production from refreshed
-main in an isolated worktree before expanding later-map production. See the current remake
+checked in the client. PR #13 is also merged; the bounded Object48 refinement is open in ready-for-review PR #16.
+Continue Lorencia quality assessment and production from refreshed main in an isolated
+worktree before expanding later-map production. See the current remake
 assessment at ../../assets-work/Environment/coordination/current-remake-assessment.json and
 the current handoff at ../../assets-work/Environment/coordination/handoff.md. Earlier
 completion and publication statements below remain historical only.

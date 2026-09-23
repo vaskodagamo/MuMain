@@ -2,7 +2,7 @@
 
 The goal remains active. Lorencia is not artistically complete. Its 22 accepted replacements and 84 retention decisions in merged PR #12 are first-pass records, not a final quality gate. Continue with Lorencia assessment and production before starting another Dungeon production batch. The user reports that the previous Lorencia baseline worked in game; new changes remain client-unverified.
 
-Dungeon PR #13 merged three replacements (Object28, Object29 and Object01). This focused checkpoint contains the accepted Object48 refinement and integration report; its PR will be opened ready for review after pushing. No client or runtime checks were performed for these new assets.
+Dungeon PR #13 merged three replacements (Object28, Object29 and Object01). Object48 is in focused PR #16, open and ready for review. Its independent review and integration report are included. No client or runtime checks were performed for these new assets.
 
 ## Current branches and pull requests
 
