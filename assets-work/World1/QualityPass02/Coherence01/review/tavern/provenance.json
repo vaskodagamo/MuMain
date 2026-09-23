@@ -1,0 +1,1007 @@
+{
+  "records": [
+    {
+      "name": "Beer01",
+      "index": 0,
+      "position": [
+        12738.603515625,
+        12838.12109375,
+        260.0000305175781
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        180.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        127.38603515625,
+        128.3812109375
+      ]
+    },
+    {
+      "name": "Beer02",
+      "index": 1,
+      "position": [
+        12734.263671875,
+        12772.3427734375,
+        260.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        270.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        127.34263671875,
+        127.723427734375
+      ]
+    },
+    {
+      "name": "Beer03",
+      "index": 1,
+      "position": [
+        12202.4443359375,
+        12945.6181640625,
+        254.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        180.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        122.024443359375,
+        129.456181640625
+      ]
+    },
+    {
+      "name": "Beer03",
+      "index": 3,
+      "position": [
+        12530.4677734375,
+        13436.0263671875,
+        270.00006103515625
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        150.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        125.304677734375,
+        134.360263671875
+      ]
+    },
+    {
+      "name": "Candle01",
+      "index": 1,
+      "position": [
+        12531.0048828125,
+        12253.2314453125,
+        269.99993896484375
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        270.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        125.310048828125,
+        122.532314453125
+      ]
+    },
+    {
+      "name": "Candle01",
+      "index": 3,
+      "position": [
+        12661.45703125,
+        13448.92578125,
+        274.99993896484375
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        210.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        126.6145703125,
+        134.4892578125
+      ]
+    },
+    {
+      "name": "Candle01",
+      "index": 5,
+      "position": [
+        12658.4248046875,
+        12825.3720703125,
+        250.00003051757812
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        60.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        126.584248046875,
+        128.253720703125
+      ]
+    },
+    {
+      "name": "Furniture03",
+      "index": 1,
+      "position": [
+        12200.0,
+        12550.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        122.0,
+        125.5
+      ]
+    },
+    {
+      "name": "Furniture03",
+      "index": 2,
+      "position": [
+        12800.0,
+        12750.0,
+        165.00001525878906
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        900.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        128.0,
+        127.5
+      ]
+    },
+    {
+      "name": "Furniture03",
+      "index": 3,
+      "position": [
+        12200.0,
+        12950.0,
+        164.99998474121094
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        900.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        122.0,
+        129.5
+      ]
+    },
+    {
+      "name": "Furniture03",
+      "index": 4,
+      "position": [
+        12800.0,
+        12850.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        900.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        128.0,
+        128.5
+      ]
+    },
+    {
+      "name": "Furniture04",
+      "index": 0,
+      "position": [
+        12494.646484375,
+        12235.37890625,
+        139.9999542236328
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        360.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        124.94646484375,
+        122.3537890625
+      ]
+    },
+    {
+      "name": "Furniture04",
+      "index": 2,
+      "position": [
+        12700.0,
+        12800.0,
+        165.00003051757812
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        270.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        127.0,
+        128.0
+      ]
+    },
+    {
+      "name": "Furniture05",
+      "index": 2,
+      "position": [
+        12650.0,
+        13450.0,
+        165.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        126.5,
+        134.5
+      ]
+    },
+    {
+      "name": "Furniture06",
+      "index": 3,
+      "position": [
+        12550.0,
+        12750.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        90.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        125.5,
+        127.5
+      ]
+    },
+    {
+      "name": "Furniture06",
+      "index": 4,
+      "position": [
+        12750.0,
+        12650.0,
+        165.00001525878906
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        210.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        127.5,
+        126.5
+      ]
+    },
+    {
+      "name": "Furniture06",
+      "index": 5,
+      "position": [
+        12650.0,
+        12650.0,
+        165.00001525878906
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        150.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        126.5,
+        126.5
+      ]
+    },
+    {
+      "name": "Furniture06",
+      "index": 6,
+      "position": [
+        12150.0,
+        12650.0,
+        165.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        121.5,
+        126.5
+      ]
+    },
+    {
+      "name": "Furniture06",
+      "index": 7,
+      "position": [
+        12250.0,
+        12650.0,
+        165.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        122.5,
+        126.5
+      ]
+    },
+    {
+      "name": "Furniture06",
+      "index": 8,
+      "position": [
+        12250.0,
+        12450.0,
+        164.9999542236328
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -180.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        122.5,
+        124.5
+      ]
+    },
+    {
+      "name": "Furniture06",
+      "index": 10,
+      "position": [
+        12550.0,
+        12350.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -30.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        125.5,
+        123.5
+      ]
+    },
+    {
+      "name": "Furniture06",
+      "index": 11,
+      "position": [
+        12150.0,
+        13050.0,
+        165.00001525878906
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        121.5,
+        130.5
+      ]
+    },
+    {
+      "name": "Furniture06",
+      "index": 12,
+      "position": [
+        12250.0,
+        13050.0,
+        165.00001525878906
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        300.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        122.5,
+        130.5
+      ]
+    },
+    {
+      "name": "Furniture06",
+      "index": 13,
+      "position": [
+        12250.0,
+        12850.0,
+        164.99998474121094
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        150.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        122.5,
+        128.5
+      ]
+    },
+    {
+      "name": "Furniture06",
+      "index": 14,
+      "position": [
+        12150.0,
+        12850.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        150.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        121.5,
+        128.5
+      ]
+    },
+    {
+      "name": "Furniture06",
+      "index": 15,
+      "position": [
+        12750.0,
+        12950.0,
+        165.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        360.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        127.5,
+        129.5
+      ]
+    },
+    {
+      "name": "Furniture06",
+      "index": 16,
+      "position": [
+        12550.0,
+        12850.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        60.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        125.5,
+        128.5
+      ]
+    },
+    {
+      "name": "Furniture06",
+      "index": 17,
+      "position": [
+        12650.0,
+        12950.0,
+        164.99998474121094
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        360.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        126.5,
+        129.5
+      ]
+    },
+    {
+      "name": "Furniture07",
+      "index": 1,
+      "position": [
+        12450.267578125,
+        13342.9775390625,
+        165.00001525878906
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        90.0
+      ],
+      "scale": 1.0399999618530273,
+      "tile": [
+        124.50267578125,
+        133.429775390625
+      ]
+    },
+    {
+      "name": "Furniture07",
+      "index": 2,
+      "position": [
+        12655.0888671875,
+        13344.9091796875,
+        164.9999542236328
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        90.0
+      ],
+      "scale": 1.0399999618530273,
+      "tile": [
+        126.550888671875,
+        133.449091796875
+      ]
+    },
+    {
+      "name": "HouseWall01",
+      "index": 1,
+      "position": [
+        12950.0,
+        12800.0,
+        165.00001525878906
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        810.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        129.5,
+        128.0
+      ]
+    },
+    {
+      "name": "HouseWall01",
+      "index": 2,
+      "position": [
+        12950.0,
+        13400.0,
+        165.00003051757812
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        450.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        129.5,
+        134.0
+      ]
+    },
+    {
+      "name": "HouseWall02",
+      "index": 13,
+      "position": [
+        12950.0,
+        12600.0,
+        165.00003051757812
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        810.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        129.5,
+        126.0
+      ]
+    },
+    {
+      "name": "HouseWall02",
+      "index": 14,
+      "position": [
+        12950.0,
+        13000.0,
+        165.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        810.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        129.5,
+        130.0
+      ]
+    },
+    {
+      "name": "HouseWall03",
+      "index": 2,
+      "position": [
+        12900.0,
+        12400.0,
+        165.00001525878906
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        630.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        129.0,
+        124.0
+      ]
+    },
+    {
+      "name": "HouseWall03",
+      "index": 3,
+      "position": [
+        12900.0,
+        13200.0,
+        165.00001525878906
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        630.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        129.0,
+        132.0
+      ]
+    },
+    {
+      "name": "HouseWall05",
+      "index": 5,
+      "position": [
+        12719.33984375,
+        12312.9951171875,
+        475.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        90.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        127.1933984375,
+        123.129951171875
+      ]
+    },
+    {
+      "name": "HouseWall06",
+      "index": 0,
+      "position": [
+        12714.40234375,
+        12719.556640625,
+        475.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        90.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        127.1440234375,
+        127.19556640625
+      ]
+    },
+    {
+      "name": "HouseWall06",
+      "index": 1,
+      "position": [
+        12312.8232421875,
+        12714.2314453125,
+        475.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        270.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        123.128232421875,
+        127.142314453125
+      ]
+    },
+    {
+      "name": "HouseWall06",
+      "index": 2,
+      "position": [
+        12311.1328125,
+        13116.2421875,
+        475.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        270.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        123.111328125,
+        131.162421875
+      ]
+    },
+    {
+      "name": "HouseWall06",
+      "index": 3,
+      "position": [
+        12716.19140625,
+        13120.7802734375,
+        475.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        90.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        127.1619140625,
+        131.207802734375
+      ]
+    },
+    {
+      "name": "Sign01",
+      "index": 1,
+      "position": [
+        12938.4580078125,
+        12226.697265625,
+        334.9999084472656
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        2340.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        129.384580078125,
+        122.26697265625
+      ]
+    }
+  ],
+  "sources": {
+    "Beer01": {
+      "baseline_blend": "assets-work/World1/coordination/final-inspection/Beer01/import.blend",
+      "integrated_blend": "assets-work/World1/coordination/final-inspection/Beer01/import.blend",
+      "baseline_blend_sha256": "9d7c89c0488fd822ec717a3eda259a359c0c87d7dba49bb52bd45dbfc4da7eb2",
+      "integrated_blend_sha256": "9d7c89c0488fd822ec717a3eda259a359c0c87d7dba49bb52bd45dbfc4da7eb2",
+      "baseline_game_files": {
+        "src/bin/Data/Object1/Beer01.bmd": "84cfe988ce3b0cfcdb5d415a689e6e6af3a63428af2f7f878561cd7dafd3e49f",
+        "src/bin/Data/Object1/plate2.OZJ": "78e2f955ed1e3905977027b3fa6bf138204687ae1dda510f17d65307d3349847"
+      },
+      "integrated_bmd_sha256": "84cfe988ce3b0cfcdb5d415a689e6e6af3a63428af2f7f878561cd7dafd3e49f"
+    },
+    "Beer02": {
+      "baseline_blend": "assets-work/World1/coordination/final-inspection/Beer02/import.blend",
+      "integrated_blend": "assets-work/World1/coordination/final-inspection/Beer02/import.blend",
+      "baseline_blend_sha256": "7b013c529a9f4d3b4120568e6c36853c8ef79a88c2418829512cbd5438d77d91",
+      "integrated_blend_sha256": "7b013c529a9f4d3b4120568e6c36853c8ef79a88c2418829512cbd5438d77d91",
+      "baseline_game_files": {
+        "src/bin/Data/Object1/Beer02.bmd": "7a1828ec40249657fe2f9e970c077b8761bf110953ab5a24fe32bedd5fba6de4",
+        "src/bin/Data/Object1/pot3.ozt": "f781d4941982f54e20b573c9664a23f05bd01d13af578d9a0d01e202e59b4d60",
+        "src/bin/Data/Object1/apple.OZJ": "b983993be19b329f531199b3aa24943d5c9a7b0e01a805087bfc5dd24f916871",
+        "src/bin/Data/Object1/bottle.ozt": "de32ec6f5138ea531bcd44ce2693152c4884f4c2bf83fee228c1c62f56c528d4",
+        "src/bin/Data/Object1/plate.OZJ": "839c50e5fdf9aa87ac121e13a4c7bb5a0b7b892c658a848411198ff32d77bed1",
+        "src/bin/Data/Object1/winecup.OZJ": "a0e0cb895f554bcb82a2350b7f70dc405fc6f6024c61615c82ccb1111fcedf63"
+      },
+      "integrated_bmd_sha256": "7a1828ec40249657fe2f9e970c077b8761bf110953ab5a24fe32bedd5fba6de4"
+    },
+    "Beer03": {
+      "baseline_blend": "assets-work/World1/coordination/final-inspection/Beer03/import.blend",
+      "integrated_blend": "assets-work/World1/coordination/final-inspection/Beer03/import.blend",
+      "baseline_blend_sha256": "5e863554fff38425a4e0377b529aebfb14907b509bb52704653a8e1c2c52b08c",
+      "integrated_blend_sha256": "5e863554fff38425a4e0377b529aebfb14907b509bb52704653a8e1c2c52b08c",
+      "baseline_game_files": {
+        "src/bin/Data/Object1/Beer03.bmd": "651280bb61913c8c73d1ff9109d64360b447a1f246e8d4b29e4d6f99de27ee89",
+        "src/bin/Data/Object1/bottle.ozt": "de32ec6f5138ea531bcd44ce2693152c4884f4c2bf83fee228c1c62f56c528d4",
+        "src/bin/Data/Object1/winecup.OZJ": "a0e0cb895f554bcb82a2350b7f70dc405fc6f6024c61615c82ccb1111fcedf63"
+      },
+      "integrated_bmd_sha256": "651280bb61913c8c73d1ff9109d64360b447a1f246e8d4b29e4d6f99de27ee89"
+    },
+    "Candle01": {
+      "baseline_blend": "assets-work/World1/coordination/final-inspection/Candle01/import.blend",
+      "integrated_blend": "assets-work/World1/coordination/final-inspection/Candle01/import.blend",
+      "baseline_blend_sha256": "05d1b72cd428501c0933ba3dfd943b0dd354559f68097623459f569835ea8c3c",
+      "integrated_blend_sha256": "05d1b72cd428501c0933ba3dfd943b0dd354559f68097623459f569835ea8c3c",
+      "baseline_game_files": {
+        "src/bin/Data/Object1/Candle01.bmd": "d754131aa39b7a77cb5118b683c23e793c4a8829ab713436723b04c7508d98d5",
+        "src/bin/Data/Object1/candle.OZJ": "8a3247f2b3f0491d74f4f14ed4b54157b0060b8bb2f53a8f61ecf5c9c5626567",
+        "src/bin/Data/Object1/candle2.OZJ": "269019e39be5b7603ee388b80776a19ff4adba889da0dcf6d77d769bea58b1ec"
+      },
+      "integrated_bmd_sha256": "d754131aa39b7a77cb5118b683c23e793c4a8829ab713436723b04c7508d98d5"
+    },
+    "Furniture03": {
+      "baseline_blend": "assets-work/World1/coordination/final-inspection/Furniture03/import.blend",
+      "integrated_blend": "assets-work/World1/coordination/final-inspection/Furniture03/import.blend",
+      "baseline_blend_sha256": "49b0b698f994d8b82df5eb79aa637ef8b2b0382657b3fe5cac384ee188115e46",
+      "integrated_blend_sha256": "49b0b698f994d8b82df5eb79aa637ef8b2b0382657b3fe5cac384ee188115e46",
+      "baseline_game_files": {
+        "src/bin/Data/Object1/Furniture03.bmd": "6c427d73a9937d9e3b7d287b0f3f74b7f2014b0a423bd666590e26e9886e4d94",
+        "src/bin/Data/Object1/desk_big.OZJ": "a63356ccc6d203809697d6e079ec232ff0b39587cfbc13896a249e8babf2c2e4"
+      },
+      "integrated_bmd_sha256": "6c427d73a9937d9e3b7d287b0f3f74b7f2014b0a423bd666590e26e9886e4d94"
+    },
+    "Furniture04": {
+      "baseline_blend": "assets-work/World1/coordination/final-inspection/Furniture04/import.blend",
+      "integrated_blend": "assets-work/World1/coordination/final-inspection/Furniture04/import.blend",
+      "baseline_blend_sha256": "6dfa754bc9d41b321975faa95c49e1681c17250222ec34cde2ce8e524bbc5fdb",
+      "integrated_blend_sha256": "6dfa754bc9d41b321975faa95c49e1681c17250222ec34cde2ce8e524bbc5fdb",
+      "baseline_game_files": {
+        "src/bin/Data/Object1/Furniture04.bmd": "d1afed82e4ca519a11fe752a73a79a20a9624d788007344e7cbc9ec85bc49a4c",
+        "src/bin/Data/Object1/desk_big.OZJ": "a63356ccc6d203809697d6e079ec232ff0b39587cfbc13896a249e8babf2c2e4"
+      },
+      "integrated_bmd_sha256": "d1afed82e4ca519a11fe752a73a79a20a9624d788007344e7cbc9ec85bc49a4c"
+    },
+    "Furniture05": {
+      "baseline_blend": "assets-work/World1/coordination/final-inspection/Furniture05/import.blend",
+      "integrated_blend": "assets-work/World1/coordination/final-inspection/Furniture05/import.blend",
+      "baseline_blend_sha256": "38cb794f2518fd047b7d0934208c172579008151456aee625e4dee9ff3ab3659",
+      "integrated_blend_sha256": "38cb794f2518fd047b7d0934208c172579008151456aee625e4dee9ff3ab3659",
+      "baseline_game_files": {
+        "src/bin/Data/Object1/Furniture05.bmd": "d1fb904efbb81091c7ef5841d6f4e3416da3a8dc5b382bd3e20bf15f528631d3",
+        "src/bin/Data/Object1/desk_big.OZJ": "a63356ccc6d203809697d6e079ec232ff0b39587cfbc13896a249e8babf2c2e4"
+      },
+      "integrated_bmd_sha256": "d1fb904efbb81091c7ef5841d6f4e3416da3a8dc5b382bd3e20bf15f528631d3"
+    },
+    "Furniture06": {
+      "baseline_blend": "assets-work/World1/coordination/final-inspection/Furniture06/import.blend",
+      "integrated_blend": "assets-work/World1/coordination/final-inspection/Furniture06/import.blend",
+      "baseline_blend_sha256": "ca0890fe2728d63520cfd0e0ea559526bc29d455ec347b384b958a6f2ace67fd",
+      "integrated_blend_sha256": "ca0890fe2728d63520cfd0e0ea559526bc29d455ec347b384b958a6f2ace67fd",
+      "baseline_game_files": {
+        "src/bin/Data/Object1/Furniture06.bmd": "d67d5a5227817283efedd187e23d0a692be1a29ffae7fbf5dfe954cfaaf03163",
+        "src/bin/Data/Object1/bookshelf.OZJ": "b94d717a16ca66016f14e51cf8d27a33b1595da8911077c281e57114a33b0318",
+        "src/bin/Data/Object1/chair2.OZT": "a6108326cdca1506bdc4c0e3fd18e839dd386646ee08a9dfa68a5d3dde851103"
+      },
+      "integrated_bmd_sha256": "d67d5a5227817283efedd187e23d0a692be1a29ffae7fbf5dfe954cfaaf03163"
+    },
+    "Furniture07": {
+      "baseline_blend": "assets-work/World1/coordination/final-inspection/Furniture07/import.blend",
+      "integrated_blend": "assets-work/World1/coordination/final-inspection/Furniture07/import.blend",
+      "baseline_blend_sha256": "e26f5a291e2a4ba42649e1d34bf3c8461ce47f8aa5f1fdf71a32718126bf054b",
+      "integrated_blend_sha256": "e26f5a291e2a4ba42649e1d34bf3c8461ce47f8aa5f1fdf71a32718126bf054b",
+      "baseline_game_files": {
+        "src/bin/Data/Object1/Furniture07.bmd": "730ff99b63e9896a03df3be9ac1a54ba4adfd63c7d1b153897240bca833f4dbd",
+        "src/bin/Data/Object1/bookshelf.OZJ": "b94d717a16ca66016f14e51cf8d27a33b1595da8911077c281e57114a33b0318"
+      },
+      "integrated_bmd_sha256": "730ff99b63e9896a03df3be9ac1a54ba4adfd63c7d1b153897240bca833f4dbd"
+    },
+    "HouseWall01": {
+      "baseline_blend": "assets-work/World1/coordination/final-inspection/HouseWall01/import.blend",
+      "integrated_blend": "assets-work/World1/QualityPass02/Architecture01/HouseWall01/validation/reimported.blend",
+      "baseline_blend_sha256": "ebe14fad4639588e0926173a6f0dd8a37e4fed80148e6f63e9505c6bcdd7c06d",
+      "integrated_blend_sha256": "46a0e956c79a9abfb2eafefdf9299ede5365ba7ad273f079d16bc829efaac837",
+      "baseline_game_files": {
+        "src/bin/Data/Object1/HouseWall01.bmd": "55bdc3e6d196849cf1300d72fe395bccf026acbfba0e74bf0711df4a06928665",
+        "src/bin/Data/Object1/tile_wood01.OZJ": "51537840533e1c755569d3b57d9bea468353208c669daa2baeb2a421c41bf192",
+        "src/bin/Data/Object1/tile_wood02.OZJ": "1e829e6bc9af60739335ec85fc307d2c17806700e6d95f8845b7da78c4532eda",
+        "src/bin/Data/Object1/tile_ston04.OZJ": "a1a75b6fbf236d8747cb2e27555d871253cff7d2e48304226f0b68dbc83fa2f9"
+      },
+      "integrated_bmd_sha256": "2a5c787763f5de02f9e8b42ab463cc92b9d87910b89d86b1c5967512d306b965"
+    },
+    "HouseWall02": {
+      "baseline_blend": "assets-work/World1/coordination/final-inspection/HouseWall02/import.blend",
+      "integrated_blend": "assets-work/World1/coordination/final-inspection/HouseWall02/import.blend",
+      "baseline_blend_sha256": "885e75809107e0cea666d13bed6647ad5fb52c8ffdc8c421c42e755833447a57",
+      "integrated_blend_sha256": "885e75809107e0cea666d13bed6647ad5fb52c8ffdc8c421c42e755833447a57",
+      "baseline_game_files": {
+        "src/bin/Data/Object1/HouseWall02.bmd": "6ac7e3fb619b8c92c3d0e445c53beca1da53d5395609bfd60a06cdfb6f066470",
+        "src/bin/Data/Object1/tile_ston06.OZJ": "c0eb1cde0172be5b4f1a1e7a19e274c6891d1e97d91479cdb11424a464847a3b",
+        "src/bin/Data/Object1/tile_wood01.OZJ": "51537840533e1c755569d3b57d9bea468353208c669daa2baeb2a421c41bf192",
+        "src/bin/Data/Object1/tile_wood02.OZJ": "1e829e6bc9af60739335ec85fc307d2c17806700e6d95f8845b7da78c4532eda",
+        "src/bin/Data/Object1/tile_ston04.OZJ": "a1a75b6fbf236d8747cb2e27555d871253cff7d2e48304226f0b68dbc83fa2f9",
+        "src/bin/Data/Object1/light_02.OZJ": "4a0211f098896fb68d11429da31482b70bc9d62b1130d50004412a2ddd3ca4e9"
+      },
+      "integrated_bmd_sha256": "6ac7e3fb619b8c92c3d0e445c53beca1da53d5395609bfd60a06cdfb6f066470"
+    },
+    "HouseWall03": {
+      "baseline_blend": "assets-work/World1/coordination/final-inspection/HouseWall03/import.blend",
+      "integrated_blend": "assets-work/World1/coordination/final-inspection/HouseWall03/import.blend",
+      "baseline_blend_sha256": "a3db3bbf92882c1ed263330e01b9afd7663e07e5446e6e904bd667105c2a8cbf",
+      "integrated_blend_sha256": "a3db3bbf92882c1ed263330e01b9afd7663e07e5446e6e904bd667105c2a8cbf",
+      "baseline_game_files": {
+        "src/bin/Data/Object1/HouseWall03.bmd": "4cceec4106eae52c353329a7c55c725118cd18982736c42c543a4ed76c72266f",
+        "src/bin/Data/Object1/tile_wood02.OZJ": "1e829e6bc9af60739335ec85fc307d2c17806700e6d95f8845b7da78c4532eda"
+      },
+      "integrated_bmd_sha256": "4cceec4106eae52c353329a7c55c725118cd18982736c42c543a4ed76c72266f"
+    },
+    "HouseWall05": {
+      "baseline_blend": "assets-work/World1/coordination/final-inspection/HouseWall05/import.blend",
+      "integrated_blend": "assets-work/World1/QualityPass02/Architecture01/HouseWall05/validation/reimported.blend",
+      "baseline_blend_sha256": "e542d4be99e03834b61ef7be2c3c6e30a85fcba138066f668290b9b19f309fb3",
+      "integrated_blend_sha256": "fb5de0c436022529f7696b17f4673b49d6746c501bd4487e0ad44bacf78fae83",
+      "baseline_game_files": {
+        "src/bin/Data/Object1/HouseWall05.bmd": "5ff5b789528517f047668b1c1499dd059fac61c23df0ae3a920db1b64678c0d6",
+        "src/bin/Data/Object1/tile_wood02.OZJ": "1e829e6bc9af60739335ec85fc307d2c17806700e6d95f8845b7da78c4532eda",
+        "src/bin/Data/Object1/tile_wood03.OZJ": "080c832a287c14bc571e5f6bee02a3e1f5e668cd36ec2fe45622c682f12d245b"
+      },
+      "integrated_bmd_sha256": "2f2de7207c416cf8bf3ee6b4d67ea5bc77390dc9332bab4d692014b78f4a8b5d"
+    },
+    "HouseWall06": {
+      "baseline_blend": "assets-work/World1/coordination/final-inspection/HouseWall06/import.blend",
+      "integrated_blend": "assets-work/World1/QualityPass02/Architecture01/HouseWall06/validation/reimported.blend",
+      "baseline_blend_sha256": "b9a0f05812759a40641a47fa90a36c5e13c44bba85505dc90263493fb16644a2",
+      "integrated_blend_sha256": "a795de0b7e40cb457e5b7423f198ceac5c89b63e8f662fccc5204e69039804e2",
+      "baseline_game_files": {
+        "src/bin/Data/Object1/HouseWall06.bmd": "fd082b68ed0e4c4ac9898be26a15bde8e90e6c4a8baa79ecaa0a12d8dc7db2ef",
+        "src/bin/Data/Object1/tile_wood02.OZJ": "1e829e6bc9af60739335ec85fc307d2c17806700e6d95f8845b7da78c4532eda",
+        "src/bin/Data/Object1/tile_wood03.OZJ": "080c832a287c14bc571e5f6bee02a3e1f5e668cd36ec2fe45622c682f12d245b"
+      },
+      "integrated_bmd_sha256": "0b38e706c4c1fa2103173d9052454ee48033ce49349745e6e080dc58f0ced201"
+    },
+    "Sign01": {
+      "baseline_blend": "assets-work/World1/coordination/final-inspection/Sign01/import.blend",
+      "integrated_blend": "assets-work/World1/coordination/final-inspection/Sign01/import.blend",
+      "baseline_blend_sha256": "7af91549e33053c16fa5e878008e29558a0ae465dad6ca74dbf4c24458e10ff2",
+      "integrated_blend_sha256": "7af91549e33053c16fa5e878008e29558a0ae465dad6ca74dbf4c24458e10ff2",
+      "baseline_game_files": {
+        "src/bin/Data/Object1/Sign01.bmd": "e319480ee29feebf6a64862407dece3eae3ea0cc24a951b8f57695bef2034f70",
+        "src/bin/Data/Object1/notice.OZJ": "85e028c06cee35c5ba6334b9613a5a839df9ffff20d58a4ab567bf793290416f",
+        "src/bin/Data/Object1/signboard.OZT": "c62e1b18d97e75000ee4f5a071aff9858c8449187404dfabff927947a8883fa9",
+        "src/bin/Data/Object1/doorknob.OZT": "1f0413df12aa7ef21fdea28fda3c322abed0f28d4837b40ead3ba67a246afb84"
+      },
+      "integrated_bmd_sha256": "e319480ee29feebf6a64862407dece3eae3ea0cc24a951b8f57695bef2034f70"
+    }
+  },
+  "camera_bounds": [
+    [
+      -686.549072265625,
+      -784.785400390625,
+      -120.00007629394531
+    ],
+    [
+      322.96759033203125,
+      662.0306396484375,
+      259.57037353515625
+    ]
+  ],
+  "limits": "Diffuse bind-pose only; no terrain or engine effect simulation. Not client evidence.",
+  "image_hashes": {
+    "baseline-reverse.png": "406b5de140429a0c90e2c091587e26ee89cf51adc4f033eb0b919e111de96f3d",
+    "baseline-small.png": "98aa61f02864e3bb8b966518897a684d3e08a0be69ee87ba596a10b47d55779d",
+    "baseline.png": "2616927723f846710151130aeea22e977d31b0ac4842328e1ffd3580d83ec807",
+    "integrated-reverse.png": "2e05c03fe185c14b37a2546f0b1dcf1c3d5c58256c1fffb9dfbf31678eb3b236",
+    "integrated-small.png": "ef2406d45caed0f56bc966c98232107a304d31a6cd8f52c9e5270551608ca3d2",
+    "integrated.png": "32b0d4b6e6cac2588b618d7043740a329a77f537e16a382eb2416ec1a0d4f523"
+  }
+}

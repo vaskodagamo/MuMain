@@ -7,6 +7,15 @@ about *this fork's* goal and state. **Append a dated entry to
 [`WORKLOG.md`](WORKLOG.md) at the end of every session** and update this page when the
 state changes.
 
+## Current Lorencia correction — 2026-09-22
+
+PR #11 was merged at `7b808473`. The user reports the existing baseline works in game;
+this is user-reported verification, not a new observation by ASTRA. Historical 106/106
+offline acceptance is first-pass coverage, **not artistic completion**. A second quality
+pass is active in `MuMain-environment-remake` on `codex/environment-remake-continuation`.
+See [current handoff](../../assets-work/Environment/coordination/handoff.md).
+The earlier completion/publication statements below remain historical only.
+
 ## 1. Goal of the fork
 
 Build the owner's own MU Online client on top of MuMain (sven-n's Season 6 Episode 3 client

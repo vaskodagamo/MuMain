@@ -1,0 +1,9 @@
+00:00.722  blend            | Read blend: "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Scrub01/Grass03/baseline/source.blend"
+00:00.811  blend            | Read blend: "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Scrub01/Grass04/baseline/source.blend"
+Info: No new files have been packed
+Info: Saved as "source.blend"
+Info: No new files have been packed
+Info: Saved as "source.blend"
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:49:19)
+
+Blender quit

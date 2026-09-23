@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "triangles": 1149,
+  "maximum_world_normal_vector_distance": 8.675588625940264e-05,
+  "tolerance": 0.001,
+  "criterion": "Every authored triangle corner normal compared with actual raw normal Node rotation, after exact material/bone/position/UV/cyclic-winding match"
+}

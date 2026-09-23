@@ -1,0 +1,160 @@
+{
+  "status": "PASS",
+  "assets": {
+    "HouseWall01": {
+      "game_file": "src/bin/Data/Object1/HouseWall01.bmd",
+      "export": "assets-work/World1/QualityPass02/Architecture01/HouseWall01/exports/HouseWall01.bmd",
+      "game_sha256": "2a5c787763f5de02f9e8b42ab463cc92b9d87910b89d86b1c5967512d306b965",
+      "source": "assets-work/World1/QualityPass02/Architecture01/HouseWall01/source.blend",
+      "source_sha256": "00661b316003536cef30db133eb10c85a00a04a2d696c958abac1397cd64fd1d"
+    },
+    "HouseWall04": {
+      "game_file": "src/bin/Data/Object1/HouseWall04.bmd",
+      "export": "assets-work/World1/QualityPass02/Architecture01/HouseWall04/exports/HouseWall04.bmd",
+      "game_sha256": "2f593ea20c0ac5de7e8662608a8c9375bf6894d46cb7b22aa74d75d24b5084b5",
+      "source": "assets-work/World1/QualityPass02/Architecture01/HouseWall04/source.blend",
+      "source_sha256": "70fab74ff9f93a13b0697faa7a1211f7aa88fe458593181c7d86f37fda1b350d"
+    },
+    "HouseWall05": {
+      "game_file": "src/bin/Data/Object1/HouseWall05.bmd",
+      "export": "assets-work/World1/QualityPass02/Architecture01/HouseWall05/exports/HouseWall05.bmd",
+      "game_sha256": "2f2de7207c416cf8bf3ee6b4d67ea5bc77390dc9332bab4d692014b78f4a8b5d",
+      "source": "assets-work/World1/QualityPass02/Architecture01/HouseWall05/source.blend",
+      "source_sha256": "59fddd8e09378870048ce4d2bddc955de8b0b03fbab06dc24134c8aa57d7f38b"
+    },
+    "HouseWall06": {
+      "game_file": "src/bin/Data/Object1/HouseWall06.bmd",
+      "export": "assets-work/World1/QualityPass02/Architecture01/HouseWall06/exports/HouseWall06.bmd",
+      "game_sha256": "0b38e706c4c1fa2103173d9052454ee48033ce49349745e6e080dc58f0ced201",
+      "source": "assets-work/World1/QualityPass02/Architecture01/HouseWall06/source.blend",
+      "source_sha256": "75d83c17d1354ccd554958b06f15c4784d5fc9d47992204fd5dbfeb029e2e495"
+    },
+    "Tree09": {
+      "game_file": "src/bin/Data/Object1/Tree09.bmd",
+      "export": "assets-work/World1/QualityPass02/Scrub01/Tree09/exports/Tree09.bmd",
+      "game_sha256": "5b6b83949c4b4ba7c5f4c4cbd2c7b8f76ca16ccca43300300d86ae81c07c7b38",
+      "source": "assets-work/World1/QualityPass02/Scrub01/Tree09/source.blend",
+      "source_sha256": "3b28eaeaeeb82dae9e5cec78193e544e83841e19e41d1b67b1f43ef4bf7f3598"
+    },
+    "Tree10": {
+      "game_file": "src/bin/Data/Object1/Tree10.bmd",
+      "export": "assets-work/World1/QualityPass02/Scrub01/Tree10/exports/Tree10.bmd",
+      "game_sha256": "471f2226cf526d3f1f4b81964ab9c97cb355eb37aa2822ed225f8761ed6b8679",
+      "source": "assets-work/World1/QualityPass02/Scrub01/Tree10/source.blend",
+      "source_sha256": "04908b48ffb0a64abbf9d13ee826d16371bf11b6a51b82975b9ba8f52f8cca38"
+    },
+    "Grass03": {
+      "game_file": "src/bin/Data/Object1/Grass03.bmd",
+      "export": "assets-work/World1/QualityPass02/Scrub01/Grass03/exports/Grass03.bmd",
+      "game_sha256": "ba0e8c4d85ecaf6fa17288d53dd4f74d1f7d1ef77062ae2189fac31b554560ec",
+      "source": "assets-work/World1/QualityPass02/Scrub01/Grass03/source.blend",
+      "source_sha256": "678eb76b7cdad020a75223e6aa5e8742bdf300179c25ee49acb598776ae20ec4"
+    },
+    "Grass04": {
+      "game_file": "src/bin/Data/Object1/Grass04.bmd",
+      "export": "assets-work/World1/QualityPass02/Scrub01/Grass04/exports/Grass04.bmd",
+      "game_sha256": "c4f68a1ff5bb6a5ac7228eb5d13232b9fd1db737f5428210600860b04dd86fe8",
+      "source": "assets-work/World1/QualityPass02/Scrub01/Grass04/source.blend",
+      "source_sha256": "2ad5c7c262b972be007eda1cee8ae82d3e331cab0dfab6c39833cf8b0c4cbeeb"
+    },
+    "Grass05": {
+      "game_file": "src/bin/Data/Object1/Grass05.bmd",
+      "export": "assets-work/World1/QualityPass02/Broadleaf01/Grass05/exports/Grass05.bmd",
+      "game_sha256": "1f13a8c297a31afc6ffe1ab61f84b991e6c3cb8fa8096a967119995044d674e4",
+      "source": "assets-work/World1/QualityPass02/Broadleaf01/Grass05/source.blend",
+      "source_sha256": "38cebc18443e485f50bc3559483b0b312d8cce9d36f98c4604912bd910d767a8"
+    },
+    "Grass06": {
+      "game_file": "src/bin/Data/Object1/Grass06.bmd",
+      "export": "assets-work/World1/QualityPass02/Broadleaf01/Grass06/exports/Grass06.bmd",
+      "game_sha256": "fc115c8c1ccaa3bf8410921513efedd98213f7e81c968ebe80379976839000d3",
+      "source": "assets-work/World1/QualityPass02/Broadleaf01/Grass06/source.blend",
+      "source_sha256": "461b9c185a71d3a504b2789003dcb6e6a10534314a38e62ba1d22559056b050e"
+    },
+    "House01": {
+      "game_file": "src/bin/Data/Object1/House01.bmd",
+      "export": "assets-work/World1/QualityPass02/Houses01/House01/exports/House01.bmd",
+      "game_sha256": "ebae8d2a2bda5483e42f2c9c41066354e9fcee00df82549a63bca0bc367932b4",
+      "source": "assets-work/World1/QualityPass02/Houses01/House01/source.blend",
+      "source_sha256": "ac42ffe5f6657965aa3feb6b79ebee8184b2d4304fd48fb45c695a0aa059bc0c"
+    },
+    "House03": {
+      "game_file": "src/bin/Data/Object1/House03.bmd",
+      "export": "assets-work/World1/QualityPass02/Houses01/House03/exports/House03.bmd",
+      "game_sha256": "0fdb5c6fd61ae8239c780f2622b7764dee3ab3decec2708520722c4af2944d0c",
+      "source": "assets-work/World1/QualityPass02/Houses01/House03/source.blend",
+      "source_sha256": "10a891112cf5ea4107962c2d0d344bafaf00ad0c53be36cc21a82d3a34fb8abf"
+    },
+    "House04": {
+      "game_file": "src/bin/Data/Object1/House04.bmd",
+      "export": "assets-work/World1/QualityPass02/Houses01/House04/exports/House04.bmd",
+      "game_sha256": "6c040330a352cac50818f05a3da434c8c6623b8ab7b75cfbc9b722d2d411dcc5",
+      "source": "assets-work/World1/QualityPass02/Houses01/House04/source.blend",
+      "source_sha256": "37f42fe87acc7c142c02da58813905906ce6bbae715075db9b46cd4a4f4c57f8"
+    },
+    "Well01": {
+      "game_file": "src/bin/Data/Object1/Well01.bmd",
+      "export": "assets-work/World1/QualityPass02/Wells02/Well01/exports/Well01.bmd",
+      "game_sha256": "935944f4354f72e7839e8f97b41ab0bb6cd5f07d690d5972a551873b173e7831",
+      "source": "assets-work/World1/QualityPass02/Wells02/Well01/source.blend",
+      "source_sha256": "7bde44d40dcd81e2154e8f206ee7e01eaa734ce39e0629a1aabbf8e4215aa606"
+    },
+    "Well02": {
+      "game_file": "src/bin/Data/Object1/Well02.bmd",
+      "export": "assets-work/World1/QualityPass02/Wells02/Well02/exports/Well02.bmd",
+      "game_sha256": "80c3ce31b8049e204ef9807505a07bd026bb550fe02b0c651eeb98fac63f32eb",
+      "source": "assets-work/World1/QualityPass02/Wells02/Well02/source.blend",
+      "source_sha256": "0c649ab5663d31658df3c056f9f52671138160b3fd23c639113c497cfe933271"
+    },
+    "Well03": {
+      "game_file": "src/bin/Data/Object1/Well03.bmd",
+      "export": "assets-work/World1/QualityPass02/Wells02/Well03/exports/Well03.bmd",
+      "game_sha256": "9f25e949dca54430438d3697d9eb65916e34ea5625c24b47f4427af89e4db703",
+      "source": "assets-work/World1/QualityPass02/Wells02/Well03/source.blend",
+      "source_sha256": "827b5fee578bb21649cf39a79dfb3743b80ee3e298f7dedd689117cf70486b1f"
+    },
+    "Well04": {
+      "game_file": "src/bin/Data/Object1/Well04.bmd",
+      "export": "assets-work/World1/QualityPass02/Wells02/Well04/exports/Well04.bmd",
+      "game_sha256": "ebc11740cccc15c4745b82cd35205aff1e7f2fe49122e9c81392db3a9ea75542",
+      "source": "assets-work/World1/QualityPass02/Wells02/Well04/source.blend",
+      "source_sha256": "6e80a9b7e1a37c56220730a1984686e709dd9e7ffef1e5e9b4c2759648ff3465"
+    },
+    "Bonfire01": {
+      "game_file": "src/bin/Data/Object1/Bonfire01.bmd",
+      "export": "assets-work/World1/QualityPass02/Bonfire02/Bonfire01/exports/Bonfire01.bmd",
+      "game_sha256": "5c0cba3c0d56711b96c03cc216ef2bc7c73c1fe1e138caf6c3a460046dcb0d35",
+      "source": "assets-work/World1/QualityPass02/Bonfire02/Bonfire01/source.blend",
+      "source_sha256": "880817b14975a1147dfea5cc27b729c7d6d6afcbe77a1a60298f736122e23fb9"
+    },
+    "StoneStatue01": {
+      "game_file": "src/bin/Data/Object1/StoneStatue01.bmd",
+      "export": "assets-work/World1/QualityPass02/Statues02/StoneStatue01/exports/StoneStatue01.bmd",
+      "game_sha256": "bd36218ec97576af5fbbe1e7aa425130dda42663e7d66c82f20a8e695f1507d1",
+      "source": "assets-work/World1/QualityPass02/Statues02/StoneStatue01/source.blend",
+      "source_sha256": "83f95c0b824292837aadd62897dc1b4bf2fc195d0c5fb4bc9cd2e17127523f94"
+    },
+    "StoneStatue03": {
+      "game_file": "src/bin/Data/Object1/StoneStatue03.bmd",
+      "export": "assets-work/World1/QualityPass02/Statues02/StoneStatue03/exports/StoneStatue03.bmd",
+      "game_sha256": "ddfa5d87568039df181dcf24831bd64b4c573ebccfe04c1c9973dba785bac8f3",
+      "source": "assets-work/World1/QualityPass02/Statues02/StoneStatue03/source.blend",
+      "source_sha256": "b47fc0135f4f86fcdc2728232238e3a138f036b8b426d0c961c903a6f89757fd"
+    },
+    "SteelStatue01": {
+      "game_file": "src/bin/Data/Object1/SteelStatue01.bmd",
+      "export": "assets-work/World1/QualityPass02/Statues02/SteelStatue01/exports/SteelStatue01.bmd",
+      "game_sha256": "c118a1bd217e809a858e5b6eccef5ef83041d7d136499c3a7acca314415dcbf1",
+      "source": "assets-work/World1/QualityPass02/Statues02/SteelStatue01/source.blend",
+      "source_sha256": "2789ef2c61dcb1c31956d493de5dc87372b4002f0ccec69f6c424616aa6410eb"
+    },
+    "Waterspout01": {
+      "game_file": "src/bin/Data/Object1/Waterspout01.bmd",
+      "export": "assets-work/World1/QualityPass02/Fountain02/Waterspout01/exports/Waterspout01.bmd",
+      "game_sha256": "366d0fc591b50a269b6ac573d2493eee7572e88d5e3e1ef8c5c2c1fa1196c5df",
+      "source": "assets-work/World1/QualityPass02/Fountain02/Waterspout01/source.blend",
+      "source_sha256": "43dc4960f0105a39806018b901e7da1a2c17ccb2d2358052ad123e7a76dd16c8"
+    }
+  },
+  "client_verified": false
+}

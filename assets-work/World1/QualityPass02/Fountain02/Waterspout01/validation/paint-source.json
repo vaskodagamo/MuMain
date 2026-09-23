@@ -1,0 +1,7 @@
+{
+  "status": "ASSIGNED_NOT_ART_ACCEPTED",
+  "source": "Waterspout01/textures/paint02/reagon_waterspout.jpg",
+  "sha256": "9bb92a090461292e0b2bb3b5b249b3082956c51b1798ae69dc1679723753e53b",
+  "slot": 1,
+  "reference_materials": "REF_BASELINE and REF_ORIGINAL retain their previous packed images"
+}

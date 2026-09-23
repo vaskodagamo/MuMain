@@ -1,0 +1,50 @@
+{
+  "protected_basin": {
+    "triangles": 34,
+    "texel_coverage": 1250,
+    "uv_bounds": [
+      [
+        0.5635,
+        0.026
+      ],
+      [
+        0.9793,
+        0.6517
+      ]
+    ]
+  },
+  "body": {
+    "triangles": 289,
+    "texel_coverage": 2557,
+    "uv_bounds": [
+      [
+        0.0039,
+        0.0023
+      ],
+      [
+        0.9629,
+        0.7783
+      ]
+    ],
+    "overlap_protected_pixels": 0,
+    "overlap_protected_plus2px": 0,
+    "unprotected_2px_pixels": 2557
+  },
+  "wings": {
+    "triangles": 94,
+    "texel_coverage": 2543,
+    "uv_bounds": [
+      [
+        0.0201,
+        0.7423
+      ],
+      [
+        0.9905,
+        0.9953
+      ]
+    ],
+    "overlap_protected_pixels": 0,
+    "overlap_protected_plus2px": 0,
+    "unprotected_2px_pixels": 2543
+  }
+}

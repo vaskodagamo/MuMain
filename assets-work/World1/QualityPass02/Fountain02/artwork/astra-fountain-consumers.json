@@ -1,0 +1,786 @@
+{
+  "scanned": 5300,
+  "valid_models": 5113,
+  "consumers": [
+    {
+      "path": "src/bin/Data/Object1/Waterspout01.bmd",
+      "sha256": "7e3c5e39d74227a3ac88dce45ec6da2573b0d7738d85384fbfdb5251069a9e83",
+      "info": "model /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Object1/Waterspout01.bmd\n  name field: Data2\\Object1\\waterspout.smd  version: 10\n  meshes: 4  bones: 11  actions: 1  triangles: 639\n  bounds (bind pose): min -199.06 -199.74 -0.14  max 199.23 198.55 311.20  size 398.30 398.30 311.34\n  mesh 0: triangles=72 vertices=60 normals=36 uvs=29 texture=stone_statue02.jpg\n  mesh 1: triangles=417 vertices=232 normals=209 uvs=224 texture=reagon_waterspout.jpg\n  mesh 2: triangles=60 vertices=36 normals=36 uvs=39 texture=ston01.jpg\n  mesh 3: triangles=90 vertices=66 normals=66 uvs=66 texture=ston02.jpg\n  bone 0: \"OilTank01\" parent=-1\n  bone 1: \"Box04\" parent=-1\n  bone 2: \"Box01\" parent=1\n  bone 3: \"Box02\" parent=2\n  bone 4: \"Box03\" parent=3\n  bone 5: \"QuadPatch01\" parent=1\n  bone 6: \"Box05\" parent=-1\n  bone 7: \"Box06\" parent=6\n  bone 8: \"Box07\" parent=7\n  bone 9: \"Box08\" parent=8\n  bone 10: \"QuadPatch02\" parent=6\n  action 0: keys=21 lock=0\n"
+    }
+  ],
+  "failures": [
+    {
+      "path": "src/bin/Data/Item/Itemtest.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Item/Itemtest.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Item/item.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Item/item.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/BuffEffect.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/BuffEffect.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Eng/BuffEffect_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Eng/BuffEffect_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Eng/ItemLevelTooltip_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Eng/ItemLevelTooltip_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Eng/ItemTooltipText_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Eng/ItemTooltipText_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Eng/ItemTooltip_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Eng/ItemTooltip_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Eng/JewelOfHarmonyOption_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Eng/JewelOfHarmonyOption_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Eng/JewelOfHarmonySmelt_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Eng/JewelOfHarmonySmelt_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Eng/MasterSkillTooltip_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Eng/MasterSkillTooltip_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Eng/Minimap/Minimap_World11_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Eng/Minimap/Minimap_World11_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Eng/Minimap/Minimap_World1_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Eng/Minimap/Minimap_World1_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Eng/Minimap/Minimap_World2_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Eng/Minimap/Minimap_World2_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Eng/Minimap/Minimap_World32_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Eng/Minimap/Minimap_World32_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Eng/Minimap/Minimap_World34_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Eng/Minimap/Minimap_World34_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Eng/Minimap/Minimap_World35_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Eng/Minimap/Minimap_World35_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Eng/Minimap/Minimap_World38_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Eng/Minimap/Minimap_World38_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Eng/Minimap/Minimap_World39_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Eng/Minimap/Minimap_World39_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Eng/Minimap/Minimap_World3_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Eng/Minimap/Minimap_World3_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Eng/Minimap/Minimap_World42_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Eng/Minimap/Minimap_World42_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Eng/Minimap/Minimap_World4_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Eng/Minimap/Minimap_World4_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Eng/Minimap/Minimap_World52_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Eng/Minimap/Minimap_World52_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Eng/Minimap/Minimap_World57_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Eng/Minimap/Minimap_World57_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Eng/Minimap/Minimap_World58_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Eng/Minimap/Minimap_World58_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Eng/Minimap/Minimap_World5_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Eng/Minimap/Minimap_World5_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Eng/Minimap/Minimap_World64_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Eng/Minimap/Minimap_World64_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Eng/Minimap/Minimap_World81_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Eng/Minimap/Minimap_World81_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Eng/Minimap/Minimap_World82_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Eng/Minimap/Minimap_World82_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Eng/Minimap/Minimap_World8_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Eng/Minimap/Minimap_World8_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Eng/Minimap/Minimap_World9_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Eng/Minimap/Minimap_World9_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Eng/MoveReq_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Eng/MoveReq_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Eng/QuestWords_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Eng/QuestWords_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Eng/Quest_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Eng/Quest_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Eng/item.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Eng/item.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Eng/item_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Eng/item_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Eng/item_eng_old.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Eng/item_eng_old.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Eng/item_eng_orig.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Eng/item_eng_orig.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Eng/itemsetoption_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Eng/itemsetoption_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Eng/itemsettype.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Eng/itemsettype.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Eng/skill_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Eng/skill_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Eng/slide_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Eng/slide_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Eng/socketitem_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Eng/socketitem_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Filter.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Filter.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/FilterName.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/FilterName.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Item.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Item.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/ItemAddOption.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/ItemAddOption.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/ItemSetOption.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/ItemSetOption.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/MacroConfig.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/MacroConfig.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/MapCharacters.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/MapCharacters.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/MasterSkillTree.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/MasterSkillTree.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/MasterSkillTreeData.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/MasterSkillTreeData.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/MonsterSkill.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/MonsterSkill.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Movereq.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Movereq.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/NPCDialogue.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/NPCDialogue.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/PetData.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/PetData.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/BuffEffect_por.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/BuffEffect_por.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/ItemLevelTooltip_por.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/ItemLevelTooltip_por.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/ItemTooltipText_por.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/ItemTooltipText_por.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/ItemTooltip_por.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/ItemTooltip_por.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/JewelOfHarmonyOption_por.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/JewelOfHarmonyOption_por.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/JewelOfHarmonySmelt_por.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/JewelOfHarmonySmelt_por.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/MasterSkillTooltip_por.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/MasterSkillTooltip_por.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/Minimap/Minimap_World11_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/Minimap/Minimap_World11_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/Minimap/Minimap_World11_por.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/Minimap/Minimap_World11_por.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/Minimap/Minimap_World1_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/Minimap/Minimap_World1_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/Minimap/Minimap_World1_por.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/Minimap/Minimap_World1_por.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/Minimap/Minimap_World2_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/Minimap/Minimap_World2_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/Minimap/Minimap_World2_por.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/Minimap/Minimap_World2_por.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/Minimap/Minimap_World32_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/Minimap/Minimap_World32_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/Minimap/Minimap_World32_por.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/Minimap/Minimap_World32_por.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/Minimap/Minimap_World34_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/Minimap/Minimap_World34_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/Minimap/Minimap_World34_por.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/Minimap/Minimap_World34_por.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/Minimap/Minimap_World35_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/Minimap/Minimap_World35_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/Minimap/Minimap_World35_por.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/Minimap/Minimap_World35_por.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/Minimap/Minimap_World38_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/Minimap/Minimap_World38_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/Minimap/Minimap_World38_por.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/Minimap/Minimap_World38_por.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/Minimap/Minimap_World39_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/Minimap/Minimap_World39_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/Minimap/Minimap_World39_por.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/Minimap/Minimap_World39_por.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/Minimap/Minimap_World3_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/Minimap/Minimap_World3_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/Minimap/Minimap_World3_por.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/Minimap/Minimap_World3_por.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/Minimap/Minimap_World42_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/Minimap/Minimap_World42_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/Minimap/Minimap_World42_por.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/Minimap/Minimap_World42_por.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/Minimap/Minimap_World4_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/Minimap/Minimap_World4_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/Minimap/Minimap_World4_por.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/Minimap/Minimap_World4_por.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/Minimap/Minimap_World52_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/Minimap/Minimap_World52_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/Minimap/Minimap_World52_por.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/Minimap/Minimap_World52_por.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/Minimap/Minimap_World57_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/Minimap/Minimap_World57_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/Minimap/Minimap_World57_por.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/Minimap/Minimap_World57_por.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/Minimap/Minimap_World58_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/Minimap/Minimap_World58_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/Minimap/Minimap_World58_por.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/Minimap/Minimap_World58_por.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/Minimap/Minimap_World5_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/Minimap/Minimap_World5_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/Minimap/Minimap_World5_por.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/Minimap/Minimap_World5_por.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/Minimap/Minimap_World64_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/Minimap/Minimap_World64_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/Minimap/Minimap_World64_por.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/Minimap/Minimap_World64_por.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/Minimap/Minimap_World81_por.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/Minimap/Minimap_World81_por.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/Minimap/Minimap_World82_por.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/Minimap/Minimap_World82_por.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/Minimap/Minimap_World8_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/Minimap/Minimap_World8_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/Minimap/Minimap_World8_por.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/Minimap/Minimap_World8_por.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/Minimap/Minimap_World9_eng.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/Minimap/Minimap_World9_eng.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/Minimap/Minimap_World9_por.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/Minimap/Minimap_World9_por.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/MoveReq_por.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/MoveReq_por.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/QuestWords_por.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/QuestWords_por.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/Quest_por.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/Quest_por.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/item.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/item.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/item_eng_old.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/item_eng_old.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/item_por.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/item_por.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/itemsetoption_por.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/itemsetoption_por.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/skill.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/skill.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/skill_por.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/skill_por.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/slide_por.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/slide_por.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Por/socketitem_por.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Por/socketitem_por.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Quest.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Quest.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/QuestProgress.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/QuestProgress.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/QuestWords.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/QuestWords.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/ServerList.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/ServerList.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Skill.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Skill.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Spn/BuffEffect_spn.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Spn/BuffEffect_spn.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Spn/ItemLevelTooltip_spn.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Spn/ItemLevelTooltip_spn.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Spn/ItemTooltipText_spn.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Spn/ItemTooltipText_spn.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Spn/ItemTooltip_spn.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Spn/ItemTooltip_spn.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Spn/JewelOfHarmonyOption_spn.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Spn/JewelOfHarmonyOption_spn.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Spn/JewelOfHarmonySmelt_spn.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Spn/JewelOfHarmonySmelt_spn.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Spn/MasterSkillTooltip_spn.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Spn/MasterSkillTooltip_spn.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Spn/Minimap/Minimap_World11_spn.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Spn/Minimap/Minimap_World11_spn.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Spn/Minimap/Minimap_World1_spn.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Spn/Minimap/Minimap_World1_spn.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Spn/Minimap/Minimap_World2_spn.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Spn/Minimap/Minimap_World2_spn.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Spn/Minimap/Minimap_World32_spn.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Spn/Minimap/Minimap_World32_spn.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Spn/Minimap/Minimap_World34_spn.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Spn/Minimap/Minimap_World34_spn.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Spn/Minimap/Minimap_World35_spn.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Spn/Minimap/Minimap_World35_spn.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Spn/Minimap/Minimap_World38_spn.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Spn/Minimap/Minimap_World38_spn.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Spn/Minimap/Minimap_World39_spn.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Spn/Minimap/Minimap_World39_spn.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Spn/Minimap/Minimap_World3_spn.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Spn/Minimap/Minimap_World3_spn.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Spn/Minimap/Minimap_World42_spn.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Spn/Minimap/Minimap_World42_spn.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Spn/Minimap/Minimap_World4_spn.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Spn/Minimap/Minimap_World4_spn.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Spn/Minimap/Minimap_World52_spn.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Spn/Minimap/Minimap_World52_spn.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Spn/Minimap/Minimap_World57_spn.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Spn/Minimap/Minimap_World57_spn.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Spn/Minimap/Minimap_World58_spn.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Spn/Minimap/Minimap_World58_spn.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Spn/Minimap/Minimap_World5_spn.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Spn/Minimap/Minimap_World5_spn.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Spn/Minimap/Minimap_World64_spn.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Spn/Minimap/Minimap_World64_spn.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Spn/Minimap/Minimap_World81_spn.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Spn/Minimap/Minimap_World81_spn.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Spn/Minimap/Minimap_World82_spn.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Spn/Minimap/Minimap_World82_spn.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Spn/Minimap/Minimap_World8_spn.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Spn/Minimap/Minimap_World8_spn.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Spn/Minimap/Minimap_World9_spn.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Spn/Minimap/Minimap_World9_spn.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Spn/QuestWords_spn.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Spn/QuestWords_spn.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Spn/Quest_spn.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Spn/Quest_spn.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Spn/item.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Spn/item.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Spn/item_spn.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Spn/item_spn.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Spn/itemsetoption_spn.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Spn/itemsetoption_spn.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Spn/movereq_spn.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Spn/movereq_spn.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Spn/skill.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Spn/skill.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Spn/skill_spn.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Spn/skill_spn.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Spn/slide_spn.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Spn/slide_spn.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/Spn/socketitem_spn.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/Spn/socketitem_spn.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/credit.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/credit.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/itemsettype.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/itemsettype.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/mix.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/mix.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/partCharge1/ShopCategoryItems.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/partCharge1/ShopCategoryItems.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/partCharge1/ShopUI.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/partCharge1/ShopUI.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Local/pet.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Local/pet.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Object3/Object25.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Object3/Object25.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Object3/Object27.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Object3/Object27.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Object3/Object33.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Object3/Object33.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Object3/Object90.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Object3/Object90.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Object34/object01_\u76d4\u592f.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Object34/object01_\u76d4\u592f.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Skill/skill.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Skill/skill.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/World1/Minimap.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/World1/Minimap.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/World1/minimaptest.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/World1/minimaptest.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/World11/Minimap.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/World11/Minimap.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/World2/Minimap.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/World2/Minimap.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/World3/Minimap.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/World3/Minimap.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/World32/Minimap.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/World32/Minimap.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/World34/minimap.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/World34/minimap.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/World35/Minimap.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/World35/Minimap.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/World38/Minimap.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/World38/Minimap.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/World39/Minimap.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/World39/Minimap.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/World4/Minimap.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/World4/Minimap.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/World42/Minimap.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/World42/Minimap.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/World5/Minimap.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/World5/Minimap.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/World52/Minimap.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/World52/Minimap.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/World57/Minimap.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/World57/Minimap.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/World58/Minimap.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/World58/Minimap.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/World64/Minimap.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/World64/Minimap.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/World8/Minimap.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/World8/Minimap.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/World81/Minimap.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/World81/Minimap.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/World82/Minimap.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/World82/Minimap.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/World9/Minimap.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/World9/Minimap.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/gate.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/gate.bmd\n"
+    }
+  ],
+  "texture_sha256": "0da0208475dd23f3838e39615ff562ddec46a5f094c198b7c1e481443135b67d",
+  "object1_model_count": 115,
+  "object1_failures": [],
+  "map_object_failures": [
+    {
+      "path": "src/bin/Data/Object3/Object25.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Object3/Object25.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Object3/Object27.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Object3/Object27.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Object3/Object33.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Object3/Object33.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Object3/Object90.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Object3/Object90.bmd\n"
+    },
+    {
+      "path": "src/bin/Data/Object34/object01_\u76d4\u592f.bmd",
+      "error": "error: not a BMD model the engine can read (bad header, unsupported version or truncated): /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/src/bin/Data/Object34/object01_\u76d4\u592f.bmd\n"
+    }
+  ]
+}

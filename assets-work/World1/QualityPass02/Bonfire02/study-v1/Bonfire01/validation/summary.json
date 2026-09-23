@@ -1,0 +1,33 @@
+{
+  "status": "PASS",
+  "bounds_before": [
+    [
+      -57.61,
+      -54.83,
+      -6.95
+    ],
+    [
+      62.04,
+      55.02,
+      55.95
+    ]
+  ],
+  "bounds_after": [
+    [
+      -57.61,
+      -54.83,
+      -6.95
+    ],
+    [
+      62.04,
+      55.02,
+      55.95
+    ]
+  ],
+  "skeleton_actions": "EQUIVALENT",
+  "mesh_order": [
+    "fire_01.jpg",
+    "fire_02.jpg"
+  ],
+  "client_verified": false
+}

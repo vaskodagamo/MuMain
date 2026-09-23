@@ -1,0 +1,10 @@
+model /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Broadleaf01/Grass06/exports/Grass06.bmd
+  name field: Grass06.smd  version: 12
+  meshes: 1  bones: 4  actions: 1  triangles: 448
+  bounds (bind pose): min -161.84 -51.36 0.11  max 102.59 58.30 60.74  size 264.43 109.66 60.63
+  mesh 0: triangles=448 vertices=384 normals=384 uvs=48 texture=tree_09.tga
+  bone 0: "Box01" parent=-1
+  bone 1: "Box02" parent=-1
+  bone 2: "Box03" parent=-1
+  bone 3: "Box04" parent=-1
+  action 0: keys=1 lock=0

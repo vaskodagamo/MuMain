@@ -1,0 +1,177 @@
+{
+  "kind": "OFFLINE ACTUAL PLACEMENTS, NOT CLIENT",
+  "anchor": [
+    11750.0,
+    14500.0,
+    164.99996948242188
+  ],
+  "records": [
+    {
+      "name": "House03",
+      "index": 0,
+      "position": [
+        11750.0,
+        14500.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        2070.0
+      ],
+      "scale": 0.8600001335144043,
+      "tile": [
+        117.5,
+        145.0
+      ]
+    },
+    {
+      "name": "House02",
+      "index": 3,
+      "position": [
+        11750.0,
+        14350.0,
+        165.00001525878906
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        2160.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        117.5,
+        143.5
+      ]
+    },
+    {
+      "name": "House02",
+      "index": 5,
+      "position": [
+        11400.0,
+        14300.0,
+        164.99998474121094
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1920.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        114.0,
+        143.0
+      ]
+    },
+    {
+      "name": "HouseEtc01",
+      "index": 40,
+      "position": [
+        12150.0,
+        14400.0,
+        165.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        2160.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        121.5,
+        144.0
+      ]
+    },
+    {
+      "name": "HouseEtc01",
+      "index": 41,
+      "position": [
+        11900.0,
+        14400.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        2160.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        119.0,
+        144.0
+      ]
+    },
+    {
+      "name": "TreasureDrum01",
+      "index": 39,
+      "position": [
+        11758.1298828125,
+        14685.564453125,
+        185.00001525878906
+      ],
+      "rotation": [
+        -85.0,
+        0.0,
+        -420.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        117.581298828125,
+        146.85564453125
+      ]
+    },
+    {
+      "name": "Light03",
+      "index": 3,
+      "position": [
+        12032.162109375,
+        14679.439453125,
+        444.99993896484375
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        2160.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        120.32162109375,
+        146.79439453125
+      ]
+    },
+    {
+      "name": "Light03",
+      "index": 4,
+      "position": [
+        11903.67578125,
+        14673.9599609375,
+        470.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        2160.0
+      ],
+      "scale": 0.5600004196166992,
+      "tile": [
+        119.0367578125,
+        146.739599609375
+      ]
+    }
+  ],
+  "bounds": [
+    [
+      -429.564697265625,
+      -307.9059143066406,
+      -17.90448570251465
+    ],
+    [
+      449.7268981933594,
+      284.3193359375,
+      327.9897766113281
+    ]
+  ],
+  "light_markers": "Light03 original anchor transforms recorded; hidden engine marker boxes omitted",
+  "effect": "light_02 additive approximation at0.55, not engine evidence",
+  "omitted": "Terrain/collision/baked lighting/unselected unrelated objects"
+}

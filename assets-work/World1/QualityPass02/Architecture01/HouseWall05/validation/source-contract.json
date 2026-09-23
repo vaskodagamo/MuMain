@@ -1,0 +1,41 @@
+{
+  "status": "PASS",
+  "uv_layers": {
+    "HouseWall05": [
+      "Float2"
+    ]
+  },
+  "rigid_bindings": true,
+  "triangles_only": true,
+  "packed_images": [
+    {
+      "name": "tile_wood02.jpg",
+      "size": [
+        512,
+        512
+      ]
+    },
+    {
+      "name": "tile_wood02.jpg.001",
+      "size": [
+        512,
+        512
+      ]
+    },
+    {
+      "name": "tile_wood03.jpg",
+      "size": [
+        512,
+        512
+      ]
+    },
+    {
+      "name": "tile_wood03.jpg.001",
+      "size": [
+        512,
+        512
+      ]
+    }
+  ],
+  "reference_collections_excluded": true
+}

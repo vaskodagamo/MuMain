@@ -1,0 +1,8 @@
+src/source/Engine/Object/ZzzObject.cpp:3849:         case MODEL_BONFIRE:
+src/source/Engine/Object/ZzzObject.cpp:3850:             CreateFire(0, o, 0.f, 0.f, 60.f);
+src/source/Engine/Object/ZzzObject.cpp:3851:             o->BlendMeshLight = (float)(rand() % 6 + 4) * 0.1f;
+src/source/Engine/Object/ZzzObject.cpp:3852:             //CreateBonfire(o->Position,o->Angle);
+src/source/Engine/Object/ZzzObject.cpp:3853:             break;
+src/source/Engine/Object/ZzzObject.cpp:4632:         case MODEL_BONFIRE:
+src/source/Engine/Object/ZzzObject.cpp:4633:             o->BlendMesh = 1;
+src/source/Engine/Object/ZzzObject.cpp:4634:             break;

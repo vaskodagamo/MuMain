@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "original_dimensions": [
+    128,
+    128
+  ],
+  "subsampling": "4:4:4",
+  "spatial_blocks_replaced": 127,
+  "spatial_blocks_preserved": 129,
+  "protected_margin_pixels": 1694,
+  "max_protected_rgb_error": 0,
+  "max_all_unselected_rgb_error": 0,
+  "changed_pixels": 8095,
+  "input_draft_sha256": "99e71c68f4f2f01600ce7a91b567a35dd22a156d2f8e5b2c6de30473d9efd989",
+  "original_ozj_sha256": "0da0208475dd23f3838e39615ff562ddec46a5f094c198b7c1e481443135b67d",
+  "output_ozj_sha256": "ee64c7b4595055431ccb0ec838e307528d187e7157b5fe7a24bd650ae0fc3055",
+  "implementation": "Copied 381 component blocks (127 spatial8x8blocks); all other coefficients retained."
+}

@@ -1,0 +1,13 @@
+00:00.612  blend            | Read blend: "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Fountain02/Waterspout01/baseline/source.blend"
+00:03.855  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Fountain02/Waterspout01/review/baseline-neutral-ambient.png'
+00:06.299  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Fountain02/Waterspout01/review/baseline-diffuse-unlit.png'
+00:06.564  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Fountain02/Waterspout01/review/baseline-diffuse-unlit-small.png'
+00:06.565  blend            | Read blend: "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Fountain02/Waterspout01/validation/reimported.blend"
+00:09.703  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Fountain02/Waterspout01/review/candidate-neutral-ambient.png'
+00:12.137  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Fountain02/Waterspout01/review/candidate-diffuse-unlit.png'
+00:12.428  render           | Saved: '/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Fountain02/Waterspout01/review/candidate-diffuse-unlit-small.png'
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:49:19)
+
+Blender quit
+/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Fountain02/diffuse_diagnostic.py:13: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
+  if not material.use_nodes:continue

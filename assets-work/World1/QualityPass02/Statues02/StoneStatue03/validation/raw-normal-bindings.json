@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "poses": [
+    {
+      "pose_file": "StoneStatue03.smd",
+      "shared_normal_corners": 0,
+      "maximum_world_direction_delta": 0
+    },
+    {
+      "pose_file": "StoneStatue03_a00.smd",
+      "shared_normal_corners": 0,
+      "maximum_world_direction_delta": 0
+    }
+  ],
+  "threshold": 0.0001,
+  "method": "Raw BMD vertex/normal ownership plus world-rotated direction against intended root, bind and actual action"
+}

@@ -1,0 +1,260 @@
+{
+  "status": "PASS",
+  "triangles": 921,
+  "one_to_one_triangle_match": true,
+  "area_metrics": {
+    "minimum_geometry_area": 0.12630201778868977,
+    "minimum_uv_area": 2.3012483071904732e-07,
+    "zero_geometry": 0,
+    "zero_uv": 0
+  },
+  "baseline_area_metrics": {
+    "minimum_geometry_area": 0.12630201778868977,
+    "minimum_uv_area": 2.3012483071904732e-07,
+    "zero_geometry": 0,
+    "zero_uv": 0
+  },
+  "protected_contract": {
+    "exact_protected_triangles": 335,
+    "policy": "All3 non-dragon material slots and34 basin triangles inside dragon slot1 retain each corner position/UV/bone and winding"
+  },
+  "every_authored_triangle_matches_material_bone_position_uv": true,
+  "maximum_position_delta": 0.00010724707030362879,
+  "position_tolerance": 0.0003,
+  "uv_tolerance": 1e-06,
+  "uv_layers": [
+    "Float2"
+  ],
+  "packed_images": {
+    "reagon_waterspout.jpg": [
+      128,
+      128
+    ],
+    "reagon_waterspout.jpg.001": [
+      128,
+      128
+    ],
+    "ston01.jpg": [
+      512,
+      512
+    ],
+    "ston01.jpg.001": [
+      512,
+      512
+    ],
+    "ston02.jpg": [
+      128,
+      128
+    ],
+    "ston02.jpg.001": [
+      128,
+      128
+    ],
+    "stone_statue02.jpg": [
+      256,
+      512
+    ],
+    "stone_statue02.jpg.001": [
+      64,
+      128
+    ]
+  },
+  "per_root_contract": {
+    "0": {
+      "bounds_before": [
+        [
+          -199.061005,
+          -199.743622,
+          -0.1378
+        ],
+        [
+          199.234314,
+          198.551697,
+          311.204803
+        ]
+      ],
+      "bounds_after": [
+        [
+          -199.061005,
+          -199.743622,
+          -0.1378
+        ],
+        [
+          199.234314,
+          198.551697,
+          311.204803
+        ]
+      ],
+      "ground_contacts": 12,
+      "maximum_contact_delta": 0.0
+    },
+    "3": {
+      "bounds_before": [
+        [
+          -28.7635,
+          -129.939987,
+          26.381393
+        ],
+        [
+          21.672701,
+          -79.419594,
+          171.5522
+        ]
+      ],
+      "bounds_after": [
+        [
+          -28.763493,
+          -129.939957,
+          26.381378
+        ],
+        [
+          21.672703,
+          -79.419586,
+          171.552185
+        ]
+      ],
+      "ground_contacts": 4,
+      "maximum_contact_delta": 3.799999998932435e-05
+    },
+    "2": {
+      "bounds_before": [
+        [
+          -12.5953,
+          -64.308601,
+          231.689896
+        ],
+        [
+          5.5046,
+          -35.18,
+          266.793091
+        ]
+      ],
+      "bounds_after": [
+        [
+          -12.595298,
+          -64.30867,
+          231.690002
+        ],
+        [
+          5.504599,
+          -35.180019,
+          266.793152
+        ]
+      ],
+      "ground_contacts": 2,
+      "maximum_contact_delta": 0.00010599999998817111
+    },
+    "1": {
+      "bounds_before": [
+        [
+          -7.373,
+          -9.125202,
+          270.349304
+        ],
+        [
+          0.2822,
+          15.3417,
+          277.419098
+        ]
+      ],
+      "bounds_after": [
+        [
+          -7.373,
+          -9.1252,
+          270.349304
+        ],
+        [
+          0.2822,
+          15.341702,
+          277.419098
+        ]
+      ],
+      "ground_contacts": 6,
+      "maximum_contact_delta": 2.000000000279556e-06
+    },
+    "6": {
+      "bounds_before": [
+        [
+          -166.193893,
+          -161.811798,
+          33.615002
+        ],
+        [
+          159.398407,
+          162.2957,
+          45.614201
+        ]
+      ],
+      "bounds_after": [
+        [
+          -166.193893,
+          -161.811798,
+          33.615002
+        ],
+        [
+          159.398407,
+          162.2957,
+          45.614201
+        ]
+      ],
+      "ground_contacts": 15,
+      "maximum_contact_delta": 0.0
+    },
+    "7": {
+      "bounds_before": [
+        [
+          -126.590607,
+          -107.543098,
+          35.684299
+        ],
+        [
+          21.988501,
+          74.136101,
+          45.614201
+        ]
+      ],
+      "bounds_after": [
+        [
+          -126.590607,
+          -107.543098,
+          35.684299
+        ],
+        [
+          21.988501,
+          74.136101,
+          45.614201
+        ]
+      ],
+      "ground_contacts": 3,
+      "maximum_contact_delta": 0.0
+    },
+    "8": {
+      "bounds_before": [
+        [
+          -52.548199,
+          -106.215103,
+          35.490898
+        ],
+        [
+          108.779495,
+          76.291199,
+          45.614201
+        ]
+      ],
+      "bounds_after": [
+        [
+          -52.548199,
+          -106.215096,
+          35.490898
+        ],
+        [
+          108.779495,
+          76.291206,
+          45.614201
+        ]
+      ],
+      "ground_contacts": 6,
+      "maximum_contact_delta": 8.000000008223651e-06
+    }
+  }
+}

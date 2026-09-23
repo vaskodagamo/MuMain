@@ -1,0 +1,2070 @@
+{
+  "baseline": "7b808473",
+  "reviewer": "independent reviewer agent",
+  "method": "All six sheets and every individual final-offline image visually inspected, retained batch notes/reviews read. All 106 provenance manifests hash-match current 204 game dependencies; dependencies match baseline revision.",
+  "limits": "Baseline artistic triage, not acceptance of new production. Single bind-pose preview per model supplemented by existing notes; final coherent assembly and effect review remain. User-reported baseline client working, no personally observed client evidence.",
+  "assets": [
+    {
+      "asset": "HouseEtc01",
+      "path": "src/bin/Data/Object1/HouseEtc01.bmd",
+      "placements": 52,
+      "textures": {
+        "c_wall04.jpg": [
+          "src/bin/Data/Object1/c_wall04.OZJ"
+        ],
+        "c_wall06.jpg": [
+          "src/bin/Data/Object1/c_wall06.OZJ"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "production",
+      "priority": 1,
+      "reason": "Strong painted beast relief remains carried by coarse box silhouettes and broad sharp planar borders.",
+      "next_action": "Dressed edge/cornice profiles and purposeful relief inside invariant bounds; preserve all modular contacts. Active masonry owner.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/HouseEtc01/final-offline.png"
+    },
+    {
+      "asset": "StoneMuWall02",
+      "path": "src/bin/Data/Object1/StoneMuWall02.bmd",
+      "placements": 32,
+      "textures": {
+        "c_wall06.jpg": [
+          "src/bin/Data/Object1/c_wall06.OZJ"
+        ],
+        "c_wall05.jpg": [
+          "src/bin/Data/Object1/c_wall05.OZJ"
+        ],
+        "c_wall04.jpg": [
+          "src/bin/Data/Object1/c_wall04.OZJ"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "production",
+      "priority": 1,
+      "reason": "Strong painted beast relief remains carried by coarse box silhouettes and broad sharp planar borders.",
+      "next_action": "Dressed edge/cornice profiles and purposeful relief inside invariant bounds; preserve all modular contacts. Active masonry owner.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneMuWall02/final-offline.png"
+    },
+    {
+      "asset": "StoneMuWall03",
+      "path": "src/bin/Data/Object1/StoneMuWall03.bmd",
+      "placements": 45,
+      "textures": {
+        "c_wall04.jpg": [
+          "src/bin/Data/Object1/c_wall04.OZJ"
+        ],
+        "c_wall06.jpg": [
+          "src/bin/Data/Object1/c_wall06.OZJ"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "production",
+      "priority": 1,
+      "reason": "Strong painted beast relief remains carried by coarse box silhouettes and broad sharp planar borders.",
+      "next_action": "Dressed edge/cornice profiles and purposeful relief inside invariant bounds; preserve all modular contacts. Active masonry owner.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneMuWall03/final-offline.png"
+    },
+    {
+      "asset": "HouseWall01",
+      "path": "src/bin/Data/Object1/HouseWall01.bmd",
+      "placements": 3,
+      "textures": {
+        "tile_wood01.jpg": [
+          "src/bin/Data/Object1/tile_wood01.OZJ"
+        ],
+        "tile_wood02.jpg": [
+          "src/bin/Data/Object1/tile_wood02.OZJ"
+        ],
+        "tile_ston04.jpg": [
+          "src/bin/Data/Object1/tile_ston04.OZJ"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "production",
+      "priority": 1,
+      "reason": "Thin panel refinements leave block timber beams and perfectly planar roof courses.",
+      "next_action": "Profile beam edges and shallow stepped eaves; preserve contacts, bounds and HeroTile roof fade. Active architecture owner.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/HouseWall01/final-offline.png"
+    },
+    {
+      "asset": "HouseWall04",
+      "path": "src/bin/Data/Object1/HouseWall04.bmd",
+      "placements": 8,
+      "textures": {
+        "tile_wood01.jpg": [
+          "src/bin/Data/Object1/tile_wood01.OZJ"
+        ],
+        "tile_wood02.jpg": [
+          "src/bin/Data/Object1/tile_wood02.OZJ"
+        ],
+        "tile_ston04.jpg": [
+          "src/bin/Data/Object1/tile_ston04.OZJ"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "production",
+      "priority": 1,
+      "reason": "Thin panel refinements leave block timber beams and perfectly planar roof courses.",
+      "next_action": "Profile beam edges and shallow stepped eaves; preserve contacts, bounds and HeroTile roof fade. Active architecture owner.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/HouseWall04/final-offline.png"
+    },
+    {
+      "asset": "HouseWall05",
+      "path": "src/bin/Data/Object1/HouseWall05.bmd",
+      "placements": 8,
+      "textures": {
+        "tile_wood02.jpg": [
+          "src/bin/Data/Object1/tile_wood02.OZJ"
+        ],
+        "tile_wood03.jpg": [
+          "src/bin/Data/Object1/tile_wood03.OZJ"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "production",
+      "priority": 1,
+      "reason": "Thin panel refinements leave block timber beams and perfectly planar roof courses.",
+      "next_action": "Profile beam edges and shallow stepped eaves; preserve contacts, bounds and HeroTile roof fade. Active architecture owner.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/HouseWall05/final-offline.png"
+    },
+    {
+      "asset": "HouseWall06",
+      "path": "src/bin/Data/Object1/HouseWall06.bmd",
+      "placements": 4,
+      "textures": {
+        "tile_wood02.jpg": [
+          "src/bin/Data/Object1/tile_wood02.OZJ"
+        ],
+        "tile_wood03.jpg": [
+          "src/bin/Data/Object1/tile_wood03.OZJ"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "production",
+      "priority": 1,
+      "reason": "Thin panel refinements leave block timber beams and perfectly planar roof courses.",
+      "next_action": "Profile beam edges and shallow stepped eaves; preserve contacts, bounds and HeroTile roof fade. Active architecture owner.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/HouseWall06/final-offline.png"
+    },
+    {
+      "asset": "Tree09",
+      "path": "src/bin/Data/Object1/Tree09.bmd",
+      "placements": 42,
+      "textures": {
+        "tree_07.tga": [
+          "src/bin/Data/Object1/tree_07.OZT"
+        ]
+      },
+      "treatment": "texture-only treatment",
+      "decision": "production",
+      "priority": 1,
+      "reason": "Tall tuft shells cinch like tied brooms above solid flared polygonal bases; shrubs retain angular conical outlines. This group covers 530 placements.",
+      "next_action": "Rebuild selected silhouette curves and alpha-card arrangement using existing textures and each original bone; preserve clump footprints and overall bounds.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree09/final-offline.png"
+    },
+    {
+      "asset": "Tree10",
+      "path": "src/bin/Data/Object1/Tree10.bmd",
+      "placements": 250,
+      "textures": {
+        "tree_07.tga": [
+          "src/bin/Data/Object1/tree_07.OZT"
+        ]
+      },
+      "treatment": "texture-only treatment",
+      "decision": "production",
+      "priority": 1,
+      "reason": "Tall tuft shells cinch like tied brooms above solid flared polygonal bases; shrubs retain angular conical outlines. This group covers 530 placements.",
+      "next_action": "Rebuild selected silhouette curves and alpha-card arrangement using existing textures and each original bone; preserve clump footprints and overall bounds.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree10/final-offline.png"
+    },
+    {
+      "asset": "Grass03",
+      "path": "src/bin/Data/Object1/Grass03.bmd",
+      "placements": 119,
+      "textures": {
+        "tree_01.tga": [
+          "src/bin/Data/Object1/tree_01.OZT"
+        ],
+        "tree_02.tga": [
+          "src/bin/Data/Object1/tree_02.OZT"
+        ]
+      },
+      "treatment": "texture-only treatment",
+      "decision": "production",
+      "priority": 1,
+      "reason": "Tall tuft shells cinch like tied brooms above solid flared polygonal bases; shrubs retain angular conical outlines. This group covers 530 placements.",
+      "next_action": "Rebuild selected silhouette curves and alpha-card arrangement using existing textures and each original bone; preserve clump footprints and overall bounds.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Grass03/final-offline.png"
+    },
+    {
+      "asset": "Grass04",
+      "path": "src/bin/Data/Object1/Grass04.bmd",
+      "placements": 119,
+      "textures": {
+        "tree_01.tga": [
+          "src/bin/Data/Object1/tree_01.OZT"
+        ],
+        "tree_02.tga": [
+          "src/bin/Data/Object1/tree_02.OZT"
+        ]
+      },
+      "treatment": "texture-only treatment",
+      "decision": "production",
+      "priority": 1,
+      "reason": "Tall tuft shells cinch like tied brooms above solid flared polygonal bases; shrubs retain angular conical outlines. This group covers 530 placements.",
+      "next_action": "Rebuild selected silhouette curves and alpha-card arrangement using existing textures and each original bone; preserve clump footprints and overall bounds.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Grass04/final-offline.png"
+    },
+    {
+      "asset": "Grass05",
+      "path": "src/bin/Data/Object1/Grass05.bmd",
+      "placements": 317,
+      "textures": {
+        "tree_09.tga": [
+          "src/bin/Data/Object1/tree_09.OZT"
+        ]
+      },
+      "treatment": "texture-only treatment",
+      "decision": "production",
+      "priority": 2,
+      "reason": "Broad leaf tips and folded planes visibly form abrupt straight triangular bends, repeated across 399 placements.",
+      "next_action": "Replace abrupt creases with deliberate leaf arcs and tapered tips under same bounds/rig/UV material contract; compare reduced scale.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Grass05/final-offline.png"
+    },
+    {
+      "asset": "Grass06",
+      "path": "src/bin/Data/Object1/Grass06.bmd",
+      "placements": 82,
+      "textures": {
+        "tree_09.tga": [
+          "src/bin/Data/Object1/tree_09.OZT"
+        ]
+      },
+      "treatment": "texture-only treatment",
+      "decision": "production",
+      "priority": 2,
+      "reason": "Broad leaf tips and folded planes visibly form abrupt straight triangular bends, repeated across 399 placements.",
+      "next_action": "Replace abrupt creases with deliberate leaf arcs and tapered tips under same bounds/rig/UV material contract; compare reduced scale.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Grass06/final-offline.png"
+    },
+    {
+      "asset": "House01",
+      "path": "src/bin/Data/Object1/House01.bmd",
+      "placements": 2,
+      "textures": {
+        "tile_ston05.jpg": [
+          "src/bin/Data/Object1/tile_ston05.OZJ"
+        ],
+        "tile_ston04.jpg": [
+          "src/bin/Data/Object1/tile_ston04.OZJ"
+        ],
+        "tile_house01.jpg": [
+          "src/bin/Data/Object1/tile_house01.OZJ"
+        ],
+        "tile_ston06.jpg": [
+          "src/bin/Data/Object1/tile_ston06.OZJ"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "production",
+      "priority": 2,
+      "reason": "Large-screen buildings retain block parapets, razor-straight awning profiles and faceted shingle dome despite strong repainting.",
+      "next_action": "Refine cornices and awning board thickness; improve roof course profile and curvature without changing openings or effect slots. Freeze broad shared texture groups.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/House01/final-offline.png"
+    },
+    {
+      "asset": "House03",
+      "path": "src/bin/Data/Object1/House03.bmd",
+      "placements": 1,
+      "textures": {
+        "tile_ston05.jpg": [
+          "src/bin/Data/Object1/tile_ston05.OZJ"
+        ],
+        "tile_ston04.jpg": [
+          "src/bin/Data/Object1/tile_ston04.OZJ"
+        ],
+        "tile_ston06.jpg": [
+          "src/bin/Data/Object1/tile_ston06.OZJ"
+        ],
+        "tile_ston07.tga": [
+          "src/bin/Data/Object1/tile_ston07.OZT"
+        ],
+        "light_02.jpg": [
+          "src/bin/Data/Object1/light_02.OZJ"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "production",
+      "priority": 2,
+      "reason": "Large-screen buildings retain block parapets, razor-straight awning profiles and faceted shingle dome despite strong repainting.",
+      "next_action": "Refine cornices and awning board thickness; improve roof course profile and curvature without changing openings or effect slots. Freeze broad shared texture groups.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/House03/final-offline.png"
+    },
+    {
+      "asset": "House04",
+      "path": "src/bin/Data/Object1/House04.bmd",
+      "placements": 1,
+      "textures": {
+        "tile_02.jpg": [
+          "src/bin/Data/Object1/tile_02.OZJ"
+        ],
+        "tile_wood01.jpg": [
+          "src/bin/Data/Object1/tile_wood01.OZJ"
+        ],
+        "tile_house01.jpg": [
+          "src/bin/Data/Object1/tile_house01.OZJ"
+        ],
+        "tile_ston04.jpg": [
+          "src/bin/Data/Object1/tile_ston04.OZJ"
+        ],
+        "tile_wood03.jpg": [
+          "src/bin/Data/Object1/tile_wood03.OZJ"
+        ],
+        "tile_wood02.jpg": [
+          "src/bin/Data/Object1/tile_wood02.OZJ"
+        ],
+        "tile_windows01.jpg": [
+          "src/bin/Data/Object1/tile_windows01.OZJ"
+        ],
+        "bridge_01.jpg": [
+          "src/bin/Data/Object1/bridge_01.OZJ"
+        ],
+        "tile_space01.jpg": [
+          "src/bin/Data/Object1/tile_space01.OZJ"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "production",
+      "priority": 2,
+      "reason": "Large-screen buildings retain block parapets, razor-straight awning profiles and faceted shingle dome despite strong repainting.",
+      "next_action": "Refine cornices and awning board thickness; improve roof course profile and curvature without changing openings or effect slots. Freeze broad shared texture groups.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/House04/final-offline.png"
+    },
+    {
+      "asset": "StoneStatue01",
+      "path": "src/bin/Data/Object1/StoneStatue01.bmd",
+      "placements": 7,
+      "textures": {
+        "stone_statue02.jpg": [
+          "src/bin/Data/Object1/stone_statue02.OZJ"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "production",
+      "priority": 2,
+      "reason": "Pillar and memorial silhouettes remain hard slab profiles; angel wings/body have severe angular transitions beneath ornate painting.",
+      "next_action": "Shaped caps and restrained bevels; purposeful angel wing/body silhouette refinement. Freeze shared basin/plinth textures unless full consumers reviewed.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneStatue01/final-offline.png"
+    },
+    {
+      "asset": "StoneStatue03",
+      "path": "src/bin/Data/Object1/StoneStatue03.bmd",
+      "placements": 4,
+      "textures": {
+        "tombstone_big.jpg": [
+          "src/bin/Data/Object1/tombstone_big.OZJ"
+        ],
+        "angel_stone_statue.jpg": [
+          "src/bin/Data/Object1/angel_stone_statue.OZJ"
+        ]
+      },
+      "treatment": "texture-only treatment / essentially original geometry",
+      "decision": "production",
+      "priority": 2,
+      "reason": "Pillar and memorial silhouettes remain hard slab profiles; angel wings/body have severe angular transitions beneath ornate painting.",
+      "next_action": "Shaped caps and restrained bevels; purposeful angel wing/body silhouette refinement. Freeze shared basin/plinth textures unless full consumers reviewed.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneStatue03/final-offline.png"
+    },
+    {
+      "asset": "SteelStatue01",
+      "path": "src/bin/Data/Object1/SteelStatue01.bmd",
+      "placements": 4,
+      "textures": {
+        "tombstone_big.jpg": [
+          "src/bin/Data/Object1/tombstone_big.OZJ"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "production",
+      "priority": 2,
+      "reason": "Pillar and memorial silhouettes remain hard slab profiles; angel wings/body have severe angular transitions beneath ornate painting.",
+      "next_action": "Shaped caps and restrained bevels; purposeful angel wing/body silhouette refinement. Freeze shared basin/plinth textures unless full consumers reviewed.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/SteelStatue01/final-offline.png"
+    },
+    {
+      "asset": "Well01",
+      "path": "src/bin/Data/Object1/Well01.bmd",
+      "placements": 0,
+      "textures": {
+        "tub.jpg": [
+          "src/bin/Data/Object1/tub.OZJ"
+        ],
+        "horse_drawn_01.jpg": [
+          "src/bin/Data/Object1/horse_drawn_01.OZJ"
+        ],
+        "well.jpg": [
+          "src/bin/Data/Object1/well.OZJ"
+        ],
+        "jar_01.jpg": [
+          "src/bin/Data/Object1/jar_01.OZJ"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "production",
+      "priority": 2,
+      "reason": "Pot mouths remain conspicuously polygonal despite rounded body subdivision; stone well is a straight tube with high-contrast painted stones and flat roof boards.",
+      "next_action": "Remodel pot lips/necks with coherent wall thickness and curves; refine well rim/roof thickness inside original bounds. Review all jar/well/tub consumers.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Well01/final-offline.png"
+    },
+    {
+      "asset": "Well02",
+      "path": "src/bin/Data/Object1/Well02.bmd",
+      "placements": 1,
+      "textures": {
+        "well.jpg": [
+          "src/bin/Data/Object1/well.OZJ"
+        ]
+      },
+      "treatment": "texture-only treatment / essentially original geometry",
+      "decision": "production",
+      "priority": 2,
+      "reason": "Pot mouths remain conspicuously polygonal despite rounded body subdivision; stone well is a straight tube with high-contrast painted stones and flat roof boards.",
+      "next_action": "Remodel pot lips/necks with coherent wall thickness and curves; refine well rim/roof thickness inside original bounds. Review all jar/well/tub consumers.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Well02/final-offline.png"
+    },
+    {
+      "asset": "Well03",
+      "path": "src/bin/Data/Object1/Well03.bmd",
+      "placements": 2,
+      "textures": {
+        "jar_01.jpg": [
+          "src/bin/Data/Object1/jar_01.OZJ"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "production",
+      "priority": 2,
+      "reason": "Pot mouths remain conspicuously polygonal despite rounded body subdivision; stone well is a straight tube with high-contrast painted stones and flat roof boards.",
+      "next_action": "Remodel pot lips/necks with coherent wall thickness and curves; refine well rim/roof thickness inside original bounds. Review all jar/well/tub consumers.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Well03/final-offline.png"
+    },
+    {
+      "asset": "Well04",
+      "path": "src/bin/Data/Object1/Well04.bmd",
+      "placements": 2,
+      "textures": {
+        "jar_01.jpg": [
+          "src/bin/Data/Object1/jar_01.OZJ"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "production",
+      "priority": 2,
+      "reason": "Pot mouths remain conspicuously polygonal despite rounded body subdivision; stone well is a straight tube with high-contrast painted stones and flat roof boards.",
+      "next_action": "Remodel pot lips/necks with coherent wall thickness and curves; refine well rim/roof thickness inside original bounds. Review all jar/well/tub consumers.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Well04/final-offline.png"
+    },
+    {
+      "asset": "HouseWall02",
+      "path": "src/bin/Data/Object1/HouseWall02.bmd",
+      "placements": 15,
+      "textures": {
+        "tile_ston06.jpg": [
+          "src/bin/Data/Object1/tile_ston06.OZJ"
+        ],
+        "tile_wood01.jpg": [
+          "src/bin/Data/Object1/tile_wood01.OZJ"
+        ],
+        "tile_wood02.jpg": [
+          "src/bin/Data/Object1/tile_wood02.OZJ"
+        ],
+        "tile_ston04.jpg": [
+          "src/bin/Data/Object1/tile_ston04.OZJ"
+        ],
+        "light_02.jpg": [
+          "src/bin/Data/Object1/light_02.OZJ"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "follow-up consistency",
+      "priority": 2,
+      "reason": "These companion modules share architecture or masonry language now being improved. Current images are coherent but may fall below adjacent new detail.",
+      "next_action": "Compare actual assemblies after first batches and propagate appropriate geometry treatment; preserve effect cards and gate/opening geometry.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/HouseWall02/final-offline.png"
+    },
+    {
+      "asset": "HouseWall03",
+      "path": "src/bin/Data/Object1/HouseWall03.bmd",
+      "placements": 4,
+      "textures": {
+        "tile_wood02.jpg": [
+          "src/bin/Data/Object1/tile_wood02.OZJ"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "follow-up consistency",
+      "priority": 2,
+      "reason": "These companion modules share architecture or masonry language now being improved. Current images are coherent but may fall below adjacent new detail.",
+      "next_action": "Compare actual assemblies after first batches and propagate appropriate geometry treatment; preserve effect cards and gate/opening geometry.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/HouseWall03/final-offline.png"
+    },
+    {
+      "asset": "HouseEtc02",
+      "path": "src/bin/Data/Object1/HouseEtc02.bmd",
+      "placements": 1,
+      "textures": {
+        "tile_wood02.jpg": [
+          "src/bin/Data/Object1/tile_wood02.OZJ"
+        ],
+        "tile_ston04.jpg": [
+          "src/bin/Data/Object1/tile_ston04.OZJ"
+        ],
+        "c_wall04.jpg": [
+          "src/bin/Data/Object1/c_wall04.OZJ"
+        ],
+        "tile_wood03.jpg": [
+          "src/bin/Data/Object1/tile_wood03.OZJ"
+        ],
+        "tile_house01.jpg": [
+          "src/bin/Data/Object1/tile_house01.OZJ"
+        ],
+        "tile_ston01.jpg": [
+          "src/bin/Data/Object1/tile_ston01.OZJ"
+        ],
+        "horse_drawn_01.jpg": [
+          "src/bin/Data/Object1/horse_drawn_01.OZJ"
+        ],
+        "tile_ston06.jpg": [
+          "src/bin/Data/Object1/tile_ston06.OZJ"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "follow-up consistency",
+      "priority": 2,
+      "reason": "These companion modules share architecture or masonry language now being improved. Current images are coherent but may fall below adjacent new detail.",
+      "next_action": "Compare actual assemblies after first batches and propagate appropriate geometry treatment; preserve effect cards and gate/opening geometry.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/HouseEtc02/final-offline.png"
+    },
+    {
+      "asset": "StoneMuWall01",
+      "path": "src/bin/Data/Object1/StoneMuWall01.bmd",
+      "placements": 4,
+      "textures": {
+        "c_wall04.jpg": [
+          "src/bin/Data/Object1/c_wall04.OZJ"
+        ],
+        "c_wall05.jpg": [
+          "src/bin/Data/Object1/c_wall05.OZJ"
+        ],
+        "c_wall06.jpg": [
+          "src/bin/Data/Object1/c_wall06.OZJ"
+        ],
+        "tile_02.jpg": [
+          "src/bin/Data/Object1/tile_02.OZJ"
+        ],
+        "bridge_01.jpg": [
+          "src/bin/Data/Object1/bridge_01.OZJ"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "follow-up consistency",
+      "priority": 2,
+      "reason": "These companion modules share architecture or masonry language now being improved. Current images are coherent but may fall below adjacent new detail.",
+      "next_action": "Compare actual assemblies after first batches and propagate appropriate geometry treatment; preserve effect cards and gate/opening geometry.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneMuWall01/final-offline.png"
+    },
+    {
+      "asset": "StoneMuWall04",
+      "path": "src/bin/Data/Object1/StoneMuWall04.bmd",
+      "placements": 3,
+      "textures": {
+        "c_wall04.jpg": [
+          "src/bin/Data/Object1/c_wall04.OZJ"
+        ],
+        "c_wall06.jpg": [
+          "src/bin/Data/Object1/c_wall06.OZJ"
+        ],
+        "horse_drawn_01.jpg": [
+          "src/bin/Data/Object1/horse_drawn_01.OZJ"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "follow-up consistency",
+      "priority": 2,
+      "reason": "These companion modules share architecture or masonry language now being improved. Current images are coherent but may fall below adjacent new detail.",
+      "next_action": "Compare actual assemblies after first batches and propagate appropriate geometry treatment; preserve effect cards and gate/opening geometry.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneMuWall04/final-offline.png"
+    },
+    {
+      "asset": "Tree01",
+      "path": "src/bin/Data/Object1/Tree01.bmd",
+      "placements": 80,
+      "textures": {
+        "tree.jpg": [
+          "src/bin/Data/Object1/tree.OZJ"
+        ],
+        "Tree_a.tga": [
+          "src/bin/Data/Object1/Tree_a.OZT"
+        ]
+      },
+      "treatment": "texture-only treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Distinct broadleaf, crooked dead-tree, pale trunk, stump, hollow log, conifer and town accent silhouettes remain readable with coherent bark/foliage.",
+      "next_action": "Retain unless placement/reduced-scale assembly reveals concrete defect. Grass02/Tree12/Tree13 normal-binding protections remain absolute for routine re-export.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree01/final-offline.png"
+    },
+    {
+      "asset": "Tree02",
+      "path": "src/bin/Data/Object1/Tree02.bmd",
+      "placements": 23,
+      "textures": {
+        "tree.jpg": [
+          "src/bin/Data/Object1/tree.OZJ"
+        ],
+        "Tree_a.tga": [
+          "src/bin/Data/Object1/Tree_a.OZT"
+        ]
+      },
+      "treatment": "texture-only treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Distinct broadleaf, crooked dead-tree, pale trunk, stump, hollow log, conifer and town accent silhouettes remain readable with coherent bark/foliage.",
+      "next_action": "Retain unless placement/reduced-scale assembly reveals concrete defect. Grass02/Tree12/Tree13 normal-binding protections remain absolute for routine re-export.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree02/final-offline.png"
+    },
+    {
+      "asset": "Tree03",
+      "path": "src/bin/Data/Object1/Tree03.bmd",
+      "placements": 22,
+      "textures": {
+        "tree_03.jpg": [
+          "src/bin/Data/Object1/tree_03.OZJ"
+        ]
+      },
+      "treatment": "texture-only treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Distinct broadleaf, crooked dead-tree, pale trunk, stump, hollow log, conifer and town accent silhouettes remain readable with coherent bark/foliage.",
+      "next_action": "Retain unless placement/reduced-scale assembly reveals concrete defect. Grass02/Tree12/Tree13 normal-binding protections remain absolute for routine re-export.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree03/final-offline.png"
+    },
+    {
+      "asset": "Tree04",
+      "path": "src/bin/Data/Object1/Tree04.bmd",
+      "placements": 15,
+      "textures": {
+        "tree_03.jpg": [
+          "src/bin/Data/Object1/tree_03.OZJ"
+        ]
+      },
+      "treatment": "texture-only treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Distinct broadleaf, crooked dead-tree, pale trunk, stump, hollow log, conifer and town accent silhouettes remain readable with coherent bark/foliage.",
+      "next_action": "Retain unless placement/reduced-scale assembly reveals concrete defect. Grass02/Tree12/Tree13 normal-binding protections remain absolute for routine re-export.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree04/final-offline.png"
+    },
+    {
+      "asset": "Tree05",
+      "path": "src/bin/Data/Object1/Tree05.bmd",
+      "placements": 20,
+      "textures": {
+        "tree_03.jpg": [
+          "src/bin/Data/Object1/tree_03.OZJ"
+        ]
+      },
+      "treatment": "texture-only treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Distinct broadleaf, crooked dead-tree, pale trunk, stump, hollow log, conifer and town accent silhouettes remain readable with coherent bark/foliage.",
+      "next_action": "Retain unless placement/reduced-scale assembly reveals concrete defect. Grass02/Tree12/Tree13 normal-binding protections remain absolute for routine re-export.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree05/final-offline.png"
+    },
+    {
+      "asset": "Tree06",
+      "path": "src/bin/Data/Object1/Tree06.bmd",
+      "placements": 52,
+      "textures": {
+        "tree_02.jpg": [
+          "src/bin/Data/Object1/tree_02.OZJ"
+        ]
+      },
+      "treatment": "texture-only treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Distinct broadleaf, crooked dead-tree, pale trunk, stump, hollow log, conifer and town accent silhouettes remain readable with coherent bark/foliage.",
+      "next_action": "Retain unless placement/reduced-scale assembly reveals concrete defect. Grass02/Tree12/Tree13 normal-binding protections remain absolute for routine re-export.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree06/final-offline.png"
+    },
+    {
+      "asset": "Tree07",
+      "path": "src/bin/Data/Object1/Tree07.bmd",
+      "placements": 36,
+      "textures": {
+        "tree_03.jpg": [
+          "src/bin/Data/Object1/tree_03.OZJ"
+        ],
+        "tree_04.jpg": [
+          "src/bin/Data/Object1/tree_04.OZJ"
+        ]
+      },
+      "treatment": "texture-only treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Distinct broadleaf, crooked dead-tree, pale trunk, stump, hollow log, conifer and town accent silhouettes remain readable with coherent bark/foliage.",
+      "next_action": "Retain unless placement/reduced-scale assembly reveals concrete defect. Grass02/Tree12/Tree13 normal-binding protections remain absolute for routine re-export.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree07/final-offline.png"
+    },
+    {
+      "asset": "Tree08",
+      "path": "src/bin/Data/Object1/Tree08.bmd",
+      "placements": 8,
+      "textures": {
+        "tree_01.jpg": [
+          "src/bin/Data/Object1/tree_01.OZJ"
+        ]
+      },
+      "treatment": "texture-only treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Distinct broadleaf, crooked dead-tree, pale trunk, stump, hollow log, conifer and town accent silhouettes remain readable with coherent bark/foliage.",
+      "next_action": "Retain unless placement/reduced-scale assembly reveals concrete defect. Grass02/Tree12/Tree13 normal-binding protections remain absolute for routine re-export.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree08/final-offline.png"
+    },
+    {
+      "asset": "Tree11",
+      "path": "src/bin/Data/Object1/Tree11.bmd",
+      "placements": 165,
+      "textures": {
+        "tree_06.tga": [
+          "src/bin/Data/Object1/tree_06.OZT"
+        ],
+        "tree_03.jpg": [
+          "src/bin/Data/Object1/tree_03.OZJ"
+        ]
+      },
+      "treatment": "texture-only treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Distinct broadleaf, crooked dead-tree, pale trunk, stump, hollow log, conifer and town accent silhouettes remain readable with coherent bark/foliage.",
+      "next_action": "Retain unless placement/reduced-scale assembly reveals concrete defect. Grass02/Tree12/Tree13 normal-binding protections remain absolute for routine re-export.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree11/final-offline.png"
+    },
+    {
+      "asset": "Tree12",
+      "path": "src/bin/Data/Object1/Tree12.bmd",
+      "placements": 1,
+      "textures": {
+        "tree_01.jpg": [
+          "src/bin/Data/Object1/tree_01.OZJ"
+        ],
+        "tree_04.tga": [
+          "src/bin/Data/Object1/tree_04.OZT"
+        ]
+      },
+      "treatment": "texture-only treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Distinct broadleaf, crooked dead-tree, pale trunk, stump, hollow log, conifer and town accent silhouettes remain readable with coherent bark/foliage.",
+      "next_action": "Retain unless placement/reduced-scale assembly reveals concrete defect. Grass02/Tree12/Tree13 normal-binding protections remain absolute for routine re-export.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree12/final-offline.png"
+    },
+    {
+      "asset": "Tree13",
+      "path": "src/bin/Data/Object1/Tree13.bmd",
+      "placements": 4,
+      "textures": {
+        "tree_05.tga": [
+          "src/bin/Data/Object1/tree_05.OZT"
+        ],
+        "tree_01.jpg": [
+          "src/bin/Data/Object1/tree_01.OZJ"
+        ]
+      },
+      "treatment": "texture-only treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Distinct broadleaf, crooked dead-tree, pale trunk, stump, hollow log, conifer and town accent silhouettes remain readable with coherent bark/foliage.",
+      "next_action": "Retain unless placement/reduced-scale assembly reveals concrete defect. Grass02/Tree12/Tree13 normal-binding protections remain absolute for routine re-export.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree13/final-offline.png"
+    },
+    {
+      "asset": "Grass01",
+      "path": "src/bin/Data/Object1/Grass01.bmd",
+      "placements": 175,
+      "textures": {
+        "tree_08.tga": [
+          "src/bin/Data/Object1/tree_08.OZT"
+        ]
+      },
+      "treatment": "texture-only treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Sparse ivy mats serve low ground detail with coherent olive leaves; low height and open alpha do not justify geometry inflation.",
+      "next_action": "Retain current BMDs; inspect alpha filtering in any later genuine client review.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Grass01/final-offline.png"
+    },
+    {
+      "asset": "Grass02",
+      "path": "src/bin/Data/Object1/Grass02.bmd",
+      "placements": 184,
+      "textures": {
+        "tree_08.tga": [
+          "src/bin/Data/Object1/tree_08.OZT"
+        ]
+      },
+      "treatment": "texture-only treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Sparse ivy mats serve low ground detail with coherent olive leaves; low height and open alpha do not justify geometry inflation.",
+      "next_action": "Retain current BMDs; inspect alpha filtering in any later genuine client review.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Grass02/final-offline.png"
+    },
+    {
+      "asset": "Grass07",
+      "path": "src/bin/Data/Object1/Grass07.bmd",
+      "placements": 35,
+      "textures": {
+        "mushroom.jpg": [
+          "src/bin/Data/Object1/mushroom.OZJ"
+        ]
+      },
+      "treatment": "substantial remake",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Rounded russet caps, pale stems and distinct small/large clusters read clearly.",
+      "next_action": "Retain.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Grass07/final-offline.png"
+    },
+    {
+      "asset": "Grass08",
+      "path": "src/bin/Data/Object1/Grass08.bmd",
+      "placements": 7,
+      "textures": {
+        "mushroom.jpg": [
+          "src/bin/Data/Object1/mushroom.OZJ"
+        ]
+      },
+      "treatment": "substantial remake",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Rounded russet caps, pale stems and distinct small/large clusters read clearly.",
+      "next_action": "Retain.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Grass08/final-offline.png"
+    },
+    {
+      "asset": "Fence01",
+      "path": "src/bin/Data/Object1/Fence01.bmd",
+      "placements": 180,
+      "textures": {
+        "tile_wood02.jpg": [
+          "src/bin/Data/Object1/tile_wood02.OZJ"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Bent rails and simple modular curb profiles serve their purpose; stone/ornament roles are clear and joins have retained evidence.",
+      "next_action": "Retain; check adjacency only if shared materials change.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Fence01/final-offline.png"
+    },
+    {
+      "asset": "Fence02",
+      "path": "src/bin/Data/Object1/Fence02.bmd",
+      "placements": 33,
+      "textures": {
+        "joint.jpg": [
+          "src/bin/Data/Object1/joint.OZJ"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Bent rails and simple modular curb profiles serve their purpose; stone/ornament roles are clear and joins have retained evidence.",
+      "next_action": "Retain; check adjacency only if shared materials change.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Fence02/final-offline.png"
+    },
+    {
+      "asset": "Fence03",
+      "path": "src/bin/Data/Object1/Fence03.bmd",
+      "placements": 38,
+      "textures": {
+        "joint.jpg": [
+          "src/bin/Data/Object1/joint.OZJ"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Bent rails and simple modular curb profiles serve their purpose; stone/ornament roles are clear and joins have retained evidence.",
+      "next_action": "Retain; check adjacency only if shared materials change.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Fence03/final-offline.png"
+    },
+    {
+      "asset": "Fence04",
+      "path": "src/bin/Data/Object1/Fence04.bmd",
+      "placements": 17,
+      "textures": {
+        "joint.jpg": [
+          "src/bin/Data/Object1/joint.OZJ"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Bent rails and simple modular curb profiles serve their purpose; stone/ornament roles are clear and joins have retained evidence.",
+      "next_action": "Retain; check adjacency only if shared materials change.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Fence04/final-offline.png"
+    },
+    {
+      "asset": "Furniture03",
+      "path": "src/bin/Data/Object1/Furniture03.bmd",
+      "placements": 5,
+      "textures": {
+        "desk_big.jpg": [
+          "src/bin/Data/Object1/desk_big.OZJ"
+        ]
+      },
+      "treatment": "substantial remake",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Beveled slabs, structural rails, flared pedestal and inset counter panels are coherent; same-family carving remains legible.",
+      "next_action": "Retain; low triangle count is not a defect.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Furniture03/final-offline.png"
+    },
+    {
+      "asset": "Furniture04",
+      "path": "src/bin/Data/Object1/Furniture04.bmd",
+      "placements": 3,
+      "textures": {
+        "desk_big.jpg": [
+          "src/bin/Data/Object1/desk_big.OZJ"
+        ]
+      },
+      "treatment": "substantial remake",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Beveled slabs, structural rails, flared pedestal and inset counter panels are coherent; same-family carving remains legible.",
+      "next_action": "Retain; low triangle count is not a defect.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Furniture04/final-offline.png"
+    },
+    {
+      "asset": "Furniture05",
+      "path": "src/bin/Data/Object1/Furniture05.bmd",
+      "placements": 3,
+      "textures": {
+        "desk_big.jpg": [
+          "src/bin/Data/Object1/desk_big.OZJ"
+        ]
+      },
+      "treatment": "substantial remake",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Beveled slabs, structural rails, flared pedestal and inset counter panels are coherent; same-family carving remains legible.",
+      "next_action": "Retain; low triangle count is not a defect.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Furniture05/final-offline.png"
+    },
+    {
+      "asset": "Furniture01",
+      "path": "src/bin/Data/Object1/Furniture01.bmd",
+      "placements": 2,
+      "textures": {
+        "pot.jpg": [
+          "src/bin/Data/Object1/pot.OZJ"
+        ],
+        "pot2.jpg": [
+          "src/bin/Data/Object1/pot2.OZJ"
+        ],
+        "bookshelf.jpg": [
+          "src/bin/Data/Object1/bookshelf.OZJ"
+        ],
+        "bottle.tga": [
+          "src/bin/Data/Object1/bottle.ozt"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Shelf contents, carved chair negative space and stool identity remain clear; modest edge treatments suit screen coverage.",
+      "next_action": "Retain; seating identity and interaction footprint protected.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Furniture01/final-offline.png"
+    },
+    {
+      "asset": "Furniture02",
+      "path": "src/bin/Data/Object1/Furniture02.bmd",
+      "placements": 3,
+      "textures": {
+        "bottle.tga": [
+          "src/bin/Data/Object1/bottle.ozt"
+        ],
+        "bookshelf.jpg": [
+          "src/bin/Data/Object1/bookshelf.OZJ"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Shelf contents, carved chair negative space and stool identity remain clear; modest edge treatments suit screen coverage.",
+      "next_action": "Retain; seating identity and interaction footprint protected.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Furniture02/final-offline.png"
+    },
+    {
+      "asset": "Furniture06",
+      "path": "src/bin/Data/Object1/Furniture06.bmd",
+      "placements": 18,
+      "textures": {
+        "bookshelf.jpg": [
+          "src/bin/Data/Object1/bookshelf.OZJ"
+        ],
+        "chair2.tga": [
+          "src/bin/Data/Object1/chair2.OZT"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Shelf contents, carved chair negative space and stool identity remain clear; modest edge treatments suit screen coverage.",
+      "next_action": "Retain; seating identity and interaction footprint protected.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Furniture06/final-offline.png"
+    },
+    {
+      "asset": "Furniture07",
+      "path": "src/bin/Data/Object1/Furniture07.bmd",
+      "placements": 3,
+      "textures": {
+        "bookshelf.jpg": [
+          "src/bin/Data/Object1/bookshelf.OZJ"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Shelf contents, carved chair negative space and stool identity remain clear; modest edge treatments suit screen coverage.",
+      "next_action": "Retain; seating identity and interaction footprint protected.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Furniture07/final-offline.png"
+    },
+    {
+      "asset": "Beer01",
+      "path": "src/bin/Data/Object1/Beer01.bmd",
+      "placements": 1,
+      "textures": {
+        "plate2.jpg": [
+          "src/bin/Data/Object1/plate2.OZJ"
+        ]
+      },
+      "treatment": "substantial remake",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Readable still lifes, rounded vessels, distinct timber/iron, coopered barrel and recognizable oversized weapon-crate silhouette.",
+      "next_action": "Retain Beer01 as reference; other props have no concrete current defect warranting another pass.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Beer01/final-offline.png"
+    },
+    {
+      "asset": "Beer02",
+      "path": "src/bin/Data/Object1/Beer02.bmd",
+      "placements": 2,
+      "textures": {
+        "pot3.tga": [
+          "src/bin/Data/Object1/pot3.ozt"
+        ],
+        "apple.jpg": [
+          "src/bin/Data/Object1/apple.OZJ"
+        ],
+        "bottle.tga": [
+          "src/bin/Data/Object1/bottle.ozt"
+        ],
+        "plate.jpg": [
+          "src/bin/Data/Object1/plate.OZJ"
+        ],
+        "winecup.jpg": [
+          "src/bin/Data/Object1/winecup.OZJ"
+        ]
+      },
+      "treatment": "substantial remake",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Readable still lifes, rounded vessels, distinct timber/iron, coopered barrel and recognizable oversized weapon-crate silhouette.",
+      "next_action": "Retain Beer01 as reference; other props have no concrete current defect warranting another pass.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Beer02/final-offline.png"
+    },
+    {
+      "asset": "Beer03",
+      "path": "src/bin/Data/Object1/Beer03.bmd",
+      "placements": 4,
+      "textures": {
+        "bottle.tga": [
+          "src/bin/Data/Object1/bottle.ozt"
+        ],
+        "winecup.jpg": [
+          "src/bin/Data/Object1/winecup.OZJ"
+        ]
+      },
+      "treatment": "substantial remake",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Readable still lifes, rounded vessels, distinct timber/iron, coopered barrel and recognizable oversized weapon-crate silhouette.",
+      "next_action": "Retain Beer01 as reference; other props have no concrete current defect warranting another pass.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Beer03/final-offline.png"
+    },
+    {
+      "asset": "Candle01",
+      "path": "src/bin/Data/Object1/Candle01.bmd",
+      "placements": 6,
+      "textures": {
+        "candle.jpg": [
+          "src/bin/Data/Object1/candle.OZJ"
+        ],
+        "candle2.jpg": [
+          "src/bin/Data/Object1/candle2.OZJ"
+        ]
+      },
+      "treatment": "substantial remake",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Readable still lifes, rounded vessels, distinct timber/iron, coopered barrel and recognizable oversized weapon-crate silhouette.",
+      "next_action": "Retain Beer01 as reference; other props have no concrete current defect warranting another pass.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Candle01/final-offline.png"
+    },
+    {
+      "asset": "TreasureChest01",
+      "path": "src/bin/Data/Object1/TreasureChest01.bmd",
+      "placements": 3,
+      "textures": {
+        "treasure_chest.jpg": [
+          "src/bin/Data/Object1/treasure_chest.OZJ"
+        ]
+      },
+      "treatment": "substantial remake",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Readable still lifes, rounded vessels, distinct timber/iron, coopered barrel and recognizable oversized weapon-crate silhouette.",
+      "next_action": "Retain Beer01 as reference; other props have no concrete current defect warranting another pass.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/TreasureChest01/final-offline.png"
+    },
+    {
+      "asset": "TreasureDrum01",
+      "path": "src/bin/Data/Object1/TreasureDrum01.bmd",
+      "placements": 64,
+      "textures": {
+        "drum.jpg": [
+          "src/bin/Data/Object1/drum.OZJ"
+        ]
+      },
+      "treatment": "substantial remake",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Readable still lifes, rounded vessels, distinct timber/iron, coopered barrel and recognizable oversized weapon-crate silhouette.",
+      "next_action": "Retain Beer01 as reference; other props have no concrete current defect warranting another pass.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/TreasureDrum01/final-offline.png"
+    },
+    {
+      "asset": "House02",
+      "path": "src/bin/Data/Object1/House02.bmd",
+      "placements": 7,
+      "textures": {
+        "drum.jpg": [
+          "src/bin/Data/Object1/drum.OZJ"
+        ],
+        "steel.jpg": [
+          "src/bin/Data/Object1/steel.OZJ"
+        ]
+      },
+      "treatment": "substantial remake",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Readable still lifes, rounded vessels, distinct timber/iron, coopered barrel and recognizable oversized weapon-crate silhouette.",
+      "next_action": "Retain Beer01 as reference; other props have no concrete current defect warranting another pass.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/House02/final-offline.png"
+    },
+    {
+      "asset": "Stone01",
+      "path": "src/bin/Data/Object1/Stone01.bmd",
+      "placements": 28,
+      "textures": {
+        "ston01.jpg": [
+          "src/bin/Data/Object1/ston01.OZJ"
+        ],
+        "ston02.tga": [
+          "src/bin/Data/Object1/ston02.OZT"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Rock forms have coherent fractured slate planes and varied silhouettes; repaired UV projection supports readable material.",
+      "next_action": "Retain; avoid needless smoothing of intended rock facets.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Stone01/final-offline.png"
+    },
+    {
+      "asset": "Stone02",
+      "path": "src/bin/Data/Object1/Stone02.bmd",
+      "placements": 41,
+      "textures": {
+        "ston01.jpg": [
+          "src/bin/Data/Object1/ston01.OZJ"
+        ],
+        "ston02.tga": [
+          "src/bin/Data/Object1/ston02.OZT"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Rock forms have coherent fractured slate planes and varied silhouettes; repaired UV projection supports readable material.",
+      "next_action": "Retain; avoid needless smoothing of intended rock facets.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Stone02/final-offline.png"
+    },
+    {
+      "asset": "Stone03",
+      "path": "src/bin/Data/Object1/Stone03.bmd",
+      "placements": 49,
+      "textures": {
+        "ston01.jpg": [
+          "src/bin/Data/Object1/ston01.OZJ"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Rock forms have coherent fractured slate planes and varied silhouettes; repaired UV projection supports readable material.",
+      "next_action": "Retain; avoid needless smoothing of intended rock facets.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Stone03/final-offline.png"
+    },
+    {
+      "asset": "Stone04",
+      "path": "src/bin/Data/Object1/Stone04.bmd",
+      "placements": 67,
+      "textures": {
+        "ston01.jpg": [
+          "src/bin/Data/Object1/ston01.OZJ"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Rock forms have coherent fractured slate planes and varied silhouettes; repaired UV projection supports readable material.",
+      "next_action": "Retain; avoid needless smoothing of intended rock facets.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Stone04/final-offline.png"
+    },
+    {
+      "asset": "Stone05",
+      "path": "src/bin/Data/Object1/Stone05.bmd",
+      "placements": 8,
+      "textures": {
+        "ston01.jpg": [
+          "src/bin/Data/Object1/ston01.OZJ"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Rock forms have coherent fractured slate planes and varied silhouettes; repaired UV projection supports readable material.",
+      "next_action": "Retain; avoid needless smoothing of intended rock facets.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Stone05/final-offline.png"
+    },
+    {
+      "asset": "StoneStatue02",
+      "path": "src/bin/Data/Object1/StoneStatue02.bmd",
+      "placements": 7,
+      "textures": {
+        "stone_statue01.jpg": [
+          "src/bin/Data/Object1/stone_statue01.OZJ"
+        ]
+      },
+      "treatment": "texture-only treatment / essentially original geometry",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Moai identity, grave cross, offset sarcophagus lid and arched marker have clear profiles and legible stone ornament.",
+      "next_action": "Retain. StoneStatue02 is texture/UV treatment with essentially original geometry.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneStatue02/final-offline.png"
+    },
+    {
+      "asset": "Tomb01",
+      "path": "src/bin/Data/Object1/Tomb01.bmd",
+      "placements": 4,
+      "textures": {
+        "grave_02.jpg": [
+          "src/bin/Data/Object1/grave_02.OZJ"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Moai identity, grave cross, offset sarcophagus lid and arched marker have clear profiles and legible stone ornament.",
+      "next_action": "Retain. StoneStatue02 is texture/UV treatment with essentially original geometry.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Tomb01/final-offline.png"
+    },
+    {
+      "asset": "Tomb02",
+      "path": "src/bin/Data/Object1/Tomb02.bmd",
+      "placements": 4,
+      "textures": {
+        "grave_01.jpg": [
+          "src/bin/Data/Object1/grave_01.OZJ"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Moai identity, grave cross, offset sarcophagus lid and arched marker have clear profiles and legible stone ornament.",
+      "next_action": "Retain. StoneStatue02 is texture/UV treatment with essentially original geometry.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Tomb02/final-offline.png"
+    },
+    {
+      "asset": "Tomb03",
+      "path": "src/bin/Data/Object1/Tomb03.bmd",
+      "placements": 5,
+      "textures": {
+        "tombstone.jpg": [
+          "src/bin/Data/Object1/tombstone.OZJ"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Moai identity, grave cross, offset sarcophagus lid and arched marker have clear profiles and legible stone ornament.",
+      "next_action": "Retain. StoneStatue02 is texture/UV treatment with essentially original geometry.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Tomb03/final-offline.png"
+    },
+    {
+      "asset": "SteelWall01",
+      "path": "src/bin/Data/Object1/SteelWall01.bmd",
+      "placements": 2,
+      "textures": {
+        "steel_barred_b.jpg": [
+          "src/bin/Data/Object1/steel_barred_b.OZJ"
+        ],
+        "steel_barred_a.tga": [
+          "src/bin/Data/Object1/steel_barred_a.OZT"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Slender iron bars and gothic negative spaces remain readable; ornament suits existing style.",
+      "next_action": "Retain; alpha/material cards are intentional. HouseEtc03 is essentially original geometry with texture treatment.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/SteelWall01/final-offline.png"
+    },
+    {
+      "asset": "SteelWall02",
+      "path": "src/bin/Data/Object1/SteelWall02.bmd",
+      "placements": 21,
+      "textures": {
+        "steel_barred_b.jpg": [
+          "src/bin/Data/Object1/steel_barred_b.OZJ"
+        ],
+        "steel_barred_a.tga": [
+          "src/bin/Data/Object1/steel_barred_a.OZT"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Slender iron bars and gothic negative spaces remain readable; ornament suits existing style.",
+      "next_action": "Retain; alpha/material cards are intentional. HouseEtc03 is essentially original geometry with texture treatment.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/SteelWall02/final-offline.png"
+    },
+    {
+      "asset": "SteelWall03",
+      "path": "src/bin/Data/Object1/SteelWall03.bmd",
+      "placements": 5,
+      "textures": {
+        "steel_barred_b.jpg": [
+          "src/bin/Data/Object1/steel_barred_b.OZJ"
+        ],
+        "steel_barred_a.tga": [
+          "src/bin/Data/Object1/steel_barred_a.OZT"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Slender iron bars and gothic negative spaces remain readable; ornament suits existing style.",
+      "next_action": "Retain; alpha/material cards are intentional. HouseEtc03 is essentially original geometry with texture treatment.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/SteelWall03/final-offline.png"
+    },
+    {
+      "asset": "SteelDoor01",
+      "path": "src/bin/Data/Object1/SteelDoor01.bmd",
+      "placements": 8,
+      "textures": {
+        "steel_barred_b.jpg": [
+          "src/bin/Data/Object1/steel_barred_b.OZJ"
+        ],
+        "steel_barred_door.tga": [
+          "src/bin/Data/Object1/steel_barred_door.OZT"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Slender iron bars and gothic negative spaces remain readable; ornament suits existing style.",
+      "next_action": "Retain; alpha/material cards are intentional. HouseEtc03 is essentially original geometry with texture treatment.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/SteelDoor01/final-offline.png"
+    },
+    {
+      "asset": "HouseEtc03",
+      "path": "src/bin/Data/Object1/HouseEtc03.bmd",
+      "placements": 8,
+      "textures": {
+        "steel_barred_a.tga": [
+          "src/bin/Data/Object1/steel_barred_a.OZT"
+        ],
+        "steel_barred_door.tga": [
+          "src/bin/Data/Object1/steel_barred_door.OZT"
+        ]
+      },
+      "treatment": "texture-only treatment / essentially original geometry",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Slender iron bars and gothic negative spaces remain readable; ornament suits existing style.",
+      "next_action": "Retain; alpha/material cards are intentional. HouseEtc03 is essentially original geometry with texture treatment.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/HouseEtc03/final-offline.png"
+    },
+    {
+      "asset": "Sign01",
+      "path": "src/bin/Data/Object1/Sign01.bmd",
+      "placements": 3,
+      "textures": {
+        "notice.jpg": [
+          "src/bin/Data/Object1/notice.OZJ"
+        ],
+        "signboard.tga": [
+          "src/bin/Data/Object1/signboard.OZT"
+        ],
+        "doorknob.tga": [
+          "src/bin/Data/Object1/doorknob.OZT"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Notice-board trim, forged brackets and two distinct heraldic motifs are clear at scale.",
+      "next_action": "Retain; banners retain original geometry with texture treatment and original animation.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Sign01/final-offline.png"
+    },
+    {
+      "asset": "Sign02",
+      "path": "src/bin/Data/Object1/Sign02.bmd",
+      "placements": 5,
+      "textures": {
+        "notice.jpg": [
+          "src/bin/Data/Object1/notice.OZJ"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Notice-board trim, forged brackets and two distinct heraldic motifs are clear at scale.",
+      "next_action": "Retain; banners retain original geometry with texture treatment and original animation.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Sign02/final-offline.png"
+    },
+    {
+      "asset": "Curtain01",
+      "path": "src/bin/Data/Object1/Curtain01.bmd",
+      "placements": 6,
+      "textures": {
+        "badge_01.jpg": [
+          "src/bin/Data/Object1/badge_01.OZJ"
+        ],
+        "badge_02.tga": [
+          "src/bin/Data/Object1/badge_02.OZT"
+        ]
+      },
+      "treatment": "texture-only treatment / essentially original geometry",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Notice-board trim, forged brackets and two distinct heraldic motifs are clear at scale.",
+      "next_action": "Retain; banners retain original geometry with texture treatment and original animation.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Curtain01/final-offline.png"
+    },
+    {
+      "asset": "StoneWall04",
+      "path": "src/bin/Data/Object1/StoneWall04.bmd",
+      "placements": 12,
+      "textures": {
+        "badge_01.jpg": [
+          "src/bin/Data/Object1/badge_01.OZJ"
+        ],
+        "badge_03.tga": [
+          "src/bin/Data/Object1/badge_03.OZT"
+        ]
+      },
+      "treatment": "texture-only treatment / essentially original geometry",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Notice-board trim, forged brackets and two distinct heraldic motifs are clear at scale.",
+      "next_action": "Retain; banners retain original geometry with texture treatment and original animation.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneWall04/final-offline.png"
+    },
+    {
+      "asset": "Carriage01",
+      "path": "src/bin/Data/Object1/Carriage01.bmd",
+      "placements": 4,
+      "textures": {
+        "horse_drawn_01.jpg": [
+          "src/bin/Data/Object1/horse_drawn_01.OZJ"
+        ],
+        "horse_drawn_02.tga": [
+          "src/bin/Data/Object1/horse_drawn_02.OZT"
+        ],
+        "horse_drawn_03.jpg": [
+          "src/bin/Data/Object1/horse_drawn_03.OZJ"
+        ]
+      },
+      "treatment": "substantial remake",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Open carts, spokes, hubs and rounded tied straw bundles have differentiated forms and coherent material.",
+      "next_action": "Retain; Carriage01 black card is documented additive preview limitation.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Carriage01/final-offline.png"
+    },
+    {
+      "asset": "Carriage02",
+      "path": "src/bin/Data/Object1/Carriage02.bmd",
+      "placements": 7,
+      "textures": {
+        "horse_drawn_01.jpg": [
+          "src/bin/Data/Object1/horse_drawn_01.OZJ"
+        ]
+      },
+      "treatment": "substantial remake",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Open carts, spokes, hubs and rounded tied straw bundles have differentiated forms and coherent material.",
+      "next_action": "Retain; Carriage01 black card is documented additive preview limitation.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Carriage02/final-offline.png"
+    },
+    {
+      "asset": "Carriage03",
+      "path": "src/bin/Data/Object1/Carriage03.bmd",
+      "placements": 0,
+      "textures": {
+        "tub.jpg": [
+          "src/bin/Data/Object1/tub.OZJ"
+        ],
+        "horse_drawn_01.jpg": [
+          "src/bin/Data/Object1/horse_drawn_01.OZJ"
+        ]
+      },
+      "treatment": "substantial remake",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Open carts, spokes, hubs and rounded tied straw bundles have differentiated forms and coherent material.",
+      "next_action": "Retain; Carriage01 black card is documented additive preview limitation.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Carriage03/final-offline.png"
+    },
+    {
+      "asset": "Carriage04",
+      "path": "src/bin/Data/Object1/Carriage04.bmd",
+      "placements": 2,
+      "textures": {
+        "horse_drawn_01.jpg": [
+          "src/bin/Data/Object1/horse_drawn_01.OZJ"
+        ],
+        "grass_01.tga": [
+          "src/bin/Data/Object1/grass_01.OZT"
+        ]
+      },
+      "treatment": "substantial remake",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Open carts, spokes, hubs and rounded tied straw bundles have differentiated forms and coherent material.",
+      "next_action": "Retain; Carriage01 black card is documented additive preview limitation.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Carriage04/final-offline.png"
+    },
+    {
+      "asset": "Straw01",
+      "path": "src/bin/Data/Object1/Straw01.bmd",
+      "placements": 8,
+      "textures": {
+        "grass_01.tga": [
+          "src/bin/Data/Object1/grass_01.OZT"
+        ]
+      },
+      "treatment": "substantial remake",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Open carts, spokes, hubs and rounded tied straw bundles have differentiated forms and coherent material.",
+      "next_action": "Retain; Carriage01 black card is documented additive preview limitation.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Straw01/final-offline.png"
+    },
+    {
+      "asset": "Straw02",
+      "path": "src/bin/Data/Object1/Straw02.bmd",
+      "placements": 2,
+      "textures": {
+        "grass_01.tga": [
+          "src/bin/Data/Object1/grass_01.OZT"
+        ]
+      },
+      "treatment": "substantial remake",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Open carts, spokes, hubs and rounded tied straw bundles have differentiated forms and coherent material.",
+      "next_action": "Retain; Carriage01 black card is documented additive preview limitation.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Straw02/final-offline.png"
+    },
+    {
+      "asset": "Cannon01",
+      "path": "src/bin/Data/Object1/Cannon01.bmd",
+      "placements": 1,
+      "textures": {
+        "horse_drawn_01.jpg": [
+          "src/bin/Data/Object1/horse_drawn_01.OZJ"
+        ]
+      },
+      "treatment": "substantial remake",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Rounded recessed bore and shot, timber/iron separation and structural stand read clearly. Inspected Cannon01/03 matching comparisons and Cannon02 reverse: barrel charcoal tonal gradient and collar are visible on reverse; dark front is view-dependent, not an additive card.",
+      "next_action": "Retain. Optional later muzzle-face wear variation only; current plain pale ring is not a demonstrated blocker. Preserve shared wood atlas unless full 12-consumer review.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Cannon01/final-offline.png",
+      "additional_evidence": [
+        "assets-work/World1/Cannons01/Cannon01/review/comparison.jpg",
+        "assets-work/World1/Cannons01/Cannon03/review/comparison.jpg",
+        "assets-work/World1/Cannons01/Cannon02/review/reverse-after.png"
+      ]
+    },
+    {
+      "asset": "Cannon02",
+      "path": "src/bin/Data/Object1/Cannon02.bmd",
+      "placements": 2,
+      "textures": {
+        "horse_drawn_01.jpg": [
+          "src/bin/Data/Object1/horse_drawn_01.OZJ"
+        ]
+      },
+      "treatment": "substantial remake",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Rounded recessed bore and shot, timber/iron separation and structural stand read clearly. Inspected Cannon01/03 matching comparisons and Cannon02 reverse: barrel charcoal tonal gradient and collar are visible on reverse; dark front is view-dependent, not an additive card.",
+      "next_action": "Retain. Optional later muzzle-face wear variation only; current plain pale ring is not a demonstrated blocker. Preserve shared wood atlas unless full 12-consumer review.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Cannon02/final-offline.png",
+      "additional_evidence": [
+        "assets-work/World1/Cannons01/Cannon01/review/comparison.jpg",
+        "assets-work/World1/Cannons01/Cannon03/review/comparison.jpg",
+        "assets-work/World1/Cannons01/Cannon02/review/reverse-after.png"
+      ]
+    },
+    {
+      "asset": "Cannon03",
+      "path": "src/bin/Data/Object1/Cannon03.bmd",
+      "placements": 3,
+      "textures": {
+        "horse_drawn_01.jpg": [
+          "src/bin/Data/Object1/horse_drawn_01.OZJ"
+        ]
+      },
+      "treatment": "substantial remake",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Rounded recessed bore and shot, timber/iron separation and structural stand read clearly. Inspected Cannon01/03 matching comparisons and Cannon02 reverse: barrel charcoal tonal gradient and collar are visible on reverse; dark front is view-dependent, not an additive card.",
+      "next_action": "Retain. Optional later muzzle-face wear variation only; current plain pale ring is not a demonstrated blocker. Preserve shared wood atlas unless full 12-consumer review.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Cannon03/final-offline.png",
+      "additional_evidence": [
+        "assets-work/World1/Cannons01/Cannon01/review/comparison.jpg",
+        "assets-work/World1/Cannons01/Cannon03/review/comparison.jpg",
+        "assets-work/World1/Cannons01/Cannon02/review/reverse-after.png"
+      ]
+    },
+    {
+      "asset": "Hanging01",
+      "path": "src/bin/Data/Object1/Hanging01.bmd",
+      "placements": 1,
+      "textures": {
+        "horse_drawn_01.jpg": [
+          "src/bin/Data/Object1/horse_drawn_01.OZJ"
+        ]
+      },
+      "treatment": "substantial remake",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Bored cannon muzzle, shot crates and timber gallows structure read as intended, with original rigged rope retained.",
+      "next_action": "Retain; dark cannon iron is still readable by muzzle outline, no basis to repaint all shared wood.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Hanging01/final-offline.png"
+    },
+    {
+      "asset": "Bridge01",
+      "path": "src/bin/Data/Object1/Bridge01.bmd",
+      "placements": 16,
+      "textures": {
+        "bridge_01.jpg": [
+          "src/bin/Data/Object1/bridge_01.OZJ"
+        ],
+        "bridge_shadow01.tga": [
+          "src/bin/Data/Object1/bridge_shadow01.OZT"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Arched bridge, paired log rails, lantern post and ladder remain structurally clear and proportionate.",
+      "next_action": "Retain; round log edge refinement optional after higher-impact work, not a completion blocker from this view.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Bridge01/final-offline.png"
+    },
+    {
+      "asset": "BridgeStone01",
+      "path": "src/bin/Data/Object1/BridgeStone01.bmd",
+      "placements": 14,
+      "textures": {
+        "tree_04.jpg": [
+          "src/bin/Data/Object1/tree_04.OZJ"
+        ],
+        "tile_ston06.jpg": [
+          "src/bin/Data/Object1/tile_ston06.OZJ"
+        ],
+        "tile_wood02.jpg": [
+          "src/bin/Data/Object1/tile_wood02.OZJ"
+        ],
+        "bridge_shadow01.tga": [
+          "src/bin/Data/Object1/bridge_shadow01.OZT"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Arched bridge, paired log rails, lantern post and ladder remain structurally clear and proportionate.",
+      "next_action": "Retain; round log edge refinement optional after higher-impact work, not a completion blocker from this view.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/BridgeStone01/final-offline.png"
+    },
+    {
+      "asset": "StreetLight01",
+      "path": "src/bin/Data/Object1/StreetLight01.bmd",
+      "placements": 10,
+      "textures": {
+        "streetlight.jpg": [
+          "src/bin/Data/Object1/streetlight.OZJ"
+        ],
+        "streetlight_brightness2.jpg": [
+          "src/bin/Data/Object1/streetlight_brightness2.OZJ"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Arched bridge, paired log rails, lantern post and ladder remain structurally clear and proportionate.",
+      "next_action": "Retain; round log edge refinement optional after higher-impact work, not a completion blocker from this view.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/StreetLight01/final-offline.png"
+    },
+    {
+      "asset": "Stair01",
+      "path": "src/bin/Data/Object1/Stair01.bmd",
+      "placements": 3,
+      "textures": {
+        "tile_wood01.jpg": [
+          "src/bin/Data/Object1/tile_wood01.OZJ"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Arched bridge, paired log rails, lantern post and ladder remain structurally clear and proportionate.",
+      "next_action": "Retain; round log edge refinement optional after higher-impact work, not a completion blocker from this view.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Stair01/final-offline.png"
+    },
+    {
+      "asset": "StoneWall01",
+      "path": "src/bin/Data/Object1/StoneWall01.bmd",
+      "placements": 8,
+      "textures": {
+        "tile_01.jpg": [
+          "src/bin/Data/Object1/tile_01.OZJ"
+        ],
+        "tile_03.jpg": [
+          "src/bin/Data/Object1/tile_03.OZJ"
+        ],
+        "tile_02.jpg": [
+          "src/bin/Data/Object1/tile_02.OZJ"
+        ],
+        "bridge_01.jpg": [
+          "src/bin/Data/Object1/bridge_01.OZJ"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Simple fortification masses and portcullis silhouettes match intended modular structure; dark rough blocks remain coherent.",
+      "next_action": "Retain pending comparison against adjacent new masonry; no unconditional need to sculpt each stone.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneWall01/final-offline.png"
+    },
+    {
+      "asset": "StoneWall02",
+      "path": "src/bin/Data/Object1/StoneWall02.bmd",
+      "placements": 6,
+      "textures": {
+        "tile_01.jpg": [
+          "src/bin/Data/Object1/tile_01.OZJ"
+        ],
+        "tile_03.jpg": [
+          "src/bin/Data/Object1/tile_03.OZJ"
+        ],
+        "tile_02.jpg": [
+          "src/bin/Data/Object1/tile_02.OZJ"
+        ],
+        "bridge_01.jpg": [
+          "src/bin/Data/Object1/bridge_01.OZJ"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Simple fortification masses and portcullis silhouettes match intended modular structure; dark rough blocks remain coherent.",
+      "next_action": "Retain pending comparison against adjacent new masonry; no unconditional need to sculpt each stone.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneWall02/final-offline.png"
+    },
+    {
+      "asset": "StoneWall03",
+      "path": "src/bin/Data/Object1/StoneWall03.bmd",
+      "placements": 2,
+      "textures": {
+        "tile_01.jpg": [
+          "src/bin/Data/Object1/tile_01.OZJ"
+        ],
+        "horse_drawn_01.jpg": [
+          "src/bin/Data/Object1/horse_drawn_01.OZJ"
+        ],
+        "tile_03.jpg": [
+          "src/bin/Data/Object1/tile_03.OZJ"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Simple fortification masses and portcullis silhouettes match intended modular structure; dark rough blocks remain coherent.",
+      "next_action": "Retain pending comparison against adjacent new masonry; no unconditional need to sculpt each stone.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneWall03/final-offline.png"
+    },
+    {
+      "asset": "StoneWall05",
+      "path": "src/bin/Data/Object1/StoneWall05.bmd",
+      "placements": 0,
+      "textures": {
+        "tile_01.jpg": [
+          "src/bin/Data/Object1/tile_01.OZJ"
+        ],
+        "tile_03.jpg": [
+          "src/bin/Data/Object1/tile_03.OZJ"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Simple fortification masses and portcullis silhouettes match intended modular structure; dark rough blocks remain coherent.",
+      "next_action": "Retain pending comparison against adjacent new masonry; no unconditional need to sculpt each stone.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneWall05/final-offline.png"
+    },
+    {
+      "asset": "StoneWall06",
+      "path": "src/bin/Data/Object1/StoneWall06.bmd",
+      "placements": 2,
+      "textures": {
+        "badge_01.jpg": [
+          "src/bin/Data/Object1/badge_01.OZJ"
+        ],
+        "badge_03.tga": [
+          "src/bin/Data/Object1/badge_03.OZT"
+        ],
+        "tile_01.jpg": [
+          "src/bin/Data/Object1/tile_01.OZJ"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Simple fortification masses and portcullis silhouettes match intended modular structure; dark rough blocks remain coherent.",
+      "next_action": "Retain pending comparison against adjacent new masonry; no unconditional need to sculpt each stone.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneWall06/final-offline.png"
+    },
+    {
+      "asset": "House05",
+      "path": "src/bin/Data/Object1/House05.bmd",
+      "placements": 1,
+      "textures": {
+        "tile_wood02.jpg": [
+          "src/bin/Data/Object1/tile_wood02.OZJ"
+        ],
+        "tile_wood01.jpg": [
+          "src/bin/Data/Object1/tile_wood01.OZJ"
+        ],
+        "ston02.jpg": [
+          "src/bin/Data/Object1/ston02.OZJ"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Watermill retains wheel/channel identity; canopy has deliberate hanging curvature and appropriate simple frame.",
+      "next_action": "Retain; preserve moving wheel/water mesh and canopy animation.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/House05/final-offline.png"
+    },
+    {
+      "asset": "Tent01",
+      "path": "src/bin/Data/Object1/Tent01.bmd",
+      "placements": 2,
+      "textures": {
+        "tile_house01.jpg": [
+          "src/bin/Data/Object1/tile_house01.OZJ"
+        ],
+        "tile_ston06.jpg": [
+          "src/bin/Data/Object1/tile_ston06.OZJ"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Watermill retains wheel/channel identity; canopy has deliberate hanging curvature and appropriate simple frame.",
+      "next_action": "Retain; preserve moving wheel/water mesh and canopy animation.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Tent01/final-offline.png"
+    },
+    {
+      "asset": "Ship01",
+      "path": "src/bin/Data/Object1/Ship01.bmd",
+      "placements": 3,
+      "textures": {
+        "TileGround03.jpg": [
+          "src/bin/Data/Object1/TileGround03.OZJ"
+        ],
+        "ship01.jpg": [
+          "src/bin/Data/Object1/ship01.OZJ"
+        ],
+        "ship03.jpg": [
+          "src/bin/Data/Object1/ship03.OZJ"
+        ],
+        "ship04.jpg": [
+          "src/bin/Data/Object1/ship04.OZJ"
+        ],
+        "ship07.jpg": [
+          "src/bin/Data/Object1/ship07.OZJ"
+        ],
+        "ship05.tga": [
+          "src/bin/Data/Object1/ship05.OZT"
+        ],
+        "ship07.tga": [
+          "src/bin/Data/Object1/ship07.OZT"
+        ],
+        "ship06.tga": [
+          "src/bin/Data/Object1/ship06.OZT"
+        ],
+        "ship06.jpg": [
+          "src/bin/Data/Object1/ship06.OZJ"
+        ],
+        "ship05.jpg": [
+          "src/bin/Data/Object1/ship05.OZJ"
+        ]
+      },
+      "treatment": "texture-only treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Dragon prow, stern cabin, rigging and furled sail form a distinctive coherent silhouette even with original geometry.",
+      "next_action": "Retain; inspect closer placement scale if later assembly exposes a defect.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Ship01/final-offline.png"
+    },
+    {
+      "asset": "Waterspout01",
+      "path": "src/bin/Data/Object1/Waterspout01.bmd",
+      "placements": 1,
+      "textures": {
+        "stone_statue02.jpg": [
+          "src/bin/Data/Object1/stone_statue02.OZJ"
+        ],
+        "reagon_waterspout.jpg": [
+          "src/bin/Data/Object1/reagon_waterspout.OZJ"
+        ],
+        "ston01.jpg": [
+          "src/bin/Data/Object1/ston01.OZJ"
+        ],
+        "ston02.jpg": [
+          "src/bin/Data/Object1/ston02.OZJ"
+        ]
+      },
+      "treatment": "texture-only treatment",
+      "decision": "production",
+      "priority": 2,
+      "reason": "Basin and rock base are coherent, but central dragon wings remain severe angular slabs and body loses material definition as near-black mass.",
+      "next_action": "Geometry-only dragon silhouette and curvature pass with restrained diffuse tonal definition if exact exclusive dragon texture ownership verified; preserve all four original mesh slots, water UVs, 11 bones and 21 action keys. Review wings from multiple angles.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Waterspout01/final-offline.png"
+    },
+    {
+      "asset": "FireLight01",
+      "path": "src/bin/Data/Object1/FireLight01.bmd",
+      "placements": 26,
+      "textures": {
+        "light.tga": [
+          "src/bin/Data/Object1/light.OZT"
+        ],
+        "light2.jpg": [
+          "src/bin/Data/Object1/light2.OZJ"
+        ],
+        "light3.jpg": [
+          "src/bin/Data/Object1/light3.OZJ"
+        ]
+      },
+      "treatment": "partial geometry/art treatment",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Rounded shaft, open crown/feet and coherent iron read clearly in effect approximation.",
+      "next_action": "Retain; preserve engine effect slots/fire anchors. Client verification remains user-reported baseline only.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/FireLight01/final-offline.png"
+    },
+    {
+      "asset": "FireLight02",
+      "path": "src/bin/Data/Object1/FireLight02.bmd",
+      "placements": 18,
+      "textures": {
+        "tile_02.jpg": [
+          "src/bin/Data/Object1/tile_02.OZJ"
+        ],
+        "fire_light_01.tga": [
+          "src/bin/Data/Object1/fire_light_01.OZT"
+        ],
+        "copra_gate.jpg": [
+          "src/bin/Data/Object1/copra_gate.OZJ"
+        ]
+      },
+      "treatment": "texture-only treatment / essentially original geometry",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Small wall bracket has clear open basket and improved shared timber paint.",
+      "next_action": "Retain; preserve engine effect slots/fire anchors. Client verification remains user-reported baseline only.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/FireLight02/final-offline.png"
+    },
+    {
+      "asset": "Bonfire01",
+      "path": "src/bin/Data/Object1/Bonfire01.bmd",
+      "placements": 9,
+      "textures": {
+        "fire_01.jpg": [
+          "src/bin/Data/Object1/fire_01.OZJ"
+        ],
+        "fire_02.jpg": [
+          "src/bin/Data/Object1/fire_02.OZJ"
+        ]
+      },
+      "treatment": "texture-only treatment / essentially original geometry",
+      "decision": "production",
+      "priority": 2,
+      "reason": "Effect approximation reveals rigid rectangular log extrusions and square ends; soften/taper split-log cross-sections within bounds. Preserve fire_02 mesh1 effect shell and UVs exactly.",
+      "next_action": "Effect approximation reveals rigid rectangular log extrusions and square ends; soften/taper split-log cross-sections within bounds. Preserve fire_02 mesh1 effect shell and UVs exactly.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/Bonfire01/final-offline.png"
+    },
+    {
+      "asset": "DoungeonGate01",
+      "path": "src/bin/Data/Object1/DoungeonGate01.bmd",
+      "placements": 1,
+      "textures": {
+        "copra_gate.jpg": [
+          "src/bin/Data/Object1/copra_gate.OZJ"
+        ]
+      },
+      "treatment": "texture-only treatment / essentially original geometry",
+      "decision": "retain defensible",
+      "priority": 3,
+      "reason": "Distinctive cobra mouth/fangs, sculpted stone and legible entrance/flanking plinths preserve map identity.",
+      "next_action": "Retain; preserve engine effect slots/fire anchors. Client verification remains user-reported baseline only.",
+      "evidence": "../../../assets-work/World1/coordination/final-inspection/DoungeonGate01/final-offline.png"
+    }
+  ]
+}

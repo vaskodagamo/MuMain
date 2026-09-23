@@ -1,0 +1,45 @@
+{
+  "Well01": {
+    "triangles": 1149,
+    "export_sha256": "935944f4354f72e7839e8f97b41ab0bb6cd5f07d690d5972a551873b173e7831",
+    "baseline_sha256": "c753f37c049f5716deb7db64186083fed58920b925da133abea7303a851977a3",
+    "source_sha256": "7bde44d40dcd81e2154e8f206ee7e01eaa734ce39e0629a1aabbf8e4215aa606",
+    "ground_contact_max_error": 0.0,
+    "textures": {
+      "tub.OZJ": "adbb92efec0f21b43147d1aefea5c7de7345877dfbfbd821417378af99ad4346",
+      "jar_01.OZJ": "d26fe57d6a0c086a5bb64aa6c7939d08a3f18c1eb4469497065fb7f9fd5ffae5",
+      "well.OZJ": "2e9a79bc4eac535e212e1f5485d9c5d0e3e7d817ce2236d43c2414eac2db8c8e",
+      "horse_drawn_01.OZJ": "fb570a0b0c9c00e0face1e27f81fbc01d8edd6aeb6bc54280573a49d4dd7ad0e"
+    }
+  },
+  "Well02": {
+    "triangles": 317,
+    "export_sha256": "80c3ce31b8049e204ef9807505a07bd026bb550fe02b0c651eeb98fac63f32eb",
+    "baseline_sha256": "1abd72cb18be477740863d1677592eda32277e94f70154e999754933854adf22",
+    "source_sha256": "0c649ab5663d31658df3c056f9f52671138160b3fd23c639113c497cfe933271",
+    "ground_contact_max_error": 0.0,
+    "textures": {
+      "well.OZJ": "2e9a79bc4eac535e212e1f5485d9c5d0e3e7d817ce2236d43c2414eac2db8c8e"
+    }
+  },
+  "Well03": {
+    "triangles": 744,
+    "export_sha256": "9f25e949dca54430438d3697d9eb65916e34ea5625c24b47f4427af89e4db703",
+    "baseline_sha256": "6a5d07341847640c760c1a1f578eba6608391d876ab7b67024433be62c063955",
+    "source_sha256": "827b5fee578bb21649cf39a79dfb3743b80ee3e298f7dedd689117cf70486b1f",
+    "ground_contact_max_error": 0.0,
+    "textures": {
+      "jar_01.OZJ": "d26fe57d6a0c086a5bb64aa6c7939d08a3f18c1eb4469497065fb7f9fd5ffae5"
+    }
+  },
+  "Well04": {
+    "triangles": 1488,
+    "export_sha256": "ebc11740cccc15c4745b82cd35205aff1e7f2fe49122e9c81392db3a9ea75542",
+    "baseline_sha256": "3090273ccc5e2bd86d8e7478ce6e3a6bc5ff9e46d851694010a46e8865a16da0",
+    "source_sha256": "6e80a9b7e1a37c56220730a1984686e709dd9e7ffef1e5e9b4c2759648ff3465",
+    "ground_contact_max_error": 0.0,
+    "textures": {
+      "jar_01.OZJ": "d26fe57d6a0c086a5bb64aa6c7939d08a3f18c1eb4469497065fb7f9fd5ffae5"
+    }
+  }
+}

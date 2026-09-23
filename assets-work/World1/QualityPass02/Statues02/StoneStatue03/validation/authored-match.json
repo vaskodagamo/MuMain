@@ -1,0 +1,76 @@
+{
+  "status": "PASS",
+  "triangles": 1353,
+  "one_to_one_triangle_match": true,
+  "area_metrics": {
+    "minimum_geometry_area": 1.5104336463587864,
+    "minimum_uv_area": 9.749316811635822e-07,
+    "zero_geometry": 0,
+    "zero_uv": 0
+  },
+  "baseline_area_metrics": {
+    "minimum_geometry_area": 20.77778197011237,
+    "minimum_uv_area": 9.749316811635822e-07,
+    "zero_geometry": 0,
+    "zero_uv": 0
+  },
+  "protected_contract": {
+    "exact_plinth_triangles": 20,
+    "policy": "Angel plinth triangle/UV/bone identity; per-root extrema and all ground-contact vertices retained"
+  },
+  "every_authored_triangle_matches_material_bone_position_uv": true,
+  "maximum_position_delta": 4.999999987376214e-07,
+  "position_tolerance": 0.0003,
+  "uv_tolerance": 1e-06,
+  "uv_layers": [
+    "Float2"
+  ],
+  "packed_images": {
+    "angel_stone_statue.jpg": [
+      512,
+      512
+    ],
+    "angel_stone_statue.jpg.001": [
+      128,
+      128
+    ],
+    "tombstone_big.jpg": [
+      512,
+      512
+    ],
+    "tombstone_big.jpg.001": [
+      128,
+      128
+    ]
+  },
+  "per_root_contract": {
+    "0": {
+      "bounds_before": [
+        [
+          -72.766998,
+          -53.358002,
+          -0.0842
+        ],
+        [
+          74.606697,
+          39.882099,
+          264.767609
+        ]
+      ],
+      "bounds_after": [
+        [
+          -72.766998,
+          -53.358002,
+          -0.0842
+        ],
+        [
+          74.606697,
+          39.882099,
+          264.767609
+        ]
+      ],
+      "ground_contacts": 4,
+      "maximum_contact_delta": 0.0
+    }
+  }
+}

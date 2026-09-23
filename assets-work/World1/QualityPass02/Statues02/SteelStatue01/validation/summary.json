@@ -1,0 +1,32 @@
+{
+  "status": "PASS",
+  "bounds_before": [
+    [
+      -65.92,
+      -65.01,
+      -0.04
+    ],
+    [
+      65.87,
+      66.77,
+      321.58
+    ]
+  ],
+  "bounds_after": [
+    [
+      -65.92,
+      -65.01,
+      -0.04
+    ],
+    [
+      65.87,
+      66.77,
+      321.58
+    ]
+  ],
+  "skeleton_actions": "EQUIVALENT",
+  "full_comparison": "DIFFERENT",
+  "sha256": "c118a1bd217e809a858e5b6eccef5ef83041d7d136499c3a7acca314415dcbf1",
+  "textures_frozen": true,
+  "client_verified": false
+}

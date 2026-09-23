@@ -1,0 +1,5092 @@
+[
+  {
+    "model": "Beer01",
+    "identity": "tavern still life: bottle, mug, bowls, grapes and vine",
+    "path": "src/bin/Data/Object1/Beer01.bmd",
+    "textures": {
+      "plate2.jpg": [
+        "src/bin/Data/Object1/plate2.OZJ"
+      ]
+    },
+    "treatment": "substantial remake",
+    "remaining_problem": "Small fruit facets acceptable at tabletop screen footprint.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 1,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Beer01/placements",
+    "first_placement": {
+      "position": [
+        12738.603515625,
+        12838.12109375,
+        260.0000305175781
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        180.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        127.38603515625,
+        128.3812109375
+      ]
+    },
+    "intended_improvement": "Retain Beer01 as reference; other props have no concrete current defect warranting another pass.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Beer01/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Grape cluster, green bottle, open stave mug and separate dishes make a readable colorful tabletop still life.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Beer01"
+  },
+  {
+    "model": "Beer02",
+    "identity": "tavern still life: bottle, tankard, bowls and apples",
+    "path": "src/bin/Data/Object1/Beer02.bmd",
+    "textures": {
+      "pot3.tga": [
+        "src/bin/Data/Object1/pot3.ozt"
+      ],
+      "apple.jpg": [
+        "src/bin/Data/Object1/apple.OZJ"
+      ],
+      "bottle.tga": [
+        "src/bin/Data/Object1/bottle.ozt"
+      ],
+      "plate.jpg": [
+        "src/bin/Data/Object1/plate.OZJ"
+      ],
+      "winecup.jpg": [
+        "src/bin/Data/Object1/winecup.OZJ"
+      ]
+    },
+    "treatment": "substantial remake",
+    "remaining_problem": "Low-resolution bowl ornament retained; curved lips and openings are legible.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 2,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Beer02/placements",
+    "first_placement": {
+      "position": [
+        6264.2958984375,
+        13110.44140625,
+        172.68199157714844
+      ],
+      "rotation": [
+        355.0,
+        0.0,
+        2430.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        62.642958984375,
+        131.1044140625
+      ]
+    },
+    "intended_improvement": "Retain Beer01 as reference; other props have no concrete current defect warranting another pass.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Beer02/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Red fruit, pale patterned bowls, pewter mug and amber bottle have distinct silhouettes/materials and readable grouping.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Beer02"
+  },
+  {
+    "model": "Beer03",
+    "identity": "bottle and tankard pair",
+    "path": "src/bin/Data/Object1/Beer03.bmd",
+    "textures": {
+      "bottle.tga": [
+        "src/bin/Data/Object1/bottle.ozt"
+      ],
+      "winecup.jpg": [
+        "src/bin/Data/Object1/winecup.OZJ"
+      ]
+    },
+    "treatment": "substantial remake",
+    "remaining_problem": "Bottle shoulders mildly faceted; no significant normal-scale defect.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 4,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Beer03/placements",
+    "first_placement": {
+      "position": [
+        6329.7265625,
+        13085.8642578125,
+        170.71902465820312
+      ],
+      "rotation": [
+        355.0,
+        0.0,
+        2550.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        63.297265625,
+        130.858642578125
+      ]
+    },
+    "intended_improvement": "Retain Beer01 as reference; other props have no concrete current defect warranting another pass.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Beer03/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Two slender amber bottles contrast with broad open pewter tankard and handle, giving clear material/shape hierarchy.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Beer03"
+  },
+  {
+    "model": "Bonfire01",
+    "identity": "crossed charred logs with separate additive fire layer",
+    "path": "src/bin/Data/Object1/Bonfire01.bmd",
+    "textures": {
+      "fire_01.jpg": [
+        "src/bin/Data/Object1/fire_01.OZJ"
+      ],
+      "fire_02.jpg": [
+        "src/bin/Data/Object1/fire_02.OZJ"
+      ]
+    },
+    "treatment": "texture-only treatment / essentially original geometry",
+    "remaining_problem": "Accepted split-log profiles/grain; square hot ends intentionally preserved for exact additive shell. Client observation pending.",
+    "priority": 2,
+    "owner": "furniture",
+    "branch": "codex/lorencia-q02-furniture",
+    "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture",
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [
+      "79ed83a5",
+      "38292593"
+    ],
+    "placement_count": 9,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Bonfire01/placements",
+    "first_placement": {
+      "position": [
+        3450.0,
+        5150.0,
+        177.40838623046875
+      ],
+      "rotation": [
+        -5.0,
+        0.0,
+        1110.0
+      ],
+      "scale": 0.6000003814697266,
+      "tile": [
+        34.5,
+        51.5
+      ]
+    },
+    "intended_improvement": "Effect approximation reveals rigid rectangular log extrusions and square ends; soften/taper split-log cross-sections within bounds. Preserve fire_02 mesh1 effect shell and UVs exactly.",
+    "assessment": "production",
+    "evidence": "assets-work/World1/QualityPass02/Bonfire02/independent-final-review.json",
+    "artistic_gate_resolved": true
+  },
+  {
+    "model": "Bridge01",
+    "identity": "Double-arch stone parapet with projecting beast heads",
+    "path": "src/bin/Data/Object1/Bridge01.bmd",
+    "textures": {
+      "bridge_01.jpg": [
+        "src/bin/Data/Object1/bridge_01.OZJ"
+      ],
+      "bridge_shadow01.tga": [
+        "src/bin/Data/Object1/bridge_shadow01.OZT"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Long low silhouette intentional; contact-end profiles cannot be arbitrarily beveled.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 16,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Bridge01/placements",
+    "first_placement": {
+      "position": [
+        9998.10546875,
+        12554.6240234375,
+        170.88510131835938
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -90.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        99.9810546875,
+        125.546240234375
+      ]
+    },
+    "intended_improvement": "Retain; round log edge refinement optional after higher-impact work, not a completion blocker from this view.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Bridge01/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Stone bridge module has arched opening, thick parapet beam and dressed end posts with visible corbel supports.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Bridge01"
+  },
+  {
+    "model": "BridgeStone01",
+    "identity": "Twin-log rail with posts and diagonal braces",
+    "path": "src/bin/Data/Object1/BridgeStone01.bmd",
+    "textures": {
+      "tree_04.jpg": [
+        "src/bin/Data/Object1/tree_04.OZJ"
+      ],
+      "tile_ston06.jpg": [
+        "src/bin/Data/Object1/tile_ston06.OZJ"
+      ],
+      "tile_wood02.jpg": [
+        "src/bin/Data/Object1/tile_wood02.OZJ"
+      ],
+      "bridge_shadow01.tga": [
+        "src/bin/Data/Object1/bridge_shadow01.OZT"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Name is not material identity; roundish faceted logs appropriate.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 14,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/BridgeStone01/placements",
+    "first_placement": {
+      "position": [
+        17821.521484375,
+        17498.720703125,
+        188.17697143554688
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -90.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        178.21521484375,
+        174.98720703125
+      ]
+    },
+    "intended_improvement": "Retain; round log edge refinement optional after higher-impact work, not a completion blocker from this view.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/BridgeStone01/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Paired thick timber logs on braced trestle form distinct rustic bridge structure with continuous grain.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#BridgeStone01"
+  },
+  {
+    "model": "Candle01",
+    "identity": "three-candle bronze stand with animated flame triangles",
+    "path": "src/bin/Data/Object1/Candle01.bmd",
+    "textures": {
+      "candle.jpg": [
+        "src/bin/Data/Object1/candle.OZJ"
+      ],
+      "candle2.jpg": [
+        "src/bin/Data/Object1/candle2.OZJ"
+      ]
+    },
+    "treatment": "substantial remake",
+    "remaining_problem": "Engine flame behavior separate from diffuse geometry preview; frozen original effect contract.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 6,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Candle01/placements",
+    "first_placement": {
+      "position": [
+        6200.0,
+        13150.0,
+        165.00001525878906
+      ],
+      "rotation": [
+        355.0,
+        0.0,
+        2430.0
+      ],
+      "scale": 1.0399999618530273,
+      "tile": [
+        62.0,
+        131.5
+      ]
+    },
+    "intended_improvement": "Retain Beer01 as reference; other props have no concrete current defect warranting another pass.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Candle01/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Three raised candles have varied heights, curved brass arms and flared base; wax, metal and flame tips read separately.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Candle01"
+  },
+  {
+    "model": "Cannon01",
+    "identity": "inclined swivel cannon on timber stand with two ammunition crates",
+    "path": "src/bin/Data/Object1/Cannon01.bmd",
+    "textures": {
+      "horse_drawn_01.jpg": [
+        "src/bin/Data/Object1/horse_drawn_01.OZJ"
+      ]
+    },
+    "treatment": "substantial remake",
+    "remaining_problem": "Front iron is extremely dark; earlier matched reverse comparison confirms charcoal gradient/collar, not missing/additive texture.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 1,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Cannon01/placements",
+    "first_placement": {
+      "position": [
+        14438.181640625,
+        11182.673828125,
+        195.0000457763672
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -720.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        144.38181640625,
+        111.82673828125
+      ]
+    },
+    "intended_improvement": "Retain. Optional later muzzle-face wear variation only; current plain pale ring is not a demonstrated blocker. Preserve shared wood atlas unless full 12-consumer review.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Cannon01/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Open stacked shot crates, spherical ammunition, bored muzzle and braced timber gun support form readable siege equipment.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Cannon01"
+  },
+  {
+    "model": "Cannon02",
+    "identity": "inclined swivel cannon on timber stand with one ammunition crate",
+    "path": "src/bin/Data/Object1/Cannon02.bmd",
+    "textures": {
+      "horse_drawn_01.jpg": [
+        "src/bin/Data/Object1/horse_drawn_01.OZJ"
+      ]
+    },
+    "treatment": "substantial remake",
+    "remaining_problem": "Same very dark iron front limitation; reverse previously inspected supports intentional iron shading.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 2,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Cannon02/placements",
+    "first_placement": {
+      "position": [
+        850.0,
+        15050.0,
+        140.24411010742188
+      ],
+      "rotation": [
+        -5.0,
+        0.0,
+        2310.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        8.5,
+        150.5
+      ]
+    },
+    "intended_improvement": "Retain. Optional later muzzle-face wear variation only; current plain pale ring is not a demonstrated blocker. Preserve shared wood atlas unless full 12-consumer review.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Cannon02/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Single shot box beside bored barrel makes distinct compact cannon assembly; timber stand and iron parts remain differentiated.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Cannon02"
+  },
+  {
+    "model": "Cannon03",
+    "identity": "inclined swivel cannon on timber stand without ammunition crates",
+    "path": "src/bin/Data/Object1/Cannon03.bmd",
+    "textures": {
+      "horse_drawn_01.jpg": [
+        "src/bin/Data/Object1/horse_drawn_01.OZJ"
+      ]
+    },
+    "treatment": "substantial remake",
+    "remaining_problem": "Dark barrel sides depend on lighting; no artificial brightening without material scope.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 3,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Cannon03/placements",
+    "first_placement": {
+      "position": [
+        12700.0,
+        14650.0,
+        165.00003051757812
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        900.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        127.0,
+        146.5
+      ]
+    },
+    "intended_improvement": "Retain. Optional later muzzle-face wear variation only; current plain pale ring is not a demonstrated blocker. Preserve shared wood atlas unless full 12-consumer review.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Cannon03/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Standalone bored barrel on trunnion posts has clean circular muzzle and simple stable timber base.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Cannon03"
+  },
+  {
+    "model": "Carriage01",
+    "identity": "two-wheeled passenger cart",
+    "path": "src/bin/Data/Object1/Carriage01.bmd",
+    "textures": {
+      "horse_drawn_01.jpg": [
+        "src/bin/Data/Object1/horse_drawn_01.OZJ"
+      ],
+      "horse_drawn_02.tga": [
+        "src/bin/Data/Object1/horse_drawn_02.OZT"
+      ],
+      "horse_drawn_03.jpg": [
+        "src/bin/Data/Object1/horse_drawn_03.OZJ"
+      ]
+    },
+    "treatment": "substantial remake",
+    "remaining_problem": "Small glowing lantern-like patch requires existing engine/effect context; do not infer missing diffuse material from black shell.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 4,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Carriage01/placements",
+    "first_placement": {
+      "position": [
+        7399.314453125,
+        10326.396484375,
+        165.00001525878906
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -330.0
+      ],
+      "scale": 1.1999998092651367,
+      "tile": [
+        73.99314453125,
+        103.26396484375
+      ]
+    },
+    "intended_improvement": "Retain; Carriage01 black card is documented additive preview limitation.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Carriage01/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Seat-backed wooden cart has spoked wheel, hub, front shafts and readable planked bed.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Carriage01"
+  },
+  {
+    "model": "Carriage02",
+    "identity": "empty two-wheeled timber cart",
+    "path": "src/bin/Data/Object1/Carriage02.bmd",
+    "textures": {
+      "horse_drawn_01.jpg": [
+        "src/bin/Data/Object1/horse_drawn_01.OZJ"
+      ]
+    },
+    "treatment": "substantial remake",
+    "remaining_problem": "Wheel facets appropriate at size; original contacts retained.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 7,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Carriage02/placements",
+    "first_placement": {
+      "position": [
+        7200.0,
+        10000.0,
+        165.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -720.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        72.0,
+        100.0
+      ]
+    },
+    "intended_improvement": "Retain; Carriage01 black card is documented additive preview limitation.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Carriage02/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Empty open wagon has high side rails, planked bed, spoked wheels and twin shafts with clear mechanical silhouette.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Carriage02"
+  },
+  {
+    "model": "Carriage03",
+    "identity": "timber cart with adjacent barrels",
+    "path": "src/bin/Data/Object1/Carriage03.bmd",
+    "textures": {
+      "tub.jpg": [
+        "src/bin/Data/Object1/tub.OZJ"
+      ],
+      "horse_drawn_01.jpg": [
+        "src/bin/Data/Object1/horse_drawn_01.OZJ"
+      ]
+    },
+    "treatment": "substantial remake",
+    "remaining_problem": "Combined pieces retain fixed placements; no need duplicate new barrel design.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 0,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Carriage03/placements",
+    "first_placement": null,
+    "intended_improvement": "Retain; Carriage01 black card is documented additive preview limitation.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Carriage03/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Same cart accompanied by two distinct coopered barrels gives clear loaded-storage arrangement.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Carriage03"
+  },
+  {
+    "model": "Carriage04",
+    "identity": "timber cart loaded with hay bundles",
+    "path": "src/bin/Data/Object1/Carriage04.bmd",
+    "textures": {
+      "horse_drawn_01.jpg": [
+        "src/bin/Data/Object1/horse_drawn_01.OZJ"
+      ],
+      "grass_01.tga": [
+        "src/bin/Data/Object1/grass_01.OZT"
+      ]
+    },
+    "treatment": "substantial remake",
+    "remaining_problem": "Straw intentionally stylized broad fibers, coherent with standalone bundles.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 2,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Carriage04/placements",
+    "first_placement": {
+      "position": [
+        12800.0,
+        13900.0,
+        164.99998474121094
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        990.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        128.0,
+        139.0
+      ]
+    },
+    "intended_improvement": "Retain; Carriage01 black card is documented additive preview limitation.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Carriage04/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Cart loaded with stacked tied straw has clear load/body contrast, round bundle ends and visible wheel/shafts.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Carriage04"
+  },
+  {
+    "model": "Curtain01",
+    "identity": "blue heraldic banner on pole",
+    "path": "src/bin/Data/Object1/Curtain01.bmd",
+    "textures": {
+      "badge_01.jpg": [
+        "src/bin/Data/Object1/badge_01.OZJ"
+      ],
+      "badge_02.tga": [
+        "src/bin/Data/Object1/badge_02.OZT"
+      ]
+    },
+    "treatment": "texture-only treatment / essentially original geometry",
+    "remaining_problem": "Animation and fabric backface behavior retain baseline contract, outside static frame.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 6,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Curtain01/placements",
+    "first_placement": {
+      "position": [
+        11050.0,
+        7050.0,
+        165.00003051757812
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        30.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        110.5,
+        70.5
+      ]
+    },
+    "intended_improvement": "Retain; banners retain original geometry with texture treatment and original animation.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Curtain01/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Blue laurel banner drapes from crossbar with pointed metal ends and weighted pole base; fabric heraldry reads clearly.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Curtain01"
+  },
+  {
+    "model": "DoungeonGate01",
+    "identity": "open serpent-head dungeon gate with flanking fire plinths",
+    "path": "src/bin/Data/Object1/DoungeonGate01.bmd",
+    "textures": {
+      "copra_gate.jpg": [
+        "src/bin/Data/Object1/copra_gate.OZJ"
+      ]
+    },
+    "treatment": "texture-only treatment / essentially original geometry",
+    "remaining_problem": "Projected dark areas are effect/entrance cavity context; earlier effect-aware comparison retained; no need to fill mouth or remove original effects.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 1,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/DoungeonGate01/placements",
+    "first_placement": {
+      "position": [
+        12250.0,
+        23400.0,
+        165.00001525878906
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        360.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        122.5,
+        234.0
+      ]
+    },
+    "intended_improvement": "Retain provisionally; inspect existing effect approximations before final artistic gate, preserve actual effect slots and fire anchors.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/DoungeonGate01/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Monumental cobra hood, brow, fangs and deep open mouth provide strong recognizable entrance silhouette with matching stone plinths.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#DoungeonGate01"
+  },
+  {
+    "model": "Fence01",
+    "identity": "two-post rustic timber fence with bent horizontal rails",
+    "path": "src/bin/Data/Object1/Fence01.bmd",
+    "textures": {
+      "tile_wood02.jpg": [
+        "src/bin/Data/Object1/tile_wood02.OZJ"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Modular end contacts must remain; rough facets are appropriate timber.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 180,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Fence01/placements",
+    "first_placement": {
+      "position": [
+        9600.0,
+        6200.0,
+        164.99998474121094
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        810.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        96.0,
+        62.0
+      ]
+    },
+    "intended_improvement": "Retain; check adjacency only if shared materials change.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Fence01/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Two sagging timber rails connect unequal rough posts; grain follows wood and bowed rail silhouette avoids a rigid box fence.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Fence01"
+  },
+  {
+    "model": "Fence02",
+    "identity": "L-shaped ornamental curb with sloped face",
+    "path": "src/bin/Data/Object1/Fence02.bmd",
+    "textures": {
+      "joint.jpg": [
+        "src/bin/Data/Object1/joint.OZJ"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Simple mass intentionally preserves corner joins; ornament is painted.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 33,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Fence02/placements",
+    "first_placement": {
+      "position": [
+        12150.0,
+        11550.0,
+        165.00001525878906
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        2610.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        121.5,
+        115.5
+      ]
+    },
+    "intended_improvement": "Retain; check adjacency only if shared materials change.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Fence02/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Corner curb turns cleanly with matched ornamental band and sloped stone top; angle is the required module function.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Fence02"
+  },
+  {
+    "model": "Fence03",
+    "identity": "long straight ornamental curb with sloped face",
+    "path": "src/bin/Data/Object1/Fence03.bmd",
+    "textures": {
+      "joint.jpg": [
+        "src/bin/Data/Object1/joint.OZJ"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Simple extrusion is intentional for modular join continuity.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 38,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Fence03/placements",
+    "first_placement": {
+      "position": [
+        12080.3095703125,
+        8596.6142578125,
+        154.9999237060547
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        450.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        120.803095703125,
+        85.966142578125
+      ]
+    },
+    "intended_improvement": "Retain; check adjacency only if shared materials change.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Fence03/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Long low curb segment has coherent repeated carved band, tile seams and stone top suited to continuous edging.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Fence03"
+  },
+  {
+    "model": "Fence04",
+    "identity": "short straight ornamental curb with sloped face",
+    "path": "src/bin/Data/Object1/Fence04.bmd",
+    "textures": {
+      "joint.jpg": [
+        "src/bin/Data/Object1/joint.OZJ"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Do not add bevels that alter its modular mating profile.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 17,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Fence04/placements",
+    "first_placement": {
+      "position": [
+        12200.0,
+        11150.0,
+        164.99998474121094
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        450.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        122.0,
+        111.5
+      ]
+    },
+    "intended_improvement": "Retain; check adjacency only if shared materials change.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Fence04/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Short broad curb end piece preserves same ornament scale and sloped upper stone surface as family.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Fence04"
+  },
+  {
+    "model": "FireLight01",
+    "identity": "tall tripod brazier",
+    "path": "src/bin/Data/Object1/FireLight01.bmd",
+    "textures": {
+      "light.tga": [
+        "src/bin/Data/Object1/light.OZT"
+      ],
+      "light2.jpg": [
+        "src/bin/Data/Object1/light2.OZJ"
+      ],
+      "light3.jpg": [
+        "src/bin/Data/Object1/light3.OZJ"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Matching original/current effect-aware comparisons previously reviewed; static diffuse frame does not prove client particle behavior.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 26,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/FireLight01/placements",
+    "first_placement": {
+      "position": [
+        10400.0,
+        5700.0,
+        164.99998474121094
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        104.0,
+        57.0
+      ]
+    },
+    "intended_improvement": "Retain provisionally; inspect existing effect approximations before final artistic gate, preserve actual effect slots and fire anchors.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/FireLight01/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Open iron basket with visible red coals rises on a rounded forged shaft and spread feet; perforated crown remains legible.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#FireLight01"
+  },
+  {
+    "model": "FireLight02",
+    "identity": "wall-mounted fire basket on bracket",
+    "path": "src/bin/Data/Object1/FireLight02.bmd",
+    "textures": {
+      "tile_02.jpg": [
+        "src/bin/Data/Object1/tile_02.OZJ"
+      ],
+      "fire_light_01.tga": [
+        "src/bin/Data/Object1/fire_light_01.OZT"
+      ],
+      "copra_gate.jpg": [
+        "src/bin/Data/Object1/copra_gate.OZJ"
+      ]
+    },
+    "treatment": "texture-only treatment / essentially original geometry",
+    "remaining_problem": "Small height and dark iron are intentional; earlier original preview used older sharedtexture, finalcurrent hash is authoritative.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 18,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/FireLight02/placements",
+    "first_placement": {
+      "position": [
+        -120.05255126953125,
+        4095.79296875,
+        0.0
+      ],
+      "rotation": [
+        -435.0,
+        0.0,
+        1350.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        -1.2005255126953125,
+        40.9579296875
+      ]
+    },
+    "intended_improvement": "Retain provisionally; inspect existing effect approximations before final artistic gate, preserve actual effect slots and fire anchors.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/FireLight02/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Small open coal basket and wall bracket have clear mounting shape and shared forged iron character.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#FireLight02"
+  },
+  {
+    "model": "Furniture01",
+    "identity": "carved two-tier shelf with pottery and bottles",
+    "path": "src/bin/Data/Object1/Furniture01.bmd",
+    "textures": {
+      "pot.jpg": [
+        "src/bin/Data/Object1/pot.OZJ"
+      ],
+      "pot2.jpg": [
+        "src/bin/Data/Object1/pot2.OZJ"
+      ],
+      "bookshelf.jpg": [
+        "src/bin/Data/Object1/bookshelf.OZJ"
+      ],
+      "bottle.tga": [
+        "src/bin/Data/Object1/bottle.ozt"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Shelf board edges simple; contents and joinery already sufficient for small prop.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 2,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Furniture01/placements",
+    "first_placement": {
+      "position": [
+        7550.0,
+        15600.0,
+        168.57843017578125
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        90.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        75.5,
+        156.0
+      ]
+    },
+    "intended_improvement": "Retain; seating identity and interaction footprint protected.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Furniture01/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Two-shelf rack has readable mixed bottles and decorated pottery, substantial side boards and distinct open storage bays.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Furniture01"
+  },
+  {
+    "model": "Furniture02",
+    "identity": "carved two-tier bottle shelf",
+    "path": "src/bin/Data/Object1/Furniture02.bmd",
+    "textures": {
+      "bottle.tga": [
+        "src/bin/Data/Object1/bottle.ozt"
+      ],
+      "bookshelf.jpg": [
+        "src/bin/Data/Object1/bookshelf.OZJ"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Thin bottle necks intentionally simple at small scale.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 3,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Furniture02/placements",
+    "first_placement": {
+      "position": [
+        7550.0,
+        15400.0,
+        172.6375274658203
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        90.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        75.5,
+        154.0
+      ]
+    },
+    "intended_improvement": "Retain; seating identity and interaction footprint protected.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Furniture02/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Bottle-only rack has varied tall/short bottle rhythm across two shelves and open bays, differentiating it from pottery rack.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Furniture02"
+  },
+  {
+    "model": "Furniture03",
+    "identity": "rectangular four-legged tavern table",
+    "path": "src/bin/Data/Object1/Furniture03.bmd",
+    "textures": {
+      "desk_big.jpg": [
+        "src/bin/Data/Object1/desk_big.OZJ"
+      ]
+    },
+    "treatment": "substantial remake",
+    "remaining_problem": "Carving remains painted; adequate for tabletop scale.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 5,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Furniture03/placements",
+    "first_placement": {
+      "position": [
+        7950.0,
+        15300.0,
+        193.8224334716797
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        90.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        79.5,
+        153.0
+      ]
+    },
+    "intended_improvement": "Retain; low triangle count is not a defect.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Furniture03/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Rectangular carved table has beveled slab, splayed sturdy legs and visible connecting stretcher; metal feet and grain separate materials.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Furniture03"
+  },
+  {
+    "model": "Furniture04",
+    "identity": "half-round pedestal table",
+    "path": "src/bin/Data/Object1/Furniture04.bmd",
+    "textures": {
+      "desk_big.jpg": [
+        "src/bin/Data/Object1/desk_big.OZJ"
+      ]
+    },
+    "treatment": "substantial remake",
+    "remaining_problem": "Curved rim mildly faceted; no blocky square-table confusion.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 3,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Furniture04/placements",
+    "first_placement": {
+      "position": [
+        12494.646484375,
+        12235.37890625,
+        139.9999542236328
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        360.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        124.94646484375,
+        122.3537890625
+      ]
+    },
+    "intended_improvement": "Retain; low triangle count is not a defect.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Furniture04/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Semicircular carved tabletop and flared pedestal form a distinct counter/table silhouette with substantial edge thickness.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Furniture04"
+  },
+  {
+    "model": "Furniture05",
+    "identity": "modular tavern counter",
+    "path": "src/bin/Data/Object1/Furniture05.bmd",
+    "textures": {
+      "desk_big.jpg": [
+        "src/bin/Data/Object1/desk_big.OZJ"
+      ]
+    },
+    "treatment": "substantial remake",
+    "remaining_problem": "Large faces intentionally planar cabinetry, supported by clear rails and trim.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 3,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Furniture05/placements",
+    "first_placement": {
+      "position": [
+        12250.0,
+        13450.0,
+        165.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        122.5,
+        134.5
+      ]
+    },
+    "intended_improvement": "Retain; low triangle count is not a defect.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Furniture05/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Long bar counter has framed inset ornamental panels, projecting top and distinct foot blocks.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Furniture05"
+  },
+  {
+    "model": "Furniture06",
+    "identity": "carved high-back chair",
+    "path": "src/bin/Data/Object1/Furniture06.bmd",
+    "textures": {
+      "bookshelf.jpg": [
+        "src/bin/Data/Object1/bookshelf.OZJ"
+      ],
+      "chair2.tga": [
+        "src/bin/Data/Object1/chair2.OZT"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Carved back uses alpha; appropriate perforated ornament at this scale.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 18,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Furniture06/placements",
+    "first_placement": {
+      "position": [
+        7950.0,
+        15450.0,
+        195.57432556152344
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        79.5,
+        154.5
+      ]
+    },
+    "intended_improvement": "Retain; seating identity and interaction footprint protected.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Furniture06/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Chair has open carved back negative space, thick seat, lower braces and matching wood grain.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Furniture06"
+  },
+  {
+    "model": "Furniture07",
+    "identity": "round three-legged stool",
+    "path": "src/bin/Data/Object1/Furniture07.bmd",
+    "textures": {
+      "bookshelf.jpg": [
+        "src/bin/Data/Object1/bookshelf.OZJ"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Angular leg facets are deliberate rough wood, not a smoothing requirement.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 3,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Furniture07/placements",
+    "first_placement": {
+      "position": [
+        12250.0,
+        13350.0,
+        164.99998474121094
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        2490.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        122.5,
+        133.5
+      ]
+    },
+    "intended_improvement": "Retain; seating identity and interaction footprint protected.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Furniture07/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Chunky stool has thick shaped seat and splayed tapered legs; carved seat matches table family.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Furniture07"
+  },
+  {
+    "model": "Grass01",
+    "identity": "five-part low ivy/bramble leaf mat",
+    "path": "src/bin/Data/Object1/Grass01.bmd",
+    "textures": {
+      "tree_08.tga": [
+        "src/bin/Data/Object1/tree_08.OZT"
+      ]
+    },
+    "treatment": "texture-only treatment",
+    "remaining_problem": "Sparse alpha mat depends on terrain backdrop; no standalone height requirement.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 175,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Grass01/placements",
+    "first_placement": {
+      "position": [
+        598.767578125,
+        3280.599609375,
+        351.94696044921875
+      ],
+      "rotation": [
+        -305.0,
+        0.0,
+        1140.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        5.98767578125,
+        32.80599609375
+      ]
+    },
+    "intended_improvement": "Retain current BMDs; inspect alpha filtering in any later genuine client review.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Grass01/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Wide low ivy scatter has separated leaf trails and open soil spaces; it reads as ground detail instead of a raised shrub.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Grass01"
+  },
+  {
+    "model": "Grass02",
+    "identity": "five-part low ivy/bramble leaf mat variant",
+    "path": "src/bin/Data/Object1/Grass02.bmd",
+    "textures": {
+      "tree_08.tga": [
+        "src/bin/Data/Object1/tree_08.OZT"
+      ]
+    },
+    "treatment": "texture-only treatment",
+    "remaining_problem": "Same frozen alpha density limitation as Grass01; no geometry inflation justified.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 184,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Grass02/placements",
+    "first_placement": {
+      "position": [
+        626.962890625,
+        2901.291748046875,
+        357.50726318359375
+      ],
+      "rotation": [
+        -60.0,
+        0.0,
+        -150.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        6.26962890625,
+        29.01291748046875
+      ]
+    },
+    "intended_improvement": "Retain current BMDs; inspect alpha filtering in any later genuine client review.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Grass02/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Curved narrow ivy trail has separate offshoot clumps and an open center, giving a distinct groundcover footprint.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Grass02"
+  },
+  {
+    "model": "Grass03",
+    "identity": "four clumps of upright scrub",
+    "path": "src/bin/Data/Object1/Grass03.bmd",
+    "textures": {
+      "tree_01.tga": [
+        "src/bin/Data/Object1/tree_01.OZT"
+      ],
+      "tree_02.tga": [
+        "src/bin/Data/Object1/tree_02.OZT"
+      ]
+    },
+    "treatment": "texture-only treatment",
+    "remaining_problem": "Offline artistic and technical acceptance complete; new client alpha/depth/performance observation pending.",
+    "priority": 1,
+    "owner": "architecture / scrub",
+    "branch": "codex/lorencia-q02-architecture",
+    "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture",
+    "status": "accepted",
+    "baseline": "594b6db2 (scrub inputs unchanged from7b808473)",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [
+      "51679ab1",
+      "4b0ccd02"
+    ],
+    "placement_count": 119,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Grass03/placements",
+    "first_placement": {
+      "position": [
+        500.0,
+        2850.0,
+        249.5181884765625
+      ],
+      "rotation": [
+        -380.0,
+        0.0,
+        1590.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        5.0,
+        28.5
+      ]
+    },
+    "intended_improvement": "Rebuild selected silhouette curves and alpha-card arrangement using existing textures and each original bone; preserve clump footprints and overall bounds.",
+    "assessment": "production",
+    "evidence": "assets-work/World1/QualityPass02/Scrub01/Grass03/review/",
+    "artistic_gate_resolved": true
+  },
+  {
+    "model": "Grass04",
+    "identity": "four clumps of upright scrub variant",
+    "path": "src/bin/Data/Object1/Grass04.bmd",
+    "textures": {
+      "tree_01.tga": [
+        "src/bin/Data/Object1/tree_01.OZT"
+      ],
+      "tree_02.tga": [
+        "src/bin/Data/Object1/tree_02.OZT"
+      ]
+    },
+    "treatment": "texture-only treatment",
+    "remaining_problem": "Offline artistic and technical acceptance complete; new client alpha/depth/performance observation pending.",
+    "priority": 1,
+    "owner": "architecture / scrub",
+    "branch": "codex/lorencia-q02-architecture",
+    "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture",
+    "status": "accepted",
+    "baseline": "594b6db2 (scrub inputs unchanged from7b808473)",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [
+      "51679ab1",
+      "4b0ccd02"
+    ],
+    "placement_count": 119,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Grass04/placements",
+    "first_placement": {
+      "position": [
+        1486.5487060546875,
+        2751.82958984375,
+        70.20173645019531
+      ],
+      "rotation": [
+        -365.0,
+        0.0,
+        1500.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        14.865487060546876,
+        27.5182958984375
+      ]
+    },
+    "intended_improvement": "Rebuild selected silhouette curves and alpha-card arrangement using existing textures and each original bone; preserve clump footprints and overall bounds.",
+    "assessment": "production",
+    "evidence": "assets-work/World1/QualityPass02/Scrub01/Grass04/review/",
+    "artistic_gate_resolved": true
+  },
+  {
+    "model": "Grass05",
+    "identity": "four bent broad-leaf fern clusters",
+    "path": "src/bin/Data/Object1/Grass05.bmd",
+    "textures": {
+      "tree_09.tga": [
+        "src/bin/Data/Object1/tree_09.OZT"
+      ]
+    },
+    "treatment": "texture-only treatment",
+    "remaining_problem": "Offline accepted smooth leaf arcs; new client observation pending.",
+    "priority": 2,
+    "owner": "furniture / broadleaf",
+    "branch": "codex/lorencia-q02-furniture",
+    "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture",
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [
+      "0f78f88d",
+      "072f77f6"
+    ],
+    "placement_count": 317,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Grass05/placements",
+    "first_placement": {
+      "position": [
+        1443.086669921875,
+        769.7476196289062,
+        163.2845458984375
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        14.43086669921875,
+        7.697476196289062
+      ]
+    },
+    "intended_improvement": "Replace abrupt creases with deliberate leaf arcs and tapered tips under same bounds/rig/UV material contract; compare reduced scale.",
+    "assessment": "production",
+    "evidence": "assets-work/World1/QualityPass02/Broadleaf01/Grass05/review/",
+    "artistic_gate_resolved": true
+  },
+  {
+    "model": "Grass06",
+    "identity": "four bent broad-leaf fern clusters variant",
+    "path": "src/bin/Data/Object1/Grass06.bmd",
+    "textures": {
+      "tree_09.tga": [
+        "src/bin/Data/Object1/tree_09.OZT"
+      ]
+    },
+    "treatment": "texture-only treatment",
+    "remaining_problem": "Offline accepted smooth leaf arcs; new client observation pending.",
+    "priority": 2,
+    "owner": "furniture / broadleaf",
+    "branch": "codex/lorencia-q02-furniture",
+    "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture",
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [
+      "0f78f88d",
+      "072f77f6"
+    ],
+    "placement_count": 82,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Grass06/placements",
+    "first_placement": {
+      "position": [
+        1250.0,
+        3650.0,
+        178.32284545898438
+      ],
+      "rotation": [
+        -340.0,
+        0.0,
+        2190.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        12.5,
+        36.5
+      ]
+    },
+    "intended_improvement": "Replace abrupt creases with deliberate leaf arcs and tapered tips under same bounds/rig/UV material contract; compare reduced scale.",
+    "assessment": "production",
+    "evidence": "assets-work/World1/QualityPass02/Broadleaf01/Grass06/review/",
+    "artistic_gate_resolved": true
+  },
+  {
+    "model": "Grass07",
+    "identity": "five red-capped mushrooms",
+    "path": "src/bin/Data/Object1/Grass07.bmd",
+    "textures": {
+      "mushroom.jpg": [
+        "src/bin/Data/Object1/mushroom.OZJ"
+      ]
+    },
+    "treatment": "substantial remake",
+    "remaining_problem": "Caps retain mild faceting; curved profile and cap/stem material contrast already read.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 35,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Grass07/placements",
+    "first_placement": {
+      "position": [
+        1050.0,
+        23250.0,
+        165.00003051757812
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        840.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        10.5,
+        232.5
+      ]
+    },
+    "intended_improvement": "Retain.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Grass07/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Seven varied rust-brown mushroom caps and pale stems form two loose clusters with distinct small accents.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Grass07"
+  },
+  {
+    "model": "Grass08",
+    "identity": "three red-capped mushrooms",
+    "path": "src/bin/Data/Object1/Grass08.bmd",
+    "textures": {
+      "mushroom.jpg": [
+        "src/bin/Data/Object1/mushroom.OZJ"
+      ]
+    },
+    "treatment": "substantial remake",
+    "remaining_problem": "Sparse arrangement is intentional and distinct from Grass07 cluster.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 7,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Grass08/placements",
+    "first_placement": {
+      "position": [
+        1150.0,
+        23300.0,
+        165.00001525878906
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        840.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        11.5,
+        233.0
+      ]
+    },
+    "intended_improvement": "Retain.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Grass08/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Three mushrooms form a clear large/small hierarchy; domed caps have readable rim and pale stems.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Grass08"
+  },
+  {
+    "model": "Hanging01",
+    "identity": "timber gallows with stair platform and animated noose",
+    "path": "src/bin/Data/Object1/Hanging01.bmd",
+    "textures": {
+      "horse_drawn_01.jpg": [
+        "src/bin/Data/Object1/horse_drawn_01.OZJ"
+      ]
+    },
+    "treatment": "substantial remake",
+    "remaining_problem": "Rope dark and thin in diffuse image; baseline animated rope contract retained.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 1,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Hanging01/placements",
+    "first_placement": {
+      "position": [
+        15206.5087890625,
+        11303.7880859375,
+        70.00003051757812
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -360.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        152.065087890625,
+        113.037880859375
+      ]
+    },
+    "intended_improvement": "Retain; dark cannon iron is still readable by muzzle outline, no basis to repaint all shared wood.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Hanging01/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Gallows platform has stepped access, braced upright, projecting crossbeam and suspended rope, giving clear functional structure.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Hanging01"
+  },
+  {
+    "model": "House01",
+    "identity": "low flat-roof masonry house with roof battens and chimney",
+    "path": "src/bin/Data/Object1/House01.bmd",
+    "textures": {
+      "tile_ston05.jpg": [
+        "src/bin/Data/Object1/tile_ston05.OZJ"
+      ],
+      "tile_ston04.jpg": [
+        "src/bin/Data/Object1/tile_ston04.OZJ"
+      ],
+      "tile_house01.jpg": [
+        "src/bin/Data/Object1/tile_house01.OZJ"
+      ],
+      "tile_ston06.jpg": [
+        "src/bin/Data/Object1/tile_ston06.OZJ"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Independently accepted structural/coursed-roof refinement; client observation pending.",
+    "priority": 2,
+    "owner": "architecture",
+    "branch": "codex/lorencia-q02-architecture",
+    "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture",
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [
+      "32a1a24b",
+      "7be0eaa3"
+    ],
+    "placement_count": 2,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/House01/placements",
+    "first_placement": {
+      "position": [
+        14300.0,
+        14700.0,
+        165.00001525878906
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        2070.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        143.0,
+        147.0
+      ]
+    },
+    "intended_improvement": "Refine cornices and awning board thickness; improve roof course profile and curvature without changing openings or effect slots. Freeze broad shared texture groups.",
+    "assessment": "production",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/House01/final-offline.png",
+    "artistic_gate_resolved": true
+  },
+  {
+    "model": "House02",
+    "identity": "iron-bound timber weapons crate with oversized blades",
+    "path": "src/bin/Data/Object1/House02.bmd",
+    "textures": {
+      "drum.jpg": [
+        "src/bin/Data/Object1/drum.OZJ"
+      ],
+      "steel.jpg": [
+        "src/bin/Data/Object1/steel.OZJ"
+      ]
+    },
+    "treatment": "substantial remake",
+    "remaining_problem": "Oversized weapon silhouettes are intentional; no requirement to change into building despite name.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 7,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/House02/placements",
+    "first_placement": {
+      "position": [
+        700.0,
+        14850.0,
+        161.6428680419922
+      ],
+      "rotation": [
+        -5.0,
+        0.0,
+        2190.0
+      ],
+      "scale": 0.820000171661377,
+      "tile": [
+        7.0,
+        148.5
+      ]
+    },
+    "intended_improvement": "Retain Beer01 as reference; other props have no concrete current defect warranting another pass.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/House02/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Open riveted timber weapons crate has protruding varied spear/axe blades and bright iron faces contrasting wood.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#House02"
+  },
+  {
+    "model": "House03",
+    "identity": "flat-roof masonry shop with timber awning and chimneys",
+    "path": "src/bin/Data/Object1/House03.bmd",
+    "textures": {
+      "tile_ston05.jpg": [
+        "src/bin/Data/Object1/tile_ston05.OZJ"
+      ],
+      "tile_ston04.jpg": [
+        "src/bin/Data/Object1/tile_ston04.OZJ"
+      ],
+      "tile_ston06.jpg": [
+        "src/bin/Data/Object1/tile_ston06.OZJ"
+      ],
+      "tile_ston07.tga": [
+        "src/bin/Data/Object1/tile_ston07.OZT"
+      ],
+      "light_02.jpg": [
+        "src/bin/Data/Object1/light_02.OZJ"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Independently accepted structural/coursed-roof refinement; client observation pending.",
+    "priority": 2,
+    "owner": "architecture",
+    "branch": "codex/lorencia-q02-architecture",
+    "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture",
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [
+      "32a1a24b",
+      "7be0eaa3"
+    ],
+    "placement_count": 1,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/House03/placements",
+    "first_placement": {
+      "position": [
+        11750.0,
+        14500.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        2070.0
+      ],
+      "scale": 0.8600001335144043,
+      "tile": [
+        117.5,
+        145.0
+      ]
+    },
+    "intended_improvement": "Refine cornices and awning board thickness; improve roof course profile and curvature without changing openings or effect slots. Freeze broad shared texture groups.",
+    "assessment": "production",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/House03/final-offline.png",
+    "artistic_gate_resolved": true
+  },
+  {
+    "model": "House04",
+    "identity": "round masonry house with conical shingle roof",
+    "path": "src/bin/Data/Object1/House04.bmd",
+    "textures": {
+      "tile_02.jpg": [
+        "src/bin/Data/Object1/tile_02.OZJ"
+      ],
+      "tile_wood01.jpg": [
+        "src/bin/Data/Object1/tile_wood01.OZJ"
+      ],
+      "tile_house01.jpg": [
+        "src/bin/Data/Object1/tile_house01.OZJ"
+      ],
+      "tile_ston04.jpg": [
+        "src/bin/Data/Object1/tile_ston04.OZJ"
+      ],
+      "tile_wood03.jpg": [
+        "src/bin/Data/Object1/tile_wood03.OZJ"
+      ],
+      "tile_wood02.jpg": [
+        "src/bin/Data/Object1/tile_wood02.OZJ"
+      ],
+      "tile_windows01.jpg": [
+        "src/bin/Data/Object1/tile_windows01.OZJ"
+      ],
+      "bridge_01.jpg": [
+        "src/bin/Data/Object1/bridge_01.OZJ"
+      ],
+      "tile_space01.jpg": [
+        "src/bin/Data/Object1/tile_space01.OZJ"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Independently accepted structural/coursed-roof refinement; client observation pending.",
+    "priority": 2,
+    "owner": "architecture",
+    "branch": "codex/lorencia-q02-architecture",
+    "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture",
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [
+      "32a1a24b",
+      "7be0eaa3"
+    ],
+    "placement_count": 1,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/House04/placements",
+    "first_placement": {
+      "position": [
+        11550.0,
+        11300.0,
+        165.00003051757812
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        2160.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        115.5,
+        113.0
+      ]
+    },
+    "intended_improvement": "Refine cornices and awning board thickness; improve roof course profile and curvature without changing openings or effect slots. Freeze broad shared texture groups.",
+    "assessment": "production",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/House04/final-offline.png",
+    "artistic_gate_resolved": true
+  },
+  {
+    "model": "House05",
+    "identity": "Animated watermill with scrolling water",
+    "path": "src/bin/Data/Object1/House05.bmd",
+    "textures": {
+      "tile_wood02.jpg": [
+        "src/bin/Data/Object1/tile_wood02.OZJ"
+      ],
+      "tile_wood01.jpg": [
+        "src/bin/Data/Object1/tile_wood01.OZJ"
+      ],
+      "ston02.jpg": [
+        "src/bin/Data/Object1/ston02.OZJ"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Static water strip is an effect preview limitation; material/action/scroll behavior remains baseline. Roof intentionally simple utilitarian shed.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 1,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/House05/placements",
+    "first_placement": {
+      "position": [
+        2150.0,
+        13000.0,
+        189.49815368652344
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        2850.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        21.5,
+        130.0
+      ]
+    },
+    "intended_improvement": "Retain; preserve moving wheel/water mesh and canopy animation.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/House05/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Watermill silhouette combines shed, large side wheel and long elevated water chute, with visible support posts.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#House05"
+  },
+  {
+    "model": "HouseEtc01",
+    "identity": "carved beast-face masonry block",
+    "path": "src/bin/Data/Object1/HouseEtc01.bmd",
+    "textures": {
+      "c_wall04.jpg": [
+        "src/bin/Data/Object1/c_wall04.OZJ"
+      ],
+      "c_wall06.jpg": [
+        "src/bin/Data/Object1/c_wall06.OZJ"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Essentially original coarse relief geometry with prior painting treatment; isolated clay looks simplified and strong oblique close-up exposes reliance on painted depth. Retention applies to ordinary placed game-camera use, not a hero close-up sculpture standard.",
+    "priority": 1,
+    "owner": "furniture",
+    "branch": "codex/lorencia-q02-furniture",
+    "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture",
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 52,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/HouseEtc01/placements",
+    "first_placement": {
+      "position": [
+        2259.046142578125,
+        3947.319091796875,
+        129.3221893310547
+      ],
+      "rotation": [
+        20.0,
+        0.0,
+        3870.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        22.59046142578125,
+        39.47319091796875
+      ]
+    },
+    "intended_improvement": "Revisit facade design/relief without altering real modular connection edges; reassess complete shared painting group if needed.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/HouseEtc01/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "The hooked projecting nose, paired dark eye sockets and flared cheek painting form a clearly recognizable dragon emblem. The rectangular stone block is a deliberate stackable architectural volume; actual stacked30/31 view reads as two repeated heraldic panels with continuous stone courses. Integrated awning surroundings share its restrained warm stone and carved trim. It does not require a free-standing sculpture silhouette to serve this role.",
+    "acceptance_evidence": "assets-work/Environment/coordination/masonry-retention-review.json#HouseEtc01"
+  },
+  {
+    "model": "HouseEtc02",
+    "identity": "small roofed masonry annex",
+    "path": "src/bin/Data/Object1/HouseEtc02.bmd",
+    "textures": {
+      "tile_wood02.jpg": [
+        "src/bin/Data/Object1/tile_wood02.OZJ"
+      ],
+      "tile_ston04.jpg": [
+        "src/bin/Data/Object1/tile_ston04.OZJ"
+      ],
+      "c_wall04.jpg": [
+        "src/bin/Data/Object1/c_wall04.OZJ"
+      ],
+      "tile_wood03.jpg": [
+        "src/bin/Data/Object1/tile_wood03.OZJ"
+      ],
+      "tile_house01.jpg": [
+        "src/bin/Data/Object1/tile_house01.OZJ"
+      ],
+      "tile_ston01.jpg": [
+        "src/bin/Data/Object1/tile_ston01.OZJ"
+      ],
+      "horse_drawn_01.jpg": [
+        "src/bin/Data/Object1/horse_drawn_01.OZJ"
+      ],
+      "tile_ston06.jpg": [
+        "src/bin/Data/Object1/tile_ston06.OZJ"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Complete distinct small guardhouse silhouette, sloped shingle eaves, doorway/window identity and projecting rear timber platform remain legible. Shared painted roof/stone palette exactly matches accepted architecture. New roof laps on separate modules do not create material mismatch; no clear new defect requiring gratuitous geometry change.",
+    "priority": 2,
+    "owner": "coordinator / independent reviewer",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 1,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/HouseEtc02/placements",
+    "first_placement": {
+      "position": [
+        14200.0,
+        11000.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1800.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        142.0,
+        110.0
+      ]
+    },
+    "intended_improvement": "Compare actual assemblies after first batches and propagate appropriate geometry treatment; preserve effect cards and gate/opening geometry.",
+    "assessment": "retain defensible",
+    "evidence": "assets-work/Environment/coordination/companion-review.json",
+    "artistic_gate_resolved": true
+  },
+  {
+    "model": "HouseEtc03",
+    "identity": "ornate double iron grille gate",
+    "path": "src/bin/Data/Object1/HouseEtc03.bmd",
+    "textures": {
+      "steel_barred_a.tga": [
+        "src/bin/Data/Object1/steel_barred_a.OZT"
+      ],
+      "steel_barred_door.tga": [
+        "src/bin/Data/Object1/steel_barred_door.OZT"
+      ]
+    },
+    "treatment": "texture-only treatment / essentially original geometry",
+    "remaining_problem": "Black iron is diffuse material; avoid treating it as missing texture.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 8,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/HouseEtc03/placements",
+    "first_placement": {
+      "position": [
+        2800.0,
+        7700.0,
+        171.1863555908203
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        2850.0
+      ],
+      "scale": 0.8600001335144043,
+      "tile": [
+        28.0,
+        77.0
+      ]
+    },
+    "intended_improvement": "Retain; alpha/material cards are intentional. HouseEtc03 is essentially original geometry with texture treatment.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/HouseEtc03/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Deep iron cage/grille has repeated bars, arched decorative entry and clear open interior volume.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#HouseEtc03"
+  },
+  {
+    "model": "HouseWall01",
+    "identity": "Straight modular masonry wall",
+    "path": "src/bin/Data/Object1/HouseWall01.bmd",
+    "textures": {
+      "tile_wood01.jpg": [
+        "src/bin/Data/Object1/tile_wood01.OZJ"
+      ],
+      "tile_wood02.jpg": [
+        "src/bin/Data/Object1/tile_wood02.OZJ"
+      ],
+      "tile_ston04.jpg": [
+        "src/bin/Data/Object1/tile_ston04.OZJ"
+      ]
+    },
+    "treatment": "finished to current quality standard",
+    "remaining_problem": "No unresolved offline defect in independently accepted export. Integrated client review pending.",
+    "priority": 1,
+    "owner": "architecture",
+    "branch": "codex/lorencia-q02-architecture",
+    "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture",
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [
+      "594b6db2",
+      "9abdf7e8"
+    ],
+    "placement_count": 3,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/HouseWall01/placements",
+    "first_placement": {
+      "position": [
+        12050.0,
+        13400.0,
+        165.00001525878906
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        630.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        120.5,
+        134.0
+      ]
+    },
+    "intended_improvement": "Profile beam edges and shallow stepped eaves; preserve contacts, bounds and HeroTile roof fade. Active architecture owner.",
+    "assessment": "production",
+    "evidence": "../../World1/QualityPass02/Architecture01/HouseWall01/review/comparison.jpg",
+    "artistic_gate_resolved": true
+  },
+  {
+    "model": "HouseWall02",
+    "identity": "Decorative window wall with raised shutter",
+    "path": "src/bin/Data/Object1/HouseWall02.bmd",
+    "textures": {
+      "tile_ston06.jpg": [
+        "src/bin/Data/Object1/tile_ston06.OZJ"
+      ],
+      "tile_wood01.jpg": [
+        "src/bin/Data/Object1/tile_wood01.OZJ"
+      ],
+      "tile_wood02.jpg": [
+        "src/bin/Data/Object1/tile_wood02.OZJ"
+      ],
+      "tile_ston04.jpg": [
+        "src/bin/Data/Object1/tile_ston04.OZJ"
+      ],
+      "light_02.jpg": [
+        "src/bin/Data/Object1/light_02.OZJ"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Special crest/light-panel variant has strong center ornament and coherent ashlar/wood foundation. Added plain-wall framing is not necessary around this occupied motif. Black projected cards are indexed additive light, as preserved effect comparison demonstrates; not dark geometry defect.",
+    "priority": 2,
+    "owner": "coordinator / independent reviewer",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 15,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/HouseWall02/placements",
+    "first_placement": {
+      "position": [
+        7448.77734375,
+        15401.4453125,
+        169.60855102539062
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -450.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        74.4877734375,
+        154.014453125
+      ]
+    },
+    "intended_improvement": "Compare actual assemblies after first batches and propagate appropriate geometry treatment; preserve effect cards and gate/opening geometry.",
+    "assessment": "retain defensible",
+    "evidence": "assets-work/Environment/coordination/companion-review.json",
+    "artistic_gate_resolved": true
+  },
+  {
+    "model": "HouseWall03",
+    "identity": "Sparse timber lintel and threshold pair",
+    "path": "src/bin/Data/Object1/HouseWall03.bmd",
+    "textures": {
+      "tile_wood02.jpg": [
+        "src/bin/Data/Object1/tile_wood02.OZJ"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Intentional two-beam opening module. Timber grain, beam thickness and matching end profiles supply required visual role; filling or ornamenting opening to imitate closed wall bays would alter function. Accepted bay framing does not require remodeling these beams.",
+    "priority": 2,
+    "owner": "coordinator / independent reviewer",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 4,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/HouseWall03/placements",
+    "first_placement": {
+      "position": [
+        7801.833984375,
+        14899.0302734375,
+        172.8980712890625
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        180.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        78.01833984375,
+        148.990302734375
+      ]
+    },
+    "intended_improvement": "Compare actual assemblies after first batches and propagate appropriate geometry treatment; preserve effect cards and gate/opening geometry.",
+    "assessment": "retain defensible",
+    "evidence": "assets-work/Environment/coordination/companion-review.json",
+    "artistic_gate_resolved": true
+  },
+  {
+    "model": "HouseWall04",
+    "identity": "L-corner masonry wall",
+    "path": "src/bin/Data/Object1/HouseWall04.bmd",
+    "textures": {
+      "tile_wood01.jpg": [
+        "src/bin/Data/Object1/tile_wood01.OZJ"
+      ],
+      "tile_wood02.jpg": [
+        "src/bin/Data/Object1/tile_wood02.OZJ"
+      ],
+      "tile_ston04.jpg": [
+        "src/bin/Data/Object1/tile_ston04.OZJ"
+      ]
+    },
+    "treatment": "finished to current quality standard",
+    "remaining_problem": "No unresolved offline defect in independently accepted export. Integrated client review pending.",
+    "priority": 1,
+    "owner": "architecture",
+    "branch": "codex/lorencia-q02-architecture",
+    "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture",
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [
+      "594b6db2",
+      "9abdf7e8"
+    ],
+    "placement_count": 8,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/HouseWall04/placements",
+    "first_placement": {
+      "position": [
+        7449.6279296875,
+        15748.4423828125,
+        165.00003051757812
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -450.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        74.496279296875,
+        157.484423828125
+      ]
+    },
+    "intended_improvement": "Profile beam edges and shallow stepped eaves; preserve contacts, bounds and HeroTile roof fade. Active architecture owner.",
+    "assessment": "production",
+    "evidence": "../../World1/QualityPass02/Architecture01/HouseWall04/review/comparison.jpg",
+    "artistic_gate_resolved": true
+  },
+  {
+    "model": "HouseWall05",
+    "identity": "Corner roof cap",
+    "path": "src/bin/Data/Object1/HouseWall05.bmd",
+    "textures": {
+      "tile_wood02.jpg": [
+        "src/bin/Data/Object1/tile_wood02.OZJ"
+      ],
+      "tile_wood03.jpg": [
+        "src/bin/Data/Object1/tile_wood03.OZJ"
+      ]
+    },
+    "treatment": "finished to current quality standard",
+    "remaining_problem": "No unresolved offline defect in independently accepted export. Integrated client review pending.",
+    "priority": 1,
+    "owner": "architecture",
+    "branch": "codex/lorencia-q02-architecture",
+    "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture",
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [
+      "594b6db2",
+      "9abdf7e8"
+    ],
+    "placement_count": 8,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/HouseWall05/placements",
+    "first_placement": {
+      "position": [
+        7612.87548828125,
+        15495.802734375,
+        482.2471923828125
+      ],
+      "rotation": [
+        360.0,
+        0.0,
+        2430.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        76.1287548828125,
+        154.95802734375
+      ]
+    },
+    "intended_improvement": "Profile beam edges and shallow stepped eaves; preserve contacts, bounds and HeroTile roof fade. Active architecture owner.",
+    "assessment": "production",
+    "evidence": "../../World1/QualityPass02/Architecture01/HouseWall05/review/comparison.jpg",
+    "artistic_gate_resolved": true
+  },
+  {
+    "model": "HouseWall06",
+    "identity": "Straight roof cap",
+    "path": "src/bin/Data/Object1/HouseWall06.bmd",
+    "textures": {
+      "tile_wood02.jpg": [
+        "src/bin/Data/Object1/tile_wood02.OZJ"
+      ],
+      "tile_wood03.jpg": [
+        "src/bin/Data/Object1/tile_wood03.OZJ"
+      ]
+    },
+    "treatment": "finished to current quality standard",
+    "remaining_problem": "No unresolved offline defect in independently accepted export. Integrated client review pending.",
+    "priority": 1,
+    "owner": "architecture",
+    "branch": "codex/lorencia-q02-architecture",
+    "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture",
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [
+      "594b6db2",
+      "9abdf7e8"
+    ],
+    "placement_count": 4,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/HouseWall06/placements",
+    "first_placement": {
+      "position": [
+        12714.40234375,
+        12719.556640625,
+        475.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        90.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        127.1440234375,
+        127.19556640625
+      ]
+    },
+    "intended_improvement": "Profile beam edges and shallow stepped eaves; preserve contacts, bounds and HeroTile roof fade. Active architecture owner.",
+    "assessment": "production",
+    "evidence": "../../World1/QualityPass02/Architecture01/HouseWall06/review/comparison.jpg",
+    "artistic_gate_resolved": true
+  },
+  {
+    "model": "Ship01",
+    "identity": "small wooden sailing boat with mast",
+    "path": "src/bin/Data/Object1/Ship01.bmd",
+    "textures": {
+      "TileGround03.jpg": [
+        "src/bin/Data/Object1/TileGround03.OZJ"
+      ],
+      "ship01.jpg": [
+        "src/bin/Data/Object1/ship01.OZJ"
+      ],
+      "ship03.jpg": [
+        "src/bin/Data/Object1/ship03.OZJ"
+      ],
+      "ship04.jpg": [
+        "src/bin/Data/Object1/ship04.OZJ"
+      ],
+      "ship07.jpg": [
+        "src/bin/Data/Object1/ship07.OZJ"
+      ],
+      "ship05.tga": [
+        "src/bin/Data/Object1/ship05.OZT"
+      ],
+      "ship07.tga": [
+        "src/bin/Data/Object1/ship07.OZT"
+      ],
+      "ship06.tga": [
+        "src/bin/Data/Object1/ship06.OZT"
+      ],
+      "ship06.jpg": [
+        "src/bin/Data/Object1/ship06.OZJ"
+      ],
+      "ship05.jpg": [
+        "src/bin/Data/Object1/ship05.OZJ"
+      ]
+    },
+    "treatment": "texture-only treatment",
+    "remaining_problem": "Tiny individual preview and thin rigging limit close assessment; prior retained boat material work and original rig preserved, no claim of new geometry.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 3,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Ship01/placements",
+    "first_placement": {
+      "position": [
+        2072.898193359375,
+        360.36602783203125,
+        2.4999752044677734
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        120.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        20.72898193359375,
+        3.6036602783203127
+      ]
+    },
+    "intended_improvement": "Retain; inspect closer placement scale if later assembly exposes a defect.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Ship01/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Small vessel has dragon prow, raised stern cabin, mast, rigging and furled sail forming a distinct curved hull silhouette.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Ship01"
+  },
+  {
+    "model": "Sign01",
+    "identity": "hanging notice board with curved iron bracket",
+    "path": "src/bin/Data/Object1/Sign01.bmd",
+    "textures": {
+      "notice.jpg": [
+        "src/bin/Data/Object1/notice.OZJ"
+      ],
+      "signboard.tga": [
+        "src/bin/Data/Object1/signboard.OZT"
+      ],
+      "doorknob.tga": [
+        "src/bin/Data/Object1/doorknob.OZT"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Small bracket ornament has bright edge/alpha artifacts close up; board role and silhouette remain clear. Scene-context check retained.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 3,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Sign01/placements",
+    "first_placement": {
+      "position": [
+        11647.5810546875,
+        11376.6376953125,
+        315.0000305175781
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1260.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        116.475810546875,
+        113.766376953125
+      ]
+    },
+    "intended_improvement": "Retain; banners retain original geometry with texture treatment and original animation.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Sign01/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Hanging notice board has thick wood frame, corner fasteners and ornate forged bracket with diagonal support.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Sign01"
+  },
+  {
+    "model": "Sign02",
+    "identity": "two-post standing notice board",
+    "path": "src/bin/Data/Object1/Sign02.bmd",
+    "textures": {
+      "notice.jpg": [
+        "src/bin/Data/Object1/notice.OZJ"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Glyph text is decorative; no semantic readability requirement.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 5,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Sign02/placements",
+    "first_placement": {
+      "position": [
+        6777.4296875,
+        14055.259765625,
+        168.61087036132812
+      ],
+      "rotation": [
+        355.0,
+        0.0,
+        2520.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        67.774296875,
+        140.55259765625
+      ]
+    },
+    "intended_improvement": "Retain; banners retain original geometry with texture treatment and original animation.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Sign02/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Freestanding notice board has two substantial timber posts, framed parchment face and corner fasteners.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Sign02"
+  },
+  {
+    "model": "Stair01",
+    "identity": "Vertical nine-rung ladder",
+    "path": "src/bin/Data/Object1/Stair01.bmd",
+    "textures": {
+      "tile_wood01.jpg": [
+        "src/bin/Data/Object1/tile_wood01.OZJ"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Thin structural prop deliberately simple; endpoints/lean contacts retained.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 3,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Stair01/placements",
+    "first_placement": {
+      "position": [
+        12300.0,
+        11950.0,
+        165.00001525878906
+      ],
+      "rotation": [
+        -20.0,
+        0.0,
+        2160.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        123.0,
+        119.5
+      ]
+    },
+    "intended_improvement": "Retain; round log edge refinement optional after higher-impact work, not a completion blocker from this view.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Stair01/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Straight ladder has rounded rails, evenly spaced rungs and restrained metal collar detail.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Stair01"
+  },
+  {
+    "model": "SteelDoor01",
+    "identity": "ornate single iron gate leaf",
+    "path": "src/bin/Data/Object1/SteelDoor01.bmd",
+    "textures": {
+      "steel_barred_b.jpg": [
+        "src/bin/Data/Object1/steel_barred_b.OZJ"
+      ],
+      "steel_barred_door.tga": [
+        "src/bin/Data/Object1/steel_barred_door.OZT"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Thin alpha ornaments close up; opening role legible.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 8,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/SteelDoor01/placements",
+    "first_placement": {
+      "position": [
+        12200.0,
+        11200.0,
+        165.0000457763672
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1260.0
+      ],
+      "scale": 0.6800003051757812,
+      "tile": [
+        122.0,
+        112.0
+      ]
+    },
+    "intended_improvement": "Retain; alpha/material cards are intentional. HouseEtc03 is essentially original geometry with texture treatment.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/SteelDoor01/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Single Gothic iron gate leaf has curved top, scrolling open ornament and spear finials distinct from plain fence.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#SteelDoor01"
+  },
+  {
+    "model": "SteelStatue01",
+    "identity": "Capped carved memorial with ochre plaque",
+    "path": "src/bin/Data/Object1/SteelStatue01.bmd",
+    "textures": {
+      "tombstone_big.jpg": [
+        "src/bin/Data/Object1/tombstone_big.OZJ"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Independently accepted niche, broad feather wings or memorial profiles; frozen textures/contact anchors. Client pending.",
+    "priority": 2,
+    "owner": "architecture",
+    "branch": "codex/lorencia-q02-architecture",
+    "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture",
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [
+      "10d1e765",
+      "cc43c901"
+    ],
+    "placement_count": 4,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/SteelStatue01/placements",
+    "first_placement": {
+      "position": [
+        13700.0,
+        20800.0,
+        164.99998474121094
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        137.0,
+        208.0
+      ]
+    },
+    "intended_improvement": "Shaped caps and restrained bevels; purposeful angel wing/body silhouette refinement. Freeze shared basin/plinth textures unless full consumers reviewed.",
+    "assessment": "production",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/SteelStatue01/final-offline.png",
+    "artistic_gate_resolved": true,
+    "acceptance_evidence": "assets-work/World1/QualityPass02/Statues02/independent-review.json"
+  },
+  {
+    "model": "SteelWall01",
+    "identity": "narrow iron fence section",
+    "path": "src/bin/Data/Object1/SteelWall01.bmd",
+    "textures": {
+      "steel_barred_b.jpg": [
+        "src/bin/Data/Object1/steel_barred_b.OZJ"
+      ],
+      "steel_barred_a.tga": [
+        "src/bin/Data/Object1/steel_barred_a.OZT"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Dark narrow iron needs scene contrast; modular spacing protected.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 2,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/SteelWall01/placements",
+    "first_placement": {
+      "position": [
+        12850.0,
+        20800.0,
+        164.99998474121094
+      ],
+      "rotation": [
+        -5.0,
+        0.0,
+        -900.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        128.5,
+        208.0
+      ]
+    },
+    "intended_improvement": "Retain; alpha/material cards are intentional. HouseEtc03 is essentially original geometry with texture treatment.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/SteelWall01/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Narrow corner iron module has pointed uprights and diagonal braces; negative spaces and rod bindings remain clear.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#SteelWall01"
+  },
+  {
+    "model": "SteelWall02",
+    "identity": "long iron fence section",
+    "path": "src/bin/Data/Object1/SteelWall02.bmd",
+    "textures": {
+      "steel_barred_b.jpg": [
+        "src/bin/Data/Object1/steel_barred_b.OZJ"
+      ],
+      "steel_barred_a.tga": [
+        "src/bin/Data/Object1/steel_barred_a.OZT"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Simple repetition intentional; no detail inflation needed.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 21,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/SteelWall02/placements",
+    "first_placement": {
+      "position": [
+        12200.0,
+        10900.0,
+        164.99998474121094
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        810.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        122.0,
+        109.0
+      ]
+    },
+    "intended_improvement": "Retain; alpha/material cards are intentional. HouseEtc03 is essentially original geometry with texture treatment.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/SteelWall02/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Long repeated spear fence has consistent bar spacing, collars and horizontal rails suitable for continuous boundary.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#SteelWall02"
+  },
+  {
+    "model": "SteelWall03",
+    "identity": "medium iron fence section",
+    "path": "src/bin/Data/Object1/SteelWall03.bmd",
+    "textures": {
+      "steel_barred_b.jpg": [
+        "src/bin/Data/Object1/steel_barred_b.OZJ"
+      ],
+      "steel_barred_a.tga": [
+        "src/bin/Data/Object1/steel_barred_a.OZT"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Mating rod endpoints and spacing protected.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 5,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/SteelWall03/placements",
+    "first_placement": {
+      "position": [
+        12200.0,
+        11150.0,
+        165.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        990.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        122.0,
+        111.5
+      ]
+    },
+    "intended_improvement": "Retain; alpha/material cards are intentional. HouseEtc03 is essentially original geometry with texture treatment.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/SteelWall03/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Short three-spike iron segment keeps same collars/rails/metal finish as long fence, with clean open gaps.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#SteelWall03"
+  },
+  {
+    "model": "Stone01",
+    "identity": "low boulder with satellite rocks and dry grass",
+    "path": "src/bin/Data/Object1/Stone01.bmd",
+    "textures": {
+      "ston01.jpg": [
+        "src/bin/Data/Object1/ston01.OZJ"
+      ],
+      "ston02.tga": [
+        "src/bin/Data/Object1/ston02.OZT"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Rock faceting is intentional; texture contrast strong but consistent family-wide.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 28,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Stone01/placements",
+    "first_placement": {
+      "position": [
+        1397.10498046875,
+        682.5578002929688,
+        44.230224609375
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -60.0
+      ],
+      "scale": 0.940000057220459,
+      "tile": [
+        13.9710498046875,
+        6.825578002929688
+      ]
+    },
+    "intended_improvement": "Retain; avoid needless smoothing of intended rock facets.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Stone01/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Low overhanging boulder with smaller rubble and dry tufts forms an irregular grounded cluster; slate fractures follow broad planes.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Stone01"
+  },
+  {
+    "model": "Stone02",
+    "identity": "upright rock slab with satellite rocks and dry grass",
+    "path": "src/bin/Data/Object1/Stone02.bmd",
+    "textures": {
+      "ston01.jpg": [
+        "src/bin/Data/Object1/ston01.OZJ"
+      ],
+      "ston02.tga": [
+        "src/bin/Data/Object1/ston02.OZT"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Angular peak suits fractured stone; close grain is stylized.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 41,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Stone02/placements",
+    "first_placement": {
+      "position": [
+        1166.2862548828125,
+        3703.503662109375,
+        92.42340087890625
+      ],
+      "rotation": [
+        -5.0,
+        0.0,
+        -240.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        11.662862548828125,
+        37.03503662109375
+      ]
+    },
+    "intended_improvement": "Retain; avoid needless smoothing of intended rock facets.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Stone02/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Tall pointed slab and low companion rock provide vertical accent with layered fractures and dry edge growth.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Stone02"
+  },
+  {
+    "model": "Stone03",
+    "identity": "large rounded boulder",
+    "path": "src/bin/Data/Object1/Stone03.bmd",
+    "textures": {
+      "ston01.jpg": [
+        "src/bin/Data/Object1/ston01.OZJ"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Simple single-rock role; no need extra surface noise.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 49,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Stone03/placements",
+    "first_placement": {
+      "position": [
+        1450.0,
+        1550.0,
+        160.7713165283203
+      ],
+      "rotation": [
+        -365.0,
+        0.0,
+        1500.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        14.5,
+        15.5
+      ]
+    },
+    "intended_improvement": "Retain; avoid needless smoothing of intended rock facets.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Stone03/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Single elongated rounded boulder has varied chipped planes and coherent gray stratum texture.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Stone03"
+  },
+  {
+    "model": "Stone04",
+    "identity": "three small scattered rocks",
+    "path": "src/bin/Data/Object1/Stone04.bmd",
+    "textures": {
+      "ston01.jpg": [
+        "src/bin/Data/Object1/ston01.OZJ"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Small stones intentionally simple.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 67,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Stone04/placements",
+    "first_placement": {
+      "position": [
+        950.0,
+        750.0,
+        79.48616027832031
+      ],
+      "rotation": [
+        -25.0,
+        0.0,
+        -30.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        9.5,
+        7.5
+      ]
+    },
+    "intended_improvement": "Retain; avoid needless smoothing of intended rock facets.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Stone04/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Three separated rocks have distinct sizes and angular profiles, providing scattered rubble footprint.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Stone04"
+  },
+  {
+    "model": "Stone05",
+    "identity": "five-piece rock cluster",
+    "path": "src/bin/Data/Object1/Stone05.bmd",
+    "textures": {
+      "ston01.jpg": [
+        "src/bin/Data/Object1/ston01.OZJ"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Rock-to-rock intersections are deliberate cluster construction.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 8,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Stone05/placements",
+    "first_placement": {
+      "position": [
+        530.647216796875,
+        3680.724853515625,
+        239.26071166992188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        570.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        5.30647216796875,
+        36.80724853515625
+      ]
+    },
+    "intended_improvement": "Retain; avoid needless smoothing of intended rock facets.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Stone05/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Low ring of uneven stones creates readable central opening and varied rim height.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Stone05"
+  },
+  {
+    "model": "StoneMuWall01",
+    "identity": "raised portcullis between carved masonry piers",
+    "path": "src/bin/Data/Object1/StoneMuWall01.bmd",
+    "textures": {
+      "c_wall04.jpg": [
+        "src/bin/Data/Object1/c_wall04.OZJ"
+      ],
+      "c_wall05.jpg": [
+        "src/bin/Data/Object1/c_wall05.OZJ"
+      ],
+      "c_wall06.jpg": [
+        "src/bin/Data/Object1/c_wall06.OZJ"
+      ],
+      "tile_02.jpg": [
+        "src/bin/Data/Object1/tile_02.OZJ"
+      ],
+      "bridge_01.jpg": [
+        "src/bin/Data/Object1/bridge_01.OZJ"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Clear iron gate silhouette, spaced bars/spikes, beast caps and stepped masonry piers already read as complete structure. Frozen painted masonry and iron palette coherent with retained wall family; no requirement to add detail to working gate or change connection profiles.",
+    "priority": 2,
+    "owner": "coordinator / independent reviewer",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 4,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/StoneMuWall01/placements",
+    "first_placement": {
+      "position": [
+        11300.0,
+        12800.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        990.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        113.0,
+        128.0
+      ]
+    },
+    "intended_improvement": "Compare actual assemblies after first batches and propagate appropriate geometry treatment; preserve effect cards and gate/opening geometry.",
+    "assessment": "retain defensible",
+    "evidence": "assets-work/Environment/coordination/companion-review.json",
+    "artistic_gate_resolved": true
+  },
+  {
+    "model": "StoneMuWall02",
+    "identity": "thin carved masonry pier",
+    "path": "src/bin/Data/Object1/StoneMuWall02.bmd",
+    "textures": {
+      "c_wall06.jpg": [
+        "src/bin/Data/Object1/c_wall06.OZJ"
+      ],
+      "c_wall05.jpg": [
+        "src/bin/Data/Object1/c_wall05.OZJ"
+      ],
+      "c_wall04.jpg": [
+        "src/bin/Data/Object1/c_wall04.OZJ"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Fine crest anatomy stays mainly painted. Broad-side panel is deliberately quiet; retaining it is not a claim of additional sculptural detail. Two previously documented inherited custom-normal incidents remain baseline, not repaired.",
+    "priority": 1,
+    "owner": "furniture",
+    "branch": "codex/lorencia-q02-furniture",
+    "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture",
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 32,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/StoneMuWall02/placements",
+    "first_placement": {
+      "position": [
+        11650.0,
+        10650.0,
+        165.00001525878906
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        116.5,
+        106.5
+      ]
+    },
+    "intended_improvement": "Revisit facade design/relief without altering real modular connection edges; reassess complete shared painting group if needed.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneMuWall02/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "The narrow pointed end profile and compact carved crest distinguish the wall terminal from the broad shield modules. The long taper and restrained panel center give the gate assembly a readable ending without competing with portcullis/dragon shields. Existing upper carving and border painting are adequate at assembly scale.",
+    "acceptance_evidence": "assets-work/Environment/coordination/masonry-retention-review.json#StoneMuWall02"
+  },
+  {
+    "model": "StoneMuWall03",
+    "identity": "beast-face modular wall corner/block",
+    "path": "src/bin/Data/Object1/StoneMuWall03.bmd",
+    "textures": {
+      "c_wall04.jpg": [
+        "src/bin/Data/Object1/c_wall04.OZJ"
+      ],
+      "c_wall06.jpg": [
+        "src/bin/Data/Object1/c_wall06.OZJ"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Close oblique inspection exposes coarse cheek planes and painted small ornament. Repeated motif is intentional modular rhythm rather than unique sculpture; no new geometry improvement is claimed.",
+    "priority": 1,
+    "owner": "furniture",
+    "branch": "codex/lorencia-q02-furniture",
+    "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture",
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 45,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/StoneMuWall03/placements",
+    "first_placement": {
+      "position": [
+        12150.0,
+        10650.0,
+        165.00003051757812
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        121.5,
+        106.5
+      ]
+    },
+    "intended_improvement": "Revisit facade design/relief without altering real modular connection edges; reassess complete shared painting group if needed.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneMuWall03/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "The broad projecting shield face, sloped cap and lower point have a distinctive defensive outline. Repeated dragon noses/eye shadows read as a consistent fortification motif in the actual south-gate assembly; horizontal ornamental bands and matched warm stone connect the shields to plain wall spans and gate piers. The facade stays legible without added recessed islands.",
+    "acceptance_evidence": "assets-work/Environment/coordination/masonry-retention-review.json#StoneMuWall03"
+  },
+  {
+    "model": "StoneMuWall04",
+    "identity": "beast-face wall corner/block with mortar behind",
+    "path": "src/bin/Data/Object1/StoneMuWall04.bmd",
+    "textures": {
+      "c_wall04.jpg": [
+        "src/bin/Data/Object1/c_wall04.OZJ"
+      ],
+      "c_wall06.jpg": [
+        "src/bin/Data/Object1/c_wall06.OZJ"
+      ],
+      "horse_drawn_01.jpg": [
+        "src/bin/Data/Object1/horse_drawn_01.OZJ"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Front relief has03 close-up limitations; dark cannon remains diffuse iron and was separately reviewed, not assumed an additive error. Rear attachments remain unchanged; no new sculptural detail claimed.",
+    "priority": 2,
+    "owner": "furniture",
+    "branch": "codex/lorencia-q02-furniture",
+    "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture",
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 3,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/StoneMuWall04/placements",
+    "first_placement": {
+      "position": [
+        11250.0,
+        12250.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        990.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        112.5,
+        122.5
+      ]
+    },
+    "intended_improvement": "Compare actual assemblies after first batches and propagate appropriate geometry treatment; preserve effect cards and gate/opening geometry.",
+    "assessment": "retain defensible",
+    "evidence": "assets-work/Environment/coordination/companion-review.json",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "The same shield face deliberately matches03 while the rear wooden firing platform, ladder, chest and iron cannon supply a separate readable function. Siege-wall rear context clearly separates wood from stone and iron; front retains matching sloped cap and pointed crest rhythm. Current combined design is coherent and visually useful.",
+    "acceptance_evidence": "assets-work/Environment/coordination/masonry-retention-review.json#StoneMuWall04"
+  },
+  {
+    "model": "StoneStatue01",
+    "identity": "Carved robed-relief pillar",
+    "path": "src/bin/Data/Object1/StoneStatue01.bmd",
+    "textures": {
+      "stone_statue02.jpg": [
+        "src/bin/Data/Object1/stone_statue02.OZJ"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Independently accepted niche, broad feather wings or memorial profiles; frozen textures/contact anchors. Client pending.",
+    "priority": 2,
+    "owner": "architecture",
+    "branch": "codex/lorencia-q02-architecture",
+    "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture",
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [
+      "10d1e765",
+      "cc43c901"
+    ],
+    "placement_count": 7,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/StoneStatue01/placements",
+    "first_placement": {
+      "position": [
+        11902.4052734375,
+        23042.19921875,
+        115.04176330566406
+      ],
+      "rotation": [
+        -20.0,
+        0.0,
+        390.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        119.024052734375,
+        230.4219921875
+      ]
+    },
+    "intended_improvement": "Shaped caps and restrained bevels; purposeful angel wing/body silhouette refinement. Freeze shared basin/plinth textures unless full consumers reviewed.",
+    "assessment": "production",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneStatue01/final-offline.png",
+    "artistic_gate_resolved": true,
+    "acceptance_evidence": "assets-work/World1/QualityPass02/Statues02/independent-review.json"
+  },
+  {
+    "model": "StoneStatue02",
+    "identity": "Moai-like stone head",
+    "path": "src/bin/Data/Object1/StoneStatue02.bmd",
+    "textures": {
+      "stone_statue01.jpg": [
+        "src/bin/Data/Object1/stone_statue01.OZJ"
+      ]
+    },
+    "treatment": "texture-only treatment / essentially original geometry",
+    "remaining_problem": "Deliberately simplified monolithic facial style; extra organic anatomy unnecessary.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 7,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/StoneStatue02/placements",
+    "first_placement": {
+      "position": [
+        688.6663818359375,
+        3039.18115234375,
+        146.69708251953125
+      ],
+      "rotation": [
+        -45.0,
+        0.0,
+        1530.0
+      ],
+      "scale": 0.7400002479553223,
+      "tile": [
+        6.886663818359375,
+        30.3918115234375
+      ]
+    },
+    "intended_improvement": "Retain. StoneStatue02 is texture/UV treatment with essentially original geometry.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneStatue02/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Moai head has strong brow shadow, projecting long nose, jaw and irregular base with coherent rough stone.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#StoneStatue02"
+  },
+  {
+    "model": "StoneStatue03",
+    "identity": "Winged angel on memorial plinth",
+    "path": "src/bin/Data/Object1/StoneStatue03.bmd",
+    "textures": {
+      "tombstone_big.jpg": [
+        "src/bin/Data/Object1/tombstone_big.OZJ"
+      ],
+      "angel_stone_statue.jpg": [
+        "src/bin/Data/Object1/angel_stone_statue.OZJ"
+      ]
+    },
+    "treatment": "texture-only treatment / essentially original geometry",
+    "remaining_problem": "Independently accepted niche, broad feather wings or memorial profiles; frozen textures/contact anchors. Client pending.",
+    "priority": 2,
+    "owner": "architecture",
+    "branch": "codex/lorencia-q02-architecture",
+    "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture",
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [
+      "10d1e765",
+      "cc43c901"
+    ],
+    "placement_count": 4,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/StoneStatue03/placements",
+    "first_placement": {
+      "position": [
+        13750.0,
+        23450.0,
+        165.0
+      ],
+      "rotation": [
+        5.0,
+        0.0,
+        450.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        137.5,
+        234.5
+      ]
+    },
+    "intended_improvement": "Shaped caps and restrained bevels; purposeful angel wing/body silhouette refinement. Freeze shared basin/plinth textures unless full consumers reviewed.",
+    "assessment": "production",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneStatue03/final-offline.png",
+    "artistic_gate_resolved": true,
+    "acceptance_evidence": "assets-work/World1/QualityPass02/Statues02/independent-review.json"
+  },
+  {
+    "model": "StoneWall01",
+    "identity": "raised portcullis between rough masonry piers",
+    "path": "src/bin/Data/Object1/StoneWall01.bmd",
+    "textures": {
+      "tile_01.jpg": [
+        "src/bin/Data/Object1/tile_01.OZJ"
+      ],
+      "tile_03.jpg": [
+        "src/bin/Data/Object1/tile_03.OZJ"
+      ],
+      "tile_02.jpg": [
+        "src/bin/Data/Object1/tile_02.OZJ"
+      ],
+      "bridge_01.jpg": [
+        "src/bin/Data/Object1/bridge_01.OZJ"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Dark stone/iron appropriate fortification; raised state is functional, not unfinished wall.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 8,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/StoneWall01/placements",
+    "first_placement": {
+      "position": [
+        600.0,
+        4000.0,
+        165.44992065429688
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -1710.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        6.0,
+        40.0
+      ]
+    },
+    "intended_improvement": "Retain pending comparison against adjacent new masonry; no unconditional need to sculpt each stone.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneWall01/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Raised portcullis silhouette has spaced downward teeth, thick upper grid, tapered stone piers and small beast brackets.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#StoneWall01"
+  },
+  {
+    "model": "StoneWall02",
+    "identity": "lowered portcullis between rough masonry piers",
+    "path": "src/bin/Data/Object1/StoneWall02.bmd",
+    "textures": {
+      "tile_01.jpg": [
+        "src/bin/Data/Object1/tile_01.OZJ"
+      ],
+      "tile_03.jpg": [
+        "src/bin/Data/Object1/tile_03.OZJ"
+      ],
+      "tile_02.jpg": [
+        "src/bin/Data/Object1/tile_02.OZJ"
+      ],
+      "bridge_01.jpg": [
+        "src/bin/Data/Object1/bridge_01.OZJ"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Same family material and connection profiles intentionally fixed.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 6,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/StoneWall02/placements",
+    "first_placement": {
+      "position": [
+        17500.0,
+        2000.0,
+        170.49488830566406
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -180.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        175.0,
+        20.0
+      ]
+    },
+    "intended_improvement": "Retain pending comparison against adjacent new masonry; no unconditional need to sculpt each stone.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneWall02/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Lowered portcullis variant has long pointed bars closing gateway between matching rough stone piers.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#StoneWall02"
+  },
+  {
+    "model": "StoneWall03",
+    "identity": "rough masonry wall with mortar behind",
+    "path": "src/bin/Data/Object1/StoneWall03.bmd",
+    "textures": {
+      "tile_01.jpg": [
+        "src/bin/Data/Object1/tile_01.OZJ"
+      ],
+      "horse_drawn_01.jpg": [
+        "src/bin/Data/Object1/horse_drawn_01.OZJ"
+      ],
+      "tile_03.jpg": [
+        "src/bin/Data/Object1/tile_03.OZJ"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Front deliberately simple defensive wall, rear cannon previously reviewed; no decorative sculptural role.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 2,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/StoneWall03/placements",
+    "first_placement": {
+      "position": [
+        17354.60546875,
+        2700.505126953125,
+        -13.400390625
+      ],
+      "rotation": [
+        -50.0,
+        0.0,
+        -390.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        173.5460546875,
+        27.00505126953125
+      ]
+    },
+    "intended_improvement": "Retain pending comparison against adjacent new masonry; no unconditional need to sculpt each stone.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneWall03/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Broad stepped masonry panel supports visible rear cannon station; rough ashlar courses read at normal distance.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#StoneWall03"
+  },
+  {
+    "model": "StoneWall04",
+    "identity": "yellow-purple heraldic banner on pole",
+    "path": "src/bin/Data/Object1/StoneWall04.bmd",
+    "textures": {
+      "badge_01.jpg": [
+        "src/bin/Data/Object1/badge_01.OZJ"
+      ],
+      "badge_03.tga": [
+        "src/bin/Data/Object1/badge_03.OZT"
+      ]
+    },
+    "treatment": "texture-only treatment / essentially original geometry",
+    "remaining_problem": "Named wall asset is intentionally banner; frozen animation/effect contract.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 12,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/StoneWall04/placements",
+    "first_placement": {
+      "position": [
+        11571.0029296875,
+        7632.77685546875,
+        260.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        390.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        115.710029296875,
+        76.3277685546875
+      ]
+    },
+    "intended_improvement": "Retain; banners retain original geometry with texture treatment and original animation.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneWall04/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Gold beast banner with purple hem hangs diagonally from tall spear pole, distinct from blue Curtain01.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#StoneWall04"
+  },
+  {
+    "model": "StoneWall05",
+    "identity": "plain rough masonry wall",
+    "path": "src/bin/Data/Object1/StoneWall05.bmd",
+    "textures": {
+      "tile_01.jpg": [
+        "src/bin/Data/Object1/tile_01.OZJ"
+      ],
+      "tile_03.jpg": [
+        "src/bin/Data/Object1/tile_03.OZJ"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Simple rectangular mass is functional modular geometry; arbitrary edge cuts would risk joins.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 0,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/StoneWall05/placements",
+    "first_placement": null,
+    "intended_improvement": "Retain pending comparison against adjacent new masonry; no unconditional need to sculpt each stone.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneWall05/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Plain matching fortification module has stepped footing and evenly coursed rough blocks suitable for continuous walls.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#StoneWall05"
+  },
+  {
+    "model": "StoneWall06",
+    "identity": "rough masonry pillar with small heraldic banner",
+    "path": "src/bin/Data/Object1/StoneWall06.bmd",
+    "textures": {
+      "badge_01.jpg": [
+        "src/bin/Data/Object1/badge_01.OZJ"
+      ],
+      "badge_03.tga": [
+        "src/bin/Data/Object1/badge_03.OZT"
+      ],
+      "tile_01.jpg": [
+        "src/bin/Data/Object1/tile_01.OZJ"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Flag animation contract retained; geometry not expanded solely to match unrelated sculpted masonry.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 2,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/StoneWall06/placements",
+    "first_placement": {
+      "position": [
+        16487.505859375,
+        4759.482421875,
+        207.204833984375
+      ],
+      "rotation": [
+        110.0,
+        0.0,
+        120.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        164.87505859375,
+        47.59482421875
+      ]
+    },
+    "intended_improvement": "Retain pending comparison against adjacent new masonry; no unconditional need to sculpt each stone.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/StoneWall06/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Tall square stone pier capped by small heraldic flag supplies clear vertical termination and family ornament.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#StoneWall06"
+  },
+  {
+    "model": "Straw01",
+    "identity": "three stacked tied hay bundles",
+    "path": "src/bin/Data/Object1/Straw01.bmd",
+    "textures": {
+      "grass_01.tga": [
+        "src/bin/Data/Object1/grass_01.OZT"
+      ]
+    },
+    "treatment": "substantial remake",
+    "remaining_problem": "Ends remain low-frequency stylized pattern; silhouette rounded sufficiently.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 8,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Straw01/placements",
+    "first_placement": {
+      "position": [
+        12550.0,
+        12000.0,
+        165.00001525878906
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        990.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        125.5,
+        120.0
+      ]
+    },
+    "intended_improvement": "Retain; Carriage01 black card is documented additive preview limitation.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Straw01/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Three cylindrical tied bundles form stable triangular stack; rope bands and cut fiber ends are distinct.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Straw01"
+  },
+  {
+    "model": "Straw02",
+    "identity": "loose pile of tied hay bundles",
+    "path": "src/bin/Data/Object1/Straw02.bmd",
+    "textures": {
+      "grass_01.tga": [
+        "src/bin/Data/Object1/grass_01.OZT"
+      ]
+    },
+    "treatment": "substantial remake",
+    "remaining_problem": "Overlaps intentionally bundled; coarse fibers consistent with cart hay.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 2,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Straw02/placements",
+    "first_placement": {
+      "position": [
+        15250.0,
+        10800.0,
+        165.00001525878906
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1890.0
+      ],
+      "scale": 0.5400004386901855,
+      "tile": [
+        152.5,
+        108.0
+      ]
+    },
+    "intended_improvement": "Retain; Carriage01 black card is documented additive preview limitation.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Straw02/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Loose crossed sheaves and parallel bottom bundles create a different pile silhouette with tied waists.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Straw02"
+  },
+  {
+    "model": "StreetLight01",
+    "identity": "timber street post with hanging lantern",
+    "path": "src/bin/Data/Object1/StreetLight01.bmd",
+    "textures": {
+      "streetlight.jpg": [
+        "src/bin/Data/Object1/streetlight.OZJ"
+      ],
+      "streetlight_brightness2.jpg": [
+        "src/bin/Data/Object1/streetlight_brightness2.OZJ"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Lantern diffuse brightness is approximation; preserved engine light context remains required.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 10,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/StreetLight01/placements",
+    "first_placement": {
+      "position": [
+        9550.0,
+        12550.0,
+        165.00003051757812
+      ],
+      "rotation": [
+        360.0,
+        0.0,
+        2790.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        95.5,
+        125.5
+      ]
+    },
+    "intended_improvement": "Retain; round log edge refinement optional after higher-impact work, not a completion blocker from this view.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/StreetLight01/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Tall timber post and cantilever arm carry distinct warm lantern, with metal shoe at base.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#StreetLight01"
+  },
+  {
+    "model": "Tent01",
+    "identity": "four-post timber canopy",
+    "path": "src/bin/Data/Object1/Tent01.bmd",
+    "textures": {
+      "tile_house01.jpg": [
+        "src/bin/Data/Object1/tile_house01.OZJ"
+      ],
+      "tile_ston06.jpg": [
+        "src/bin/Data/Object1/tile_ston06.OZJ"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Cloth thickness minimal by design; original footprint and anchors retained.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 2,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Tent01/placements",
+    "first_placement": {
+      "position": [
+        6200.0,
+        13050.0,
+        170.68397521972656
+      ],
+      "rotation": [
+        360.0,
+        0.0,
+        2520.0
+      ],
+      "scale": 0.6800003051757812,
+      "tile": [
+        62.0,
+        130.5
+      ]
+    },
+    "intended_improvement": "Retain; preserve moving wheel/water mesh and canopy animation.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tent01/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Woven canopy sags between four wooden corner posts, giving believable suspended fabric with raised corners.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Tent01"
+  },
+  {
+    "model": "Tomb01",
+    "identity": "Arched sarcophagus with offset lid",
+    "path": "src/bin/Data/Object1/Tomb01.bmd",
+    "textures": {
+      "grave_02.jpg": [
+        "src/bin/Data/Object1/grave_02.OZJ"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Decorative glyphs are painted; lid/base shape already distinctive.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 4,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Tomb01/placements",
+    "first_placement": {
+      "position": [
+        13200.0,
+        21900.0,
+        165.00001525878906
+      ],
+      "rotation": [
+        5.0,
+        0.0,
+        540.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        132.0,
+        219.0
+      ]
+    },
+    "intended_improvement": "Retain. StoneStatue02 is texture/UV treatment with essentially original geometry.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tomb01/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Arched ornamented sarcophagus lid sits offset over visibly hollow rectangular base, creating clear depth and story.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Tomb01"
+  },
+  {
+    "model": "Tomb02",
+    "identity": "Cross-topped carved grave",
+    "path": "src/bin/Data/Object1/Tomb02.bmd",
+    "textures": {
+      "grave_01.jpg": [
+        "src/bin/Data/Object1/grave_01.OZJ"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Planar cross is intended stone slab; no generic smoothing required.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 4,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Tomb02/placements",
+    "first_placement": {
+      "position": [
+        14345.67578125,
+        21625.21484375,
+        119.99996948242188
+      ],
+      "rotation": [
+        30.0,
+        0.0,
+        300.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        143.4567578125,
+        216.2521484375
+      ]
+    },
+    "intended_improvement": "Retain. StoneStatue02 is texture/UV treatment with essentially original geometry.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tomb02/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Raised broad cross and triangular carved shoulder panels sit in a framed grave bed with readable stepped depth.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Tomb02"
+  },
+  {
+    "model": "Tomb03",
+    "identity": "upright carved grave marker",
+    "path": "src/bin/Data/Object1/Tomb03.bmd",
+    "textures": {
+      "tombstone.jpg": [
+        "src/bin/Data/Object1/tombstone.OZJ"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Fine inscription remains low resolution but does not need legibility as prose.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 5,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Tomb03/placements",
+    "first_placement": {
+      "position": [
+        13050.0,
+        21500.0,
+        165.00003051757812
+      ],
+      "rotation": [
+        5.0,
+        0.0,
+        360.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        130.5,
+        215.0
+      ]
+    },
+    "intended_improvement": "Retain. StoneStatue02 is texture/UV treatment with essentially original geometry.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tomb03/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Arched grave marker has substantial edge thickness, inset sun/glyph panel and coherent border trim.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Tomb03"
+  },
+  {
+    "model": "TreasureChest01",
+    "identity": "arched timber treasure chest",
+    "path": "src/bin/Data/Object1/TreasureChest01.bmd",
+    "textures": {
+      "treasure_chest.jpg": [
+        "src/bin/Data/Object1/treasure_chest.OZJ"
+      ]
+    },
+    "treatment": "substantial remake",
+    "remaining_problem": "Large dark wood panels coherent rather than texture noise; no extra corner detail required.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 3,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/TreasureChest01/placements",
+    "first_placement": {
+      "position": [
+        300.0,
+        4150.0,
+        187.5622100830078
+      ],
+      "rotation": [
+        350.0,
+        0.0,
+        2310.0
+      ],
+      "scale": 0.6800003051757812,
+      "tile": [
+        3.0,
+        41.5
+      ]
+    },
+    "intended_improvement": "Retain Beer01 as reference; other props have no concrete current defect warranting another pass.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/TreasureChest01/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Domed stave lid, curved metal bands and central padlock form a complete recognizable chest.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#TreasureChest01"
+  },
+  {
+    "model": "TreasureDrum01",
+    "identity": "iron-bound wooden stave barrel",
+    "path": "src/bin/Data/Object1/TreasureDrum01.bmd",
+    "textures": {
+      "drum.jpg": [
+        "src/bin/Data/Object1/drum.OZJ"
+      ]
+    },
+    "treatment": "substantial remake",
+    "remaining_problem": "Wood top remains coarse grain but coopered construction is clear.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 64,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/TreasureDrum01/placements",
+    "first_placement": {
+      "position": [
+        750.0,
+        14950.0,
+        153.9368133544922
+      ],
+      "rotation": [
+        -5.0,
+        0.0,
+        2010.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        7.5,
+        149.5
+      ]
+    },
+    "intended_improvement": "Retain Beer01 as reference; other props have no concrete current defect warranting another pass.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/TreasureDrum01/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Bulging barrel has individually readable staves, inset plank lid and riveted iron hoops.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#TreasureDrum01"
+  },
+  {
+    "model": "Tree01",
+    "identity": "broadleaf tree with medium spreading crown",
+    "path": "src/bin/Data/Object1/Tree01.bmd",
+    "textures": {
+      "tree.jpg": [
+        "src/bin/Data/Object1/tree.OZJ"
+      ],
+      "Tree_a.tga": [
+        "src/bin/Data/Object1/Tree_a.OZT"
+      ]
+    },
+    "treatment": "texture-only treatment",
+    "remaining_problem": "Dark olive canopy uses visible cards at close range; alpha/fringe style remains baseline.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 80,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Tree01/placements",
+    "first_placement": {
+      "position": [
+        404.6355895996094,
+        1498.20068359375,
+        205.0257110595703
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        4.0463558959960935,
+        14.9820068359375
+      ]
+    },
+    "intended_improvement": "Retain unless placement/reduced-scale assembly reveals concrete defect. Grass02/Tree12/Tree13 normal-binding protections remain absolute for routine re-export.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree01/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Broad irregular canopy masses, exposed twisting trunk and buttressed root flare form a convincing mature tree; foliage gaps avoid a solid ball.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Tree01"
+  },
+  {
+    "model": "Tree02",
+    "identity": "broadleaf tree with broad crown and exposed roots",
+    "path": "src/bin/Data/Object1/Tree02.bmd",
+    "textures": {
+      "tree.jpg": [
+        "src/bin/Data/Object1/tree.OZJ"
+      ],
+      "Tree_a.tga": [
+        "src/bin/Data/Object1/Tree_a.OZT"
+      ]
+    },
+    "treatment": "texture-only treatment",
+    "remaining_problem": "Sparse crown and pointed root tips are deliberate character; close foliage card intersections remain.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 23,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Tree02/placements",
+    "first_placement": {
+      "position": [
+        350.0,
+        2350.0,
+        224.1425323486328
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        570.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        3.5,
+        23.5
+      ]
+    },
+    "intended_improvement": "Retain unless placement/reduced-scale assembly reveals concrete defect. Grass02/Tree12/Tree13 normal-binding protections remain absolute for routine re-export.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree02/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Open broken crown and thick trunk with splayed roots distinguish this mature tree from Tree01; exposed branches connect foliage groups.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Tree02"
+  },
+  {
+    "model": "Tree03",
+    "identity": "bare crooked tree",
+    "path": "src/bin/Data/Object1/Tree03.bmd",
+    "textures": {
+      "tree_03.jpg": [
+        "src/bin/Data/Object1/tree_03.OZJ"
+      ]
+    },
+    "treatment": "texture-only treatment",
+    "remaining_problem": "Low polygon branch junctions remain angular, consistent with dry dead wood.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 22,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Tree03/placements",
+    "first_placement": {
+      "position": [
+        10750.0,
+        19150.0,
+        165.00001525878906
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        2910.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        107.5,
+        191.5
+      ]
+    },
+    "intended_improvement": "Retain unless placement/reduced-scale assembly reveals concrete defect. Grass02/Tree12/Tree13 normal-binding protections remain absolute for routine re-export.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree03/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Wide forked dead-tree crown has varied branch lengths and tapered tips; continuous bark and trunk branching read clearly.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Tree03"
+  },
+  {
+    "model": "Tree04",
+    "identity": "bare crooked tree variant",
+    "path": "src/bin/Data/Object1/Tree04.bmd",
+    "textures": {
+      "tree_03.jpg": [
+        "src/bin/Data/Object1/tree_03.OZJ"
+      ]
+    },
+    "treatment": "texture-only treatment",
+    "remaining_problem": "Faceted branch joints remain visible close up; no tied mass or broken alpha issue.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 15,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Tree04/placements",
+    "first_placement": {
+      "position": [
+        10800.0,
+        19150.0,
+        165.00001525878906
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        2880.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        108.0,
+        191.5
+      ]
+    },
+    "intended_improvement": "Retain unless placement/reduced-scale assembly reveals concrete defect. Grass02/Tree12/Tree13 normal-binding protections remain absolute for routine re-export.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree04/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Asymmetric bent trunk and downward-reaching side branch give a distinct dead-tree gesture and open negative space.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Tree04"
+  },
+  {
+    "model": "Tree05",
+    "identity": "thin bare sapling cluster",
+    "path": "src/bin/Data/Object1/Tree05.bmd",
+    "textures": {
+      "tree_03.jpg": [
+        "src/bin/Data/Object1/tree_03.OZJ"
+      ]
+    },
+    "treatment": "texture-only treatment",
+    "remaining_problem": "Very thin and dark in isolated preview; intended silhouette is minimal, scene contrast matters.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 20,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Tree05/placements",
+    "first_placement": {
+      "position": [
+        7323.9013671875,
+        14712.5458984375,
+        166.23370361328125
+      ],
+      "rotation": [
+        365.0,
+        0.0,
+        2790.0
+      ],
+      "scale": 0.5200004577636719,
+      "tile": [
+        73.239013671875,
+        147.125458984375
+      ]
+    },
+    "intended_improvement": "Retain unless placement/reduced-scale assembly reveals concrete defect. Grass02/Tree12/Tree13 normal-binding protections remain absolute for routine re-export.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree05/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Three slender diverging dead stems serve sparse undergrowth, with tapered irregular heights rather than a filled canopy.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Tree05"
+  },
+  {
+    "model": "Tree06",
+    "identity": "pale dead straight tree trunk",
+    "path": "src/bin/Data/Object1/Tree06.bmd",
+    "textures": {
+      "tree_02.jpg": [
+        "src/bin/Data/Object1/tree_02.OZJ"
+      ]
+    },
+    "treatment": "texture-only treatment",
+    "remaining_problem": "Simple thin cylindrical silhouette is appropriate to the stripped snag role.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 52,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Tree06/placements",
+    "first_placement": {
+      "position": [
+        1950.0,
+        12750.0,
+        173.87608337402344
+      ],
+      "rotation": [
+        -15.0,
+        0.0,
+        2370.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        19.5,
+        127.5
+      ]
+    },
+    "intended_improvement": "Retain unless placement/reduced-scale assembly reveals concrete defect. Grass02/Tree12/Tree13 normal-binding protections remain absolute for routine re-export.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree06/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Pale straight snag with short alternating broken branches and sharp crown provides a clear bleached-trunk accent.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Tree06"
+  },
+  {
+    "model": "Tree07",
+    "identity": "broad cut tree stump with roots",
+    "path": "src/bin/Data/Object1/Tree07.bmd",
+    "textures": {
+      "tree_03.jpg": [
+        "src/bin/Data/Object1/tree_03.OZJ"
+      ],
+      "tree_04.jpg": [
+        "src/bin/Data/Object1/tree_04.OZJ"
+      ]
+    },
+    "treatment": "texture-only treatment",
+    "remaining_problem": "Outer stump/root contour is deliberately faceted, not rounded manufactured wood.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 36,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Tree07/placements",
+    "first_placement": {
+      "position": [
+        1150.0,
+        13450.0,
+        165.00003051757812
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1620.0
+      ],
+      "scale": 0.6400003433227539,
+      "tile": [
+        11.5,
+        134.5
+      ]
+    },
+    "intended_improvement": "Retain unless placement/reduced-scale assembly reveals concrete defect. Grass02/Tree12/Tree13 normal-binding protections remain absolute for routine re-export.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree07/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Cut stump has readable growth rings, bark relief and broad radial root flare; top and side materials distinguish cut wood from bark.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Tree07"
+  },
+  {
+    "model": "Tree08",
+    "identity": "fallen hollow log",
+    "path": "src/bin/Data/Object1/Tree08.bmd",
+    "textures": {
+      "tree_01.jpg": [
+        "src/bin/Data/Object1/tree_01.OZJ"
+      ]
+    },
+    "treatment": "texture-only treatment",
+    "remaining_problem": "Small screen footprint; end cavity is dark but visibly open.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 8,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Tree08/placements",
+    "first_placement": {
+      "position": [
+        2850.0,
+        5550.0,
+        152.6271209716797
+      ],
+      "rotation": [
+        -5.0,
+        0.0,
+        3120.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        28.5,
+        55.5
+      ]
+    },
+    "intended_improvement": "Retain unless placement/reduced-scale assembly reveals concrete defect. Grass02/Tree12/Tree13 normal-binding protections remain absolute for routine re-export.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree08/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Fallen hollow trunk shows an open broken mouth, lengthwise bark and a tapered crooked profile.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Tree08"
+  },
+  {
+    "model": "Tree09",
+    "identity": "five tapered tall-grass tuft shells",
+    "path": "src/bin/Data/Object1/Tree09.bmd",
+    "textures": {
+      "tree_07.tga": [
+        "src/bin/Data/Object1/tree_07.OZT"
+      ]
+    },
+    "treatment": "texture-only treatment",
+    "remaining_problem": "Offline artistic and technical acceptance complete; new client alpha/depth/performance observation pending.",
+    "priority": 1,
+    "owner": "architecture / scrub",
+    "branch": "codex/lorencia-q02-architecture",
+    "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture",
+    "status": "accepted",
+    "baseline": "594b6db2 (scrub inputs unchanged from7b808473)",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [
+      "51679ab1",
+      "4b0ccd02"
+    ],
+    "placement_count": 42,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Tree09/placements",
+    "first_placement": {
+      "position": [
+        2492.028564453125,
+        13219.810546875,
+        193.6350555419922
+      ],
+      "rotation": [
+        -5.0,
+        0.0,
+        2070.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        24.92028564453125,
+        132.19810546875
+      ]
+    },
+    "intended_improvement": "Rebuild selected silhouette curves and alpha-card arrangement using existing textures and each original bone; preserve clump footprints and overall bounds.",
+    "assessment": "production",
+    "evidence": "assets-work/World1/QualityPass02/Scrub01/Tree09/review/",
+    "artistic_gate_resolved": true
+  },
+  {
+    "model": "Tree10",
+    "identity": "ten tapered tall-grass tuft shells",
+    "path": "src/bin/Data/Object1/Tree10.bmd",
+    "textures": {
+      "tree_07.tga": [
+        "src/bin/Data/Object1/tree_07.OZT"
+      ]
+    },
+    "treatment": "texture-only treatment",
+    "remaining_problem": "Offline artistic and technical acceptance complete; new client alpha/depth/performance observation pending.",
+    "priority": 1,
+    "owner": "architecture / scrub",
+    "branch": "codex/lorencia-q02-architecture",
+    "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture",
+    "status": "accepted",
+    "baseline": "594b6db2 (scrub inputs unchanged from7b808473)",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [
+      "51679ab1",
+      "4b0ccd02"
+    ],
+    "placement_count": 250,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Tree10/placements",
+    "first_placement": {
+      "position": [
+        1450.0,
+        16600.0,
+        165.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        3390.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        14.5,
+        166.0
+      ]
+    },
+    "intended_improvement": "Rebuild selected silhouette curves and alpha-card arrangement using existing textures and each original bone; preserve clump footprints and overall bounds.",
+    "assessment": "production",
+    "evidence": "assets-work/World1/QualityPass02/Scrub01/Tree10/review/",
+    "artistic_gate_resolved": true
+  },
+  {
+    "model": "Tree11",
+    "identity": "dark evergreen conifer",
+    "path": "src/bin/Data/Object1/Tree11.bmd",
+    "textures": {
+      "tree_06.tga": [
+        "src/bin/Data/Object1/tree_06.OZT"
+      ],
+      "tree_03.jpg": [
+        "src/bin/Data/Object1/tree_03.OZJ"
+      ]
+    },
+    "treatment": "texture-only treatment",
+    "remaining_problem": "Horizontal foliage tiers remain stylized; no need to turn this into the rejected scrub silhouette problem.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 165,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Tree11/placements",
+    "first_placement": {
+      "position": [
+        1700.0,
+        13950.0,
+        230.0659942626953
+      ],
+      "rotation": [
+        -5.0,
+        0.0,
+        2070.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        17.0,
+        139.5
+      ]
+    },
+    "intended_improvement": "Retain unless placement/reduced-scale assembly reveals concrete defect. Grass02/Tree12/Tree13 normal-binding protections remain absolute for routine re-export.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree11/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Conifer has layered drooping bough masses, tapering triangular crown and exposed base trunk.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Tree11"
+  },
+  {
+    "model": "Tree12",
+    "identity": "pink flowering tree",
+    "path": "src/bin/Data/Object1/Tree12.bmd",
+    "textures": {
+      "tree_01.jpg": [
+        "src/bin/Data/Object1/tree_01.OZJ"
+      ],
+      "tree_04.tga": [
+        "src/bin/Data/Object1/tree_04.OZT"
+      ]
+    },
+    "treatment": "texture-only treatment",
+    "remaining_problem": "Soft alpha petal cards remain, appropriate at tree scale.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 1,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Tree12/placements",
+    "first_placement": {
+      "position": [
+        11600.0,
+        10850.0,
+        165.00003051757812
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1500.0
+      ],
+      "scale": 0.6000003814697266,
+      "tile": [
+        116.0,
+        108.5
+      ]
+    },
+    "intended_improvement": "Retain unless placement/reduced-scale assembly reveals concrete defect. Grass02/Tree12/Tree13 normal-binding protections remain absolute for routine re-export.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree12/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Pink flower canopy is airy and asymmetric with branching structure visible through gaps; trunk supports distinct floral masses.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Tree12"
+  },
+  {
+    "model": "Tree13",
+    "identity": "ochre-leaved deciduous tree",
+    "path": "src/bin/Data/Object1/Tree13.bmd",
+    "textures": {
+      "tree_05.tga": [
+        "src/bin/Data/Object1/tree_05.OZT"
+      ],
+      "tree_01.jpg": [
+        "src/bin/Data/Object1/tree_01.OZJ"
+      ]
+    },
+    "treatment": "texture-only treatment",
+    "remaining_problem": "Angular outer leaf-card groupings show close up; normal-distance silhouette remains irregular and coherent.",
+    "priority": 3,
+    "owner": "unclaimed",
+    "branch": null,
+    "worktree": null,
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [],
+    "placement_count": 4,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Tree13/placements",
+    "first_placement": {
+      "position": [
+        11450.0,
+        10850.0,
+        164.99998474121094
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        1470.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        114.5,
+        108.5
+      ]
+    },
+    "intended_improvement": "Retain unless placement/reduced-scale assembly reveals concrete defect. Grass02/Tree12/Tree13 normal-binding protections remain absolute for routine re-export.",
+    "assessment": "retain defensible",
+    "evidence": "../../../assets-work/World1/coordination/final-inspection/Tree13/final-offline.png",
+    "artistic_gate_resolved": true,
+    "retention_rationale": "Ochre crown has sparse irregular leaf clusters and exposed branch tips, distinct from pink Tree12.",
+    "acceptance_evidence": "assets-work/Environment/coordination/retention-gate.json#Tree13"
+  },
+  {
+    "model": "Waterspout01",
+    "identity": "winged dragon fountain in carved circular basin",
+    "path": "src/bin/Data/Object1/Waterspout01.bmd",
+    "textures": {
+      "stone_statue02.jpg": [
+        "src/bin/Data/Object1/stone_statue02.OZJ"
+      ],
+      "reagon_waterspout.jpg": [
+        "src/bin/Data/Object1/reagon_waterspout.OZJ"
+      ],
+      "ston01.jpg": [
+        "src/bin/Data/Object1/ston01.OZJ"
+      ],
+      "ston02.jpg": [
+        "src/bin/Data/Object1/ston02.OZJ"
+      ]
+    },
+    "treatment": "texture-only treatment",
+    "remaining_problem": "Accepted fuller dragon chest and bowed wing membranes with broad charcoal stone painting; historic angular head/tips retained; new client review pending.",
+    "priority": 2,
+    "owner": "architecture",
+    "branch": "codex/lorencia-q02-architecture",
+    "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture",
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [
+      "187208c2",
+      "bb641d04"
+    ],
+    "placement_count": 1,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Waterspout01/placements",
+    "first_placement": {
+      "position": [
+        14100.0,
+        12800.0,
+        165.00003051757812
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -270.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        141.0,
+        128.0
+      ]
+    },
+    "intended_improvement": "Geometry-only dragon silhouette and curvature pass with restrained diffuse tonal definition if exact exclusive dragon texture ownership verified; preserve all four original mesh slots, water UVs, 11 bones and 21 action keys. Review wings from multiple angles.",
+    "assessment": "production",
+    "evidence": "assets-work/World1/QualityPass02/Fountain02/independent-review.json",
+    "artistic_gate_resolved": true
+  },
+  {
+    "model": "Well01",
+    "identity": "roofed stone well with barrels and pottery",
+    "path": "src/bin/Data/Object1/Well01.bmd",
+    "textures": {
+      "tub.jpg": [
+        "src/bin/Data/Object1/tub.OZJ"
+      ],
+      "horse_drawn_01.jpg": [
+        "src/bin/Data/Object1/horse_drawn_01.OZJ"
+      ],
+      "well.jpg": [
+        "src/bin/Data/Object1/well.OZJ"
+      ],
+      "jar_01.jpg": [
+        "src/bin/Data/Object1/jar_01.OZJ"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Independently accepted open pottery mouths and thick well roof boards; coarse retained pottery bodies/handles defensible; client observation pending.",
+    "priority": 2,
+    "owner": "furniture",
+    "branch": "codex/lorencia-q02-furniture",
+    "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture",
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [
+      "c1296be9",
+      "5a0ad5b5"
+    ],
+    "placement_count": 0,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Well01/placements",
+    "first_placement": null,
+    "intended_improvement": "Remodel pot lips/necks with coherent wall thickness and curves; refine well rim/roof thickness inside original bounds. Review all jar/well/tub consumers.",
+    "assessment": "production",
+    "evidence": "assets-work/World1/QualityPass02/Wells02/independent-final-review.json",
+    "artistic_gate_resolved": true
+  },
+  {
+    "model": "Well02",
+    "identity": "roofed stone well",
+    "path": "src/bin/Data/Object1/Well02.bmd",
+    "textures": {
+      "well.jpg": [
+        "src/bin/Data/Object1/well.OZJ"
+      ]
+    },
+    "treatment": "texture-only treatment / essentially original geometry",
+    "remaining_problem": "Independently accepted open pottery mouths and thick well roof boards; coarse retained pottery bodies/handles defensible; client observation pending.",
+    "priority": 2,
+    "owner": "furniture",
+    "branch": "codex/lorencia-q02-furniture",
+    "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture",
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [
+      "c1296be9",
+      "5a0ad5b5"
+    ],
+    "placement_count": 1,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Well02/placements",
+    "first_placement": {
+      "position": [
+        14700.0,
+        11700.0,
+        164.99996948242188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        390.0
+      ],
+      "scale": 1.0,
+      "tile": [
+        147.0,
+        117.0
+      ]
+    },
+    "intended_improvement": "Remodel pot lips/necks with coherent wall thickness and curves; refine well rim/roof thickness inside original bounds. Review all jar/well/tub consumers.",
+    "assessment": "production",
+    "evidence": "assets-work/World1/QualityPass02/Wells02/independent-final-review.json",
+    "artistic_gate_resolved": true
+  },
+  {
+    "model": "Well03",
+    "identity": "large ceramic jug cluster",
+    "path": "src/bin/Data/Object1/Well03.bmd",
+    "textures": {
+      "jar_01.jpg": [
+        "src/bin/Data/Object1/jar_01.OZJ"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Independently accepted open pottery mouths and thick well roof boards; coarse retained pottery bodies/handles defensible; client observation pending.",
+    "priority": 2,
+    "owner": "furniture",
+    "branch": "codex/lorencia-q02-furniture",
+    "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture",
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [
+      "c1296be9",
+      "5a0ad5b5"
+    ],
+    "placement_count": 2,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Well03/placements",
+    "first_placement": {
+      "position": [
+        14600.0,
+        11650.0,
+        164.99998474121094
+      ],
+      "rotation": [
+        -10.0,
+        0.0,
+        390.0
+      ],
+      "scale": 0.44000044465065,
+      "tile": [
+        146.0,
+        116.5
+      ]
+    },
+    "intended_improvement": "Remodel pot lips/necks with coherent wall thickness and curves; refine well rim/roof thickness inside original bounds. Review all jar/well/tub consumers.",
+    "assessment": "production",
+    "evidence": "assets-work/World1/QualityPass02/Wells02/independent-final-review.json",
+    "artistic_gate_resolved": true
+  },
+  {
+    "model": "Well04",
+    "identity": "small ceramic jug cluster",
+    "path": "src/bin/Data/Object1/Well04.bmd",
+    "textures": {
+      "jar_01.jpg": [
+        "src/bin/Data/Object1/jar_01.OZJ"
+      ]
+    },
+    "treatment": "partial geometry/art treatment",
+    "remaining_problem": "Independently accepted open pottery mouths and thick well roof boards; coarse retained pottery bodies/handles defensible; client observation pending.",
+    "priority": 2,
+    "owner": "furniture",
+    "branch": "codex/lorencia-q02-furniture",
+    "worktree": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture",
+    "status": "accepted",
+    "baseline": "7b808473",
+    "client_evidence": "user-reported working baseline at start; no personal observation; candidates pending",
+    "commits": [
+      "c1296be9",
+      "5a0ad5b5"
+    ],
+    "placement_count": 2,
+    "placement_records": "../../World1/coordination/dependency-map.json#/models/Well04/placements",
+    "first_placement": {
+      "position": [
+        12972.2490234375,
+        12080.9892578125,
+        177.22799682617188
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -720.0
+      ],
+      "scale": 0.5400004386901855,
+      "tile": [
+        129.722490234375,
+        120.809892578125
+      ]
+    },
+    "intended_improvement": "Remodel pot lips/necks with coherent wall thickness and curves; refine well rim/roof thickness inside original bounds. Review all jar/well/tub consumers.",
+    "assessment": "production",
+    "evidence": "assets-work/World1/QualityPass02/Wells02/independent-final-review.json",
+    "artistic_gate_resolved": true
+  }
+]

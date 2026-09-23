@@ -1,0 +1,36 @@
+{
+  "HouseEtc01": {
+    "materials": {
+      "c_wall04.jpg": 24,
+      "c_wall06.jpg": 26
+    },
+    "smd": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/HouseEtc01/validation/current/HouseEtc01.smd",
+    "current_bmd_sha256": "646273f66d753761d78bfc04c33ad9ba73adf4b87e69a2c376a8c530e8fff22c"
+  },
+  "StoneMuWall02": {
+    "materials": {
+      "c_wall06.jpg": 10,
+      "c_wall05.jpg": 22,
+      "c_wall04.jpg": 44
+    },
+    "smd": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/StoneMuWall02/validation/current/StoneMuWall02.smd",
+    "current_bmd_sha256": "71871c76baa85db5b0e8d4017ee0a5c797eeb4897bf14dfa2129da19264ea4cd"
+  },
+  "StoneMuWall03": {
+    "materials": {
+      "c_wall04.jpg": 70,
+      "c_wall06.jpg": 14
+    },
+    "smd": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/StoneMuWall03/validation/current/StoneMuWall03.smd",
+    "current_bmd_sha256": "da3246175a2f50993de1f8b17aa9483165b389021f871145cec7ef37f7ee608a"
+  },
+  "StoneMuWall04": {
+    "materials": {
+      "c_wall04.jpg": 70,
+      "c_wall06.jpg": 14,
+      "horse_drawn_01.jpg": 233
+    },
+    "smd": "/Users/lukasmac/Documents/claude-test-mumain/MuMain/assets-work/World1/Cannons01/StoneMuWall04/validation/new/StoneMuWall04.smd",
+    "current_bmd_sha256": "bfdc5558ab6c7412438d5925d9ffb98bdce9538a8a5fd593b80cb3dc2d47c471"
+  }
+}

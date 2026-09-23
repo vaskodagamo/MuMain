@@ -1,0 +1,139 @@
+{
+  "status": "PASS",
+  "bmd_sha256": "bd36218ec97576af5fbbe1e7aa425130dda42663e7d66c82f20a8e695f1507d1",
+  "triangles": 212,
+  "prop_target": 1500,
+  "export_texture_containers_exact": {
+    "src/bin/Data/Object1/stone_statue02.OZJ": "e1d4f7b95afae6c9936eb117a71592e94322b041efafa887bcdf6d731e4a630b"
+  },
+  "client_verified": false,
+  "proofs": {
+    "converter": {
+      "status": "PASS",
+      "bounds_before": [
+        [
+          -54.56,
+          -54.34,
+          0.0
+        ],
+        [
+          54.62,
+          56.47,
+          399.99
+        ]
+      ],
+      "bounds_after": [
+        [
+          -54.56,
+          -54.34,
+          0.0
+        ],
+        [
+          54.62,
+          56.47,
+          399.99
+        ]
+      ],
+      "skeleton_actions": "EQUIVALENT",
+      "full_comparison": "DIFFERENT",
+      "sha256": "bd36218ec97576af5fbbe1e7aa425130dda42663e7d66c82f20a8e695f1507d1",
+      "textures_frozen": true,
+      "client_verified": false
+    },
+    "authored_triangles": {
+      "status": "PASS",
+      "triangles": 212,
+      "one_to_one_triangle_match": true,
+      "area_metrics": {
+        "minimum_geometry_area": 25.140722602953506,
+        "minimum_uv_area": 3.425270455092999e-05,
+        "zero_geometry": 0,
+        "zero_uv": 0
+      },
+      "baseline_area_metrics": {
+        "minimum_geometry_area": 25.142575128478516,
+        "minimum_uv_area": 7.263230477860816e-05,
+        "zero_geometry": 0,
+        "zero_uv": 0
+      },
+      "protected_contract": {
+        "exact_plinth_triangles": 0,
+        "policy": "Angel plinth triangle/UV/bone identity; per-root extrema and all ground-contact vertices retained"
+      },
+      "every_authored_triangle_matches_material_bone_position_uv": true,
+      "maximum_position_delta": 9.999999992515995e-07,
+      "position_tolerance": 0.0003,
+      "uv_tolerance": 1e-06,
+      "uv_layers": [
+        "Float2"
+      ],
+      "packed_images": {
+        "stone_statue02.jpg": [
+          256,
+          512
+        ],
+        "stone_statue02.jpg.001": [
+          64,
+          128
+        ],
+        "stone_statue02.jpg.002": [
+          64,
+          128
+        ]
+      },
+      "per_root_contract": {
+        "0": {
+          "bounds_before": [
+            [
+              -54.5648,
+              -54.337898,
+              0.0
+            ],
+            [
+              54.624401,
+              56.4729,
+              399.986694
+            ]
+          ],
+          "bounds_after": [
+            [
+              -54.5648,
+              -54.337898,
+              0.0
+            ],
+            [
+              54.624401,
+              56.4729,
+              399.986694
+            ]
+          ],
+          "ground_contacts": 6,
+          "maximum_contact_delta": 0.0
+        }
+      }
+    },
+    "raw_normals": {
+      "status": "PASS",
+      "maximum_direction_delta": 7.1124758078355e-07,
+      "tolerance": 0.001,
+      "materials": {
+        "stone_statue02.jpg": 7.1124758078355e-07
+      },
+      "frames": [
+        {
+          "frame": 0,
+          "maximum_direction_delta": 7.1124758078355e-07
+        }
+      ],
+      "authored_corners": 636,
+      "method": "Blender authored split corner normal against actual BMD raw normal node/vector, each through full baseline/final hierarchy in the static bind/action frame"
+    },
+    "contacts": {
+      "status": "PASS",
+      "protected_original_vertices": 28,
+      "maximum_position_delta": 0.0,
+      "position_tolerance": 0.0003,
+      "policy": "Original pillar shell/cap/base anchors; memorial ground/base and capital/pyramid perimeter anchors; angel complete plinth and head anchors"
+    }
+  }
+}

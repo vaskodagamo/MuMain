@@ -1,0 +1,28 @@
+{
+  "Fence03": {
+    "src/bin/Data/Object1/Fence03.bmd": "3c4507f510bda323fda43775559499ec028a8c58f797761459fa84896216a07c",
+    "src/bin/Data/Object1/joint.OZJ": "ab1b30fc23a5d937dd33434f4014d0c036d56e6c4f74583e0c4c7b795631fb15"
+  },
+  "Grass01": {
+    "src/bin/Data/Object1/Grass01.bmd": "d77daca6778078e17097831edf0a704d4e197db59892cbc4f1387c6f99eb7f32",
+    "src/bin/Data/Object1/tree_08.OZT": "a1d60fa0bb30b7ceddbd52a7c74771929f3902052c460d6b015dbfdf34b47d78"
+  },
+  "Grass04": {
+    "src/bin/Data/Object1/Grass04.bmd": "c4f68a1ff5bb6a5ac7228eb5d13232b9fd1db737f5428210600860b04dd86fe8",
+    "src/bin/Data/Object1/tree_01.OZT": "8cf7925f6ded30b83a2ecf6856617b5c823e5abb7aaccea7acb73fc7403ea0d6",
+    "src/bin/Data/Object1/tree_02.OZT": "472a7d0305c6af309c431cd62c8adc8301a16ef8d97499ef058dd87282b7a4be"
+  },
+  "Grass05": {
+    "src/bin/Data/Object1/Grass05.bmd": "1f13a8c297a31afc6ffe1ab61f84b991e6c3cb8fa8096a967119995044d674e4",
+    "src/bin/Data/Object1/tree_09.OZT": "cb9cf4565ffda802131cde6b53e64a66550c2949efbf3b123f2f73a00aa65349"
+  },
+  "Grass06": {
+    "src/bin/Data/Object1/Grass06.bmd": "fc115c8c1ccaa3bf8410921513efedd98213f7e81c968ebe80379976839000d3",
+    "src/bin/Data/Object1/tree_09.OZT": "cb9cf4565ffda802131cde6b53e64a66550c2949efbf3b123f2f73a00aa65349"
+  },
+  "HouseEtc01": {
+    "src/bin/Data/Object1/HouseEtc01.bmd": "646273f66d753761d78bfc04c33ad9ba73adf4b87e69a2c376a8c530e8fff22c",
+    "src/bin/Data/Object1/c_wall04.OZJ": "c7ba893ef3542cb9bb265ef7735c1d7d2c2bf58f7284d8cff8f0940860828ed3",
+    "src/bin/Data/Object1/c_wall06.OZJ": "81c037340624b795b295c58071bc26f66f785c20be11cddfd304e585b10c77f4"
+  }
+}

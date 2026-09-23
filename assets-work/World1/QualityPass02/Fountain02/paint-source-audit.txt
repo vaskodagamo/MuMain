@@ -1,0 +1,5 @@
+00:00.608  blend            | Read blend: "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Fountain02/Waterspout01/source.blend"
+{"status": "PASS", "export_material": "reagon_waterspout.jpg", "authored_packed_JPEG_sha256": "9bb92a090461292e0b2bb3b5b249b3082956c51b1798ae69dc1679723753e53b", "baseline_reference_painting": "Exact original baseline JPEG payload retained", "dimensions": [128, 128], "method": "Packed authored bytes equal actual final OZJ payload; reference packed bytes equal frozen baseline payload"}
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:49:19)
+
+Blender quit

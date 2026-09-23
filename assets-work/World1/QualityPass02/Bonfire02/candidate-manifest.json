@@ -1,0 +1,11 @@
+{
+  "asset": "Bonfire01",
+  "triangles": 518,
+  "protected_effect_triangles": 38,
+  "bmd_sha256": "5c0cba3c0d56711b96c03cc216ef2bc7c73c1fe1e138caf6c3a460046dcb0d35",
+  "source_sha256": "880817b14975a1147dfea5cc27b729c7d6d6afcbe77a1a60298f736122e23fb9",
+  "textures": {
+    "fire_01.OZJ": "1b5f30547a9edd7877005a40c09946294c5772ac2b5953d3ffa92161c9a98294",
+    "fire_02.OZJ": "e84366780b0047b3ad4232b114703835b4bff3728aa5ff9872cfd8fa170c9086"
+  }
+}

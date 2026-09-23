@@ -1,0 +1,180 @@
+{
+  "status": "PASS",
+  "maximum_direction_delta": 0.0002905200337169986,
+  "tolerance": 0.001,
+  "materials": {
+    "tile_02.jpg": 0.00010275349588324753,
+    "tile_wood01.jpg": 0.0002905200337169986,
+    "tile_house01.jpg": 0,
+    "tile_ston04.jpg": 6.648958236682502e-05,
+    "tile_wood03.jpg": 8.780312456283709e-07,
+    "tile_wood02.jpg": 6.221203568374461e-05,
+    "tile_windows01.jpg": 4.13240983886182e-05,
+    "bridge_01.jpg": 5.812295723049376e-05,
+    "tile_space01.jpg": 5.907023286362932e-05
+  },
+  "frames": [
+    {
+      "frame": 0,
+      "maximum_direction_delta": 0.0002905200337169986
+    },
+    {
+      "frame": 1,
+      "maximum_direction_delta": 0.0002905200337169986
+    },
+    {
+      "frame": 2,
+      "maximum_direction_delta": 0.0002905200337169986
+    },
+    {
+      "frame": 3,
+      "maximum_direction_delta": 0.0002905200337169986
+    },
+    {
+      "frame": 4,
+      "maximum_direction_delta": 0.0002905200337169986
+    },
+    {
+      "frame": 5,
+      "maximum_direction_delta": 0.0002905200337169986
+    },
+    {
+      "frame": 6,
+      "maximum_direction_delta": 0.0002905200337169986
+    },
+    {
+      "frame": 7,
+      "maximum_direction_delta": 0.0002905200337169986
+    },
+    {
+      "frame": 8,
+      "maximum_direction_delta": 0.0002905200337169986
+    },
+    {
+      "frame": 9,
+      "maximum_direction_delta": 0.0002905200337169986
+    },
+    {
+      "frame": 10,
+      "maximum_direction_delta": 0.0002905200337169986
+    },
+    {
+      "frame": 11,
+      "maximum_direction_delta": 0.0002905200337169986
+    },
+    {
+      "frame": 12,
+      "maximum_direction_delta": 0.0002905200337169986
+    },
+    {
+      "frame": 13,
+      "maximum_direction_delta": 0.0002905200337169986
+    },
+    {
+      "frame": 14,
+      "maximum_direction_delta": 0.0002905200337169986
+    },
+    {
+      "frame": 15,
+      "maximum_direction_delta": 0.0002905200337169986
+    },
+    {
+      "frame": 16,
+      "maximum_direction_delta": 0.0002905200337169986
+    },
+    {
+      "frame": 17,
+      "maximum_direction_delta": 0.0002905200337169986
+    },
+    {
+      "frame": 18,
+      "maximum_direction_delta": 0.0002905200337169986
+    },
+    {
+      "frame": 19,
+      "maximum_direction_delta": 0.0002905200337169986
+    },
+    {
+      "frame": 20,
+      "maximum_direction_delta": 0.0002905200337169986
+    },
+    {
+      "frame": 21,
+      "maximum_direction_delta": 0.0002905200337169986
+    },
+    {
+      "frame": 22,
+      "maximum_direction_delta": 0.0002905200337169986
+    },
+    {
+      "frame": 23,
+      "maximum_direction_delta": 0.0002905200337169986
+    },
+    {
+      "frame": 24,
+      "maximum_direction_delta": 0.0002905200337169986
+    },
+    {
+      "frame": 25,
+      "maximum_direction_delta": 0.0002905200337169986
+    },
+    {
+      "frame": 26,
+      "maximum_direction_delta": 0.0002905200337169986
+    },
+    {
+      "frame": 27,
+      "maximum_direction_delta": 0.0002905200337169986
+    },
+    {
+      "frame": 28,
+      "maximum_direction_delta": 0.0002905200337169986
+    },
+    {
+      "frame": 29,
+      "maximum_direction_delta": 0.0002905200337169986
+    },
+    {
+      "frame": 30,
+      "maximum_direction_delta": 0.0002905200337169986
+    },
+    {
+      "frame": 31,
+      "maximum_direction_delta": 0.0002905200337169986
+    },
+    {
+      "frame": 32,
+      "maximum_direction_delta": 0.0002905200337169986
+    },
+    {
+      "frame": 33,
+      "maximum_direction_delta": 0.0002905200337169986
+    },
+    {
+      "frame": 34,
+      "maximum_direction_delta": 0.0002905200337169986
+    },
+    {
+      "frame": 35,
+      "maximum_direction_delta": 0.0002905200337169986
+    },
+    {
+      "frame": 36,
+      "maximum_direction_delta": 0.0002905200337169986
+    },
+    {
+      "frame": 37,
+      "maximum_direction_delta": 0.0002905200337169986
+    },
+    {
+      "frame": 38,
+      "maximum_direction_delta": 0.0002905200337169986
+    },
+    {
+      "frame": 39,
+      "maximum_direction_delta": 0.0002905200337169986
+    }
+  ],
+  "authored_corners": 4482,
+  "method": "Blender authored split corner normal against actual BMD raw normal node/vector, each through full baseline/final hierarchy at40frames"
+}

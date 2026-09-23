@@ -1,0 +1,39 @@
+00:00.717  blend            | Read blend: "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Wells02/Well03/source.blend"
+skipping reference object 'Well03' (REF_ collection or mu_reference)
+
+Blender Source Tools: exporting Well03_mu_export
+- Baking...
+- /private/var/folders/5c/gyglnk2d6mx3v2m0frrgvl2w0000gn/T/mu_export_jb3ywcnq/Well03_mu_export.smd
+- Exported 4 bones
+- Exported 1 frames
+- Exported 744 polys
+- Exported 1 materials
+   jar_01.jpg
+- SMD export took 0.020631074905395508 
+
+
+Blender Source Tools: exporting Well03_skeleton
+- Baking...
+- /private/var/folders/5c/gyglnk2d6mx3v2m0frrgvl2w0000gn/T/mu_export_jb3ywcnq/anims/Well03_a00.smd
+- Exported 4 bones
+- Exported 1 frames
+- SMD export took 0.0009641647338867188 
+
+2 files exported in 0.0 seconds
+Info: 2 files exported in 0.0 seconds
++ /Users/lukasmac/Documents/claude-test-mumain/MuMain/out/build/macos-arm64/tools/bmdconv/Release/bmdconv smd2bmd /var/folders/5c/gyglnk2d6mx3v2m0frrgvl2w0000gn/T/mu_export_jb3ywcnq/Well03_mu_export.smd /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Wells02/Well03/exports/Well03.bmd --anim /var/folders/5c/gyglnk2d6mx3v2m0frrgvl2w0000gn/T/mu_export_jb3ywcnq/anims/Well03_a00.smd --name Well03.smd
+wrote /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Wells02/Well03/exports/Well03.bmd (1 action(s))
++ /Users/lukasmac/Documents/claude-test-mumain/MuMain/out/build/macos-arm64/tools/bmdconv/Release/bmdconv info /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Wells02/Well03/exports/Well03.bmd
+model /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Wells02/Well03/exports/Well03.bmd
+  name field: Well03.smd  version: 12
+  meshes: 1  bones: 4  actions: 1  triangles: 744
+  bounds (bind pose): min -51.57 -48.73 -0.07  max 63.52 53.38 100.97  size 115.08 102.11 101.04
+  mesh 0: triangles=744 vertices=395 normals=390 uvs=394 texture=jar_01.jpg
+  bone 0: "Cylinder07" parent=-1
+  bone 1: "Cylinder08" parent=-1
+  bone 2: "Cylinder09" parent=-1
+  bone 3: "Cylinder10" parent=-1
+  action 0: keys=1 lock=0
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:49:19)
+
+Blender quit

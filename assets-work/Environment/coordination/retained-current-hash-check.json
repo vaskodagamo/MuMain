@@ -1,0 +1,428 @@
+{
+  "status": "PASS",
+  "assets": {
+    "Tree01": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 3
+    },
+    "Tree02": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 3
+    },
+    "Tree03": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 2
+    },
+    "Tree04": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 2
+    },
+    "Tree05": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 2
+    },
+    "Tree06": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 2
+    },
+    "Tree07": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 3
+    },
+    "Tree08": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 2
+    },
+    "Tree11": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 3
+    },
+    "Tree12": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 3
+    },
+    "Tree13": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 3
+    },
+    "Grass01": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 2
+    },
+    "Grass02": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 2
+    },
+    "Grass07": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 2
+    },
+    "Grass08": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 2
+    },
+    "Fence01": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 2
+    },
+    "Fence02": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 2
+    },
+    "Fence03": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 2
+    },
+    "Fence04": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 2
+    },
+    "Furniture03": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 2
+    },
+    "Furniture04": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 2
+    },
+    "Furniture05": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 2
+    },
+    "Furniture01": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 5
+    },
+    "Furniture02": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 3
+    },
+    "Furniture06": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 3
+    },
+    "Furniture07": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 2
+    },
+    "Beer01": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 2
+    },
+    "Beer02": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 6
+    },
+    "Beer03": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 3
+    },
+    "Candle01": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 3
+    },
+    "TreasureChest01": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 2
+    },
+    "TreasureDrum01": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 2
+    },
+    "House02": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 3
+    },
+    "Stone01": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 3
+    },
+    "Stone02": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 3
+    },
+    "Stone03": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 2
+    },
+    "Stone04": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 2
+    },
+    "Stone05": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 2
+    },
+    "StoneStatue02": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 2
+    },
+    "Tomb01": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 2
+    },
+    "Tomb02": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 2
+    },
+    "Tomb03": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 2
+    },
+    "SteelWall01": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 3
+    },
+    "SteelWall02": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 3
+    },
+    "SteelWall03": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 3
+    },
+    "SteelDoor01": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 3
+    },
+    "HouseEtc03": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 3
+    },
+    "Sign01": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 4
+    },
+    "Sign02": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 2
+    },
+    "Curtain01": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 3
+    },
+    "StoneWall04": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 3
+    },
+    "Carriage01": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 4
+    },
+    "Carriage02": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 2
+    },
+    "Carriage03": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 3
+    },
+    "Carriage04": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 3
+    },
+    "Straw01": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 2
+    },
+    "Straw02": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 2
+    },
+    "Cannon01": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 2
+    },
+    "Cannon02": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 2
+    },
+    "Cannon03": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 2
+    },
+    "Hanging01": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 2
+    },
+    "Bridge01": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 3
+    },
+    "BridgeStone01": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 5
+    },
+    "StreetLight01": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 3
+    },
+    "Stair01": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 2
+    },
+    "StoneWall01": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 5
+    },
+    "StoneWall02": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 5
+    },
+    "StoneWall03": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 4
+    },
+    "StoneWall05": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 3
+    },
+    "StoneWall06": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 4
+    },
+    "House05": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 4
+    },
+    "Tent01": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 3
+    },
+    "Ship01": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 11
+    },
+    "FireLight01": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 4
+    },
+    "FireLight02": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 4
+    },
+    "DoungeonGate01": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/retention-gate.json",
+      "dependencies_checked": 2
+    },
+    "HouseWall02": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/companion-review.json",
+      "dependencies_checked": 6
+    },
+    "HouseWall03": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/companion-review.json",
+      "dependencies_checked": 2
+    },
+    "HouseEtc02": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/companion-review.json",
+      "dependencies_checked": 9
+    },
+    "StoneMuWall01": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/companion-review.json",
+      "dependencies_checked": 6
+    },
+    "HouseEtc01": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/masonry-retention-review.json",
+      "dependencies_checked": 3
+    },
+    "StoneMuWall02": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/masonry-retention-review.json",
+      "dependencies_checked": 4
+    },
+    "StoneMuWall03": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/masonry-retention-review.json",
+      "dependencies_checked": 3
+    },
+    "StoneMuWall04": {
+      "decision": "RETAIN",
+      "evidence": "assets-work/Environment/coordination/masonry-retention-review.json",
+      "dependencies_checked": 4
+    }
+  },
+  "dependency_references_checked": 254,
+  "client_verified": false,
+  "scope": "Current retained assets match individually reviewed BMD and texture hashes; not new remakes."
+}

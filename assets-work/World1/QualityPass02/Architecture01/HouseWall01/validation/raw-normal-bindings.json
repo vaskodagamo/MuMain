@@ -1,0 +1,20 @@
+{
+  "file": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Architecture01/HouseWall01/exports/HouseWall01.bmd",
+  "mesh_bindings": [
+    {
+      "mesh": 0,
+      "material": "tile_wood01.jpg",
+      "vertex_to_normal_node_mismatch_corner_counts": {}
+    },
+    {
+      "mesh": 1,
+      "material": "tile_wood02.jpg",
+      "vertex_to_normal_node_mismatch_corner_counts": {}
+    },
+    {
+      "mesh": 2,
+      "material": "tile_ston04.jpg",
+      "vertex_to_normal_node_mismatch_corner_counts": {}
+    }
+  ]
+}

@@ -1,0 +1,1571 @@
+{
+  "decision": "ACCEPT Fountain02 final curve02 + paint02 at exact hashes",
+  "files": {
+    "Waterspout01/source.blend": "43dc4960f0105a39806018b901e7da1a2c17ccb2d2358052ad123e7a76dd16c8",
+    "Waterspout01/exports/Waterspout01.bmd": "366d0fc591b50a269b6ac573d2493eee7572e88d5e3e1ef8c5c2c1fa1196c5df",
+    "Waterspout01/exports/reagon_waterspout.OZJ": "cc8e0438e4e63531650b5158244d6a618400f52729448d534cee7236387af909"
+  },
+  "triangles": 921,
+  "art_rationale": "Broader torso and connected chest/neck planes replace the thin black trunk; bowed membranes and rounded proximal wing chords make the dragon read as a fuller sculpture. Scoped charcoal painting unifies body and wings, retaining the established basin/rock palette. Actual placement and reverse show improved wing/body mass with surrounding retained masonry; reduced front gain is modest, rear stronger. Water0/10/20 remains attached without new visible gaps.",
+  "protected_contract": {
+    "required_nondragon_faces": 256,
+    "total_protected_faces": 335,
+    "all_required_present": true,
+    "shared_frozen_textures": {
+      "src/bin/Data/Object1/stone_statue02.OZJ": "e1d4f7b95afae6c9936eb117a71592e94322b041efafa887bcdf6d731e4a630b",
+      "src/bin/Data/Object1/ston01.OZJ": "593c4ec54ab68801d842b15f2b397b02918526d85190b613c875106110d33784",
+      "src/bin/Data/Object1/ston02.OZJ": "09d1dbbbc7672fe05d82a89a115bee1ec538e615b3f39e93b9e244e7cd61d151"
+    },
+    "independent_final_export_FASTDCT_unselected_RGB_error": 0,
+    "current_context_hashes": "All6 context assets plus textures match current integration exactly"
+  },
+  "proofs": {
+    "summary": {
+      "status": "PASS",
+      "bounds_before": [
+        [
+          -199.06,
+          -199.74,
+          -0.14
+        ],
+        [
+          199.23,
+          198.55,
+          311.2
+        ]
+      ],
+      "bounds_after": [
+        [
+          -199.06,
+          -199.74,
+          -0.14
+        ],
+        [
+          199.23,
+          198.55,
+          311.2
+        ]
+      ],
+      "skeleton_actions": "EQUIVALENT",
+      "full_comparison": "DIFFERENT",
+      "sha256": "366d0fc591b50a269b6ac573d2493eee7572e88d5e3e1ef8c5c2c1fa1196c5df",
+      "textures_frozen": 3,
+      "edited_atlas": "reagon_waterspout.OZJ; protected basin/filter-margin decoded pixels exact",
+      "client_verified": false
+    },
+    "authored-match": {
+      "status": "PASS",
+      "triangles": 921,
+      "one_to_one_triangle_match": true,
+      "area_metrics": {
+        "minimum_geometry_area": 0.12630201778868977,
+        "minimum_uv_area": 2.3012483071904732e-07,
+        "zero_geometry": 0,
+        "zero_uv": 0
+      },
+      "baseline_area_metrics": {
+        "minimum_geometry_area": 0.12630201778868977,
+        "minimum_uv_area": 2.3012483071904732e-07,
+        "zero_geometry": 0,
+        "zero_uv": 0
+      },
+      "protected_contract": {
+        "exact_protected_triangles": 335,
+        "policy": "All3 non-dragon material slots and34 basin triangles inside dragon slot1 retain each corner position/UV/bone and winding"
+      },
+      "every_authored_triangle_matches_material_bone_position_uv": true,
+      "maximum_position_delta": 0.00010724707030362879,
+      "position_tolerance": 0.0003,
+      "uv_tolerance": 1e-06,
+      "uv_layers": [
+        "Float2"
+      ],
+      "packed_images": {
+        "reagon_waterspout.jpg": [
+          128,
+          128
+        ],
+        "reagon_waterspout.jpg.001": [
+          128,
+          128
+        ],
+        "reagon_waterspout.jpg.002": [
+          128,
+          128
+        ],
+        "ston01.jpg": [
+          512,
+          512
+        ],
+        "ston01.jpg.001": [
+          512,
+          512
+        ],
+        "ston02.jpg": [
+          128,
+          128
+        ],
+        "ston02.jpg.001": [
+          128,
+          128
+        ],
+        "stone_statue02.jpg": [
+          256,
+          512
+        ],
+        "stone_statue02.jpg.001": [
+          64,
+          128
+        ]
+      },
+      "per_root_contract": {
+        "0": {
+          "bounds_before": [
+            [
+              -199.061005,
+              -199.743622,
+              -0.1378
+            ],
+            [
+              199.234314,
+              198.551697,
+              311.204803
+            ]
+          ],
+          "bounds_after": [
+            [
+              -199.061005,
+              -199.743622,
+              -0.1378
+            ],
+            [
+              199.234314,
+              198.551697,
+              311.204803
+            ]
+          ],
+          "ground_contacts": 12,
+          "maximum_contact_delta": 0.0
+        },
+        "3": {
+          "bounds_before": [
+            [
+              -28.7635,
+              -129.939987,
+              26.381393
+            ],
+            [
+              21.672701,
+              -79.419594,
+              171.5522
+            ]
+          ],
+          "bounds_after": [
+            [
+              -28.763493,
+              -129.939957,
+              26.381378
+            ],
+            [
+              21.672703,
+              -79.419586,
+              171.552185
+            ]
+          ],
+          "ground_contacts": 4,
+          "maximum_contact_delta": 3.799999998932435e-05
+        },
+        "2": {
+          "bounds_before": [
+            [
+              -12.5953,
+              -64.308601,
+              231.689896
+            ],
+            [
+              5.5046,
+              -35.18,
+              266.793091
+            ]
+          ],
+          "bounds_after": [
+            [
+              -12.595298,
+              -64.30867,
+              231.690002
+            ],
+            [
+              5.504599,
+              -35.180019,
+              266.793152
+            ]
+          ],
+          "ground_contacts": 2,
+          "maximum_contact_delta": 0.00010599999998817111
+        },
+        "1": {
+          "bounds_before": [
+            [
+              -7.373,
+              -9.125202,
+              270.349304
+            ],
+            [
+              0.2822,
+              15.3417,
+              277.419098
+            ]
+          ],
+          "bounds_after": [
+            [
+              -7.373,
+              -9.1252,
+              270.349304
+            ],
+            [
+              0.2822,
+              15.341702,
+              277.419098
+            ]
+          ],
+          "ground_contacts": 6,
+          "maximum_contact_delta": 2.000000000279556e-06
+        },
+        "6": {
+          "bounds_before": [
+            [
+              -166.193893,
+              -161.811798,
+              33.615002
+            ],
+            [
+              159.398407,
+              162.2957,
+              45.614201
+            ]
+          ],
+          "bounds_after": [
+            [
+              -166.193893,
+              -161.811798,
+              33.615002
+            ],
+            [
+              159.398407,
+              162.2957,
+              45.614201
+            ]
+          ],
+          "ground_contacts": 15,
+          "maximum_contact_delta": 0.0
+        },
+        "7": {
+          "bounds_before": [
+            [
+              -126.590607,
+              -107.543098,
+              35.684299
+            ],
+            [
+              21.988501,
+              74.136101,
+              45.614201
+            ]
+          ],
+          "bounds_after": [
+            [
+              -126.590607,
+              -107.543098,
+              35.684299
+            ],
+            [
+              21.988501,
+              74.136101,
+              45.614201
+            ]
+          ],
+          "ground_contacts": 3,
+          "maximum_contact_delta": 0.0
+        },
+        "8": {
+          "bounds_before": [
+            [
+              -52.548199,
+              -106.215103,
+              35.490898
+            ],
+            [
+              108.779495,
+              76.291199,
+              45.614201
+            ]
+          ],
+          "bounds_after": [
+            [
+              -52.548199,
+              -106.215096,
+              35.490898
+            ],
+            [
+              108.779495,
+              76.291206,
+              45.614201
+            ]
+          ],
+          "ground_contacts": 6,
+          "maximum_contact_delta": 8.000000008223651e-06
+        }
+      }
+    },
+    "authored-raw-normals": {
+      "status": "PASS",
+      "maximum_direction_delta": 0.0004746254519539666,
+      "tolerance": 0.001,
+      "materials": {
+        "stone_statue02.jpg": 7.42071843027397e-07,
+        "reagon_waterspout.jpg": 0.0004746254519539666,
+        "ston01.jpg": 6.677234107600681e-05,
+        "ston02.jpg": 6.494403360269789e-05
+      },
+      "frames": [
+        {
+          "frame": 0,
+          "maximum_direction_delta": 0.0004746254519539666
+        },
+        {
+          "frame": 1,
+          "maximum_direction_delta": 0.0004746254519539666
+        },
+        {
+          "frame": 2,
+          "maximum_direction_delta": 0.0004746254519539666
+        },
+        {
+          "frame": 3,
+          "maximum_direction_delta": 0.0004746254519539666
+        },
+        {
+          "frame": 4,
+          "maximum_direction_delta": 0.0004746254519539666
+        },
+        {
+          "frame": 5,
+          "maximum_direction_delta": 0.0004746254519539666
+        },
+        {
+          "frame": 6,
+          "maximum_direction_delta": 0.0004746254519539666
+        },
+        {
+          "frame": 7,
+          "maximum_direction_delta": 0.0004746254519539666
+        },
+        {
+          "frame": 8,
+          "maximum_direction_delta": 0.0004746254519539666
+        },
+        {
+          "frame": 9,
+          "maximum_direction_delta": 0.0004746254519539666
+        },
+        {
+          "frame": 10,
+          "maximum_direction_delta": 0.0004746254519539666
+        },
+        {
+          "frame": 11,
+          "maximum_direction_delta": 0.0004746254519539666
+        },
+        {
+          "frame": 12,
+          "maximum_direction_delta": 0.0004746254519539666
+        },
+        {
+          "frame": 13,
+          "maximum_direction_delta": 0.0004746254519539666
+        },
+        {
+          "frame": 14,
+          "maximum_direction_delta": 0.0004746254519539666
+        },
+        {
+          "frame": 15,
+          "maximum_direction_delta": 0.0004746254519539666
+        },
+        {
+          "frame": 16,
+          "maximum_direction_delta": 0.0004746254519539666
+        },
+        {
+          "frame": 17,
+          "maximum_direction_delta": 0.0004746254519539666
+        },
+        {
+          "frame": 18,
+          "maximum_direction_delta": 0.0004746254519539666
+        },
+        {
+          "frame": 19,
+          "maximum_direction_delta": 0.0004746254519539666
+        },
+        {
+          "frame": 20,
+          "maximum_direction_delta": 0.0004746254519539666
+        }
+      ],
+      "authored_corners": 2763,
+      "method": "Blender authored split corner normal against actual BMD raw normal node/vector, each through full baseline/final hierarchy at21frames"
+    },
+    "posed-authored-match": {
+      "status": "PASS",
+      "method": "Every authored source triangle corner mapped one-to-one to final SMD corner, transformed through original intended raw baseline action and actual final raw BMD action at all21 keys",
+      "corners": 2763,
+      "frames": [
+        {
+          "frame": 0,
+          "maximum_authored_corner_distance": 0.0001312649776773665
+        },
+        {
+          "frame": 1,
+          "maximum_authored_corner_distance": 0.0001312649776773665
+        },
+        {
+          "frame": 2,
+          "maximum_authored_corner_distance": 0.0001312649776773665
+        },
+        {
+          "frame": 3,
+          "maximum_authored_corner_distance": 0.0001312649776773665
+        },
+        {
+          "frame": 4,
+          "maximum_authored_corner_distance": 0.0001312649776773665
+        },
+        {
+          "frame": 5,
+          "maximum_authored_corner_distance": 0.0001312649776773665
+        },
+        {
+          "frame": 6,
+          "maximum_authored_corner_distance": 0.0001312649776773665
+        },
+        {
+          "frame": 7,
+          "maximum_authored_corner_distance": 0.0001312649776773665
+        },
+        {
+          "frame": 8,
+          "maximum_authored_corner_distance": 0.0001312649776773665
+        },
+        {
+          "frame": 9,
+          "maximum_authored_corner_distance": 0.0001312649776773665
+        },
+        {
+          "frame": 10,
+          "maximum_authored_corner_distance": 0.0001312649776773665
+        },
+        {
+          "frame": 11,
+          "maximum_authored_corner_distance": 0.0001312649776773665
+        },
+        {
+          "frame": 12,
+          "maximum_authored_corner_distance": 0.0001312649776773665
+        },
+        {
+          "frame": 13,
+          "maximum_authored_corner_distance": 0.0001312649776773665
+        },
+        {
+          "frame": 14,
+          "maximum_authored_corner_distance": 0.0001312649776773665
+        },
+        {
+          "frame": 15,
+          "maximum_authored_corner_distance": 0.0001312649776773665
+        },
+        {
+          "frame": 16,
+          "maximum_authored_corner_distance": 0.0001312649776773665
+        },
+        {
+          "frame": 17,
+          "maximum_authored_corner_distance": 0.0001312649776773665
+        },
+        {
+          "frame": 18,
+          "maximum_authored_corner_distance": 0.0001312649776773665
+        },
+        {
+          "frame": 19,
+          "maximum_authored_corner_distance": 0.0001312649776773665
+        },
+        {
+          "frame": 20,
+          "maximum_authored_corner_distance": 0.0001312649776773665
+        }
+      ],
+      "maximum": 0.0001312649776773665,
+      "tolerance": 0.0003,
+      "normal_proof": "raw-normal-bindings.json evaluates actual raw normal ownership/direction through every hierarchical frame"
+    },
+    "raw-motion-equivalence": {
+      "status": "PASS",
+      "raw_tail_byte_identical": false,
+      "baseline_raw_motion_sha256": "a8de5916cf57c22abb5b60e8bc888352e7dc962931d541df044a1d84a9a68098",
+      "final_raw_motion_sha256": "f5f7b2038bc1d03039187d66c7133670eb57424c029ba71491aaacf0d46f566d",
+      "maximum_raw_float_delta": 4.57763671875e-05,
+      "raw_float_components": 1386,
+      "action_metadata": [
+        [
+          21,
+          0,
+          ""
+        ]
+      ],
+      "frames": [
+        {
+          "frame": 0,
+          "raw_world_matrix_delta": 3.0517578125e-05,
+          "raw_posed_bounds_delta": 0.0
+        },
+        {
+          "frame": 1,
+          "raw_world_matrix_delta": 3.0517578125e-05,
+          "raw_posed_bounds_delta": 0.0
+        },
+        {
+          "frame": 2,
+          "raw_world_matrix_delta": 3.0517578125e-05,
+          "raw_posed_bounds_delta": 0.0
+        },
+        {
+          "frame": 3,
+          "raw_world_matrix_delta": 3.0517578125e-05,
+          "raw_posed_bounds_delta": 0.0
+        },
+        {
+          "frame": 4,
+          "raw_world_matrix_delta": 3.0517578125e-05,
+          "raw_posed_bounds_delta": 0.0
+        },
+        {
+          "frame": 5,
+          "raw_world_matrix_delta": 3.0517578125e-05,
+          "raw_posed_bounds_delta": 0.0
+        },
+        {
+          "frame": 6,
+          "raw_world_matrix_delta": 3.0517578125e-05,
+          "raw_posed_bounds_delta": 0.0
+        },
+        {
+          "frame": 7,
+          "raw_world_matrix_delta": 4.57763671875e-05,
+          "raw_posed_bounds_delta": 0.0
+        },
+        {
+          "frame": 8,
+          "raw_world_matrix_delta": 3.0517578125e-05,
+          "raw_posed_bounds_delta": 0.0
+        },
+        {
+          "frame": 9,
+          "raw_world_matrix_delta": 4.57763671875e-05,
+          "raw_posed_bounds_delta": 0.0
+        },
+        {
+          "frame": 10,
+          "raw_world_matrix_delta": 3.0517578125e-05,
+          "raw_posed_bounds_delta": 0.0
+        },
+        {
+          "frame": 11,
+          "raw_world_matrix_delta": 3.0517578125e-05,
+          "raw_posed_bounds_delta": 0.0
+        },
+        {
+          "frame": 12,
+          "raw_world_matrix_delta": 3.0517578125e-05,
+          "raw_posed_bounds_delta": 0.0
+        },
+        {
+          "frame": 13,
+          "raw_world_matrix_delta": 3.0517578125e-05,
+          "raw_posed_bounds_delta": 0.0
+        },
+        {
+          "frame": 14,
+          "raw_world_matrix_delta": 3.0517578125e-05,
+          "raw_posed_bounds_delta": 0.0
+        },
+        {
+          "frame": 15,
+          "raw_world_matrix_delta": 3.0517578125e-05,
+          "raw_posed_bounds_delta": 0.0
+        },
+        {
+          "frame": 16,
+          "raw_world_matrix_delta": 3.0517578125e-05,
+          "raw_posed_bounds_delta": 0.0
+        },
+        {
+          "frame": 17,
+          "raw_world_matrix_delta": 3.0517578125e-05,
+          "raw_posed_bounds_delta": 0.0
+        },
+        {
+          "frame": 18,
+          "raw_world_matrix_delta": 3.0517578125e-05,
+          "raw_posed_bounds_delta": 0.0
+        },
+        {
+          "frame": 19,
+          "raw_world_matrix_delta": 3.0517578125e-05,
+          "raw_posed_bounds_delta": 0.0
+        },
+        {
+          "frame": 20,
+          "raw_world_matrix_delta": 3.0517578125e-05,
+          "raw_posed_bounds_delta": 0.0
+        }
+      ],
+      "local_component_tolerance": 0.0001,
+      "note": "Direct official export measured against existing static-validator local-motion precision .0001. Raw byte identity and float drift are reported separately, never claimed equivalent to exact baseline bytes."
+    },
+    "attachments": {
+      "status": "PASS",
+      "mouth_contact_vertices": 27,
+      "tolerance": 0.0003,
+      "particle_bones": [
+        1,
+        4
+      ],
+      "all21_frames": [
+        {
+          "frame": 0,
+          "particle_envelope_maximum_delta": 1.5377536293599222e-05,
+          "mouth_maximum_delta": 0.0,
+          "mouth_relative_to_water_root_delta": 1.9073486328125e-06
+        },
+        {
+          "frame": 1,
+          "particle_envelope_maximum_delta": 3.4172960028016885e-05,
+          "mouth_maximum_delta": 0.0,
+          "mouth_relative_to_water_root_delta": 1.9073486328125e-06
+        },
+        {
+          "frame": 2,
+          "particle_envelope_maximum_delta": 4.3168908301377394e-05,
+          "mouth_maximum_delta": 0.0,
+          "mouth_relative_to_water_root_delta": 1.9073486328125e-06
+        },
+        {
+          "frame": 3,
+          "particle_envelope_maximum_delta": 3.411968959808029e-05,
+          "mouth_maximum_delta": 0.0,
+          "mouth_relative_to_water_root_delta": 1.9073486328125e-06
+        },
+        {
+          "frame": 4,
+          "particle_envelope_maximum_delta": 3.4133014999720155e-05,
+          "mouth_maximum_delta": 0.0,
+          "mouth_relative_to_water_root_delta": 1.9073486328125e-06
+        },
+        {
+          "frame": 5,
+          "particle_envelope_maximum_delta": 4.3168908301377394e-05,
+          "mouth_maximum_delta": 0.0,
+          "mouth_relative_to_water_root_delta": 1.9073486328125e-06
+        },
+        {
+          "frame": 6,
+          "particle_envelope_maximum_delta": 4.315837287515549e-05,
+          "mouth_maximum_delta": 0.0,
+          "mouth_relative_to_water_root_delta": 1.9073486328125e-06
+        },
+        {
+          "frame": 7,
+          "particle_envelope_maximum_delta": 4.8290210346878675e-05,
+          "mouth_maximum_delta": 0.0,
+          "mouth_relative_to_water_root_delta": 1.9073486328125e-06
+        },
+        {
+          "frame": 8,
+          "particle_envelope_maximum_delta": 3.4172960028016885e-05,
+          "mouth_maximum_delta": 0.0,
+          "mouth_relative_to_water_root_delta": 1.9073486328125e-06
+        },
+        {
+          "frame": 9,
+          "particle_envelope_maximum_delta": 4.5935037913483794e-05,
+          "mouth_maximum_delta": 0.0,
+          "mouth_relative_to_water_root_delta": 1.9073486328125e-06
+        },
+        {
+          "frame": 10,
+          "particle_envelope_maximum_delta": 3.053247564999031e-05,
+          "mouth_maximum_delta": 0.0,
+          "mouth_relative_to_water_root_delta": 1.9073486328125e-06
+        },
+        {
+          "frame": 11,
+          "particle_envelope_maximum_delta": 3.4172960028016885e-05,
+          "mouth_maximum_delta": 0.0,
+          "mouth_relative_to_water_root_delta": 1.9073486328125e-06
+        },
+        {
+          "frame": 12,
+          "particle_envelope_maximum_delta": 1.5377536293599222e-05,
+          "mouth_maximum_delta": 0.0,
+          "mouth_relative_to_water_root_delta": 1.9073486328125e-06
+        },
+        {
+          "frame": 13,
+          "particle_envelope_maximum_delta": 1.52587890625e-05,
+          "mouth_maximum_delta": 0.0,
+          "mouth_relative_to_water_root_delta": 1.9073486328125e-06
+        },
+        {
+          "frame": 14,
+          "particle_envelope_maximum_delta": 4.320049916422319e-05,
+          "mouth_maximum_delta": 0.0,
+          "mouth_relative_to_water_root_delta": 1.9073486328125e-06
+        },
+        {
+          "frame": 15,
+          "particle_envelope_maximum_delta": 3.1514571460453614e-05,
+          "mouth_maximum_delta": 0.0,
+          "mouth_relative_to_water_root_delta": 1.9073486328125e-06
+        },
+        {
+          "frame": 16,
+          "particle_envelope_maximum_delta": 1.552469310388537e-05,
+          "mouth_maximum_delta": 0.0,
+          "mouth_relative_to_water_root_delta": 1.9073486328125e-06
+        },
+        {
+          "frame": 17,
+          "particle_envelope_maximum_delta": 3.057712467552452e-05,
+          "mouth_maximum_delta": 0.0,
+          "mouth_relative_to_water_root_delta": 1.9073486328125e-06
+        },
+        {
+          "frame": 18,
+          "particle_envelope_maximum_delta": 2.7771415288087914e-05,
+          "mouth_maximum_delta": 0.0,
+          "mouth_relative_to_water_root_delta": 1.9073486328125e-06
+        },
+        {
+          "frame": 19,
+          "particle_envelope_maximum_delta": 3.4172960028016885e-05,
+          "mouth_maximum_delta": 0.0,
+          "mouth_relative_to_water_root_delta": 1.9073486328125e-06
+        },
+        {
+          "frame": 20,
+          "particle_envelope_maximum_delta": 1.5377536293599222e-05,
+          "mouth_maximum_delta": 0.0,
+          "mouth_relative_to_water_root_delta": 1.9073486328125e-06
+        }
+      ],
+      "policy": "Original dragon points within14units of the water outlet retained; actual engine particle offsets sampled at extrema; all21 intended-v-final raw transforms checked"
+    },
+    "shading-contract": {
+      "status": "PASS",
+      "baseline_mean_opposing": [
+        {
+          "face": 185,
+          "corners": [
+            -0.13442021458987863,
+            0.6976973908901197,
+            -0.5924407772944712
+          ],
+          "mean": -0.009721200331410032
+        },
+        {
+          "face": 289,
+          "corners": [
+            0.01144257914320329,
+            0.5333707439946445,
+            -0.6278699490312323
+          ],
+          "mean": -0.027685541964461508
+        },
+        {
+          "face": 292,
+          "corners": [
+            -0.14959139206946181,
+            -0.5496888578010761,
+            0.3154976606777111
+          ],
+          "mean": -0.12792752973094226
+        },
+        {
+          "face": 295,
+          "corners": [
+            -0.2700316057861345,
+            -0.7126631307219118,
+            0.30996438408405785
+          ],
+          "mean": -0.22424345080799615
+        },
+        {
+          "face": 319,
+          "corners": [
+            -0.13843039857382972,
+            0.3155414826050345,
+            -0.5496461725590523
+          ],
+          "mean": -0.12417836284261585
+        },
+        {
+          "face": 322,
+          "corners": [
+            -0.27004927254484146,
+            0.2965303947031459,
+            -0.7126670447699943
+          ],
+          "mean": -0.2287286408705633
+        },
+        {
+          "face": 347,
+          "corners": [
+            -0.1384539604784545,
+            -0.549669155069029,
+            0.3155424160264267
+          ],
+          "mean": -0.12419356650701896
+        },
+        {
+          "face": 350,
+          "corners": [
+            -0.2700578232145286,
+            -0.7126755794063876,
+            0.2965774723441796
+          ],
+          "mean": -0.22871864342557888
+        },
+        {
+          "face": 375,
+          "corners": [
+            -0.23448235419751629,
+            0.3043771600520955,
+            -0.7643369426127611
+          ],
+          "mean": -0.2314807122527273
+        },
+        {
+          "face": 378,
+          "corners": [
+            -0.0983839465505032,
+            0.1140716171194,
+            -0.8559118246552738
+          ],
+          "mean": -0.28007471802879236
+        },
+        {
+          "face": 403,
+          "corners": [
+            0.07216890337062223,
+            -0.9620035430660138,
+            0.04558573077554086
+          ],
+          "mean": -0.28141630297328357
+        },
+        {
+          "face": 450,
+          "corners": [
+            0.07216631821902647,
+            0.027455769563123983,
+            -0.9619902451106876
+          ],
+          "mean": -0.2874560524428457
+        }
+      ],
+      "baseline_any_corner_opposing": [
+        {
+          "face": 107,
+          "corners": [
+            0.39796480460278644,
+            -0.667365390423101,
+            0.5280895436271054
+          ],
+          "mean": 0.08622965260226362
+        },
+        {
+          "face": 110,
+          "corners": [
+            0.13082526749580956,
+            -0.1843331874529623,
+            0.7596535140252016
+          ],
+          "mean": 0.23538186468934963
+        },
+        {
+          "face": 115,
+          "corners": [
+            0.8304206518419468,
+            -0.22785815137902393,
+            0.8839963394549467
+          ],
+          "mean": 0.4955196133059565
+        },
+        {
+          "face": 121,
+          "corners": [
+            -0.021107285104168892,
+            0.6419696477824786,
+            0.1703782369100742
+          ],
+          "mean": 0.2637468665294613
+        },
+        {
+          "face": 131,
+          "corners": [
+            0.044719030333610854,
+            -0.18256826515871782,
+            0.39089033179039734
+          ],
+          "mean": 0.08434703232176345
+        },
+        {
+          "face": 164,
+          "corners": [
+            0.6809478947400979,
+            -0.08841791724790879,
+            0.5701246655118625
+          ],
+          "mean": 0.3875515476680172
+        },
+        {
+          "face": 180,
+          "corners": [
+            0.8067021449987268,
+            0.3182784260896393,
+            -0.07855959222021056
+          ],
+          "mean": 0.34880699295605183
+        },
+        {
+          "face": 184,
+          "corners": [
+            -0.054843142957931655,
+            0.7101676947137316,
+            0.9205045539459148
+          ],
+          "mean": 0.5252763685672382
+        },
+        {
+          "face": 185,
+          "corners": [
+            -0.13442021458987863,
+            0.6976973908901197,
+            -0.5924407772944712
+          ],
+          "mean": -0.009721200331410032
+        },
+        {
+          "face": 187,
+          "corners": [
+            0.9003032003074122,
+            -0.8098427572428123,
+            0.14800861909931562
+          ],
+          "mean": 0.07948968738797184
+        },
+        {
+          "face": 211,
+          "corners": [
+            -0.5990858346601208,
+            0.7165955003592797,
+            0.48219254374570913
+          ],
+          "mean": 0.19990073648162268
+        },
+        {
+          "face": 250,
+          "corners": [
+            0.8559714470599008,
+            0.6411703846844888,
+            -0.0583772481210527
+          ],
+          "mean": 0.4795881945411123
+        },
+        {
+          "face": 251,
+          "corners": [
+            -0.029801001632591057,
+            0.8977467179813587,
+            -0.44519637818519014
+          ],
+          "mean": 0.14091644605452583
+        },
+        {
+          "face": 272,
+          "corners": [
+            0.8415576063573236,
+            -0.05484538782963814,
+            0.8574290975343514
+          ],
+          "mean": 0.5480471053540122
+        },
+        {
+          "face": 289,
+          "corners": [
+            0.01144257914320329,
+            0.5333707439946445,
+            -0.6278699490312323
+          ],
+          "mean": -0.027685541964461508
+        },
+        {
+          "face": 292,
+          "corners": [
+            -0.14959139206946181,
+            -0.5496888578010761,
+            0.3154976606777111
+          ],
+          "mean": -0.12792752973094226
+        },
+        {
+          "face": 295,
+          "corners": [
+            -0.2700316057861345,
+            -0.7126631307219118,
+            0.30996438408405785
+          ],
+          "mean": -0.22424345080799615
+        },
+        {
+          "face": 300,
+          "corners": [
+            -0.14046551526404366,
+            0.3476938984367921,
+            0.9172590418008976
+          ],
+          "mean": 0.374829141657882
+        },
+        {
+          "face": 316,
+          "corners": [
+            0.2538641122900112,
+            -0.4012922257604803,
+            0.914045422316293
+          ],
+          "mean": 0.255539102948608
+        },
+        {
+          "face": 319,
+          "corners": [
+            -0.13843039857382972,
+            0.3155414826050345,
+            -0.5496461725590523
+          ],
+          "mean": -0.12417836284261585
+        },
+        {
+          "face": 322,
+          "corners": [
+            -0.27004927254484146,
+            0.2965303947031459,
+            -0.7126670447699943
+          ],
+          "mean": -0.2287286408705633
+        },
+        {
+          "face": 347,
+          "corners": [
+            -0.1384539604784545,
+            -0.549669155069029,
+            0.3155424160264267
+          ],
+          "mean": -0.12419356650701896
+        },
+        {
+          "face": 350,
+          "corners": [
+            -0.2700578232145286,
+            -0.7126755794063876,
+            0.2965774723441796
+          ],
+          "mean": -0.22871864342557888
+        },
+        {
+          "face": 352,
+          "corners": [
+            -0.15900197789555992,
+            0.6438499616190758,
+            0.9294758099758075
+          ],
+          "mean": 0.47144126456644114
+        },
+        {
+          "face": 354,
+          "corners": [
+            0.6640258949455459,
+            -0.4761756751412049,
+            0.8010002338593298
+          ],
+          "mean": 0.32961681788789027
+        },
+        {
+          "face": 375,
+          "corners": [
+            -0.23448235419751629,
+            0.3043771600520955,
+            -0.7643369426127611
+          ],
+          "mean": -0.2314807122527273
+        },
+        {
+          "face": 378,
+          "corners": [
+            -0.0983839465505032,
+            0.1140716171194,
+            -0.8559118246552738
+          ],
+          "mean": -0.28007471802879236
+        },
+        {
+          "face": 395,
+          "corners": [
+            -0.18205176348910024,
+            0.6006642168009204,
+            0.9701787836549589
+          ],
+          "mean": 0.4629304123222597
+        },
+        {
+          "face": 396,
+          "corners": [
+            0.9443742209493263,
+            0.008769202900808265,
+            -0.10934020482830858
+          ],
+          "mean": 0.281267739673942
+        },
+        {
+          "face": 398,
+          "corners": [
+            0.9515756730472369,
+            -0.08194523184831873,
+            -0.04850790868226776
+          ],
+          "mean": 0.2737075108388835
+        },
+        {
+          "face": 401,
+          "corners": [
+            0.9358044889102026,
+            0.06652756475234005,
+            -0.056447993382947856
+          ],
+          "mean": 0.31529468675986494
+        },
+        {
+          "face": 403,
+          "corners": [
+            0.07216890337062223,
+            -0.9620035430660138,
+            0.04558573077554086
+          ],
+          "mean": -0.28141630297328357
+        },
+        {
+          "face": 416,
+          "corners": [
+            0.9401133348570413,
+            0.9413202511782712,
+            -0.008262841734319015
+          ],
+          "mean": 0.6243902481003312
+        },
+        {
+          "face": 418,
+          "corners": [
+            0.09239642894434558,
+            -0.03040044464983339,
+            0.942785916670745
+          ],
+          "mean": 0.3349273003217524
+        },
+        {
+          "face": 419,
+          "corners": [
+            0.9221441463076883,
+            0.9075870314733999,
+            -0.14436063845852035
+          ],
+          "mean": 0.5617901797741892
+        },
+        {
+          "face": 420,
+          "corners": [
+            -0.01725600714053982,
+            0.9535434305435838,
+            0.9873434678119795
+          ],
+          "mean": 0.6412102970716745
+        },
+        {
+          "face": 442,
+          "corners": [
+            -0.1820519340060054,
+            0.9701786800040894,
+            0.6006647794068589
+          ],
+          "mean": 0.46293050846831435
+        },
+        {
+          "face": 443,
+          "corners": [
+            0.9443745803483212,
+            -0.1093415954254996,
+            0.008768171048381262
+          ],
+          "mean": 0.281267051990401
+        },
+        {
+          "face": 445,
+          "corners": [
+            0.9017010201993525,
+            -0.04850801730032872,
+            0.3345220090102315
+          ],
+          "mean": 0.39590500396975176
+        },
+        {
+          "face": 450,
+          "corners": [
+            0.07216631821902647,
+            0.027455769563123983,
+            -0.9619902451106876
+          ],
+          "mean": -0.2874560524428457
+        },
+        {
+          "face": 462,
+          "corners": [
+            0.06349025526482693,
+            0.9024872384334097,
+            -0.3224053394255624
+          ],
+          "mean": 0.21452405142422473
+        },
+        {
+          "face": 463,
+          "corners": [
+            0.9067423057070229,
+            -0.008261500652161136,
+            0.9413207122461267
+          ],
+          "mean": 0.6132671724336628
+        },
+        {
+          "face": 464,
+          "corners": [
+            0.8697688210173401,
+            -0.16012396811742136,
+            0.8993461405742365
+          ],
+          "mean": 0.5363303311580517
+        },
+        {
+          "face": 465,
+          "corners": [
+            -0.03398668740411418,
+            0.9718024610478497,
+            -0.006043542490027642
+          ],
+          "mean": 0.31059074371790263
+        },
+        {
+          "face": 466,
+          "corners": [
+            0.9722277391826774,
+            -0.028783996529569686,
+            0.9583408315783912
+          ],
+          "mean": 0.6339281914104996
+        }
+      ],
+      "protected_faces": 335,
+      "retained_matched_face_exceptions": [
+        {
+          "baseline_face": 121,
+          "final_face": 121,
+          "baseline": {
+            "corners": [
+              -0.021107285104168892,
+              0.6419696477824786,
+              0.1703782369100742
+            ],
+            "mean": 0.2637468665294613
+          },
+          "final": {
+            "corners": [
+              -0.021179987175388777,
+              0.6419939283777876,
+              0.17035203304626073
+            ],
+            "mean": 0.2637219914162198
+          },
+          "maximum_normal_delta": 7.281333752144474e-05
+        },
+        {
+          "baseline_face": 131,
+          "final_face": 131,
+          "baseline": {
+            "corners": [
+              0.044719030333610854,
+              -0.18256826515871782,
+              0.39089033179039734
+            ],
+            "mean": 0.08434703232176345
+          },
+          "final": {
+            "corners": [
+              0.044830222795002705,
+              -0.18260660173194665,
+              0.3908173338986121
+            ],
+            "mean": 0.08434698498722272
+          },
+          "maximum_normal_delta": 0.00013501485647407255
+        },
+        {
+          "baseline_face": 164,
+          "final_face": 164,
+          "baseline": {
+            "corners": [
+              0.6809478947400979,
+              -0.08841791724790879,
+              0.5701246655118625
+            ],
+            "mean": 0.3875515476680172
+          },
+          "final": {
+            "corners": [
+              0.6808869508198162,
+              -0.08844946275489965,
+              0.5700937509026547
+            ],
+            "mean": 0.3875104129891904
+          },
+          "maximum_normal_delta": 8.474073499517211e-05
+        },
+        {
+          "baseline_face": 185,
+          "final_face": 185,
+          "baseline": {
+            "corners": [
+              -0.13442021458987863,
+              0.6976973908901197,
+              -0.5924407772944712
+            ],
+            "mean": -0.009721200331410032
+          },
+          "final": {
+            "corners": [
+              -0.1343470554835302,
+              0.6976377023329323,
+              -0.5924374539609103
+            ],
+            "mean": -0.00971560237050273
+          },
+          "maximum_normal_delta": 0.0001183075470017995
+        },
+        {
+          "baseline_face": 250,
+          "final_face": 250,
+          "baseline": {
+            "corners": [
+              0.8559714470599008,
+              0.6411703846844888,
+              -0.0583772481210527
+            ],
+            "mean": 0.4795881945411123
+          },
+          "final": {
+            "corners": [
+              0.8559858079114488,
+              0.6411039405996822,
+              -0.058411378936647176
+            ],
+            "mean": 0.47955945652482795
+          },
+          "maximum_normal_delta": 8.691928865227566e-05
+        },
+        {
+          "baseline_face": 251,
+          "final_face": 251,
+          "baseline": {
+            "corners": [
+              -0.029801001632591057,
+              0.8977467179813587,
+              -0.44519637818519014
+            ],
+            "mean": 0.14091644605452583
+          },
+          "final": {
+            "corners": [
+              -0.02971582906800521,
+              0.8977170464402715,
+              -0.4451806822326431
+            ],
+            "mean": 0.14094017837987438
+          },
+          "maximum_normal_delta": 9.496804629266755e-05
+        },
+        {
+          "baseline_face": 347,
+          "final_face": 347,
+          "baseline": {
+            "corners": [
+              -0.1384539604784545,
+              -0.549669155069029,
+              0.3155424160264267
+            ],
+            "mean": -0.12419356650701896
+          },
+          "final": {
+            "corners": [
+              -0.13849474263209688,
+              -0.5497230569679836,
+              0.31546033646954597
+            ],
+            "mean": -0.12425248771017817
+          },
+          "maximum_normal_delta": 0.00011231180989931375
+        },
+        {
+          "baseline_face": 350,
+          "final_face": 350,
+          "baseline": {
+            "corners": [
+              -0.2700578232145286,
+              -0.7126755794063876,
+              0.2965774723441796
+            ],
+            "mean": -0.22871864342557888
+          },
+          "final": {
+            "corners": [
+              -0.2700465360437544,
+              -0.7127060117745794,
+              0.2965878029305895
+            ],
+            "mean": -0.22872158162924808
+          },
+          "maximum_normal_delta": 0.00011231180989931375
+        }
+      ],
+      "newly_authored_faces": 586,
+      "new_opposing_corner_incidents": [],
+      "policy": "Untouched old face normals retained and matched individually; remodeled/new faces require positive per-corner shading. Mean-normal12 and any-corner45 are distinct baseline measures."
+    },
+    "engine-decoded-texture-protection": {
+      "status": "PASS",
+      "decoder": "libturbojpeg tjDecompress2 TJPF_RGB TJFLAG_FASTDCT(2048), matching GlobalBitmap.cpp",
+      "protected_filter_margin_max_rgb_error": 0,
+      "all_unselected_blocks_max_rgb_error": 0,
+      "no_mipmaps": "GlobalBitmap.cpp144 texInfo.num_levels=1; no resampling for128power-of-two",
+      "sampler": "LoadData.h defaultGL_NEAREST, GlobalBitmap.cpp211\u2013214 min/mag filter andnearest mip mode;2pxguard also covers fallbackbilinear"
+    },
+    "paint-source-equivalence": {
+      "status": "PASS",
+      "export_material": "reagon_waterspout.jpg",
+      "authored_packed_JPEG_sha256": "9bb92a090461292e0b2bb3b5b249b3082956c51b1798ae69dc1679723753e53b",
+      "baseline_reference_painting": "Exact original baseline JPEG payload retained",
+      "dimensions": [
+        128,
+        128
+      ],
+      "method": "Packed authored bytes equal actual final OZJ payload; reference packed bytes equal frozen baseline payload"
+    }
+  },
+  "limits": [
+    "Raw motion numerically equivalent at existing tolerances, not byte-identical; maximum local rawfloat delta4.57763671875e-5.",
+    "Original angular head and extreme wingtip forms remain; dark stone front intentionally restrained. Reduced placed improvement is primarily broader silhouette and coherent planes, not high-detail anatomy.",
+    "Offline effect approximation includes water frames0/10/20; all21 mathematical source/raw motion, normal and attachment audits pass. No personal client/particle sorting or terrain-light verification.",
+    "Diffuse neutral/unlit diagnostics separate painting from illumination; acceptance is based on paired diffuse actual-export views, not emission alone."
+  ],
+  "reviewed_evidence_hashes": {
+    "Waterspout01/review/baseline-diffuse-unlit-small.png": "dd3676dda4c78d8c6c89a5c4880854c1a94a3ea328be078d45e284d08a01bf8c",
+    "Waterspout01/review/baseline-diffuse-unlit.png": "36e17e0c70a6999bb6e45bee7514fdfea77ee5a30a9c8cd8c1ab5d5339867d71",
+    "Waterspout01/review/baseline-light.png": "e733b8fae38d630a0a0bed75bc838f78b8f8f18241d97953e1845cac2cd14a67",
+    "Waterspout01/review/baseline-neutral-ambient.png": "790dbc289cb10565ae124c6730c6fcd9453f801be5c63f82dbc0ba2b1abbc6bb",
+    "Waterspout01/review/baseline-reverse.png": "d3de1e9f8565979bd6656c59845b212b1b8d3ba642bd195214b2d8a4cd0bd590",
+    "Waterspout01/review/baseline-small.png": "4fd84683bf3a97a5855e4e7097139d74b23c35ed110340467eafc72866a49360",
+    "Waterspout01/review/baseline-water-action-0.png": "5608ecc34b0a412de35f696cab6c49a618767eb53d0f742a519ce62e9466a0e8",
+    "Waterspout01/review/baseline-water-action-10.png": "8745e84051d1b6f1206a6f416c4c6072d6959ac354485434b6f1e96e2d4697fe",
+    "Waterspout01/review/baseline-water-action-20.png": "ed6c5e71892aab16e03ebfdc600d84e18ec0bc4aed1a572abd0e83b8ad86ea7e",
+    "Waterspout01/review/baseline.png": "cef403dfb6a676d387a15919287398ecef23ae96c2f5591e20d0cd51f8ea71da",
+    "Waterspout01/review/candidate-diffuse-unlit-small.png": "a6c1ac03c02590760b344212145f9a033d6210788539138bb128aab86062e530",
+    "Waterspout01/review/candidate-diffuse-unlit.png": "f2aa00794f458106b93fd948711682bcb9484c055e46436cca9e71bc6543ee67",
+    "Waterspout01/review/candidate-light.png": "056ed4afa694905382c70fe5ba95101338190ef988e69a96d08f9cafaede8876",
+    "Waterspout01/review/candidate-neutral-ambient.png": "6fd6b99fc014ec9758ffc2289df993072381497893335fd21309718e630867d5",
+    "Waterspout01/review/candidate-reverse.png": "36f5688b43747e8059dcede8c5ca27579e3af464fdb896c53a1aa2aa321f524d",
+    "Waterspout01/review/candidate-small.png": "ca17ecf827a7c3467e9a7e6607042414a6faafc509535ca75eeb961009f7df50",
+    "Waterspout01/review/candidate-water-action-0.png": "2e9882dc8f40cc92818b30a73a19eaaee44882199a21c1f4dc8808ad9e4b28f7",
+    "Waterspout01/review/candidate-water-action-10.png": "abcee5edf9130b5307175c8323f4ca6d4e7e95b6f05d4c5068c31e6f264d98d7",
+    "Waterspout01/review/candidate-water-action-20.png": "8fd8482429336f37a744e3fb6e94f73a37b0b9d39643d7a0a20594f71436398c",
+    "Waterspout01/review/candidate.png": "4b4cce6fdaabd8831c483b6676206ea68a3f365d9c6685005679a9c67c14d48e",
+    "Waterspout01/review/context.json": "ada4a5187746e315f568a70cdfba8e6258eb15892264f5589c5cd4ba240b3ffb",
+    "Waterspout01/review/diffuse-diagnostic-context.json": "a411adb0dd2b563ea360834e9c9d0aa16caf48e0c532f69b7e99582b58a00a5d",
+    "Waterspout01/review/effect-context.json": "85316bfa764bc5b33a9feecbbcc160b34f980882840cc7e6f655cfb9ea98a041",
+    "Waterspout01/review/original.png": "8f0aeb7478d3089c856b9b7b4484b6b8d50e88280921ba18ee02e4a5f6c05f15",
+    "Waterspout01/review/wireframe.png": "ed704c1473f195d476ec56d69f9107e0c63be4529a18d48847d6334611cdb6b1",
+    "Waterspout01/textures/paint02/engine-decode-proof.json": "309e904a486f6e4ced939ef170c476df4a9d87767139d1cd3be408b1b554e0d4",
+    "Waterspout01/textures/paint02/packaging-proof.json": "a715d187068bda62b51bcdbaf0a16087d797d1aad700783d353c81e7b2180ade",
+    "Waterspout01/validation/apply-paint.txt": "d933e45a72178d88cc4373bd79fc8dab521120571605084d86cc35c12e550ce4",
+    "Waterspout01/validation/attachments.json": "3207940b930109e18e83ea3363f1e1d7dcdb3cee50ce39b7a2d63f0799b5aa18",
+    "Waterspout01/validation/authored-match.json": "5faa5b829c2601ca04f38ca7c78da5da6d103b027f84ffb6571416b76f19e6af",
+    "Waterspout01/validation/authored-raw-normals.json": "8502cc625cdc1f35b97510c0d2f6e4c023a8e2864f3ce1740a544e7d5551f421",
+    "Waterspout01/validation/authored.json": "e7367a854c4950529b177d059638025cb1012bfa697b33259d545af28730fe4d",
+    "Waterspout01/validation/build.txt": "10f3acad55e74604a402e442588c8ce51436a3fa8f9f8246429d96b8c4e8f79b",
+    "Waterspout01/validation/compare.txt": "be6c8562d843655278d00eaf1e87cf4086d4b37719667f4fbc682f15a0c4adfa",
+    "Waterspout01/validation/engine-decoded-texture-protection.json": "309e904a486f6e4ced939ef170c476df4a9d87767139d1cd3be408b1b554e0d4",
+    "Waterspout01/validation/export.txt": "455cd54100178a12c719f52a4012fcb103d20a16686a3b9f2c78aa4a791ee27d",
+    "Waterspout01/validation/fan-diagnostic.json": "3100abd8b7f88b9fbce83a43766728516d173323622744fadc87377f1c948af2",
+    "Waterspout01/validation/frozen-textures.json": "4ff497a5ea5b1ccc66fe823e946b156fc16c8d7c5a5ce87aba9ddccf9233dd2a",
+    "Waterspout01/validation/info-after.txt": "61e1b28c37d11bad46de2d6df5169a2faa9a236fb18b2c7304d5a0d2cd8e8822",
+    "Waterspout01/validation/local-motion.json": "ecb8883b48facd67066fc8201d61d3d1952e5484eac8ba13fe9ce5b3de55237c",
+    "Waterspout01/validation/normal-encoding-diagnostic.json": "ffc6e1f7cfe274b69a0510ebb104b9b2accebd60d1e1224adc0a37dd112b027d",
+    "Waterspout01/validation/official-motion-diagnostic.json": "76afcffefc50d79d0a2abfc351dea02bfcf4e1ac24d9cee2806ce33f3be3894b",
+    "Waterspout01/validation/paint-source-equivalence.json": "380b90bb35879841510204cd98ef269e09fbe51bd3d7a37d9f5eaee11eeca32e",
+    "Waterspout01/validation/paint-source.json": "0da6641094ad921ca88a9082437c6fbdf949ef6c023da27f9a1f8ade237b2d55",
+    "Waterspout01/validation/posed-authored-match.json": "049bd406c8d591f8c688c4936ea4e82d32782684bc3bfbd3e2d66e17e2d4b029",
+    "Waterspout01/validation/raw-motion-equivalence.json": "746a94ae1be4ffdecb7c250a117d1e53e4ec143eb92bebc4c824fc6e0368a440",
+    "Waterspout01/validation/raw-normal-bindings.json": "0f75f8b2db46f0c985c4e07356281a81270be7cb2735499641009c50cb614cd0",
+    "Waterspout01/validation/reimport.txt": "da856c9b3a675df211868a18a40fb8a1deccc9bf2821362d66514a70f0ce388b",
+    "Waterspout01/validation/shading-contract.json": "7339b8aed55fb48696c2fc54132317db3d5cf5311f1d2ecb5608a4059234dd9e",
+    "Waterspout01/validation/skeleton-compare.txt": "343d991d2f11cfd75babe2a9214865f08430c42118924d6a89b1dd62d36575dd",
+    "Waterspout01/validation/smd-validation.txt": "c1b087205a472d3720dd3ce87160147a934af2a0f9249757b55ab761d268d124",
+    "Waterspout01/validation/summary.json": "1e0c6f30ef72018e6c982400eca50b49fe1d8e5d9a00da3c77cfa2b022ba4161",
+    "Waterspout01/validation/texture-check.txt": "21bd8ab5eb18e3613321cff00b28a89b11a4464d09bb06169cdabc6a140ced51",
+    "Waterspout01/validation/water-normal-diagnostic.json": "3c3cb85279642d6e58e18c33b59659f4285d6abc46e608fb3c5aa236c2e213b5",
+    "context/frozen-neighbor-hashes.json": "4c2905cb4810c77cb0b85c16503eed2c54586e18f581e2406a82109327430f17",
+    "context/groups.json": "0a1d2c7d2c5c27e7a28daf59249e8cbbcdb800f310a78774c31473022cf8117b",
+    "review/Waterspout01-0-baseline-reverse.png": "d4560939d62570f9ae5bc9df0f403bfb91e31e759fe0fcdf2bf686f265144a00",
+    "review/Waterspout01-0-baseline-small.png": "d3a031368051e7a9b191d35d11adbc2b1fd57133c7119e9c0d7c3edc4455cd3f",
+    "review/Waterspout01-0-baseline.png": "0c109ca09b1ac01ea546df4ec2c058fc800457db063363bd39b3b3e735eb8fcf",
+    "review/Waterspout01-0-candidate-reverse.png": "98f1d99e60d39c44de06a8b8286723eb14f99a601c2a65b06dc5ccf4aef9dc3f",
+    "review/Waterspout01-0-candidate-small.png": "ea17b292e5b9a48e55d3178931800a41e94142c1d9b69292d215590b8d9f74b9",
+    "review/Waterspout01-0-candidate.png": "1a32cedd6943a106d491d790625d4008018d65bdcb53814f86db893833553c26",
+    "review/Waterspout01-0-contacts.json": "48a93262963f8c7b066c3a45b014a708ea85616239c431fce14c24d0018c3232"
+  },
+  "extra_packaging_evidence": {
+    "Waterspout01/textures/paint02/draft-original-quantization.jpg": "e3718ccf0decd500d629af29066a8f258e82ddb8c1032ae3ea7e1ce8c648e11d",
+    "Waterspout01/textures/paint02/jpeg-block-patch": "73e3ed7827433d124c66ee449f845bb619750e27220fd1224cb6cee46c4c94b0",
+    "Waterspout01/textures/paint02/original.jpg": "92cba647cee6ec8cb296cf206633d17b028d4adf23f9b56ab87c25eab8e7f382",
+    "Waterspout01/textures/paint02/patched.jpg": "9bb92a090461292e0b2bb3b5b249b3082956c51b1798ae69dc1679723753e53b",
+    "Waterspout01/textures/paint02/engine-decode-proof.json": "309e904a486f6e4ced939ef170c476df4a9d87767139d1cd3be408b1b554e0d4",
+    "Waterspout01/textures/paint02/reagon_waterspout.OZJ": "cc8e0438e4e63531650b5158244d6a618400f52729448d534cee7236387af909",
+    "Waterspout01/textures/paint02/packaging-proof.json": "a715d187068bda62b51bcdbaf0a16087d797d1aad700783d353c81e7b2180ade",
+    "Waterspout01/textures/paint02/reagon_waterspout.jpg": "9bb92a090461292e0b2bb3b5b249b3082956c51b1798ae69dc1679723753e53b",
+    "Waterspout01/textures/paint02/allowed-blocks.bin": "18fa97fb913197d7dbc365b41a035f452cc2f40dca92fbf25166457f3fad7c3a"
+  }
+}

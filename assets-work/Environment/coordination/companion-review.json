@@ -1,0 +1,93 @@
+{
+  "assets": [
+    {
+      "asset": "HouseWall02",
+      "decision": "RETAIN",
+      "rationale": "Special crest/light-panel variant has strong center ornament and coherent ashlar/wood foundation. Added plain-wall framing is not necessary around this occupied motif. Black projected cards are indexed additive light, as preserved effect comparison demonstrates; not dark geometry defect.",
+      "placements": 15,
+      "game_files_verified_current": {
+        "src/bin/Data/Object1/HouseWall02.bmd": "6ac7e3fb619b8c92c3d0e445c53beca1da53d5395609bfd60a06cdfb6f066470",
+        "src/bin/Data/Object1/tile_ston06.OZJ": "c0eb1cde0172be5b4f1a1e7a19e274c6891d1e97d91479cdb11424a464847a3b",
+        "src/bin/Data/Object1/tile_wood01.OZJ": "51537840533e1c755569d3b57d9bea468353208c669daa2baeb2a421c41bf192",
+        "src/bin/Data/Object1/tile_wood02.OZJ": "1e829e6bc9af60739335ec85fc307d2c17806700e6d95f8845b7da78c4532eda",
+        "src/bin/Data/Object1/tile_ston04.OZJ": "a1a75b6fbf236d8747cb2e27555d871253cff7d2e48304226f0b68dbc83fa2f9",
+        "src/bin/Data/Object1/light_02.OZJ": "4a0211f098896fb68d11429da31482b70bc9d62b1130d50004412a2ddd3ca4e9"
+      },
+      "baseline_image": "/Users/lukasmac/Documents/claude-test-mumain/MuMain/assets-work/World1/coordination/final-inspection/HouseWall02/final-offline.png",
+      "baseline_image_sha256": "3f97eca1fbd42d529f6e3f580ccb249064b35c590fdbc9ec8b14528f0f7fbcaf",
+      "remaining_limits": "Final integrated whole-scene coherence/client review still pending. Retain is a scoped artistic judgment, not newly rebuilt geometry or client verification."
+    },
+    {
+      "asset": "HouseWall03",
+      "decision": "RETAIN",
+      "rationale": "Intentional two-beam opening module. Timber grain, beam thickness and matching end profiles supply required visual role; filling or ornamenting opening to imitate closed wall bays would alter function. Accepted bay framing does not require remodeling these beams.",
+      "placements": 4,
+      "game_files_verified_current": {
+        "src/bin/Data/Object1/HouseWall03.bmd": "4cceec4106eae52c353329a7c55c725118cd18982736c42c543a4ed76c72266f",
+        "src/bin/Data/Object1/tile_wood02.OZJ": "1e829e6bc9af60739335ec85fc307d2c17806700e6d95f8845b7da78c4532eda"
+      },
+      "baseline_image": "/Users/lukasmac/Documents/claude-test-mumain/MuMain/assets-work/World1/coordination/final-inspection/HouseWall03/final-offline.png",
+      "baseline_image_sha256": "6bd2d0a4a81eb1a16654ea3bbaf295aae39b9fdd48e46190df2d17b6478fd463",
+      "remaining_limits": "Final integrated whole-scene coherence/client review still pending. Retain is a scoped artistic judgment, not newly rebuilt geometry or client verification."
+    },
+    {
+      "asset": "HouseEtc02",
+      "decision": "RETAIN",
+      "rationale": "Complete distinct small guardhouse silhouette, sloped shingle eaves, doorway/window identity and projecting rear timber platform remain legible. Shared painted roof/stone palette exactly matches accepted architecture. New roof laps on separate modules do not create material mismatch; no clear new defect requiring gratuitous geometry change.",
+      "placements": 1,
+      "game_files_verified_current": {
+        "src/bin/Data/Object1/HouseEtc02.bmd": "b5147e1dc4add656c57232499cf9b3ef0aad832c4a9333f3229773c16756d9fa",
+        "src/bin/Data/Object1/tile_wood02.OZJ": "1e829e6bc9af60739335ec85fc307d2c17806700e6d95f8845b7da78c4532eda",
+        "src/bin/Data/Object1/tile_ston04.OZJ": "a1a75b6fbf236d8747cb2e27555d871253cff7d2e48304226f0b68dbc83fa2f9",
+        "src/bin/Data/Object1/c_wall04.OZJ": "c7ba893ef3542cb9bb265ef7735c1d7d2c2bf58f7284d8cff8f0940860828ed3",
+        "src/bin/Data/Object1/tile_wood03.OZJ": "080c832a287c14bc571e5f6bee02a3e1f5e668cd36ec2fe45622c682f12d245b",
+        "src/bin/Data/Object1/tile_house01.OZJ": "c06449901b08eafba82b4d035972740cc3e454d730343065417644f3fa8a1a03",
+        "src/bin/Data/Object1/tile_ston01.OZJ": "bbb56aa18e2fbb0fad9ba172d10e140dd9b99af5179ebeba0e1d7cc59b0099f5",
+        "src/bin/Data/Object1/horse_drawn_01.OZJ": "fb570a0b0c9c00e0face1e27f81fbc01d8edd6aeb6bc54280573a49d4dd7ad0e",
+        "src/bin/Data/Object1/tile_ston06.OZJ": "c0eb1cde0172be5b4f1a1e7a19e274c6891d1e97d91479cdb11424a464847a3b"
+      },
+      "baseline_image": "/Users/lukasmac/Documents/claude-test-mumain/MuMain/assets-work/World1/coordination/final-inspection/HouseEtc02/final-offline.png",
+      "baseline_image_sha256": "7451cae67550df4c9c0f34761562388efe112c6a3cc036bad9d3a972921fb1d4",
+      "remaining_limits": "Final integrated whole-scene coherence/client review still pending. Retain is a scoped artistic judgment, not newly rebuilt geometry or client verification."
+    },
+    {
+      "asset": "StoneMuWall01",
+      "decision": "RETAIN",
+      "rationale": "Clear iron gate silhouette, spaced bars/spikes, beast caps and stepped masonry piers already read as complete structure. Frozen painted masonry and iron palette coherent with retained wall family; no requirement to add detail to working gate or change connection profiles.",
+      "placements": 4,
+      "game_files_verified_current": {
+        "src/bin/Data/Object1/StoneMuWall01.bmd": "3e5a80be0b0e045b02874daeb804388e27962152c2f9db4ae652d7803d59b7b6",
+        "src/bin/Data/Object1/c_wall04.OZJ": "c7ba893ef3542cb9bb265ef7735c1d7d2c2bf58f7284d8cff8f0940860828ed3",
+        "src/bin/Data/Object1/c_wall05.OZJ": "e2890842d739f4fa2010e2a90d4af1e368a97bf2028d26c4e15dac0030e05083",
+        "src/bin/Data/Object1/c_wall06.OZJ": "81c037340624b795b295c58071bc26f66f785c20be11cddfd304e585b10c77f4",
+        "src/bin/Data/Object1/tile_02.OZJ": "428d88339fd1c04b6d153e33a1ed5a4a03d753130271e11fbf62f68564dfadcf",
+        "src/bin/Data/Object1/bridge_01.OZJ": "0447ac5d335b4fd530ac58fb7fce35a3123055f7107d0813c749d36385c5b1bc"
+      },
+      "baseline_image": "/Users/lukasmac/Documents/claude-test-mumain/MuMain/assets-work/World1/coordination/final-inspection/StoneMuWall01/final-offline.png",
+      "baseline_image_sha256": "f528a073d84f3ee317ccecdea16eaf798e0b540a78f981c2c64dff99575ca5ae",
+      "remaining_limits": "Final integrated whole-scene coherence/client review still pending. Retain is a scoped artistic judgment, not newly rebuilt geometry or client verification."
+    },
+    {
+      "asset": "StoneMuWall04",
+      "decision": "PRODUCTION_WITH_FUTURE_MASONRY_FAMILY",
+      "rationale": "Cannon/rear timber platform and ladder defensibly retain their prior rebuild/material work. Front dragon stone panel remains the same shallow angular relief/block mass identified in02/03. Needs coordinated artistic pass with that family eventually; no immediate geometry change solely to match accepted architecture. Rejected Masonry01 candidates are not integration targets.",
+      "placements": 3,
+      "game_files_verified_current": {
+        "src/bin/Data/Object1/StoneMuWall04.bmd": "bfdc5558ab6c7412438d5925d9ffb98bdce9538a8a5fd593b80cb3dc2d47c471",
+        "src/bin/Data/Object1/c_wall04.OZJ": "c7ba893ef3542cb9bb265ef7735c1d7d2c2bf58f7284d8cff8f0940860828ed3",
+        "src/bin/Data/Object1/c_wall06.OZJ": "81c037340624b795b295c58071bc26f66f785c20be11cddfd304e585b10c77f4",
+        "src/bin/Data/Object1/horse_drawn_01.OZJ": "fb570a0b0c9c00e0face1e27f81fbc01d8edd6aeb6bc54280573a49d4dd7ad0e"
+      },
+      "baseline_image": "/Users/lukasmac/Documents/claude-test-mumain/MuMain/assets-work/World1/coordination/final-inspection/StoneMuWall04/final-offline.png",
+      "baseline_image_sha256": "db8e1f1945d5a95ea0b51727ac004d1d6096eb790bc15c846d3dc2c450415386",
+      "remaining_limits": "Final integrated whole-scene coherence/client review still pending. Retain is a scoped artistic judgment, not newly rebuilt geometry or client verification."
+    }
+  ],
+  "context": "Architecture01 accepted changes modify4 BMDs only; all shared textures unchanged. Material coherence therefore assessed on identical verified container hashes.",
+  "additional_evidence": [
+    "Architecture03/HouseWall02/review/effect-comparison.jpg",
+    "Cannons01/StoneMuWall04/review/reverse-after.png",
+    "Cannons01/HouseEtc02/review/reverse-after.png"
+  ],
+  "scope": "Companion consistency assessment, not blanket acceptance of all106. No production/shared-doc/game edits."
+}

@@ -1,0 +1,232 @@
+{
+  "per_root_bounds": {
+    "Box01": {
+      "before": [
+        [
+          -48.3036003112793,
+          -51.36349868774414,
+          1.0659029483795166
+        ],
+        [
+          75.40869903564453,
+          56.67649841308594,
+          60.738800048828125
+        ]
+      ],
+      "after": [
+        [
+          -48.3036003112793,
+          -51.36349868774414,
+          1.0659029483795166
+        ],
+        [
+          75.40869903564453,
+          56.67649841308594,
+          60.738800048828125
+        ]
+      ]
+    },
+    "Box02": {
+      "before": [
+        [
+          -161.83990478515625,
+          -37.23771667480469,
+          1.3140870332717896
+        ],
+        [
+          -60.349998474121094,
+          47.034507751464844,
+          53.65880584716797
+        ]
+      ],
+      "after": [
+        [
+          -161.83990478515625,
+          -37.23771667480469,
+          1.3140870332717896
+        ],
+        [
+          -60.349998474121094,
+          47.034507751464844,
+          53.65880584716797
+        ]
+      ]
+    },
+    "Box03": {
+      "before": [
+        [
+          20.481279373168945,
+          -41.212921142578125,
+          0.9181749820709229
+        ],
+        [
+          102.59017944335938,
+          48.21244430541992,
+          53.72610092163086
+        ]
+      ],
+      "after": [
+        [
+          20.481279373168945,
+          -41.212921142578125,
+          0.9181749820709229
+        ],
+        [
+          102.59017944335938,
+          48.21244430541992,
+          53.72610092163086
+        ]
+      ]
+    },
+    "Box04": {
+      "before": [
+        [
+          -112.97549438476562,
+          -33.57460403442383,
+          0.11079400032758713
+        ],
+        [
+          -7.954113006591797,
+          58.30040740966797,
+          33.53571319580078
+        ]
+      ],
+      "after": [
+        [
+          -112.97549438476562,
+          -33.57460403442383,
+          0.11079400032758713
+        ],
+        [
+          -7.954113006591797,
+          58.30040740966797,
+          33.53571319580078
+        ]
+      ]
+    }
+  },
+  "retained_root_tip_vertices": 64,
+  "max_control_vertex_distance": 0.0,
+  "control_contract": "Root and tip edge controls exact; directional extrema preserved, intermediary controls redesigned",
+  "triangles": 640,
+  "bounds_before": [
+    [
+      -161.83990478515625,
+      -51.36349868774414,
+      0.11079400032758713
+    ],
+    [
+      102.59017944335938,
+      58.30040740966797,
+      60.738800048828125
+    ]
+  ],
+  "bounds_after": [
+    [
+      -161.83990478515625,
+      -51.36349868774414,
+      0.11079400032758713
+    ],
+    [
+      102.59017944335938,
+      58.30040740966797,
+      60.738800048828125
+    ]
+  ],
+  "bone_order": [
+    "Box01",
+    "Box02",
+    "Box03",
+    "Box04"
+  ],
+  "actions": {
+    "Grass06_a00": {
+      "index": 0,
+      "lock": false
+    }
+  },
+  "leaves": [
+    {
+      "bone": "Box01",
+      "original_sections": 5,
+      "new_sections": 11
+    },
+    {
+      "bone": "Box01",
+      "original_sections": 4,
+      "new_sections": 11
+    },
+    {
+      "bone": "Box01",
+      "original_sections": 5,
+      "new_sections": 11
+    },
+    {
+      "bone": "Box01",
+      "original_sections": 4,
+      "new_sections": 11
+    },
+    {
+      "bone": "Box02",
+      "original_sections": 5,
+      "new_sections": 11
+    },
+    {
+      "bone": "Box02",
+      "original_sections": 4,
+      "new_sections": 11
+    },
+    {
+      "bone": "Box02",
+      "original_sections": 5,
+      "new_sections": 11
+    },
+    {
+      "bone": "Box02",
+      "original_sections": 4,
+      "new_sections": 11
+    },
+    {
+      "bone": "Box03",
+      "original_sections": 5,
+      "new_sections": 11
+    },
+    {
+      "bone": "Box03",
+      "original_sections": 4,
+      "new_sections": 11
+    },
+    {
+      "bone": "Box03",
+      "original_sections": 5,
+      "new_sections": 11
+    },
+    {
+      "bone": "Box03",
+      "original_sections": 4,
+      "new_sections": 11
+    },
+    {
+      "bone": "Box04",
+      "original_sections": 5,
+      "new_sections": 11
+    },
+    {
+      "bone": "Box04",
+      "original_sections": 4,
+      "new_sections": 11
+    },
+    {
+      "bone": "Box04",
+      "original_sections": 5,
+      "new_sections": 11
+    },
+    {
+      "bone": "Box04",
+      "original_sections": 4,
+      "new_sections": 11
+    }
+  ],
+  "texture": "tree_09.OZT frozen,256x512 RGBA",
+  "client_verified": false
+}

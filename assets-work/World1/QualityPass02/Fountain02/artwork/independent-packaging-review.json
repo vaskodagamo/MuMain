@@ -1,0 +1,10 @@
+{
+  "decision": "PACKAGING mechanism acceptable; art remains pending",
+  "candidate_texture_sha256": "ee64c7b4595055431ccb0ec838e307528d187e7157b5fe7a24bd650ae0fc3055",
+  "independent_FASTDCT_unselected_pixels": 8256,
+  "maximum_unselected_RGB_delta": 0,
+  "mask_provenance": "All639 original mask-source material+UV triangles match current baseline exactly; protected34 subset exact. Raster8x coverage plus2pixel expansion protects sampled basin footprint; whole8x8 block exclusion further expands guard.",
+  "mechanism": "4:4:4 JPEG coefficient replacement with original quantization/component mapping;129 unselected blocks unchanged. No chroma subsampling cross-block interpolation. Original metadata preserved.",
+  "engine": "GlobalBitmap.cpp825 FASTDCT RGB,144 one mip level,211 min/magfilter;LoadData.h13 defaultNEAREST.128 power-of-two avoids resize.",
+  "limits": "Read source/helpers in /tmp; production must retain scripts with portable owned paths and masks. Final packed output and actual model still require final proof/art acceptance."
+}

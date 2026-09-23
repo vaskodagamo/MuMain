@@ -1,0 +1,25 @@
+wrote /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Bonfire02/Bonfire01/validation/original/Bonfire01.smd
+wrote /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Bonfire02/Bonfire01/validation/original/Bonfire01_a00.smd
+wrote /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Bonfire02/Bonfire01/validation/original/Bonfire01.actions.txt
+
+/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Bonfire02/Bonfire01/validation/original/Bonfire01.smd: bones=4 frames=1 triangles=110 materials=2
+OK
+
+/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Bonfire02/Bonfire01/validation/original/Bonfire01_a00.smd: bones=4 frames=1 triangles=0 materials=0
+OK
+
+wrote /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Bonfire02/Bonfire01/validation/original/skeleton.bmd (1 action(s))
+warning: skeleton.smd: triangles block is empty: this describes a skeleton-only model (animations without a mesh)
+
+wrote /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Bonfire02/Bonfire01/validation/new/Bonfire01.smd
+wrote /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Bonfire02/Bonfire01/validation/new/Bonfire01_a00.smd
+wrote /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Bonfire02/Bonfire01/validation/new/Bonfire01.actions.txt
+
+/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Bonfire02/Bonfire01/validation/new/Bonfire01.smd: bones=4 frames=1 triangles=362 materials=2
+OK
+
+/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Bonfire02/Bonfire01/validation/new/Bonfire01_a00.smd: bones=4 frames=1 triangles=0 materials=0
+OK
+
+wrote /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Bonfire02/Bonfire01/validation/new/skeleton.bmd (1 action(s))
+warning: skeleton.smd: triangles block is empty: this describes a skeleton-only model (animations without a mesh)

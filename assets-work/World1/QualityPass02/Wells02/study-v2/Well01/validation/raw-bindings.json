@@ -1,0 +1,33 @@
+{
+  "file": "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Wells02/Well01/exports/Well01.bmd",
+  "mesh_bindings": [
+    {
+      "mesh": 0,
+      "material": "tub.jpg",
+      "vertex_to_normal_node_mismatch_corner_counts": {
+        "6:0": 38
+      }
+    },
+    {
+      "mesh": 1,
+      "material": "horse_drawn_01.jpg",
+      "vertex_to_normal_node_mismatch_corner_counts": {
+        "6:0": 24
+      }
+    },
+    {
+      "mesh": 2,
+      "material": "well.jpg",
+      "vertex_to_normal_node_mismatch_corner_counts": {}
+    },
+    {
+      "mesh": 3,
+      "material": "jar_01.jpg",
+      "vertex_to_normal_node_mismatch_corner_counts": {
+        "3:2": 20,
+        "4:2": 20,
+        "5:2": 10
+      }
+    }
+  ]
+}

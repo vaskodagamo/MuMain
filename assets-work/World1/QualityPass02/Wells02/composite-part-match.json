@@ -1,0 +1,32 @@
+{
+  "status": "PASS",
+  "parts": {
+    "Well02": {
+      "triangles": 317,
+      "maximum_local_position_error": 0,
+      "maximum_uv_error": 0,
+      "named_bones_material_cyclic_winding": "EXACT"
+    },
+    "shared_new_pot_mouths": {
+      "triangles": 200,
+      "maximum_local_position_error": 3.618648364813316e-05,
+      "maximum_uv_error": 0,
+      "named_bones_material_cyclic_winding": "EXACT"
+    },
+    "tub.jpg": {
+      "triangles": 72,
+      "maximum_local_position_error": 0,
+      "maximum_uv_error": 0,
+      "named_bones_material_cyclic_winding": "EXACT"
+    },
+    "horse_drawn_01.jpg": {
+      "triangles": 16,
+      "maximum_local_position_error": 0,
+      "maximum_uv_error": 0,
+      "named_bones_material_cyclic_winding": "EXACT"
+    }
+  },
+  "position_tolerance": 0.0003,
+  "uv_tolerance": 1e-06,
+  "criterion": "All common new lip/throat triangles match exact named bones, materials, cyclic winding, local positions and UVs; neck join adapts to each retained baseline body. Entire well matches standalone. Readonly cask/support materials retain baseline triangles."
+}

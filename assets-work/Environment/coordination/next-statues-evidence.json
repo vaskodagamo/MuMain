@@ -1,0 +1,398 @@
+{
+  "StoneStatue01": {
+    "sha256": "1114562c9d5abcdfb5ef125a61a2285c3fe82e2fb5b9bc745c777be86e9454ad",
+    "source_blend": "/Users/lukasmac/Documents/claude-test-mumain/MuMain/assets-work/World1/Statues01/StoneStatue01/source.blend",
+    "source_blend_sha256": "08ae13c6f31670ea3ad6ca4fcea8b353baf7fb7ffe19128088ea62887f7de4ca",
+    "image": "/Users/lukasmac/Documents/claude-test-mumain/MuMain/assets-work/World1/coordination/final-inspection/StoneStatue01/final-offline.png",
+    "image_sha256": "1125ca30513a401b602141e1275f0081b0fb0406f2fe7518134bbadb5de560d5",
+    "provenance_all_current_match": true,
+    "game_files": {
+      "src/bin/Data/Object1/StoneStatue01.bmd": "1114562c9d5abcdfb5ef125a61a2285c3fe82e2fb5b9bc745c777be86e9454ad",
+      "src/bin/Data/Object1/stone_statue02.OZJ": "e1d4f7b95afae6c9936eb117a71592e94322b041efafa887bcdf6d731e4a630b"
+    },
+    "info": "model /Users/lukasmac/Documents/claude-test-mumain/MuMain/src/bin/Data/Object1/StoneStatue01.bmd\n  name field: StoneStatue01.smd  version: 12\n  meshes: 1  bones: 1  actions: 1  triangles: 100\n  bounds (bind pose): min -54.56 -54.34 0.00  max 54.62 56.47 399.99  size 109.19 110.81 399.99\n  mesh 0: triangles=100 vertices=65 normals=70 uvs=78 texture=stone_statue02.jpg\n  bone 0: \"Box11\" parent=-1\n  action 0: keys=1 lock=0\n",
+    "placements": [
+      {
+        "position": [
+          11902.4052734375,
+          23042.19921875,
+          115.04176330566406
+        ],
+        "rotation": [
+          -20.0,
+          0.0,
+          390.0
+        ],
+        "scale": 1.0,
+        "tile": [
+          119.024052734375,
+          230.4219921875
+        ]
+      },
+      {
+        "position": [
+          11955.6171875,
+          23218.59765625,
+          133.60556030273438
+        ],
+        "rotation": [
+          5.0,
+          0.0,
+          390.0
+        ],
+        "scale": 1.0,
+        "tile": [
+          119.556171875,
+          232.1859765625
+        ]
+      },
+      {
+        "position": [
+          17250.0,
+          12550.0,
+          165.00001525878906
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          2610.0
+        ],
+        "scale": 1.0,
+        "tile": [
+          172.5,
+          125.5
+        ]
+      },
+      {
+        "position": [
+          17250.0,
+          13050.0,
+          164.99998474121094
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          2610.0
+        ],
+        "scale": 1.0,
+        "tile": [
+          172.5,
+          130.5
+        ]
+      },
+      {
+        "position": [
+          21253.5390625,
+          24540.947265625,
+          224.24661254882812
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          1170.0
+        ],
+        "scale": 1.0,
+        "tile": [
+          212.535390625,
+          245.40947265625
+        ]
+      },
+      {
+        "position": [
+          21230.4140625,
+          24765.775390625,
+          245.0296630859375
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          1170.0
+        ],
+        "scale": 1.0,
+        "tile": [
+          212.304140625,
+          247.65775390625
+        ]
+      },
+      {
+        "position": [
+          21854.482421875,
+          24637.267578125,
+          223.11026000976562
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          1080.0
+        ],
+        "scale": 1.0,
+        "tile": [
+          218.54482421875,
+          246.37267578125
+        ]
+      }
+    ],
+    "raw_normal_bindings": {
+      "file": "/Users/lukasmac/Documents/claude-test-mumain/MuMain/src/bin/Data/Object1/StoneStatue01.bmd",
+      "mesh_bindings": [
+        {
+          "mesh": 0,
+          "material": "stone_statue02.jpg",
+          "vertex_to_normal_node_mismatch_corner_counts": {}
+        }
+      ]
+    }
+  },
+  "StoneStatue03": {
+    "sha256": "cbbf03b5de8c57cb46e76ea96d27ed43aefc119956f39082f48382d6677e228f",
+    "source_blend": "/Users/lukasmac/Documents/claude-test-mumain/MuMain/assets-work/World1/Statues01/StoneStatue03/source.blend",
+    "source_blend_sha256": "0c43647ebcef0a89a7dc4007593875b1431280595387603d0796d4750eb222b2",
+    "image": "/Users/lukasmac/Documents/claude-test-mumain/MuMain/assets-work/World1/coordination/final-inspection/StoneStatue03/final-offline.png",
+    "image_sha256": "aff6b8e5677c2785685aab9d58137a1c31a7cf5627445ce7dfef9b94416ffbdf",
+    "provenance_all_current_match": true,
+    "game_files": {
+      "src/bin/Data/Object1/StoneStatue03.bmd": "cbbf03b5de8c57cb46e76ea96d27ed43aefc119956f39082f48382d6677e228f",
+      "src/bin/Data/Object1/tombstone_big.OZJ": "e4a98d7db022ec92f6d9f63d147475f2c6c34bae82aa306f68b3f60f9c113940",
+      "src/bin/Data/Object1/angel_stone_statue.OZJ": "41badb3711151f592185b4c105701cc0652bce19ae796987f978294485673d12"
+    },
+    "info": "model /Users/lukasmac/Documents/claude-test-mumain/MuMain/src/bin/Data/Object1/StoneStatue03.bmd\n  name field: StoneStatue03.smd  version: 12\n  meshes: 2  bones: 1  actions: 1  triangles: 248\n  bounds (bind pose): min -72.77 -53.36 -0.08  max 74.61 39.88 264.77  size 147.37 93.24 264.85\n  mesh 0: triangles=20 vertices=20 normals=27 uvs=20 texture=tombstone_big.jpg\n  mesh 1: triangles=228 vertices=123 normals=123 uvs=145 texture=angel_stone_statue.jpg\n  bone 0: \"Box03\" parent=-1\n  action 0: keys=1 lock=0\n",
+    "placements": [
+      {
+        "position": [
+          13750.0,
+          23450.0,
+          165.0
+        ],
+        "rotation": [
+          5.0,
+          0.0,
+          450.0
+        ],
+        "scale": 1.0,
+        "tile": [
+          137.5,
+          234.5
+        ]
+      },
+      {
+        "position": [
+          14250.0,
+          23150.0,
+          164.99996948242188
+        ],
+        "rotation": [
+          5.0,
+          0.0,
+          270.0
+        ],
+        "scale": 1.0,
+        "tile": [
+          142.5,
+          231.5
+        ]
+      },
+      {
+        "position": [
+          13723.146484375,
+          23689.603515625,
+          99.99998474121094
+        ],
+        "rotation": [
+          20.0,
+          0.0,
+          780.0
+        ],
+        "scale": 1.0,
+        "tile": [
+          137.23146484375,
+          236.89603515625
+        ]
+      },
+      {
+        "position": [
+          13728.40234375,
+          23114.166015625,
+          120.0
+        ],
+        "rotation": [
+          30.0,
+          0.0,
+          510.0
+        ],
+        "scale": 1.0,
+        "tile": [
+          137.2840234375,
+          231.14166015625
+        ]
+      }
+    ],
+    "raw_normal_bindings": {
+      "file": "/Users/lukasmac/Documents/claude-test-mumain/MuMain/src/bin/Data/Object1/StoneStatue03.bmd",
+      "mesh_bindings": [
+        {
+          "mesh": 0,
+          "material": "tombstone_big.jpg",
+          "vertex_to_normal_node_mismatch_corner_counts": {}
+        },
+        {
+          "mesh": 1,
+          "material": "angel_stone_statue.jpg",
+          "vertex_to_normal_node_mismatch_corner_counts": {}
+        }
+      ]
+    }
+  },
+  "SteelStatue01": {
+    "sha256": "47cf79132fab1d62873120638485e62f48cb7aa31814771872c8700486ac8536",
+    "source_blend": "/Users/lukasmac/Documents/claude-test-mumain/MuMain/assets-work/World1/Statues01/SteelStatue01/source.blend",
+    "source_blend_sha256": "5264b3f53763f77f2088b0677989df24b138ee7d4d07d11f668dc5b2de08a79d",
+    "image": "/Users/lukasmac/Documents/claude-test-mumain/MuMain/assets-work/World1/coordination/final-inspection/SteelStatue01/final-offline.png",
+    "image_sha256": "f98b1851ced1d32fabe3d66efd9e2e26cf3f0abc5d3890db79899302598095ac",
+    "provenance_all_current_match": true,
+    "game_files": {
+      "src/bin/Data/Object1/SteelStatue01.bmd": "47cf79132fab1d62873120638485e62f48cb7aa31814771872c8700486ac8536",
+      "src/bin/Data/Object1/tombstone_big.OZJ": "e4a98d7db022ec92f6d9f63d147475f2c6c34bae82aa306f68b3f60f9c113940"
+    },
+    "info": "model /Users/lukasmac/Documents/claude-test-mumain/MuMain/src/bin/Data/Object1/SteelStatue01.bmd\n  name field: SteelStatue01.smd  version: 12\n  meshes: 1  bones: 1  actions: 1  triangles: 98\n  bounds (bind pose): min -65.92 -65.01 -0.04  max 65.87 66.77 321.58  size 131.79 131.79 321.62\n  mesh 0: triangles=98 vertices=64 normals=59 uvs=94 texture=tombstone_big.jpg\n  bone 0: \"Box02\" parent=-1\n  action 0: keys=1 lock=0\n",
+    "placements": [
+      {
+        "position": [
+          13700.0,
+          20800.0,
+          164.99998474121094
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": 1.0,
+        "tile": [
+          137.0,
+          208.0
+        ]
+      },
+      {
+        "position": [
+          14400.0,
+          20800.0,
+          165.00001525878906
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": 1.0,
+        "tile": [
+          144.0,
+          208.0
+        ]
+      },
+      {
+        "position": [
+          13700.0,
+          22800.0,
+          164.99996948242188
+        ],
+        "rotation": [
+          5.0,
+          0.0,
+          360.0
+        ],
+        "scale": 1.0,
+        "tile": [
+          137.0,
+          228.0
+        ]
+      },
+      {
+        "position": [
+          14400.0,
+          22800.0,
+          164.99996948242188
+        ],
+        "rotation": [
+          5.0,
+          0.0,
+          360.0
+        ],
+        "scale": 1.0,
+        "tile": [
+          144.0,
+          228.0
+        ]
+      }
+    ],
+    "raw_normal_bindings": {
+      "file": "/Users/lukasmac/Documents/claude-test-mumain/MuMain/src/bin/Data/Object1/SteelStatue01.bmd",
+      "mesh_bindings": [
+        {
+          "mesh": 0,
+          "material": "tombstone_big.jpg",
+          "vertex_to_normal_node_mismatch_corner_counts": {}
+        }
+      ]
+    }
+  },
+  "Waterspout01": {
+    "sha256": "7e3c5e39d74227a3ac88dce45ec6da2573b0d7738d85384fbfdb5251069a9e83",
+    "source_blend": "/Users/lukasmac/Documents/claude-test-mumain/MuMain/assets-work/World1/Statues01/Waterspout01/source.blend",
+    "source_blend_sha256": "609f5bcdbd7ed80b1aff97565af3a94302be0c0a52cdee7e12824dfcac0eec3f",
+    "image": "/Users/lukasmac/Documents/claude-test-mumain/MuMain/assets-work/World1/coordination/final-inspection/Waterspout01/final-offline.png",
+    "image_sha256": "b77890ae1488e79e9d2a9064d304097fc788cb873402c93157444057e2b92c67",
+    "provenance_all_current_match": true,
+    "game_files": {
+      "src/bin/Data/Object1/Waterspout01.bmd": "7e3c5e39d74227a3ac88dce45ec6da2573b0d7738d85384fbfdb5251069a9e83",
+      "src/bin/Data/Object1/stone_statue02.OZJ": "e1d4f7b95afae6c9936eb117a71592e94322b041efafa887bcdf6d731e4a630b",
+      "src/bin/Data/Object1/reagon_waterspout.OZJ": "0da0208475dd23f3838e39615ff562ddec46a5f094c198b7c1e481443135b67d",
+      "src/bin/Data/Object1/ston01.OZJ": "593c4ec54ab68801d842b15f2b397b02918526d85190b613c875106110d33784",
+      "src/bin/Data/Object1/ston02.OZJ": "09d1dbbbc7672fe05d82a89a115bee1ec538e615b3f39e93b9e244e7cd61d151"
+    },
+    "info": "model /Users/lukasmac/Documents/claude-test-mumain/MuMain/src/bin/Data/Object1/Waterspout01.bmd\n  name field: Data2\\Object1\\waterspout.smd  version: 10\n  meshes: 4  bones: 11  actions: 1  triangles: 639\n  bounds (bind pose): min -199.06 -199.74 -0.14  max 199.23 198.55 311.20  size 398.30 398.30 311.34\n  mesh 0: triangles=72 vertices=60 normals=36 uvs=29 texture=stone_statue02.jpg\n  mesh 1: triangles=417 vertices=232 normals=209 uvs=224 texture=reagon_waterspout.jpg\n  mesh 2: triangles=60 vertices=36 normals=36 uvs=39 texture=ston01.jpg\n  mesh 3: triangles=90 vertices=66 normals=66 uvs=66 texture=ston02.jpg\n  bone 0: \"OilTank01\" parent=-1\n  bone 1: \"Box04\" parent=-1\n  bone 2: \"Box01\" parent=1\n  bone 3: \"Box02\" parent=2\n  bone 4: \"Box03\" parent=3\n  bone 5: \"QuadPatch01\" parent=1\n  bone 6: \"Box05\" parent=-1\n  bone 7: \"Box06\" parent=6\n  bone 8: \"Box07\" parent=7\n  bone 9: \"Box08\" parent=8\n  bone 10: \"QuadPatch02\" parent=6\n  action 0: keys=21 lock=0\n",
+    "placements": [
+      {
+        "position": [
+          14100.0,
+          12800.0,
+          165.00003051757812
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          -270.0
+        ],
+        "scale": 1.0,
+        "tile": [
+          141.0,
+          128.0
+        ]
+      }
+    ],
+    "raw_normal_bindings": {
+      "file": "/Users/lukasmac/Documents/claude-test-mumain/MuMain/src/bin/Data/Object1/Waterspout01.bmd",
+      "mesh_bindings": [
+        {
+          "mesh": 0,
+          "material": "stone_statue02.jpg",
+          "vertex_to_normal_node_mismatch_corner_counts": {}
+        },
+        {
+          "mesh": 1,
+          "material": "reagon_waterspout.jpg",
+          "vertex_to_normal_node_mismatch_corner_counts": {}
+        },
+        {
+          "mesh": 2,
+          "material": "ston01.jpg",
+          "vertex_to_normal_node_mismatch_corner_counts": {}
+        },
+        {
+          "mesh": 3,
+          "material": "ston02.jpg",
+          "vertex_to_normal_node_mismatch_corner_counts": {}
+        }
+      ]
+    }
+  }
+}

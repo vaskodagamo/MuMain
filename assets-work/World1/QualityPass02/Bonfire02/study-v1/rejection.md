@@ -1,0 +1,1 @@
+Rejected by coordinator and independent reviewer: exposed heels still read as rectangular timber and long-edge chamfers are too subtle at reduced distance. Technical and protected-shell proofs pass, but362 triangles have insufficient visual return. No game file installed. Next direction quarter-split wood with a broad bark arc and preserved hot-end/ground contacts.

@@ -1,0 +1,10 @@
+{
+  "file": "assets-work/World1/QualityPass02/Wells02/Well02/baseline/Well02.bmd",
+  "mesh_bindings": [
+    {
+      "mesh": 0,
+      "material": "well.jpg",
+      "vertex_to_normal_node_mismatch_corner_counts": {}
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+00:00.662  blend            | Read blend: "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Architecture01/HouseWall04/source.blend"
+skipping reference object 'REF_BASELINE_HouseWall04' (REF_ collection or mu_reference)
+skipping reference object 'HouseWall04.001' (REF_ collection or mu_reference)
+
+Blender Source Tools: exporting REF_BASELINE
+ ERROR: Nothing in Group "REF_BASELINE" is enabled for export
+
+Blender Source Tools: exporting REF_ORIGINAL
+ ERROR: Nothing in Group "REF_ORIGINAL" is enabled for export
+
+Blender Source Tools: exporting HouseWall04_mu_export
+- Baking...
+- /private/var/folders/5c/gyglnk2d6mx3v2m0frrgvl2w0000gn/T/mu_export_kpl2e7vy/HouseWall04_mu_export.smd
+- Exported 1 bones
+- Exported 1 frames
+- Exported 872 polys
+- Exported 3 materials
+   tile_wood02.jpg
+   tile_ston04.jpg
+   tile_wood01.jpg
+- SMD export took 0.0275571346282959 
+
+
+Blender Source Tools: exporting HouseWall04_skeleton
+- Baking...
+- /private/var/folders/5c/gyglnk2d6mx3v2m0frrgvl2w0000gn/T/mu_export_kpl2e7vy/anims/HouseWall04_a00.smd
+- Exported 1 bones
+- Exported 1 frames
+- SMD export took 0.0008378028869628906 
+
+2 Errors and 0 Warnings
+Error: Nothing in Group "REF_BASELINE" is enabled for export
+Error: Nothing in Group "REF_ORIGINAL" is enabled for export
+2 files exported in 0.0 seconds with 2 Errors and 0 Warnings
+Info: 2 files exported in 0.0 seconds with 2 Errors and 0 Warnings
++ /Users/lukasmac/Documents/claude-test-mumain/MuMain/out/build/macos-arm64/tools/bmdconv/Release/bmdconv smd2bmd /var/folders/5c/gyglnk2d6mx3v2m0frrgvl2w0000gn/T/mu_export_kpl2e7vy/HouseWall04_mu_export.smd /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Architecture01/HouseWall04/exports/HouseWall04.bmd --anim /var/folders/5c/gyglnk2d6mx3v2m0frrgvl2w0000gn/T/mu_export_kpl2e7vy/anims/HouseWall04_a00.smd --name HouseWall04.smd
+wrote /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Architecture01/HouseWall04/exports/HouseWall04.bmd (1 action(s))
++ /Users/lukasmac/Documents/claude-test-mumain/MuMain/out/build/macos-arm64/tools/bmdconv/Release/bmdconv info /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Architecture01/HouseWall04/exports/HouseWall04.bmd
+model /Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-architecture/assets-work/World1/QualityPass02/Architecture01/HouseWall04/exports/HouseWall04.bmd
+  name field: HouseWall04.smd  version: 12
+  meshes: 3  bones: 1  actions: 1  triangles: 872
+  bounds (bind pose): min -54.81 -50.90 0.28  max 246.23 249.87 264.48  size 301.04 300.77 264.20
+  mesh 0: triangles=44 vertices=28 normals=39 uvs=38 texture=tile_wood01.jpg
+  mesh 1: triangles=816 vertices=473 normals=255 uvs=106 texture=tile_wood02.jpg
+  mesh 2: triangles=12 vertices=11 normals=6 uvs=20 texture=tile_ston04.jpg
+  bone 0: "joint_01" parent=-1
+  action 0: keys=1 lock=0
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:49:19)
+
+Blender quit

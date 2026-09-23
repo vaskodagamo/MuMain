@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "maximum_direction_delta": 7.1124758078355e-07,
+  "tolerance": 0.001,
+  "materials": {
+    "stone_statue02.jpg": 7.1124758078355e-07
+  },
+  "frames": [
+    {
+      "frame": 0,
+      "maximum_direction_delta": 7.1124758078355e-07
+    }
+  ],
+  "authored_corners": 636,
+  "method": "Blender authored split corner normal against actual BMD raw normal node/vector, each through full baseline/final hierarchy in the static bind/action frame"
+}

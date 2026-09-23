@@ -1,0 +1,93 @@
+{
+  "decision": "RETAIN current merged baselines for all4 after explicit contextual reassessment; reject all replacement studies",
+  "reason_for_reassessment": "Earlier boxiness concern over-weighted isolated clay topology for modular stone construction. Actual frozen-painted baseline and placed architectural comparisons show readable distinct roles and coherent ornament; retention is not justified by failed attempts or contract difficulty. Candidate v2 adds810 vs50 triangles with negligible painted reduced gain.",
+  "assets": {
+    "HouseEtc01": {
+      "decision": "RETAIN",
+      "rationale": "The hooked projecting nose, paired dark eye sockets and flared cheek painting form a clearly recognizable dragon emblem. The rectangular stone block is a deliberate stackable architectural volume; actual stacked30/31 view reads as two repeated heraldic panels with continuous stone courses. Integrated awning surroundings share its restrained warm stone and carved trim. It does not require a free-standing sculpture silhouette to serve this role.",
+      "limits": "Essentially original coarse relief geometry with prior painting treatment; isolated clay looks simplified and strong oblique close-up exposes reliance on painted depth. Retention applies to ordinary placed game-camera use, not a hero close-up sculpture standard.",
+      "game_files": {
+        "src/bin/Data/Object1/HouseEtc01.bmd": "646273f66d753761d78bfc04c33ad9ba73adf4b87e69a2c376a8c530e8fff22c",
+        "src/bin/Data/Object1/c_wall04.OZJ": "c7ba893ef3542cb9bb265ef7735c1d7d2c2bf58f7284d8cff8f0940860828ed3",
+        "src/bin/Data/Object1/c_wall06.OZJ": "81c037340624b795b295c58071bc26f66f785c20be11cddfd304e585b10c77f4"
+      },
+      "current_integration_hashes_match": {
+        "src/bin/Data/Object1/HouseEtc01.bmd": true,
+        "src/bin/Data/Object1/c_wall04.OZJ": true,
+        "src/bin/Data/Object1/c_wall06.OZJ": true
+      }
+    },
+    "StoneMuWall02": {
+      "decision": "RETAIN",
+      "rationale": "The narrow pointed end profile and compact carved crest distinguish the wall terminal from the broad shield modules. The long taper and restrained panel center give the gate assembly a readable ending without competing with portcullis/dragon shields. Existing upper carving and border painting are adequate at assembly scale.",
+      "limits": "Fine crest anatomy stays mainly painted. Broad-side panel is deliberately quiet; retaining it is not a claim of additional sculptural detail. Two previously documented inherited custom-normal incidents remain baseline, not repaired.",
+      "game_files": {
+        "src/bin/Data/Object1/StoneMuWall02.bmd": "71871c76baa85db5b0e8d4017ee0a5c797eeb4897bf14dfa2129da19264ea4cd",
+        "src/bin/Data/Object1/c_wall06.OZJ": "81c037340624b795b295c58071bc26f66f785c20be11cddfd304e585b10c77f4",
+        "src/bin/Data/Object1/c_wall05.OZJ": "e2890842d739f4fa2010e2a90d4af1e368a97bf2028d26c4e15dac0030e05083",
+        "src/bin/Data/Object1/c_wall04.OZJ": "c7ba893ef3542cb9bb265ef7735c1d7d2c2bf58f7284d8cff8f0940860828ed3"
+      },
+      "current_integration_hashes_match": {
+        "src/bin/Data/Object1/StoneMuWall02.bmd": true,
+        "src/bin/Data/Object1/c_wall06.OZJ": true,
+        "src/bin/Data/Object1/c_wall05.OZJ": true,
+        "src/bin/Data/Object1/c_wall04.OZJ": true
+      }
+    },
+    "StoneMuWall03": {
+      "decision": "RETAIN",
+      "rationale": "The broad projecting shield face, sloped cap and lower point have a distinctive defensive outline. Repeated dragon noses/eye shadows read as a consistent fortification motif in the actual south-gate assembly; horizontal ornamental bands and matched warm stone connect the shields to plain wall spans and gate piers. The facade stays legible without added recessed islands.",
+      "limits": "Close oblique inspection exposes coarse cheek planes and painted small ornament. Repeated motif is intentional modular rhythm rather than unique sculpture; no new geometry improvement is claimed.",
+      "game_files": {
+        "src/bin/Data/Object1/StoneMuWall03.bmd": "da3246175a2f50993de1f8b17aa9483165b389021f871145cec7ef37f7ee608a",
+        "src/bin/Data/Object1/c_wall04.OZJ": "c7ba893ef3542cb9bb265ef7735c1d7d2c2bf58f7284d8cff8f0940860828ed3",
+        "src/bin/Data/Object1/c_wall06.OZJ": "81c037340624b795b295c58071bc26f66f785c20be11cddfd304e585b10c77f4"
+      },
+      "current_integration_hashes_match": {
+        "src/bin/Data/Object1/StoneMuWall03.bmd": true,
+        "src/bin/Data/Object1/c_wall04.OZJ": true,
+        "src/bin/Data/Object1/c_wall06.OZJ": true
+      }
+    },
+    "StoneMuWall04": {
+      "decision": "RETAIN",
+      "rationale": "The same shield face deliberately matches03 while the rear wooden firing platform, ladder, chest and iron cannon supply a separate readable function. Siege-wall rear context clearly separates wood from stone and iron; front retains matching sloped cap and pointed crest rhythm. Current combined design is coherent and visually useful.",
+      "limits": "Front relief has03 close-up limitations; dark cannon remains diffuse iron and was separately reviewed, not assumed an additive error. Rear attachments remain unchanged; no new sculptural detail claimed.",
+      "game_files": {
+        "src/bin/Data/Object1/StoneMuWall04.bmd": "bfdc5558ab6c7412438d5925d9ffb98bdce9538a8a5fd593b80cb3dc2d47c471",
+        "src/bin/Data/Object1/c_wall04.OZJ": "c7ba893ef3542cb9bb265ef7735c1d7d2c2bf58f7284d8cff8f0940860828ed3",
+        "src/bin/Data/Object1/c_wall06.OZJ": "81c037340624b795b295c58071bc26f66f785c20be11cddfd304e585b10c77f4",
+        "src/bin/Data/Object1/horse_drawn_01.OZJ": "fb570a0b0c9c00e0face1e27f81fbc01d8edd6aeb6bc54280573a49d4dd7ad0e"
+      },
+      "current_integration_hashes_match": {
+        "src/bin/Data/Object1/StoneMuWall04.bmd": true,
+        "src/bin/Data/Object1/c_wall04.OZJ": true,
+        "src/bin/Data/Object1/c_wall06.OZJ": true,
+        "src/bin/Data/Object1/horse_drawn_01.OZJ": true
+      }
+    }
+  },
+  "evidence": {
+    "/Users/lukasmac/Documents/claude-test-mumain/MuMain/assets-work/World1/coordination/final-inspection/HouseEtc01/provenance.json": "0f44aec04ac0013d73a4f02fa06cd1d3cf162895896642ddb448297d2ee97559",
+    "/Users/lukasmac/Documents/claude-test-mumain/MuMain/assets-work/World1/coordination/final-inspection/HouseEtc01/final-offline.png": "5a9ecd30fcc94b4b6a4ef084c40e7bc0932c987118515800d62a95d0284f27e1",
+    "/Users/lukasmac/Documents/claude-test-mumain/MuMain/assets-work/World1/coordination/final-inspection/StoneMuWall02/provenance.json": "bdc37dcca0afb92b315504322a38047eeb410bab487d5650edfb3add47d186f3",
+    "/Users/lukasmac/Documents/claude-test-mumain/MuMain/assets-work/World1/coordination/final-inspection/StoneMuWall02/final-offline.png": "c81de0d6d57f38f9003f5d26c6948bdc3780fb23a34c4ffccc3d73d45b69df1e",
+    "/Users/lukasmac/Documents/claude-test-mumain/MuMain/assets-work/World1/coordination/final-inspection/StoneMuWall03/provenance.json": "d143f34b206310308c1e3914b4632aefb5fbdb3453613442abe22c154cd60284",
+    "/Users/lukasmac/Documents/claude-test-mumain/MuMain/assets-work/World1/coordination/final-inspection/StoneMuWall03/final-offline.png": "74995fe6f26e51dccedab57ead8934ddc5bddf83225b61d059cc9dc73b8000f3",
+    "/Users/lukasmac/Documents/claude-test-mumain/MuMain/assets-work/World1/coordination/final-inspection/StoneMuWall04/provenance.json": "e3b90cdc8fd3770bd0b41c67de1cf108578b1fb3d43cdb8cafcbd8197c1875fb",
+    "/Users/lukasmac/Documents/claude-test-mumain/MuMain/assets-work/World1/coordination/final-inspection/StoneMuWall04/final-offline.png": "db8e1f1945d5a95ea0b51727ac004d1d6096eb790bc15c846d3dc2c450415386",
+    "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/review-assemblies/house-stack-before.png": "440e1abc895dd34e077c2221dd32b4249486580da85577abce75ddf77b689e7a",
+    "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/review-assemblies/south-gate-before.png": "01c78cd18ca6996f4154d45420bee605f3231a6433158e195a9fe4e00c4e8e11",
+    "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry01/review-assemblies/siege-wall-before.png": "cb2739b0f66a718b7989c647c4e3413bc21a66011133040f5590920050769ae8",
+    "/Users/lukasmac/Documents/claude-test-mumain/MuMain-environment-remake/assets-work/World1/QualityPass02/Coherence01/review/homes/integrated-small.png": "d008097ce97941a81801c9d728ac310650de0910d51ab1f5f920e1636125af4c",
+    "/Users/lukasmac/Documents/claude-test-mumain/MuMain-environment-remake/assets-work/World1/QualityPass02/Coherence01/review/awning/integrated-small.png": "81867fb54349401464039ef4451d2c649232e1116096e5f5fadefdab4bc1ceb0",
+    "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry02/HouseEtc01/review/comparison.jpg": "01c4e326af23528d2594b7228f69c17869c886e8dd0254022a1cb9ae33495529",
+    "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry02/HouseEtc01/review/comparison-small.jpg": "a423dabf60059ce7979b722b34c69ba88d879bd79cec2107b4bba99decb7b1e4",
+    "/Users/lukasmac/Documents/claude-test-mumain/MuMain-q02-furniture/assets-work/World1/QualityPass02/Masonry02/HouseEtc01/review/comparison-clay.jpg": "4cade2284e4238a3d9f231cb2f7b1d0af26c5fcab29a5dd1082cb5d4310ff843"
+  },
+  "limits": [
+    "Offline diffuse/placement evidence only; user-reported baseline client result remains distinct from personal observation.",
+    "No replacement study is counted as a completed remake.",
+    "This asset-specific retention supersedes earlier provisional production flags, not the factual work-performed categories."
+  ]
+}
