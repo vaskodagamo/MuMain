@@ -998,3 +998,17 @@ parallel. Reload of a non-world range is untested until I6 allows one.
 **Verified:** Pulled owner-fork main at `1256aeed` after those merges. Object45–47 source BMDs, shared `bons.OZJ`, packed Blender scenes and rendered previews are hash-bound; six exact Object47/Object48 cluster records match the main placement manifest. PR #20 independently passed 181 evidence-hash checks and all 120 placement records; its protected raw fire meshes and anchors remain unchanged. PR #23 independent review checked 218 evidence hashes and 446 placements. Lorencia's final offline gate remains `bb641d04`: 22 replacements and 84 retentions cover all 106 in-scope assets. New client verification remains pending.
 
 **Open / next:** Owner review of PRs #22 and #23; continue the Dungeon static inventory with actual-placement context. The latest triage found no coherent next 3–5 asset production batch among Object05/07/08/09/10/11/14; keep Object09's animated Object12 clearance dependency explicit.
+
+## 2026-09-23 - Item editor I1: Item Editor on the Mac, offline --items (Claude Opus 5.5)
+**Goal:** Milestone I1 of `ITEM_EDITOR_PLAN.md`.
+
+**Done:** portable Item Editor paths, saves mirrored into the repository with a backup,
+`--editor --items`, byte-preserving save of the item table in the layout it was loaded from,
+29-byte name limit for the legacy layout, console `std::cout` hang fixed, `ITEM_EDITOR.md`.
+
+**Verified:** `editor_item_table_tests` (four shipped tables byte-identical, rename changes one
+record + checksum); 343/343 editor-build tests, 342/342 player-build tests; scripted in-client
+run (search, columns, rename, save, no-change save, copy, exports), screenshots.
+
+**Open / next:** hand test by the owner; I3 browse tab. Item stats of 13-121/125/127 are
+corrupted in the shipped file (long names spill into later fields).
