@@ -127,11 +127,16 @@ std::string CItemEditorActions::s_status;
 
 namespace
 {
+std::string AbsoluteText(const std::filesystem::path& file)
+{
+    return Editor::Files::PathToUtf8(Editor::Files::AbsolutePath(file));
+}
+
 // Status line of an export: where it went, and its copy in <repo>/out/editor-exports.
 std::string DescribeExport(const std::filesystem::path& file)
 {
     std::string text = "Exported " + Editor::Files::PathToUtf8(file.filename()) +
-                       "\n  game:   " + Editor::Files::PathToUtf8(Editor::Files::AbsolutePath(file));
+                       "\n  game:   " + AbsoluteText(file);
     const std::filesystem::path copy = Editor::Files::CopyToRepoExports(file);
     if (!copy.empty())
         text += "\n  copy:   " + Editor::Files::PathToUtf8(copy);
@@ -162,7 +167,7 @@ void CItemEditorActions::SaveItemTable()
     }
 
     g_MuEditorConsoleUI.LogEditor(I18N::Editor::FailedToSaveItems);
-    s_status = "Could not write " + Editor::Files::PathToUtf8(Editor::Files::AbsolutePath(file));
+    s_status = "Could not write " + AbsoluteText(file);
     ImGui::OpenPopup("Save Failed");
 }
 
@@ -173,13 +178,12 @@ void CItemEditorActions::ExportLegacyTable()
     if (!g_ItemDataHandler.ExportAsS6E3(fileName.data()))
     {
         g_MuEditorConsoleUI.LogEditor(I18N::Editor::FailedToExportAsS6E3Format);
-        s_status = "Could not write " + Editor::Files::PathToUtf8(Editor::Files::AbsolutePath(file));
+        s_status = "Could not write " + AbsoluteText(file);
         ImGui::OpenPopup("Export S6E3 Failed");
         return;
     }
 
-    g_MuEditorConsoleUI.LogEditor("Exported items as S6E3 legacy format: " +
-                                  Editor::Files::PathToUtf8(Editor::Files::AbsolutePath(file)));
+    g_MuEditorConsoleUI.LogEditor("Exported items as S6E3 legacy format: " + AbsoluteText(file));
     s_status = DescribeExport(file);
     ImGui::OpenPopup("Export S6E3 Success");
 }
@@ -191,13 +195,12 @@ void CItemEditorActions::ExportCsv()
     if (!g_ItemDataHandler.ExportToCsv(fileName.data()))
     {
         g_MuEditorConsoleUI.LogEditor(I18N::Editor::FailedToExportAsCSV);
-        s_status = "Could not write " + Editor::Files::PathToUtf8(Editor::Files::AbsolutePath(file));
+        s_status = "Could not write " + AbsoluteText(file);
         ImGui::OpenPopup("Export CSV Failed");
         return;
     }
 
-    g_MuEditorConsoleUI.LogEditor("Exported items as CSV: " +
-                                  Editor::Files::PathToUtf8(Editor::Files::AbsolutePath(file)));
+    g_MuEditorConsoleUI.LogEditor("Exported items as CSV: " + AbsoluteText(file));
     s_status = DescribeExport(file);
     ImGui::OpenPopup("Export CSV Success");
 }
