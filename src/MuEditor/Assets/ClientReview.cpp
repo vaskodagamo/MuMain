@@ -20,7 +20,6 @@ namespace
 using Json::Text;
 
 constexpr const char* CLIENT_REVIEW_FILE_NAME = "client-review.json";
-constexpr const char* TEMP_SUFFIX = ".tmp";
 constexpr int JSON_INDENT = 2;
 
 // The file as a JSON object: an empty object when it does not exist yet.
@@ -40,31 +39,11 @@ bool ReadDocument(const fs::path& file, json& out, std::string& error)
     return true;
 }
 
-// Writes next to the file first, so a failed write never leaves half a file.
 bool WriteDocument(const fs::path& file, const json& document, std::string& error)
 {
-    fs::path temp = file;
-    temp += TEMP_SUFFIX;
-    std::error_code ec;
-    fs::create_directories(file.parent_path(), ec);
-    {
-        std::ofstream stream(temp, std::ios::binary | std::ios::trunc);
-        // Invalid UTF-8 in a typed note becomes U+FFFD instead of failing the save.
-        stream << document.dump(JSON_INDENT, ' ', false, json::error_handler_t::replace) << '\n';
-        if (!stream)
-        {
-            error = "cannot write " + Editor::Text::PathToUtf8(temp);
-            return false;
-        }
-    }
-    fs::rename(temp, file, ec);
-    if (ec)
-    {
-        error = "cannot replace " + Editor::Text::PathToUtf8(file) + ": " + ec.message();
-        fs::remove(temp, ec);
-        return false;
-    }
-    return true;
+    // Invalid UTF-8 in a typed note becomes U+FFFD instead of failing the save.
+    const std::string text = document.dump(JSON_INDENT, ' ', false, json::error_handler_t::replace) + '\n';
+    return Json::ReplaceFileText(file, text, error);
 }
 } // namespace
 

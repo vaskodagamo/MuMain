@@ -98,6 +98,10 @@ struct RequestDomain
 // The domain of map `world`; `worldName` ("Lorencia") names the worker branches.
 RequestDomain WorldRequestDomain(int world, const std::string& worldName);
 
+// The domain of the game's items (assets-work/Items/requests, branches
+// codex/item-req-...); the contract is assets-work/Items/requests/README.md.
+RequestDomain ItemRequestDomain();
+
 struct RequestDraft
 {
     std::string id; // <date>-<model>-<slug>, also the folder name
@@ -114,6 +118,14 @@ struct RequestDraft
 std::string RequestsFolderPath(const RequestDomain& domain);                      // assets-work/World1/requests
 std::string RequestFolderPath(const RequestDomain& domain, const std::string& id); // .../requests/<id>
 std::string CapturePath(const RequestDomain& domain, const std::string& id, const std::string& fileName);
+// The worker's branch and worktree of request `id` (the README's worker rules):
+// codex/<branchWord>-req-<model>-<slug> and ../MuMain-<branchWord>-req-<model>-<slug>.
+std::string RequestBranch(const RequestDomain& domain, const std::string& id);
+std::string RequestWorktree(const RequestDomain& domain, const std::string& id);
+// handoff.deliver_to: <request folder>/delivery/
+std::string RequestDeliveryPath(const RequestDomain& domain, const std::string& id);
+// handoff.repo: the fork workers push to (never the upstream project).
+constexpr const char* REQUEST_REPOSITORY = "vaskodagamo/MuMain";
 
 // Containers of the targets -> every model that uses them (only the ones used by
 // more than one model), frozen containers (a consumer outside the targets) and the
