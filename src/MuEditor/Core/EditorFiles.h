@@ -49,6 +49,10 @@ SavedFile MirrorSavedFile(const std::filesystem::path& dataRelative);
 // copy's absolute path, or an empty path when there is no repo or it failed.
 std::filesystem::path CopyToRepoExports(const std::filesystem::path& file);
 
+// The local time as the editors name folders of saved files: 20260922-235959
+// (out/editor-backups/<time>, out/item-ab/<item>-<time>).
+std::string BackupStamp();
+
 // The absolute path of a file relative to the working directory, for status lines.
 std::filesystem::path AbsolutePath(const std::filesystem::path& file);
 

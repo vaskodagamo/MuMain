@@ -392,6 +392,35 @@ Status:
     Shield variants, pick, Ask Codex thumbnail, refine lineage, discard; full screen, scale across
     a restart, `--world 1`, Metal validation. Not verified: real spending, a real rate-limit or
     quota error, Windows (Cancel may end the tool at once there).
+- **I6 done (2026-09-23).** A/B compare in the Item Editor; usage in `ITEM_EDITOR.md`.
+  - `materialize_variant.py original --items` writes the originals of 823 item models and 1028
+    textures (45 MB, ~30 s) into `out/ab/original/Data/...` with `items-manifest.json`; world
+    runs are byte-identical to before and both kinds keep each other's files.
+  - Versions per item: as built / current / original, and candidates found automatically: Codex
+    deliveries (`requests/<id>/delivery/<key>/exports/`) and the style pilot
+    (`assets-work/Items/pilot/<Model>/<A|B>/`), or any folder. **Side by side** with a linked
+    camera in every view: the right-hand picture is a separate model copy swapped into the engine
+    only while it draws (`Core/ModelCopy`, `ModelFileCheck`). One item, a family or all items
+    switch between current and original. The Requests tab has **Compare** next to Accept/Reject.
+    A/B capture sheets go to `out/item-ab/` (the requests contract has no owner review files).
+  - `ModelHotReload` handles items (several texture folders per model, skin/hair flags) and
+    reuses the engine's fixed texture slots for identical files (switching all items used to
+    leave 19 extra textures). Player build: one editor-only `CGlobalBitmap::LoadSeparateImage`.
+  - Checked: 416/416 editor-build and 415/415 player-build tests, 6 new Python tests; in the
+    client: Kris (Sword01) as built / original / current; all items to original and back with
+    2108 textures and 169,191,176 bytes at every step (7 items are refused each time: their
+    textures were never in the repo); Axe01, Shield01, Wing01 pilot A vs B vs current in
+    turntable, inventory and equipped; a simulated delivery compared from the Requests tab; a
+    broken candidate refused; Metal validation clean; `--world 1` and the Map Editor A/B
+    unchanged (2108 -> 2111 -> 2108 textures).
+  - **Pilot in the real client (for the owner's decision):** both axes gain detail but their
+    blades read almost white; the shields both work (A warm wood and blue, B cool steel and
+    bronze); both wings fail because the client draws wing textures blended (black is see-through,
+    colour glows) and the pilot painted them as opaque: A turns into hard cyan stripes, B into
+    white blades. Wing art has to be painted for blending.
+  - Not verified: "Load candidate from folder..." (file dialog), armour class-variant switching,
+    Rage Fighter hand models and inventory-only models (not switched), a real Codex delivery,
+    Windows.
 - **Concept images (added by the owner, 2026-09-23; built the same day).** Before Codex models an
   item, `tools/item_editor/concepts.py` generates concept art through the OpenAI Images API
   (`/v1/images/edits` with the item's current render as reference), the owner picks one, and the

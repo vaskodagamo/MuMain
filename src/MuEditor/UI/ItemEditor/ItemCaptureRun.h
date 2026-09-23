@@ -18,12 +18,20 @@
 // back from the GPU (the offscreen target holds only the 3D view - no editor
 // panels, no debug text). One shot takes a few frames, so the editor keeps
 // drawing and the dialog shows the progress. The owner's preview settings are put
-// back at the end, also after a failure or a cancel.
+// back at the end, also after a failure or a cancel. With the preview side by side
+// (A/B compare) a run can take both pictures of every shot and a sheet of the two.
 class CItemCaptureRun
 {
 public:
+    enum class Sides
+    {
+        One,  // the preview's picture
+        Pair, // the side-by-side view's left and right picture of each shot
+    };
+
     // Starts on the preview's current item, which must be `itemType`.
-    void Start(int itemType, std::vector<Editor::Preview::CaptureShot> shots, std::string clientCommit);
+    void Start(int itemType, std::vector<Editor::Preview::CaptureShot> shots, std::string clientCommit,
+               Sides sides = Sides::One);
     // Advances the run; call once per frame after the Browse preview was rendered.
     void Step();
     void Cancel();
@@ -39,6 +47,9 @@ public:
     // The kept captures (file names numbered in order) and their JPEGs.
     const std::vector<Editor::Assets::ItemCaptureInfo>& Captures() const { return m_captures; }
     const std::vector<std::vector<std::uint8_t>>& Jpegs() const { return m_jpegs; }
+    // Sides::Pair: the right pictures and the sheets (left | right), in the order of Jpegs().
+    const std::vector<std::vector<std::uint8_t>>& RightJpegs() const { return m_rightJpegs; }
+    const std::vector<std::vector<std::uint8_t>>& SheetJpegs() const { return m_sheetJpegs; }
 
 private:
     enum class Phase
@@ -54,7 +65,10 @@ private:
     void ApplyShot();
     void WaitDrawn();
     void WaitPixels();
-    void KeepShot(const mu::FramePixels& pixels);
+    bool IsShotDrawn() const;
+    bool RequestSide(int side);
+    bool KeepRightAndSheet(const mu::FramePixels& left, const mu::FramePixels& right);
+    void KeepShot(const mu::FramePixels& left, const mu::FramePixels* right);
     void Fail(const std::string& error);
     void Finish(Phase phase);
 
@@ -71,6 +85,11 @@ private:
     std::string m_error;
     std::vector<Editor::Assets::ItemCaptureInfo> m_captures;
     std::vector<std::vector<std::uint8_t>> m_jpegs;
+    Sides m_sides = Sides::One;
+    int m_side = 0;                 // the picture being read: 0 left, 1 right
+    mu::FramePixels m_leftPixels;   // Sides::Pair: the left picture of the shot
+    std::vector<std::vector<std::uint8_t>> m_rightJpegs;
+    std::vector<std::vector<std::uint8_t>> m_sheetJpegs;
 };
 
 #endif // _EDITOR

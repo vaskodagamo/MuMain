@@ -4,20 +4,23 @@
 
 #include "ModelHotReload.h"
 
+#include "ModelCopy.h"
+#include "ModelFileCheck.h"
+
 #include "Assets/EditorText.h"
+#include "Assets/FileDigest.h"
 #include "Assets/ModelPreflight.h"
 #include "UI/Console/MuEditorConsoleUI.h"
-#include "Core/EditorFiles.h" // ReadWholeFile, PathToUtf8
+#include "Core/EditorFiles.h" // PathToUtf8
 #include "UI/MapEditor/MapObjectPlace.h"    // LiveObjectsOfType
 #include "UI/MapEditor/ObjectThumbnail.h"
 
-#include "Core/Globals/_enum.h"           // MODEL_WORLD_OBJECT, MAX_WORLD_OBJECTS, MAX_MODELS
-#include "Core/Globals/_TextureIndex.h"   // BITMAP_HIDE, BITMAP_UNKNOWN, BITMAP_NONAMED_TEXTURES_*
-#include "Engine/Object/w_ObjectInfo.h"   // OBJECT
-#include "Render/Models/ZzzBMD.h"         // Models, MAX_MESH, MAX_VERTICES, MAX_BONES
-#include "Render/Sprites/GlobalBitmap.h"  // Bitmaps
-#include "Render/Terrain/ZzzLodTerrain.h" // MapFileDecrypt
-#include "World/MapInfra/MapManager.h"    // gMapManager.WorldActive
+#include "Core/Globals/_enum.h"          // MODEL_WORLD_OBJECT, MAX_WORLD_OBJECTS, MAX_MODELS
+#include "Core/Globals/_TextureIndex.h"  // BITMAP_HIDE, BITMAP_UNKNOWN, BITMAP_NONAMED_TEXTURES_*
+#include "Engine/Object/w_ObjectInfo.h"  // OBJECT
+#include "Render/Models/ZzzBMD.h"        // Models
+#include "Render/Sprites/GlobalBitmap.h" // Bitmaps
+#include "World/MapInfra/MapManager.h"   // gMapManager.WorldActive
 
 #include <algorithm>
 #include <cwchar>
@@ -30,19 +33,9 @@ namespace
 {
 namespace fs = std::filesystem;
 
-// The preflight walks a file with these record sizes; they must be BMD::Open2's.
-static_assert(sizeof(Vertex_t) == BMD_VERTEX_BYTES);
-static_assert(sizeof(Normal_t) == BMD_NORMAL_BYTES);
-static_assert(sizeof(TexCoord_t) == BMD_TEXCOORD_BYTES);
-static_assert(sizeof(Triangle_t2) == BMD_TRIANGLE_BYTES);
-static_assert(sizeof(vec3_t) == BMD_KEY_BYTES);
-static_assert(sizeof(Texture_t::FileName) == BMD_NAME_BYTES);
-
 // Each reload decodes and uploads the model's textures; switching every model of a
 // map spreads over some frames instead of stalling one.
 constexpr std::size_t MAX_RELOADS_PER_FRAME = 8;
-// CGlobalBitmap loads textures up to this size (its MAX_WIDTH and MAX_HEIGHT).
-constexpr int MAX_TEXTURE_SIZE = 1024;
 // World-object textures load like CMapManager::Load's OpenTexture calls load them.
 constexpr GLuint WORLD_TEXTURE_FILTER = GL_NEAREST;
 constexpr GLuint WORLD_TEXTURE_WRAP = GL_REPEAT;
@@ -64,31 +57,12 @@ struct LoadedModel
     std::vector<GLuint> textures; // IndexTexture after the reload
 };
 
-// What world code may set on a loaded model and BMD::Open2 resets.
-struct ActionTiming
-{
-    bool loop = false;
-    float playSpeed = 0.0f;
-};
-
-struct ModelTuning
-{
-    char streamMesh = -1;
-    int boneHead = -1;
-    std::vector<ActionTiming> actions;
-};
-
 // A texture of the model before the reload.
 struct TextureSlot
 {
     std::string name;
     GLuint index = BITMAP_UNKNOWN;
-};
-
-struct CheckedModel
-{
-    ModelSummary summary;
-    std::vector<TextureFile> textures;
+    bool fixed = false; // one of the engine's own slots (IsFixedTextureIndex)
 };
 
 std::vector<ModelRange> s_ranges = {WorldObjectRange()};
@@ -102,13 +76,6 @@ std::unordered_set<int> s_emptied;
 // several models of one switch share is read once.
 std::unordered_map<GLuint, std::wstring> s_readInBatch;
 
-const ModelRange* FindRange(int type)
-{
-    const auto range = std::find_if(s_ranges.begin(), s_ranges.end(),
-                                    [&](const ModelRange& r) { return type >= r.first && type < r.end; });
-    return range != s_ranges.end() ? &*range : nullptr;
-}
-
 std::string NotLoadedReason(int type)
 {
     const ModelRange* range = FindRange(type);
@@ -119,91 +86,20 @@ std::string NotLoadedReason(int type)
     return "no " + range->what + " model of type " + std::to_string(type) + " is loaded";
 }
 
-ModelLimits EngineLimits()
-{
-    ModelLimits limits;
-    limits.maxMeshes = MAX_MESH;
-    limits.maxVertices = MAX_VERTICES;
-    limits.maxBones = MAX_BONES;
-    limits.maxTextureSize = MAX_TEXTURE_SIZE;
-    // BITMAP_t::FileName keeps the texture path; BMD::Open2's path buffer (260) and
-    // _wsplitpath's folder buffer (_MAX_DIR, 256) take at least as much.
-    limits.maxPathBytes = MAX_BITMAP_FILE_NAME - 1;
-    return limits;
-}
-
 void Log(const std::string& message)
 {
     g_ErrorReport.Write(L"[Assets] %hs\r\n", message.c_str());
     g_MuEditorConsoleUI.LogEditor("[Assets] " + message);
 }
 
-bool DecodeModel(std::vector<std::uint8_t>& file, std::vector<std::uint8_t>& model, std::string& error)
-{
-    BmdEnvelope envelope;
-    if (!ReadBmdEnvelope(file, envelope, error))
-        return false;
-    std::uint8_t* payload = file.data() + envelope.payloadOffset;
-    if (!envelope.IsEncrypted())
-    {
-        model.assign(payload, payload + envelope.payloadSize);
-        return true;
-    }
-    model.resize(envelope.payloadSize); // MapFileDecrypt cannot work in place
-    MapFileDecrypt(model.data(), payload, static_cast<int>(envelope.payloadSize));
-    return true;
-}
-
 bool Preflight(const Request& request, CheckedModel& out, std::string& refusal)
 {
-    const ModelLimits limits = EngineLimits();
     if (!CanReload(request.type))
     {
         refusal = NotLoadedReason(request.type);
         return false;
     }
-    if (!FitsEnginePath(request.bmdFile, limits))
-    {
-        refusal = Editor::Files::PathToUtf8(request.bmdFile) + " is longer than the client's file-name buffer";
-        return false;
-    }
-    std::vector<std::uint8_t> file = Editor::Files::ReadWholeFile(request.bmdFile);
-    if (file.empty())
-    {
-        refusal = Editor::Files::PathToUtf8(request.bmdFile) + " is missing or empty";
-        return false;
-    }
-    std::vector<std::uint8_t> model;
-    if (!DecodeModel(file, model, refusal) ||
-        !CheckModelBytes(model.data(), model.size(), limits, out.summary, refusal))
-        return false;
-    std::vector<std::string> problems;
-    out.textures = CheckModelTextures(request.bmdFile.parent_path(), out.summary, limits, problems);
-    refusal = Editor::Text::Join(problems, PROBLEM_SEPARATOR);
-    return problems.empty();
-}
-
-ModelTuning SaveTuning(const BMD& model)
-{
-    ModelTuning tuning;
-    tuning.streamMesh = model.StreamMesh;
-    tuning.boneHead = model.BoneHead;
-    for (int i = 0; i < model.NumActions; ++i)
-        tuning.actions.push_back({model.Actions[i].Loop, model.Actions[i].PlaySpeed});
-    return tuning;
-}
-
-void RestoreTuning(BMD& model, const ModelTuning& tuning)
-{
-    model.StreamMesh = tuning.streamMesh;
-    model.BoneHead = tuning.boneHead < model.NumBones ? tuning.boneHead : -1;
-    const int shared = std::min<int>(model.NumActions, static_cast<int>(tuning.actions.size()));
-    for (int i = 0; i < shared; ++i)
-    {
-        model.Actions[i].Loop = tuning.actions[i].loop;
-        model.Actions[i].PlaySpeed = tuning.actions[i].playSpeed;
-    }
-    model.CurrentAction = 0;
+    return CheckFiles(request, out, refusal);
 }
 
 // Textures loaded by file name (CGlobalBitmap::LoadImage) get an index from this
@@ -213,11 +109,40 @@ bool IsFileTextureIndex(GLuint index)
     return index >= BITMAP_NONAMED_TEXTURES_BEGIN && index <= BITMAP_NONAMED_TEXTURES_END;
 }
 
-// Texture_t::FileName is a fixed buffer the file fills; it may lack the final NUL.
-std::string MeshTextureName(const BMD& model, int mesh)
+// A slot the engine loads a file into by number (LoadBitmap in OpenPlayerTextures and
+// OpenItemTextures: hair, capes, event items); other models, effects and the UI use
+// the same slot, so a reload never replaces its image.
+bool IsFixedTextureIndex(GLuint index)
 {
-    const char* name = model.Textures[mesh].FileName;
-    return std::string(name, std::find(name, name + sizeof(Texture_t::FileName), '\0'));
+    const bool special = index == BITMAP_HIDE || index == BITMAP_UNKNOWN ||
+                         (index >= BITMAP_SKIN_BEGIN && index <= BITMAP_SKIN_END);
+    return index < BITMAP_NONAMED_TEXTURES_BEGIN && !special;
+}
+
+// The file a fixed slot was read from ("Data\Player\hair_r.jpg" -> Data/Player/hair_r.OZJ).
+fs::path FixedSlotFile(const BITMAP_t& bitmap)
+{
+    std::wstring name = bitmap.FileName;
+    std::replace(name.begin(), name.end(), L'\\', L'/');
+    const fs::path file(name);
+    return FindTextureContainer(file.parent_path(), Editor::Files::PathToUtf8(file.filename()));
+}
+
+// The fixed slot the model used for `texture`, when the new file has the same bytes as
+// the slot's: the model takes the slot again instead of a second copy of the image.
+std::optional<GLuint> SameFixedSlot(const TextureFile& texture, const std::vector<TextureSlot>& previous)
+{
+    const auto slot = std::find_if(previous.begin(), previous.end(), [&](const TextureSlot& old) {
+        return old.fixed && SameTextureName(old.name, texture.name);
+    });
+    const BITMAP_t* bitmap = slot != previous.end() ? Bitmaps.FindTexture(slot->index) : nullptr;
+    if (bitmap == nullptr)
+        return std::nullopt;
+    const fs::path file = FixedSlotFile(*bitmap);
+    const std::string digest = file.empty() ? std::string() : Editor::Files::Sha256Hex(file);
+    if (digest.empty() || digest != Editor::Files::Sha256Hex(texture.container))
+        return std::nullopt;
+    return slot->index;
 }
 
 std::vector<TextureSlot> PreviousTextures(const BMD& model)
@@ -225,47 +150,48 @@ std::vector<TextureSlot> PreviousTextures(const BMD& model)
     std::vector<TextureSlot> slots;
     for (int i = 0; i < model.NumMeshs; ++i)
     {
-        if (IsFileTextureIndex(model.IndexTexture[i]))
-            slots.push_back({MeshTextureName(model, i), model.IndexTexture[i]});
+        const GLuint index = model.IndexTexture[i];
+        if (IsFileTextureIndex(index) || IsFixedTextureIndex(index))
+            slots.push_back({MeshTextureName(model, i), index, IsFixedTextureIndex(index)});
     }
     return slots;
 }
 
-bool OpenModelFile(BMD& model, const fs::path& bmdFile)
-{
-    const std::wstring folder = (bmdFile.parent_path() / "").wstring(); // Open2 appends the name as is
-    const std::wstring file = bmdFile.filename().wstring();
-    return model.Open2(folder.c_str(), file.c_str(), true);
-}
-
 // The index the texture goes to: the old model's texture of that name, else a
-// bitmap already holding the file, else none (a new one is made).
+// bitmap already holding the file (not a side-by-side copy's), else none (a new
+// one is made).
 std::optional<GLuint> TargetIndex(const std::string& name, const std::wstring& path,
                                   const std::vector<TextureSlot>& previous)
 {
-    const auto slot = std::find_if(previous.begin(), previous.end(),
-                                   [&](const TextureSlot& old) { return SameTextureName(old.name, name); });
+    const auto slot = std::find_if(previous.begin(), previous.end(), [&](const TextureSlot& old) {
+        return !old.fixed && SameTextureName(old.name, name);
+    });
     if (slot != previous.end())
         return slot->index;
     if (const BITMAP_t* loaded = Bitmaps.FindTexture(path);
-        loaded != nullptr && IsFileTextureIndex(loaded->BitmapIndex))
+        loaded != nullptr && IsFileTextureIndex(loaded->BitmapIndex) && !IsCopyTexture(loaded->BitmapIndex))
         return loaded->BitmapIndex;
     return std::nullopt;
 }
 
 // Loads one texture without the fatal error of CLoadData::OpenTexture: a file that
 // cannot be loaded leaves the mesh on BITMAP_UNKNOWN (drawn white) and a problem.
-GLuint LoadTexture(const TextureFile& texture, const fs::path& folder, const ModelRange& range,
-                   const std::vector<TextureSlot>& previous, std::vector<std::string>& problems)
+GLuint LoadTexture(const TextureFile& texture, const ModelRange& range, const std::vector<TextureSlot>& previous,
+                   std::vector<std::string>& problems)
 {
     if (texture.kind == TextureKind::Hidden)
         return BITMAP_HIDE;
-    // The loader swaps in .OZJ/.OZT.
-    const std::wstring path = (folder / Editor::Text::Utf8Path(texture.name)).wstring();
-    const std::optional<GLuint> target = TargetIndex(texture.name, path, previous);
-    GLuint index = BITMAP_UNKNOWN;
     const GLuint filter = range.textureFilter;
     const GLuint wrap = range.textureWrap;
+    if (const std::optional<GLuint> fixed = SameFixedSlot(texture, previous))
+    {
+        const std::wstring slotFile = Bitmaps.FindTexture(*fixed)->FileName;
+        Bitmaps.LoadImage(*fixed, slotFile, filter, wrap); // the same image: one more reference
+        return *fixed;
+    }
+    const std::wstring path = EngineTexturePath(texture);
+    const std::optional<GLuint> target = TargetIndex(texture.name, path, previous);
+    GLuint index = BITMAP_UNKNOWN;
     if (!target)
         index = Bitmaps.LoadImage(path, filter, wrap);
     else if (const auto read = s_readInBatch.find(*target); read != s_readInBatch.end() && read->second == path)
@@ -278,11 +204,12 @@ GLuint LoadTexture(const TextureFile& texture, const fs::path& folder, const Mod
         return index;
     }
     s_readInBatch[index] = path;
+    MarkSkinAndHair(index, texture.name);
     return index;
 }
 
-void LoadTextures(BMD& model, const std::vector<TextureFile>& textures, const fs::path& folder,
-                  const ModelRange& range, const std::vector<TextureSlot>& previous, std::vector<std::string>& problems)
+void LoadTextures(BMD& model, const std::vector<TextureFile>& textures, const ModelRange& range,
+                  const std::vector<TextureSlot>& previous, std::vector<std::string>& problems)
 {
     for (int i = 0; i < model.NumMeshs; ++i)
     {
@@ -290,7 +217,7 @@ void LoadTextures(BMD& model, const std::vector<TextureFile>& textures, const fs
         const auto texture = std::find_if(textures.begin(), textures.end(),
                                           [&](const TextureFile& file) { return SameTextureName(file.name, name); });
         model.IndexTexture[i] =
-            texture != textures.end() ? LoadTexture(*texture, folder, range, previous, problems) : BITMAP_UNKNOWN;
+            texture != textures.end() ? LoadTexture(*texture, range, previous, problems) : BITMAP_UNKNOWN;
     }
 }
 
@@ -319,12 +246,27 @@ void RememberLoad(const Request& request, const BMD& model)
     loaded.textures.assign(model.IndexTexture, model.IndexTexture + model.NumMeshs);
 }
 
+// The folders the model's textures were read from (a candidate may hold only some).
+std::vector<std::string> TextureFolderNames(const Request& request, const CheckedModel& checked)
+{
+    std::vector<std::string> names;
+    for (const TextureFile& texture : checked.textures)
+    {
+        const std::string folder = Editor::Files::PathToUtf8(texture.container.parent_path());
+        if (!texture.container.empty() && std::find(names.begin(), names.end(), folder) == names.end())
+            names.push_back(folder);
+    }
+    if (names.empty())
+        names.push_back(Editor::Files::PathToUtf8(request.bmdFile.parent_path()));
+    return names;
+}
+
 std::string Describe(const Request& request, const CheckedModel& checked, const std::vector<std::string>& problems)
 {
     std::string text = request.modelName + " now shows its " + VariantName(request.variant) +
                        " files: " + Editor::Files::PathToUtf8(request.bmdFile.filename()) + " and " +
                        std::to_string(checked.textures.size()) + " texture(s) from " +
-                       Editor::Files::PathToUtf8(request.bmdFile.parent_path()) + ".";
+                       Editor::Text::Join(TextureFolderNames(request, checked), " and ") + ".";
     if (!problems.empty())
         text += " " + Editor::Text::Join(problems, PROBLEM_SEPARATOR) + ".";
     return text;
@@ -355,7 +297,7 @@ Outcome Reload(const Request& request)
     s_emptied.erase(request.type);
     RestoreTuning(model, tuning);
     std::vector<std::string> problems;
-    LoadTextures(model, checked.textures, request.bmdFile.parent_path(), *FindRange(request.type), previous, problems);
+    LoadTextures(model, checked.textures, *FindRange(request.type), previous, problems);
     ClampObjectAnimations(request.type);
     g_ObjectThumbnail.Invalidate(request.type);
     RememberLoad(request, model);
@@ -364,6 +306,13 @@ Outcome Reload(const Request& request)
     return outcome;
 }
 } // namespace
+
+const ModelRange* FindRange(int type)
+{
+    const auto range = std::find_if(s_ranges.begin(), s_ranges.end(),
+                                    [&](const ModelRange& r) { return type >= r.first && type < r.end; });
+    return range != s_ranges.end() ? &*range : nullptr;
+}
 
 ModelRange WorldObjectRange()
 {
@@ -420,6 +369,7 @@ std::size_t PendingCount()
 
 void RunPending()
 {
+    ReleaseRetiredCopies();
     const std::size_t count = std::min(s_pending.size(), MAX_RELOADS_PER_FRAME);
     for (std::size_t i = 0; i < count; ++i)
     {
@@ -442,11 +392,17 @@ void RunPending()
         s_readInBatch.clear();
 }
 
-std::vector<Outcome> TakeOutcomes()
+std::vector<Outcome> TakeOutcomes(const ModelRange& range)
 {
-    std::vector<Outcome> outcomes;
-    outcomes.swap(s_outcomes);
-    return outcomes;
+    std::vector<Outcome> taken;
+    std::vector<Outcome> others;
+    for (Outcome& outcome : s_outcomes)
+    {
+        const int type = outcome.request.type;
+        (type >= range.first && type < range.end ? taken : others).push_back(std::move(outcome));
+    }
+    s_outcomes.swap(others);
+    return taken;
 }
 
 std::optional<AssetVariant> LoadedVariant(int type)

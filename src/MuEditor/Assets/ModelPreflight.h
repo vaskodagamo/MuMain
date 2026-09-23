@@ -115,6 +115,13 @@ bool CheckTextureContainer(const std::filesystem::path& file, TextureKind kind, 
 std::vector<TextureFile> CheckModelTextures(const std::filesystem::path& folder, const ModelSummary& model,
                                             const ModelLimits& limits, std::vector<std::string>& problems);
 
+// The same, each texture taken from the first of `folders` that holds its file (an
+// item's textures can live next to other models, or a candidate folder holds only
+// the textures it replaces).
+std::vector<TextureFile> CheckModelTextures(const std::vector<std::filesystem::path>& folders,
+                                            const ModelSummary& model, const ModelLimits& limits,
+                                            std::vector<std::string>& problems);
+
 // True when the engine's fixed file-name buffers can hold `path`.
 bool FitsEnginePath(const std::filesystem::path& path, const ModelLimits& limits);
 } // namespace Editor::Assets

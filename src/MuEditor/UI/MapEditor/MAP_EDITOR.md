@@ -696,6 +696,8 @@ and no file is changed.
    **Original** buttons stay greyed out. The shown command names the script by its full path, so
    it runs in a terminal from any folder: `python3 ...` on macOS and Linux, `py -3 ...` on
    Windows (the Python launcher python.org installs; with another Python, type `python` instead).
+   The Item Editor's originals (`... original --items`) go into the same `out/ab/original`; a world
+   run and an item run each keep the other's files.
 2. **All models: Current / Original** loads every model of the list again from `src/bin/Data` or
    from `out/ab/original`, a few per frame (the line next to the buttons counts them). **Current**
    also picks up files that changed on disk since the map was loaded.

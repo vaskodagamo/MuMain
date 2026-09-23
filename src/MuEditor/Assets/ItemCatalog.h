@@ -36,6 +36,7 @@ struct ItemModel
 {
     std::string role;      // item, class-variant, left-hand, right-hand or inventory
     std::string className; // class-variant: the class that wears it (dl, sum, rf)
+    std::string modelConstant; // not for the item's own model: its Models[] slot, e.g. "MODEL_HELM_MONK + 1"
     std::string condition; // inventory: when the engine draws it (C++ condition)
     std::string bmd;       // e.g. src/bin/Data/Item/Sword20.bmd
     bool exists = true;

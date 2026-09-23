@@ -15,6 +15,7 @@
 namespace Editor::Assets
 {
 using Editor::Text::EqualIgnoringCase;
+using Editor::Text::Join;
 using Editor::Text::PathToUtf8;
 using Editor::Text::Utf8Path;
 
@@ -384,8 +385,28 @@ bool CheckTgaContainer(const std::vector<std::uint8_t>& bytes, int maxSize, Text
     return error.empty();
 }
 
-void CheckOneTexture(const std::filesystem::path& folder, const ModelLimits& limits, TextureFile& texture,
-                     std::vector<std::string>& problems)
+// The first of `folders` that holds the texture's file; empty when none does.
+std::filesystem::path FindInFolders(const std::vector<std::filesystem::path>& folders, const std::string& name)
+{
+    for (const std::filesystem::path& folder : folders)
+    {
+        std::filesystem::path container = FindTextureContainer(folder, name);
+        if (!container.empty())
+            return container;
+    }
+    return {};
+}
+
+std::string FolderList(const std::vector<std::filesystem::path>& folders)
+{
+    std::vector<std::string> names;
+    for (const std::filesystem::path& folder : folders)
+        names.push_back(PathToUtf8(folder));
+    return Join(names, " or ");
+}
+
+void CheckOneTexture(const std::vector<std::filesystem::path>& folders, const ModelLimits& limits,
+                     TextureFile& texture, std::vector<std::string>& problems)
 {
     const std::string label = "texture " + texture.name + ": ";
     if (texture.kind == TextureKind::Unsupported)
@@ -393,13 +414,13 @@ void CheckOneTexture(const std::filesystem::path& folder, const ModelLimits& lim
         problems.push_back(label + "the client loads only .jpg and .tga textures");
         return;
     }
-    texture.container = FindTextureContainer(folder, texture.name);
+    texture.container = FindInFolders(folders, texture.name);
     if (texture.container.empty())
     {
-        problems.push_back(label + ContainerName(texture.name, texture.kind) + " is missing in " + PathToUtf8(folder));
+        problems.push_back(label + ContainerName(texture.name, texture.kind) + " is missing in " + FolderList(folders));
         return;
     }
-    if (!FitsEnginePath(folder / Utf8Path(texture.name), limits))
+    if (!FitsEnginePath(texture.container.parent_path() / Utf8Path(texture.name), limits))
     {
         problems.push_back(label + "its path is longer than the client's file-name buffer");
         return;
@@ -517,6 +538,13 @@ bool CheckTextureContainer(const std::filesystem::path& file, TextureKind kind, 
 std::vector<TextureFile> CheckModelTextures(const std::filesystem::path& folder, const ModelSummary& model,
                                             const ModelLimits& limits, std::vector<std::string>& problems)
 {
+    return CheckModelTextures(std::vector<std::filesystem::path>{folder}, model, limits, problems);
+}
+
+std::vector<TextureFile> CheckModelTextures(const std::vector<std::filesystem::path>& folders,
+                                            const ModelSummary& model, const ModelLimits& limits,
+                                            std::vector<std::string>& problems)
+{
     std::vector<TextureFile> textures;
     for (const std::string& name : model.meshTextures)
     {
@@ -528,7 +556,7 @@ std::vector<TextureFile> CheckModelTextures(const std::filesystem::path& folder,
         texture.name = name;
         texture.kind = TextureKindOf(name);
         if (texture.kind != TextureKind::Hidden)
-            CheckOneTexture(folder, limits, texture, problems);
+            CheckOneTexture(folders, limits, texture, problems);
         textures.push_back(texture);
     }
     return textures;

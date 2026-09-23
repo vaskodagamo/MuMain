@@ -1134,6 +1134,19 @@ fake API (no spending) with the owner's real concept batch copied in.
 
 **Open / next:** the owner's first real generate from the editor; I6 A/B compare; I7 pilot.
 
+## 2026-09-23 - Item editor I6: A/B compare (Claude Opus 5.5)
+**Goal:** Milestone I6 of `ITEM_EDITOR_PLAN.md`: see original, current and candidate item models
+side by side in the running client before accepting.
+
+**Done:** `materialize_variant.py original --items`; item hot reload with fixed-slot reuse;
+candidates from deliveries and the style pilot; side-by-side preview with a linked camera;
+family/all switching; Compare in the Requests tab; A/B capture sheets in `out/item-ab/`.
+
+**Verified:** 416/416 and 415/415 tests plus Python tests; scripted in-client run incl. the pilot
+A/B for Axe01, Shield01, Wing01 and a texture/memory round trip back to the start values.
+
+**Open / next:** owner picks the pilot direction; wing textures must be painted for blended
+drawing; I7 pilot through the full request flow.
 ## 2026-09-23 - Map Editor: visible pointer over every panel (Claude Opus 5.5)
 **Goal:** The pointer vanished over parts of the Map Editor on macOS (images, child regions, gaps
 between panels): the game cursor is drawn under ImGui, and the OS pointer was only shown where a
