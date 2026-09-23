@@ -1034,3 +1034,12 @@ local database (read-only, no credentials).
 
 **Open / next:** I3 browse tab reads the catalog; I5 writes requests in this contract. Engine
 check for `ItemSetType` "no set" = 0 vs `0xFF`.
+
+## 2026-09-23 - Item art baseline study (Codex)
+**Goal:** Inventory the item and player armor BMD families, create comparable offline "before" renders, and record a style/rework baseline without modifying game assets.
+
+**Done:** Added `assets-work/Items/study/baseline.json`, README, collection/UV/finalization scripts and 13 fixed-camera previews for seven gear families, three wing generations and three five-part armor sets. The inventory covers 207 Item-folder models and 463 Player armor-part models, with bmdconv structure, texture sizes/sharing and a model-level UV review screen. Recorded family scores, 20 model/set rework targets, a tier palette and geometry/texture budgets, and risks for shared textures, origins, mesh order and armor compatibility. Updated the Blender importer to skip action-manifest parsing when `--no-anims` is requested so legacy non-UTF-8 manifests do not block static imports.
+
+**Verified:** `bmdconv info` completed for 670/670 scoped models; 0 unresolved texture references; 131 shared texture files recorded. UV conversion completed for all 670 models. Blender imported the 25 representative BMD parts and rendered all 13 previews at 1024×1024, orthographic scale 360, model scale 1.0. Checked representative PNG output visually. No files under `src/` changed.
+
+**Open / next:** Offline baseline only; review candidates and palettes with the owner, and use the running client to verify pivots, equipped placement, alpha and glow before accepting any future item rework. PR opened against `main` on `vaskodagamo/MuMain`; not merged.
