@@ -278,9 +278,10 @@
     "start_commit": "f42a3e513882d81acc15e462ac96dd59333e24dc"
   },
   "result": {
-    "delivered_at": "2026-09-24T17:56:51+02:00",
+    "delivered_at": "2026-09-24T20:47:41+02:00",
     "source_commits": [
-      "8d09d2ed0f0d7ddf89e1bc9cdd5bec7c4f63ba01"
+      "8d09d2ed0f0d7ddf89e1bc9cdd5bec7c4f63ba01",
+      "1a8e3fe077b8fcd49925912492b3d1c02ab2a373"
     ],
     "installed_files": {
       "src/bin/Data/Item/Sword02.bmd": "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-clean/delivery/0-1/exports/Sword02.bmd",
