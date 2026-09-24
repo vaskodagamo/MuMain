@@ -2,6 +2,7 @@
 
 #ifdef _EDITOR
 
+#include "EditorText.h"
 #include "RequestBrief.h" // BriefText
 
 #include <algorithm>
@@ -19,6 +20,10 @@ using BriefText::RepoLink;
 constexpr const char* ASTRA_LINK = "ASTRA.md";
 constexpr const char* README_WORKER_RULES_LINK = "../README.md#worker-rules-codex";
 constexpr const char* CATALOG_PATH = "assets-work/Items/catalog.json";
+constexpr const char* RENDER_FACTS_PATH = "assets-work/Items/render-facts.json";
+constexpr const char* RENDER_MODES_LINK = "assets-work/Items/README.md#how-the-game-draws-items-blending-and-effects";
+constexpr const char* NOT_USED = "-";
+constexpr const char* OWN_MODEL_ROLE = "item"; // the item's own model; other roles are named in the table
 constexpr std::size_t NUMBER_TEXT_CHARS = 32;
 
 bool Contains(const std::vector<std::string>& list, const std::string& value)
@@ -149,8 +154,63 @@ void Scope(std::ostringstream& out, const ItemRequestDraft& draft, const ItemReq
     }
     BulletList(out, shared);
     out << "\n## Must keep\n\n";
-    BulletList(out, ItemMustKeep(draft.input));
+    BulletList(out, ItemRequestMustKeep(draft));
     out << "\n";
+}
+
+std::string ModeCell(const std::string& mode)
+{
+    return mode.empty() ? NOT_USED : mode;
+}
+
+void MeshTable(std::ostringstream& out, const ItemRenderEntry& render)
+{
+    out << "| Model | Mesh | Texture | Worn | Dropped | Inventory |\n|---|---|---|---|---|---|\n";
+    for (const ItemModelDraw& model : render.models)
+    {
+        std::string file = Code(Editor::Text::PathToUtf8(Editor::Text::Utf8Path(model.bmd).filename()));
+        if (model.role != OWN_MODEL_ROLE)
+            file += " (" + model.role + ")";
+        for (const ItemMeshDraw& mesh : model.meshes)
+            out << "| " << file << " | " << mesh.mesh << " | " << Code(mesh.texture) << " | " << ModeCell(mesh.worn)
+                << " | " << ModeCell(mesh.dropped) << " | " << ModeCell(mesh.inventory) << " |\n";
+    }
+    out << "\n";
+}
+
+void TargetRendering(std::ostringstream& out, const ItemRequestTarget& target)
+{
+    out << "### " << DisplayName(target.item) << " (" << target.item.key << ")\n\n";
+    if (!target.render)
+    {
+        out << "render-facts.json has no entry for this item. Ask the owner to rebuild it "
+            << "(`python3 tools/item_editor/render_facts.py`) before you paint.\n\n";
+        return;
+    }
+    const ItemRenderEntry& render = *target.render;
+    if (!render.summary.empty())
+        out << render.summary << "\n\n";
+    MeshTable(out, render);
+    out << "What the engine adds on top (never paint it into a texture):\n\n";
+    BulletList(out, render.effects);
+    out << "\n";
+    if (!render.mustKeep.empty())
+    {
+        out << "How to paint its blended and alpha meshes:\n\n";
+        BulletList(out, render.mustKeep);
+        out << "\n";
+    }
+}
+
+void Rendering(std::ostringstream& out, const ItemRequestDraft& draft)
+{
+    out << "## How the game draws this item\n\n"
+        << "From [render-facts.json](" << RepoLink(RENDER_FACTS_PATH) << ") (`constraints.render` in request.json); "
+        << "the modes are explained in [assets-work/Items/README.md](" << RepoLink(RENDER_MODES_LINK) << "). "
+        << "A blended mesh is not an opaque texture: black adds nothing (additive) or the alpha cuts it out, so "
+        << "paint it for that.\n\n";
+    for (const ItemRequestTarget& target : draft.targets)
+        TargetRendering(out, target);
 }
 
 std::string CaptureCaption(const ItemCaptureInfo& capture)
@@ -197,6 +257,7 @@ std::string BuildItemBrief(const ItemRequestDraft& draft)
     Header(out, draft);
     OwnerNotes(out, draft);
     Targets(out, draft, scope);
+    Rendering(out, draft);
     Scope(out, draft, scope);
     Evidence(out, draft);
     return out.str();

@@ -151,6 +151,7 @@ void CItemRequestDialog::Reset(const ItemCatalogEntry& item, const ItemCatalog& 
     ReleaseConcept();
     m_repo = Editor::Files::RepoRoot().root;
     m_domain = ItemRequestDomain();
+    LoadRenderFacts();
     m_targets = {TargetOf(item)};
     CollectSetParts(catalog);
     ReadCheckout();
@@ -177,10 +178,24 @@ void CItemRequestDialog::Reset(const ItemCatalogEntry& item, const ItemCatalog& 
 
 ItemRequestTarget CItemRequestDialog::TargetOf(const ItemCatalogEntry& item) const
 {
-    ItemRequestTarget target{item, {}};
+    ItemRequestTarget target{item, {}, std::nullopt};
     for (const ItemModel& model : item.models)
         target.modelSha256.push_back(Editor::Files::Sha256Hex(m_repo / Editor::Text::Utf8Path(model.bmd)));
+    const ItemRenderEntry* render = m_renderFacts ? m_renderFacts->Find(item.key) : nullptr;
+    if (render != nullptr)
+        target.render = *render;
     return target;
+}
+
+void CItemRequestDialog::LoadRenderFacts()
+{
+    m_renderFacts.reset();
+    m_renderProblem.clear();
+    if (m_repo.empty())
+        return;
+    ItemRenderFactsLoad load = LoadItemRenderFacts(m_repo);
+    m_renderFacts = std::move(load.facts);
+    m_renderProblem = std::move(load.error);
 }
 
 // The other parts of an armour part's set, in catalog order.
@@ -470,6 +485,15 @@ void CItemRequestDialog::RenderScope()
     if (!scope.frozenTextures.empty())
         ImGui::TextWrapped("Frozen (shared with other items or models): %s",
                            ListOrNone(scope.frozenTextures).c_str());
+    for (const ItemRequestTarget& target : Targets())
+    {
+        if (target.render)
+            ImGui::TextWrapped("Drawn (%s): %s", target.item.key.c_str(), target.render->drawn.c_str());
+    }
+    const std::size_t renderLines = ItemRenderMustKeep(Targets()).size();
+    if (renderLines > 0)
+        ImGui::TextWrapped("The request tells Codex how to paint the blended meshes (%zu must-keep line%s).",
+                           renderLines, renderLines == 1 ? "" : "s");
 }
 
 void CItemRequestDialog::RenderWarnings()
@@ -491,6 +515,17 @@ void CItemRequestDialog::RenderWarnings()
     if (!m_openRequests.empty())
         ImGui::TextWrapped("Open request for this item already: %s. File another one only for a different change.",
                            ListOrNone(m_openRequests).c_str());
+    if (!m_renderProblem.empty())
+        ImGui::TextWrapped("%s. The request needs it (constraints.render); build it with "
+                           "python3 tools/item_editor/render_facts.py.",
+                           m_renderProblem.c_str());
+    for (const ItemRequestTarget& target : Targets())
+    {
+        if (m_renderFacts && !target.render)
+            ImGui::TextWrapped("render-facts.json has no entry for %s; rebuild it with "
+                               "python3 tools/item_editor/render_facts.py.",
+                               target.item.key.c_str());
+    }
     const ItemRequestKind part = PartKind(Input());
     const bool texturesOnly = part == ItemRequestKind::Upscale || part == ItemRequestKind::Repaint;
     if (texturesOnly && ComputeItemScope(part, Targets()).ownedFiles.empty())

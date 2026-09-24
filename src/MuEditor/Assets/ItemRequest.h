@@ -3,6 +3,7 @@
 #ifdef _EDITOR
 
 #include "ItemCatalog.h"
+#include "ItemRenderFacts.h"
 #include "RegenRequest.h" // RequestDomain, RequestPriority
 
 #include <optional>
@@ -51,12 +52,14 @@ struct ItemOwnerInput
 // The kind whose rules apply to each target: the kind itself, or setKind for a set.
 ItemRequestKind PartKind(const ItemOwnerInput& input);
 
-// One item the request changes, and the SHA-256 of each of its model files in the
-// checkout at base_commit (in the catalog's model order).
+// One item the request changes, the SHA-256 of each of its model files in the
+// checkout at base_commit (in the catalog's model order), and how the game draws it
+// (render-facts.json; none when the file has no entry for the item).
 struct ItemRequestTarget
 {
     ItemCatalogEntry item;
     std::vector<std::string> modelSha256;
+    std::optional<ItemRenderEntry> render;
 };
 
 // One in-client capture in the request's captures/ folder.
@@ -99,9 +102,16 @@ struct ItemRequestScope
 };
 ItemRequestScope ComputeItemScope(ItemRequestKind partKind, const std::vector<ItemRequestTarget>& targets);
 
-// constraints.must_keep: the README's common lines, then the kind's line (for a
-// set: its part kind's line and the set line).
+// The README's common must_keep lines, then the kind's line (for a set: its part
+// kind's line and the set line).
 std::vector<std::string> ItemMustKeep(const ItemOwnerInput& input);
+
+// The render lines of the targets (blended, alpha-blended and cut-out meshes, from
+// render-facts.json), each once, in target order.
+std::vector<std::string> ItemRenderMustKeep(const std::vector<ItemRequestTarget>& targets);
+
+// constraints.must_keep: ItemMustKeep, then ItemRenderMustKeep.
+std::vector<std::string> ItemRequestMustKeep(const ItemRequestDraft& draft);
 
 // request.json text, fields in the README's order, two-space indent.
 std::string BuildItemRequestJson(const ItemRequestDraft& draft);

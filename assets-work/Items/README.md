@@ -8,6 +8,7 @@ about the game's items, and the requests to improve them. The plan behind it is
 assets-work/Items/
   README.md            this file
   catalog.json         generated: one entry per item that has a model ("mu-item-catalog/1")
+  render-facts.json    generated: how the game draws every mesh of every item, and its effects ("mu-item-render-facts/1")
   openmu-items.json    generated: the OpenMU server's item definitions (optional input)
   tiers.json           the owner's tier overrides
   client-review.json   the owner's verdicts from the editor (created by the editor on first use)
@@ -24,6 +25,7 @@ The tools that build these files live in [`tools/item_editor/`](../../tools/item
 | `item_table.py` | - | Decodes `Item_<lang>.bmd` (legacy 30-byte and current 50-byte names, BuxConvert XOR, checksum), `ItemSetType.bmd` and `ItemAddOption.bmd`. |
 | `export_openmu_items.py` | `openmu-items.json` | Reads OpenMU's item definitions from the admin backup or the local database container. |
 | `build_item_catalog.py` | `catalog.json` | Joins all of the above with `bmdconv info` of every model and the git history, and computes tiers (`tiers.py`). |
+| `render_facts.py` | `render-facts.json` | Reads the client's item render code (`render_code.py`), applies `BMD::RenderMesh`'s rules (`render_rules.py`) to every mesh of every catalog model and merges the facts checked by hand (`render_notes.py`); see "How the game draws items". |
 | `concepts.py` | `concepts/<key>/` (picks), `out/item-concepts/` | Concept images through the OpenAI Images API, with reference renders, cost caps and a contact sheet; see [`concepts/README.md`](concepts/README.md). |
 
 ## Rebuilding
@@ -42,9 +44,13 @@ python3 tools/item_editor/export_openmu_items.py --postgres database
 python3 tools/item_editor/export_openmu_items.py --backup ~/Downloads/openmu-backup.zip
 # 3. the catalog
 python3 tools/item_editor/build_item_catalog.py --bmdconv out/build/macos-arm64/tools/bmdconv/Release/bmdconv
+# 4. how the game draws the items (after the catalog; after a change to the item render code in
+#    ZzzObject.cpp / ZzzCharacter.cpp, to render_notes.py or to a model)
+python3 tools/item_editor/render_facts.py
 # check only (exit 1 when a file is out of date)
 python3 tools/item_editor/gen_item_models.py --check
 python3 tools/item_editor/build_item_catalog.py --bmdconv <bmdconv> --check
+python3 tools/item_editor/render_facts.py --check
 # tests
 python3 -m unittest discover -s tools/item_editor/tests
 ```
@@ -53,6 +59,88 @@ Commit the regenerated files together with whatever changed them. The catalog is
 for a commit (sorted keys, no timestamps); it depends on `openmu-items.json`, so rebuild it after
 refreshing the export. A worker branch that installs new textures or models does not rebuild the
 catalog; the coordinator does that when a request is accepted.
+
+## How the game draws items (blending and effects)
+
+Painting an item starts with knowing how the client draws each of its meshes. The Wing01 style
+pilot was repainted as an opaque texture, but the client draws the Wings of Elf additively: black
+turned see-through and the colours glowed, so both variants failed in the game.
+[`render-facts.json`](render-facts.json) records it for every catalog item, model and mesh, in
+three contexts: **worn** (in the hand, on the back, as armour), **dropped** (on the ground) and
+**inventory**, with the code lines that decide it. Item requests copy it
+([`requests/README.md`](requests/README.md), "How the game draws the item"); the Item Editor shows
+it as the **Drawn** line of an item's details.
+
+| Mode | What the engine does | How to paint it |
+|------|----------------------|-----------------|
+| `opaque` | draws the texture as it is (lit) | as usual |
+| `alpha-test` | a `.tga`: texels at or below 25% alpha are cut out, the rest is blended by its alpha | the alpha channel is the silhouette; keep the colour under the edges close to the edge colour (no dark or white fringe) |
+| `blended-additive` | adds the texture to the picture (GL_ONE, GL_ONE), unlit, scaled by a brightness the code often pulses | paint light on **pure black**: black is fully transparent, brightness is glow; no background, no dark outlines or shading (they vanish), no alpha (a `.tga`'s alpha is ignored); it washes out over bright backgrounds |
+| `blended-alpha` | the code draws the whole mesh at partial opacity | keep it light and even; nothing that must read as solid |
+| `blended-subtract` | subtracts it (RENDER_DARK; rare) | dark areas darken the scene |
+| `hidden` | not drawn in this context (`hid*` texture, `_H`, the code's hidden mesh, a cape replaced by cloth, skin/hair in the inventory) | keep the mesh; spend no effort on its look there |
+
+What makes a mesh blended, in the engine's order:
+
+1. **The item's own code.** `ItemObjectAttribute` gives some types a blend mesh (`BlendMesh 0`:
+   Wings of Elf, Wings of Spirits, Small Wings of Elf; `BlendMesh 1`: Lighting Sword, the Serpent,
+   Bronze and Dragon shields, ...; `-2`: every mesh, e.g. the Staff of Resurrection, Chaos Nature
+   Bow, Saint Crossbow). The per-type branches of `RenderPartObjectBody` draw single meshes with
+   `RENDER_BRIGHT` (additive) or at partial alpha (the 3rd wings, Flameberge, Elemental Shield, ...).
+2. **The texture name.** In the default draw (`RenderBody`) an `_R` mesh is its own blend mesh,
+   i.e. additive (`NEWW_R.jpg` of the Wings of Soul). The flags are read after the **first**
+   underscore, at most four capital letters, and all of them must be flags (`R` bright, `H`
+   hidden, `S` stream, `N` no chrome/level passes, `DC`/`DT` shadow): `NEWW_R.jpg` is bright,
+   `wing_3_R.jpg` and `sword_r.jpg` are not. `_S` scrolls only where the code passes a UV offset.
+3. **The file kind.** A `.tga` (4 channels) is alpha-tested; a `.jpg` is opaque.
+
+The wings, as checked in the client (the Item Editor preview, 2026-09-24; test textures proved
+the modes of the Wings of Elf, Heaven, Soul and Curse):
+
+| Wings | Blended (additive) | Cut-out (.tga) | Opaque | Engine extras |
+|-------|--------------------|----------------|--------|---------------|
+| Elf `12-0`, Spirits `12-3`, Small Wings of Elf `12-132` | mesh 0 | | | |
+| Heaven `12-1`, Satan `12-2` (and their small ones) | | mesh 0 | | |
+| Curse `12-41` (and `12-131`) | | | mesh 0 | |
+| Soul `12-4`, Dragon `12-5` | mesh 1 (`_R`, pulsing) | | mesh 0 | |
+| Darkness `12-6` | an additive chrome layer | mesh 0 | | flares, thunder beams |
+| Despair `12-42`, Dimension `12-43` | a chrome layer on mesh 1 | Dimension mesh 2 | the rest | Dimension: flares |
+| Storm `12-36` | meshes 0, 1 (1 is a 4-frame UV flip-book) | mesh 2 | | clouds, lights, thunder |
+| Eternal `12-37` | | mesh 0 | | lights |
+| Illusion `12-38` | mesh 0 (`_R`) | | | flares, particles |
+| Ruin `12-39` | mesh 0, plus a layer on mesh 1 | | mesh 1 | particles; a cloth cape on a Magic Gladiator |
+
+Capes are cloth when worn. The Cape of Lord (`13-30`), Small Cape of Lord (`12-130`), Cape of
+Fighter (`12-49`) and Little Warrior's Cloak (`12-135`) are not drawn as a model on the
+character at all; a cloth simulation with a texture is. The Cape of Lord's worn cloth uses
+`Player/DarklordRobe.tga`, **not** the item's `Item/DarkLordRobe` texture, so repainting the item
+changes only the inventory and ground look. The Cape of Emperor (`12-40`) and Cape of Overrule
+(`12-50`) draw their collar mesh 0 on the character and cloth made from their mesh 1/2 textures;
+their other meshes (and the whole Small Cape of Lord) show only under an exactly white light,
+i.e. in the inventory.
+
+**What the engine adds must not be painted in.** Every item lists it under `effects` (and a
+request under `constraints.render.<key>.effects`):
+
+- the +level look (+3..+6 tinted light, +7 and up chrome and metal passes over the whole model;
+  the big wings, capes, jewels and some others are drawn at a fixed level: no glow at all on the
+  big wings and capes, the small wings `12-130..135` do get it), the
+  excellent shine (an additive pass of the own texture: bright texels glow; not on wings and
+  capes) and the ancient shimmer;
+- per-type extras: sprites (lights, flares), particles, joints (beams, trails), effect models
+  (thunder), pulsing brightness of the blend mesh, UV scrolling or flip-books, extra mesh passes
+  with engine textures (chrome, `msword01_r.jpg`), the tip light of a held weapon, the swing trail
+  of an attack, cloth capes and the wing animation.
+
+Sprites, particles and joints are world effects: the inventory does not show them (not checked in
+the game client). `render_facts.py` reads these from `ItemObjectAttribute`,
+`RenderPartObjectEffect`, `RenderPartObjectBody`, `RenderPartObjectBodyColor`, `RenderLinkObject`
+and the held-weapon code of `RenderCharacter`; an item with none of them says "No item-specific
+effect in the scanned code". Each item has a `status`: `verified-in-client` (checked in the Item
+Editor preview, see `verified`), `from-code` (read from the code by the rules above) or
+`unverified` (the reading hit a condition it cannot decide: the list under `unverified` says
+where; pets and mounts, some armour and event items). Where facts and the game disagree, the game
+wins: fix `render_notes.py` and rebuild.
 
 ## Concept images
 

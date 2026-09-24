@@ -73,8 +73,11 @@ those documents disagree, the documents win.
 - material name = texture file name (`body_01.jpg`, `wings.tga`); it must start with a
   letter and use only letters, digits, `.` and `_`
 - an underscore followed by letters from `RHSN` in a texture name is a render flag:
-  `_R` bright (glow), `_S` scrolling texture, `_H` hidden mesh, `_N` no blend. These are the
-  only material controls that exist; use them deliberately and never by accident
+  `_R` bright (the mesh is drawn additively: black is transparent, brightness glows), `_S`
+  stream (scrolls where the code passes a UV offset), `_H` hidden mesh, `_N` no chrome (the
+  +level and chrome passes skip the mesh). Only the letters after the **first** underscore count,
+  at most four, and all must be flags (`NEWW_R.jpg` is bright, `wing_3_R.jpg` is not). These
+  are the only material controls that exist; use them deliberately and never by accident
 - bones whose name starts with `Du` are dummies: their animation is dropped and vertices
   bound to them stay at the origin
 - keep every original file name and folder (`Data/Player/ArmorClass01.bmd`, ...)
@@ -855,6 +858,34 @@ Prioritize geometry for major silhouette features.
 
 ---
 
+# ITEMS: HOW THE GAME DRAWS THEM
+
+Before you paint an item, look up how the client draws each of its meshes: its entry in
+`assets-work/Items/render-facts.json` (and, in a request, `constraints.render` and the render
+lines of `must_keep`). The full explanation is in `assets-work/Items/README.md`, "How the game
+draws items (blending and effects)". What matters in practice:
+
+- **Blended (additive) meshes** (`blended-additive`): the texture is added to the picture. Paint
+  light on pure black: black is fully transparent, brightness is glow. No background, no dark
+  outlines, no shading that relies on dark values, no alpha. Many wings (Wings of Elf, Spirits,
+  the `_R` meshes of Soul and Dragon, Storm, Illusion, Ruin) and the glow parts of effect weapons
+  (Lighting Sword, Flameberge, glowing staffs and shields) are drawn this way. An opaque repaint
+  of such a mesh fails in the game (the Wing01 pilot: hard stripes or white blades).
+- **Cut-out meshes** (`alpha-test`, every `.tga`): the alpha channel is the silhouette (texels at
+  or below 25% alpha disappear); keep edge colours clean, no matte fringe.
+- **Alpha-blended meshes** (`blended-alpha`): the code draws the whole mesh see-through; keep it
+  light and even.
+- **Opaque meshes**: paint as usual. `hidden` meshes are not drawn in that view; keep them.
+- **Capes are cloth when worn**: the worn Cape of Lord uses `Player/DarklordRobe.tga`, not the
+  item texture; the Cape of Emperor and Overrule use their mesh 1/2 textures as cloth.
+- **Never paint engine effects into a texture**: the +level glow (none on the big wings and
+  capes), the excellent and ancient passes, sprites, particles, beams, pulsing, UV scrolling,
+  extra chrome layers, tip lights and swing trails are code. Each item lists them under `effects`.
+- Keep the mesh order and the texture name flags: the engine picks the blended meshes by index
+  and by name.
+
+---
+
 # FACES AND CHARACTERS
 
 Spend geometry carefully.
@@ -1184,6 +1215,9 @@ you touch a request.
   `validate_request.py`.
 - Never set `accepted`/`rejected`, and never edit the ledger, board, batches file or catalog.
 - Placement and terrain are never art requests.
+- Item requests follow the same pattern under `assets-work/Items/requests/` (contract:
+  `assets-work/Items/requests/README.md`); read the targets' `render-facts.json` entries first
+  (see ITEMS: HOW THE GAME DRAWS THEM).
 - Push or open a PR only with the owner's explicit authorization, only on `vaskodagamo/MuMain`
   (`gh --repo vaskodagamo/MuMain`), and never merge.
 

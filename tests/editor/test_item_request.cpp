@@ -11,6 +11,7 @@
 #include "Assets/ItemRequestDecision.h"
 #include "Assets/ItemRequestFolder.h"
 #include "Assets/ItemRequestScan.h"
+#include "Assets/ItemRenderFacts.h"
 #include "Assets/RequestFolder.h"
 #include "Editing/ItemCapturePlan.h"
 
@@ -76,6 +77,61 @@ ItemRequestDraft SwordDraft(ItemRequestKind kind)
     draft.input.details = {"Double the texture size"};
     draft.targets.push_back({Sword(), {std::string(64, 'a')}});
     return draft;
+}
+
+constexpr const char* WING_BLENDED_LINE =
+    "Blended meshes of Wing01.bmd (mesh 0): the game draws them additively - paint on black (black is fully "
+    "transparent, brightness becomes glow); no opaque background, no baked dark outlines";
+
+// render-facts.json text for the Wings of Elf and a sword without an entry's must_keep line.
+constexpr const char* RENDER_FACTS_TEXT = R"json({
+ "schema": "mu-item-render-facts/1",
+ "items": {
+  "12-0": {
+   "key": "12-0", "status": "verified-in-client", "summary": "Additive wings.",
+   "drawn": "blended meshes 0 / effects: no level glow",
+   "models": [{"role": "item", "bmd": "src/bin/Data/Item/Wing01.bmd", "meshes": [
+    {"mesh": 0, "texture": "elfin_wing.jpg", "flags": [], "worn": "blended-additive",
+     "dropped": "blended-additive", "inventory": "blended-additive", "evidence": ["rule:mesh-blend"]}]}],
+   "request": {"effects": ["No +level glow: the engine draws it as +0 whatever its level"],
+               "must_keep": ["Blended meshes of Wing01.bmd (mesh 0): the game draws them additively - paint on black (black is fully transparent, brightness becomes glow); no opaque background, no baked dark outlines"]}
+  },
+  "0-1": {
+   "key": "0-1", "status": "from-code", "summary": "", "drawn": "opaque / effects: trail",
+   "models": [{"role": "item", "bmd": "src/bin/Data/Item/Sword02.bmd", "meshes": [
+    {"mesh": 0, "texture": "blade.jpg", "worn": "opaque", "dropped": null, "inventory": "opaque"}]}],
+   "request": {"effects": ["A swing trail"], "must_keep": []}
+  }
+ }
+})json";
+
+ItemRenderFacts ParsedRenderFacts()
+{
+    ItemRenderFacts facts;
+    std::string error;
+    REQUIRE_MESSAGE(ParseItemRenderFacts(RENDER_FACTS_TEXT, facts, error), error);
+    return facts;
+}
+
+ItemCatalogEntry ElfWings()
+{
+    ItemCatalogEntry item;
+    item.key = "12-0";
+    item.group = 12;
+    item.index = 0;
+    item.name = "Wings of Elf";
+    item.family = "wings-1";
+    item.tier.value = 4;
+    item.classStages = {0, 0, 1, 0, 0, 0, 0};
+    item.width = 3;
+    item.height = 2;
+    ItemModel model;
+    model.role = "item";
+    model.bmd = "src/bin/Data/Item/Wing01.bmd";
+    model.meshes = 1;
+    model.textures = {{"elfin_wing.jpg", "src/bin/Data/Item/elfin_wing.OZJ"}};
+    item.models.push_back(model);
+    return item;
 }
 
 std::vector<std::uint8_t> TinyJpeg(int side)
@@ -184,6 +240,85 @@ TEST_CASE("Item request.json follows the item contract for an open request [edit
     const json set = json::parse(BuildItemRequestJson(draft));
     CHECK(set["change"]["set_kind"] == "upscale");
     CHECK(set["supersedes"] == "2026-09-20-0-1-first-try");
+}
+
+TEST_CASE("render-facts.json gives each item its mesh modes, effects and must_keep lines [editor][item-requests]")
+{
+    const ItemRenderFacts facts = ParsedRenderFacts();
+    const ItemRenderEntry* wings = facts.Find("12-0");
+    REQUIRE(wings != nullptr);
+    CHECK(wings->status == "verified-in-client");
+    CHECK(wings->drawn == "blended meshes 0 / effects: no level glow");
+    REQUIRE(wings->models.size() == 1);
+    CHECK(wings->models[0].meshes[0].worn == "blended-additive");
+    CHECK(wings->mustKeep == std::vector<std::string>{WING_BLENDED_LINE});
+    const ItemRenderEntry* sword = facts.Find("0-1");
+    REQUIRE(sword != nullptr);
+    CHECK(sword->models[0].meshes[0].dropped.empty()); // null: not used there
+    CHECK(facts.Find("99-0") == nullptr);
+
+    ItemRenderFacts other;
+    std::string error;
+    CHECK_FALSE(ParseItemRenderFacts(R"({"schema": "mu-item-catalog/1", "items": {}})", other, error));
+    CHECK(error.find("mu-item-render-facts/1") != std::string::npos);
+}
+
+TEST_CASE("A blended wing's request carries the render block and the blended line (golden) [editor][item-requests]")
+{
+    const ItemRenderFacts facts = ParsedRenderFacts();
+    ItemRequestDraft draft;
+    draft.id = "2026-09-24-12-0-paint-on-black";
+    draft.created = CREATED;
+    draft.baseCommit = BASE_COMMIT;
+    draft.input.kind = ItemRequestKind::Repaint;
+    draft.input.summary = "Repaint the elf wings for additive blending";
+    draft.targets.push_back({ElfWings(), {std::string(64, 'b')}, *facts.Find("12-0")});
+    const json constraints = json::parse(BuildItemRequestJson(draft))["constraints"];
+
+    const json golden = json::parse(R"json({
+      "must_keep": [
+        "File names and paths: no renamed, added or deleted game files",
+        "Origin, orientation and scale: hands, back and shields attach through the model origin (RenderLinkObject angles are hard-coded)",
+        "Mesh count and mesh/material order (the engine hides and blends meshes by index)",
+        "Texture name suffixes _R, _S, _H, _N (they set render flags); no new ones",
+        "At most 1500 triangles per model; power-of-two textures up to 1024 px, .jpg opaque, 32-bit .tga for alpha",
+        "Armour and wings: the skeleton (bone count, order, names, parents) and every action with its key count",
+        "Size in the inventory (Width x Height of the item table) and a footprint that fits it",
+        "Repaint: the mesh and the UV layout",
+        "Blended meshes of Wing01.bmd (mesh 0): the game draws them additively - paint on black (black is fully transparent, brightness becomes glow); no opaque background, no baked dark outlines"
+      ],
+      "render": {
+        "12-0": {
+          "models": [
+            {
+              "role": "item",
+              "bmd": "src/bin/Data/Item/Wing01.bmd",
+              "meshes": [
+                { "mesh": 0, "texture": "elfin_wing.jpg", "worn": "blended-additive",
+                  "dropped": "blended-additive", "inventory": "blended-additive" }
+              ]
+            }
+          ],
+          "effects": ["No +level glow: the engine draws it as +0 whatever its level"]
+        }
+      }
+    })json");
+    CHECK(constraints["must_keep"] == golden["must_keep"]);
+    CHECK(constraints["render"] == golden["render"]);
+    // A target without render facts still gets its (empty) block, and no render line.
+    ItemRequestDraft sword = SwordDraft(ItemRequestKind::Upscale);
+    const json plain = json::parse(BuildItemRequestJson(sword))["constraints"];
+    CHECK(plain["render"]["0-1"] == json({{"models", json::array()}, {"effects", json::array()}}));
+    CHECK(plain["must_keep"].size() == 8);
+
+    const std::string brief = BuildItemBrief(draft);
+    CHECK(brief.find("## How the game draws this item") != std::string::npos);
+    const std::string row = "| `Wing01.bmd` | 0 | `elfin_wing.jpg` | blended-additive | blended-additive | "
+                            "blended-additive |";
+    CHECK(brief.find(row) != std::string::npos);
+    CHECK(brief.find("- No +level glow: the engine draws it as +0 whatever its level") != std::string::npos);
+    CHECK(brief.find(std::string("- ") + WING_BLENDED_LINE) != std::string::npos);
+    CHECK(brief.find("Additive wings.") != std::string::npos);
 }
 
 TEST_CASE("Item brief.md names the scope, the notes and every capture [editor][item-requests]")
@@ -427,11 +562,14 @@ int RunValidator(const fs::path& root, const std::vector<fs::path>& folders, std
     return WEXITSTATUS(status);
 }
 
-ItemRequestTarget RepoTarget(const ItemCatalogEntry& item)
+ItemRequestTarget RepoTarget(const ItemCatalogEntry& item, const ItemRenderFacts& facts)
 {
-    ItemRequestTarget target{item, {}};
+    ItemRequestTarget target{item, {}, std::nullopt};
     for (const ItemModel& model : item.models)
         target.modelSha256.push_back(Editor::Files::Sha256Hex(fs::path(MU_REPO_ROOT) / model.bmd));
+    const ItemRenderEntry* render = facts.Find(item.key);
+    if (render != nullptr)
+        target.render = *render;
     return target;
 }
 
@@ -442,7 +580,7 @@ void PrepareScratchRepository(const fs::path& root)
     const fs::path items = root / "assets-work" / "Items";
     fs::create_directories(items);
     fs::create_directory_symlink(fs::path(MU_REPO_ROOT) / "src", root / "src");
-    for (const char* name : {"catalog.json", "tiers.json", "assignments.json"})
+    for (const char* name : {"catalog.json", "tiers.json", "assignments.json", "render-facts.json"})
         fs::copy_file(fs::path(MU_REPO_ROOT) / "assets-work" / "Items" / name, items / name);
 }
 
@@ -472,9 +610,11 @@ TEST_CASE("validate_request.py accepts the requests the editor writes [editor][i
 {
     const Editor::Git::HeadInfo head = Editor::Git::ReadHead(MU_REPO_ROOT);
     const ItemCatalogLoad load = LoadItemCatalog(MU_REPO_ROOT);
-    if (!HasPython() || head.commit.empty() || !load.catalog)
+    const ItemRenderFactsLoad renderLoad = LoadItemRenderFacts(MU_REPO_ROOT);
+    if (!HasPython() || head.commit.empty() || !load.catalog || !renderLoad.facts)
     {
-        MESSAGE("python3, the checkout's HEAD or catalog.json is missing; the validator run is skipped");
+        MESSAGE("python3, the checkout's HEAD, catalog.json or render-facts.json is missing; the validator run is "
+                "skipped");
         return;
     }
     TempTree tree("mu_item_request_validator");
@@ -496,12 +636,15 @@ TEST_CASE("validate_request.py accepts the requests the editor writes [editor][i
         {
             const ItemCatalogEntry* item = catalog.FindByKey(key);
             REQUIRE_MESSAGE(item != nullptr, key);
-            draft.targets.push_back(RepoTarget(*item));
+            draft.targets.push_back(RepoTarget(*item, *renderLoad.facts));
         }
         folders.push_back(WriteRepoRequest(tree.Root(), draft, withConcept));
     };
     add({"0-1"}, ItemRequestKind::Upscale, ItemRequestKind::Upscale, "upscale", false);
     add({"6-0"}, ItemRequestKind::Redesign, ItemRequestKind::Upscale, "redesign", true);
+    // Blended and cut-out meshes: the render lines of must_keep.
+    add({"12-0"}, ItemRequestKind::Repaint, ItemRequestKind::Upscale, "additive", false);
+    add({"12-36"}, ItemRequestKind::Remodel, ItemRequestKind::Upscale, "storm", false);
     const ItemCatalogEntry* helm = catalog.FindByKey("7-1");
     REQUIRE(helm != nullptr);
     add(helm->armourSetParts, ItemRequestKind::Set, ItemRequestKind::Remodel, "set", false);

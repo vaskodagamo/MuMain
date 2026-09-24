@@ -63,6 +63,7 @@ private:
     void CollectSetParts(const Editor::Assets::ItemCatalog& catalog);
     Editor::Assets::ItemRequestTarget TargetOf(const Editor::Assets::ItemCatalogEntry& item) const;
     void ReadCheckout();
+    void LoadRenderFacts();
     void FindOpenRequests();
     void LoadConcept();
     void ReleaseConcept();
@@ -106,6 +107,9 @@ private:
     std::string m_headCommit;
     std::string m_headProblem;
     std::vector<std::string> m_openRequests; // "<id> (<status>)" naming a target
+    // How the game draws the items (render-facts.json); the request copies it.
+    std::optional<Editor::Assets::ItemRenderFacts> m_renderFacts;
+    std::string m_renderProblem; // why render-facts.json could not be read
 
     int m_kind = 0;    // ItemRequestKind
     int m_setKind = 0; // ItemRequestKind of every part of a set

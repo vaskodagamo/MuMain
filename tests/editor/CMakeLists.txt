@@ -127,6 +127,7 @@ mu_add_test(
         ${MU_EDITOR_ASSETS_DIR}/FileDigest.cpp
         ${MU_EDITOR_ASSETS_DIR}/GitCheckout.cpp
         ${MU_EDITOR_ASSETS_DIR}/ItemCatalog.cpp
+        ${MU_EDITOR_ASSETS_DIR}/ItemRenderFacts.cpp
         ${MU_EDITOR_ASSETS_DIR}/ItemRequest.cpp
         ${MU_EDITOR_ASSETS_DIR}/ItemRequestBrief.cpp
         ${MU_EDITOR_ASSETS_DIR}/ItemRequestDecision.cpp
