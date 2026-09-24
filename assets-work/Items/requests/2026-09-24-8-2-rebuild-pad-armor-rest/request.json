@@ -1,0 +1,609 @@
+{
+  "schema": "mu-item-regen-request/1",
+  "id": "2026-09-24-8-2-rebuild-pad-armor-rest",
+  "created": "2026-09-24T13:15:54+02:00",
+  "author": "owner (item editor)",
+  "status": "open",
+  "status_history": [
+    {
+      "status": "open",
+      "at": "2026-09-24T13:15:54+02:00",
+      "by": "item editor"
+    }
+  ],
+  "priority": "normal",
+  "kind": "set",
+  "base_commit": "90b7a6cdd9c4c921787d1552befac9b62a192b09",
+  "supersedes": null,
+  "targets": [
+    {
+      "key": "8-2",
+      "group": 8,
+      "index": 2,
+      "name": "Pad Armor",
+      "family": "armours",
+      "tier": 1,
+      "classes": {
+        "dw": 1,
+        "dk": 0,
+        "elf": 0,
+        "mg": 1,
+        "dl": 0,
+        "sum": 0,
+        "rf": 0
+      },
+      "size": [
+        2,
+        2
+      ],
+      "armour_set": 2,
+      "models": [
+        {
+          "role": "item",
+          "bmd": "src/bin/Data/Player/ArmorMale03.bmd",
+          "current_sha256": "1412b9e338fdca3f29ea8fb09f0e90c68260abca2806bbe3fb85e64bc0b76cc2",
+          "textures": {
+            "hide_m.jpg": null,
+            "skin_barbarian_01.jpg": "src/bin/Data/Player/skin_barbarian_01.OZJ",
+            "upper_04_m.jpg": "src/bin/Data/Player/upper_04_m.OZJ"
+          }
+        }
+      ],
+      "original": {
+        "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
+        "sha256": "1412b9e338fdca3f29ea8fb09f0e90c68260abca2806bbe3fb85e64bc0b76cc2"
+      }
+    },
+    {
+      "key": "7-2",
+      "group": 7,
+      "index": 2,
+      "name": "Pad Helm",
+      "family": "helms",
+      "tier": 1,
+      "classes": {
+        "dw": 1,
+        "dk": 0,
+        "elf": 0,
+        "mg": 0,
+        "dl": 0,
+        "sum": 0,
+        "rf": 0
+      },
+      "size": [
+        2,
+        2
+      ],
+      "armour_set": 2,
+      "models": [
+        {
+          "role": "item",
+          "bmd": "src/bin/Data/Player/HelmMale03.bmd",
+          "current_sha256": "f4d63e18797bbb401d2aa68dd1e926484c9e3d24502df99fb972741e952c6acf",
+          "textures": {
+            "head_04.jpg": "src/bin/Data/Player/head_04.OZJ",
+            "hide.jpg": null
+          }
+        }
+      ],
+      "original": {
+        "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
+        "sha256": "f4d63e18797bbb401d2aa68dd1e926484c9e3d24502df99fb972741e952c6acf"
+      }
+    },
+    {
+      "key": "9-2",
+      "group": 9,
+      "index": 2,
+      "name": "Pad Pants",
+      "family": "pants",
+      "tier": 1,
+      "classes": {
+        "dw": 1,
+        "dk": 0,
+        "elf": 0,
+        "mg": 1,
+        "dl": 0,
+        "sum": 0,
+        "rf": 0
+      },
+      "size": [
+        2,
+        2
+      ],
+      "armour_set": 2,
+      "models": [
+        {
+          "role": "item",
+          "bmd": "src/bin/Data/Player/PantMale03.bmd",
+          "current_sha256": "9b832295b088983b6b1acf3e7face2bb4f8ef0ea9d2984f9fac10d4acf9abe0e",
+          "textures": {
+            "hide.jpg": null,
+            "lower_04_m.jpg": "src/bin/Data/Player/lower_04_m.OZJ",
+            "lower_04b_m.tga": "src/bin/Data/Player/lower_04b_m.OZT",
+            "lower_04c.tga": "src/bin/Data/Player/lower_04c.OZT"
+          }
+        }
+      ],
+      "original": {
+        "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
+        "sha256": "9b832295b088983b6b1acf3e7face2bb4f8ef0ea9d2984f9fac10d4acf9abe0e"
+      }
+    },
+    {
+      "key": "10-2",
+      "group": 10,
+      "index": 2,
+      "name": "Pad Gloves",
+      "family": "gloves",
+      "tier": 1,
+      "classes": {
+        "dw": 1,
+        "dk": 0,
+        "elf": 0,
+        "mg": 1,
+        "dl": 0,
+        "sum": 0,
+        "rf": 0
+      },
+      "size": [
+        2,
+        2
+      ],
+      "armour_set": 2,
+      "models": [
+        {
+          "role": "item",
+          "bmd": "src/bin/Data/Player/GloveMale03.bmd",
+          "current_sha256": "ae5c1a9ca296681fd9c7b1b043065a3f5c62f618067529fa62d3f7227b297025",
+          "textures": {
+            "gloves_04.jpg": "src/bin/Data/Player/gloves_04.OZJ",
+            "hide.jpg": null
+          }
+        }
+      ],
+      "original": {
+        "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
+        "sha256": "ae5c1a9ca296681fd9c7b1b043065a3f5c62f618067529fa62d3f7227b297025"
+      }
+    },
+    {
+      "key": "11-2",
+      "group": 11,
+      "index": 2,
+      "name": "Pad Boots",
+      "family": "boots",
+      "tier": 1,
+      "classes": {
+        "dw": 1,
+        "dk": 0,
+        "elf": 0,
+        "mg": 1,
+        "dl": 0,
+        "sum": 0,
+        "rf": 0
+      },
+      "size": [
+        2,
+        2
+      ],
+      "armour_set": 2,
+      "models": [
+        {
+          "role": "item",
+          "bmd": "src/bin/Data/Player/BootMale03.bmd",
+          "current_sha256": "6e758d670cc3ee5dbb6f6dcf2e7675b57ced5a95684a5655fe0ab6ff62b0edb8",
+          "textures": {
+            "boots_04.jpg": "src/bin/Data/Player/boots_04.OZJ",
+            "boots_04b.tga": "src/bin/Data/Player/boots_04b.ozt",
+            "hide.jpg": null
+          }
+        }
+      ],
+      "original": {
+        "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
+        "sha256": "6e758d670cc3ee5dbb6f6dcf2e7675b57ced5a95684a5655fe0ab6ff62b0edb8"
+      }
+    }
+  ],
+  "change": {
+    "summary": "Rebuild Pad Armor and the rest of its armour set exactly as the picked concept",
+    "details": [
+      "Match the attached concept (ref-concept.jpg) as closely as possible: shapes, colours, materials and details",
+      "Where the game limits do not allow a detail, keep the closest simpler version"
+    ],
+    "keep": [
+      "Same fit on the character, same animations, same inventory size"
+    ],
+    "avoid": [
+      "Own design ideas that are not in the concept"
+    ],
+    "set_kind": "redesign",
+    "reference_images": [
+      "assets-work/Items/requests/2026-09-24-8-2-rebuild-pad-armor-rest/captures/ref-concept.jpg"
+    ]
+  },
+  "constraints": {
+    "shared_textures": {
+      "src/bin/Data/Player/boots_04b.ozt": [
+        "11-2",
+        "11-10"
+      ],
+      "src/bin/Data/Player/skin_barbarian_01.OZJ": [
+        "7-1",
+        "7-5",
+        "7-6",
+        "7-7",
+        "7-8",
+        "8-0",
+        "8-2",
+        "8-5",
+        "other:MODEL_BODY_ARMOR",
+        "other:MODEL_BODY_BOOTS",
+        "other:MODEL_BODY_GLOVES",
+        "other:MODEL_BODY_HELM",
+        "other:MODEL_BODY_PANTS"
+      ]
+    },
+    "frozen_textures": [
+      "src/bin/Data/Player/boots_04b.ozt",
+      "src/bin/Data/Player/skin_barbarian_01.OZJ"
+    ],
+    "owned_files": [
+      "src/bin/Data/Player/ArmorMale03.bmd",
+      "src/bin/Data/Player/BootMale03.bmd",
+      "src/bin/Data/Player/GloveMale03.bmd",
+      "src/bin/Data/Player/HelmMale03.bmd",
+      "src/bin/Data/Player/PantMale03.bmd",
+      "src/bin/Data/Player/boots_04.OZJ",
+      "src/bin/Data/Player/gloves_04.OZJ",
+      "src/bin/Data/Player/head_04.OZJ",
+      "src/bin/Data/Player/lower_04_m.OZJ",
+      "src/bin/Data/Player/lower_04b_m.OZT",
+      "src/bin/Data/Player/lower_04c.OZT",
+      "src/bin/Data/Player/upper_04_m.OZJ"
+    ],
+    "protected_paths": [
+      "src/source/",
+      "src/MuEditor/",
+      "src/CMakeLists.txt",
+      "CMakeLists.txt",
+      "CMakePresets.json",
+      "cmake/",
+      "assets-work/Items/catalog.json",
+      "assets-work/Items/tiers.json",
+      "assets-work/Items/assignments.json",
+      "docs/agents/HANDOFF.md"
+    ],
+    "limits": {
+      "max_triangles": 1500,
+      "max_texture_size": 1024
+    },
+    "must_keep": [
+      "File names and paths: no renamed, added or deleted game files",
+      "Origin, orientation and scale: hands, back and shields attach through the model origin (RenderLinkObject angles are hard-coded)",
+      "Mesh count and mesh/material order (the engine hides and blends meshes by index)",
+      "Texture name suffixes _R, _S, _H, _N (they set render flags); no new ones",
+      "At most 1500 triangles per model; power-of-two textures up to 1024 px, .jpg opaque, 32-bit .tga for alpha",
+      "Armour and wings: the skeleton (bone count, order, names, parents) and every action with its key count",
+      "Size in the inventory (Width x Height of the item table) and a footprint that fits it",
+      "Redesign: origin, grip, size in the inventory slot and mesh order",
+      "Set: every part keeps its skeleton and actions, and the parts still read as one set",
+      "Cut-out meshes of PantMale03.bmd (meshes 1, 3): the game discards texels at or below 25% alpha and blends the rest - keep the 32-bit .tga alpha as the silhouette; no opaque background, no matte fringe",
+      "Cut-out meshes of BootMale03.bmd (mesh 2): the game discards texels at or below 25% alpha and blends the rest - keep the 32-bit .tga alpha as the silhouette; no opaque background, no matte fringe"
+    ],
+    "render": {
+      "8-2": {
+        "models": [
+          {
+            "role": "item",
+            "bmd": "src/bin/Data/Player/ArmorMale03.bmd",
+            "meshes": [
+              {
+                "mesh": 0,
+                "texture": "upper_04_m.jpg",
+                "worn": "opaque",
+                "dropped": "opaque",
+                "inventory": "opaque"
+              },
+              {
+                "mesh": 1,
+                "texture": "hide_m.jpg",
+                "worn": "hidden",
+                "dropped": "hidden",
+                "inventory": "hidden"
+              },
+              {
+                "mesh": 2,
+                "texture": "skin_barbarian_01.jpg",
+                "worn": "opaque",
+                "dropped": "hidden",
+                "inventory": "hidden"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          "+level look: +3..+6 tinted light, +7 and up extra chrome/metal passes over the whole model",
+          "Excellent: a second additive pass of the own texture in a pulsing purple/blue light (bright texels glow, black stays black)",
+          "No item-specific effect in the scanned code: only the generic +level, excellent and ancient passes"
+        ]
+      },
+      "7-2": {
+        "models": [
+          {
+            "role": "item",
+            "bmd": "src/bin/Data/Player/HelmMale03.bmd",
+            "meshes": [
+              {
+                "mesh": 0,
+                "texture": "head_04.jpg",
+                "worn": "opaque",
+                "dropped": "opaque",
+                "inventory": "opaque"
+              },
+              {
+                "mesh": 1,
+                "texture": "hide.jpg",
+                "worn": "hidden",
+                "dropped": "hidden",
+                "inventory": "hidden"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          "+level look: +3..+6 tinted light, +7 and up extra chrome/metal passes over the whole model",
+          "Excellent: a second additive pass of the own texture in a pulsing purple/blue light (bright texels glow, black stays black)",
+          "No item-specific effect in the scanned code: only the generic +level, excellent and ancient passes"
+        ]
+      },
+      "9-2": {
+        "models": [
+          {
+            "role": "item",
+            "bmd": "src/bin/Data/Player/PantMale03.bmd",
+            "meshes": [
+              {
+                "mesh": 0,
+                "texture": "lower_04_m.jpg",
+                "worn": "opaque",
+                "dropped": "opaque",
+                "inventory": "opaque"
+              },
+              {
+                "mesh": 1,
+                "texture": "lower_04b_m.tga",
+                "worn": "alpha-test",
+                "dropped": "alpha-test",
+                "inventory": "alpha-test"
+              },
+              {
+                "mesh": 2,
+                "texture": "hide.jpg",
+                "worn": "hidden",
+                "dropped": "hidden",
+                "inventory": "hidden"
+              },
+              {
+                "mesh": 3,
+                "texture": "lower_04c.tga",
+                "worn": "alpha-test",
+                "dropped": "alpha-test",
+                "inventory": "alpha-test"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          "+level look: +3..+6 tinted light, +7 and up extra chrome/metal passes over the whole model",
+          "Excellent: a second additive pass of the own texture in a pulsing purple/blue light (bright texels glow, black stays black)",
+          "No item-specific effect in the scanned code: only the generic +level, excellent and ancient passes"
+        ]
+      },
+      "10-2": {
+        "models": [
+          {
+            "role": "item",
+            "bmd": "src/bin/Data/Player/GloveMale03.bmd",
+            "meshes": [
+              {
+                "mesh": 0,
+                "texture": "gloves_04.jpg",
+                "worn": "opaque",
+                "dropped": "opaque",
+                "inventory": "opaque"
+              },
+              {
+                "mesh": 1,
+                "texture": "hide.jpg",
+                "worn": "hidden",
+                "dropped": "hidden",
+                "inventory": "hidden"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          "+level look: +3..+6 tinted light, +7 and up extra chrome/metal passes over the whole model",
+          "Excellent: a second additive pass of the own texture in a pulsing purple/blue light (bright texels glow, black stays black)",
+          "No item-specific effect in the scanned code: only the generic +level, excellent and ancient passes"
+        ]
+      },
+      "11-2": {
+        "models": [
+          {
+            "role": "item",
+            "bmd": "src/bin/Data/Player/BootMale03.bmd",
+            "meshes": [
+              {
+                "mesh": 0,
+                "texture": "boots_04.jpg",
+                "worn": "opaque",
+                "dropped": "opaque",
+                "inventory": "opaque"
+              },
+              {
+                "mesh": 1,
+                "texture": "hide.jpg",
+                "worn": "hidden",
+                "dropped": "hidden",
+                "inventory": "hidden"
+              },
+              {
+                "mesh": 2,
+                "texture": "boots_04b.tga",
+                "worn": "alpha-test",
+                "dropped": "alpha-test",
+                "inventory": "alpha-test"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          "+level look: +3..+6 tinted light, +7 and up extra chrome/metal passes over the whole model",
+          "Excellent: a second additive pass of the own texture in a pulsing purple/blue light (bright texels glow, black stays black)",
+          "No item-specific effect in the scanned code: only the generic +level, excellent and ancient passes"
+        ]
+      }
+    }
+  },
+  "evidence": {
+    "captures": [
+      {
+        "file": "assets-work/Items/requests/2026-09-24-8-2-rebuild-pad-armor-rest/captures/01-front.jpg",
+        "variant": "current",
+        "view": "turntable",
+        "angle": 0.0,
+        "item_level": 0,
+        "excellent": false,
+        "ancient": false,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "client_commit": "90b7a6cd"
+      },
+      {
+        "file": "assets-work/Items/requests/2026-09-24-8-2-rebuild-pad-armor-rest/captures/02-side.jpg",
+        "variant": "current",
+        "view": "turntable",
+        "angle": 90.0,
+        "item_level": 0,
+        "excellent": false,
+        "ancient": false,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "client_commit": "90b7a6cd"
+      },
+      {
+        "file": "assets-work/Items/requests/2026-09-24-8-2-rebuild-pad-armor-rest/captures/03-back.jpg",
+        "variant": "current",
+        "view": "turntable",
+        "angle": 180.0,
+        "item_level": 0,
+        "excellent": false,
+        "ancient": false,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "client_commit": "90b7a6cd"
+      },
+      {
+        "file": "assets-work/Items/requests/2026-09-24-8-2-rebuild-pad-armor-rest/captures/04-three-quarter.jpg",
+        "variant": "current",
+        "view": "turntable",
+        "angle": 45.0,
+        "item_level": 0,
+        "excellent": false,
+        "ancient": false,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "client_commit": "90b7a6cd"
+      },
+      {
+        "file": "assets-work/Items/requests/2026-09-24-8-2-rebuild-pad-armor-rest/captures/05-inventory.jpg",
+        "variant": "current",
+        "view": "inventory",
+        "item_level": 0,
+        "excellent": false,
+        "ancient": false,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "client_commit": "90b7a6cd"
+      },
+      {
+        "file": "assets-work/Items/requests/2026-09-24-8-2-rebuild-pad-armor-rest/captures/06-equipped.jpg",
+        "variant": "current",
+        "view": "equipped-front",
+        "item_level": 0,
+        "excellent": false,
+        "ancient": false,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "client_commit": "90b7a6cd"
+      },
+      {
+        "file": "assets-work/Items/requests/2026-09-24-8-2-rebuild-pad-armor-rest/captures/07-glow-0-exc.jpg",
+        "variant": "current",
+        "view": "glow",
+        "item_level": 0,
+        "excellent": true,
+        "ancient": false,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "client_commit": "90b7a6cd"
+      },
+      {
+        "file": "assets-work/Items/requests/2026-09-24-8-2-rebuild-pad-armor-rest/captures/08-glow-9-exc.jpg",
+        "variant": "current",
+        "view": "glow",
+        "item_level": 9,
+        "excellent": true,
+        "ancient": false,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "client_commit": "90b7a6cd"
+      },
+      {
+        "file": "assets-work/Items/requests/2026-09-24-8-2-rebuild-pad-armor-rest/captures/09-glow-13-exc.jpg",
+        "variant": "current",
+        "view": "glow",
+        "item_level": 13,
+        "excellent": true,
+        "ancient": false,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "client_commit": "90b7a6cd"
+      }
+    ],
+    "offline_previews": []
+  },
+  "handoff": {
+    "repo": "vaskodagamo/MuMain",
+    "branch": "codex/item-req-8-2-rebuild-pad-armor-rest",
+    "worktree": "../MuMain-item-req-8-2-rebuild-pad-armor-rest",
+    "deliver_to": "assets-work/Items/requests/2026-09-24-8-2-rebuild-pad-armor-rest/delivery/",
+    "push_allowed": false,
+    "claimed_by": null,
+    "claimed_at": null,
+    "start_commit": null
+  },
+  "result": null,
+  "decision": null
+}
