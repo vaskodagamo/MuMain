@@ -44,8 +44,8 @@ std::vector<std::string> DetailLines(const fs::path& stored)
     return {
         "Start from the reference mesh " + Editor::Text::PathToUtf8(stored) +
             " (outside the repository; never copy it into the repo): it shows the wanted look",
-        "Reduce it in Blender to at most " + triangles +
-            " triangles per model (Decimate, then clean up), keeping the silhouette",
+        "Build a clean, closed low-poly model over it in Blender (retopology, at most " + triangles +
+            " triangles per model; do not decimate the generator mesh), keeping the silhouette",
         "Bake its colour and detail onto one diffuse texture: " + std::to_string(SMALL_ITEM_TEXTURE_SIZE) +
             " px for small items, at most " + std::to_string(ITEM_MAX_TEXTURE_SIZE) + " px",
         "Fit it to the original model: same origin and grip, size and orientation; split a set mesh into its parts",

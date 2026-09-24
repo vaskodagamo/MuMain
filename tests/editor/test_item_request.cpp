@@ -709,6 +709,7 @@ TEST_CASE("A reference mesh is stored next to the checkouts and named in What to
     REQUIRE(lines.size() == 4);
     CHECK(lines[0].find(stored.string()) != std::string::npos);
     CHECK(lines[1].find("1500 triangles") != std::string::npos);
+    CHECK(lines[1].find("do not decimate") != std::string::npos);
     CHECK(Mesh::Summary("Short Sword") == "Rebuild Short Sword from the reference mesh");
 }
 #endif

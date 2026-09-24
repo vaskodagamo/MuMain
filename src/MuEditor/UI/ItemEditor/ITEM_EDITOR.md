@@ -423,7 +423,7 @@ names. The contract Codex works to is
    **Reference mesh...** picks a `.glb` from a 3D generator (a high-poly model of the new look). The
    editor copies it next to the checkouts, `item-sources/<item key>/` (never into git: `.gitignore`
    and the validator keep `.glb` files out), puts the steps first in What to change (start from that
-   file, reduce it to the triangle limit in Blender, bake one diffuse texture, fit it to the original
+   file, build a clean closed low-poly model over it within the triangle limit, bake one diffuse texture, fit it to the original
    model) and names the request "Rebuild <item> from the reference mesh". Picking another file
    replaces those lines.
 6. **Scope** lists the files Codex may replace and the textures it must leave alone because other items
