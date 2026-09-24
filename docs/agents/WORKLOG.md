@@ -1378,3 +1378,29 @@ local documentation edits, retaining both sets of appended worklog entries.
 **Verified:** HEAD matches origin/main; local documentation edits are preserved.
 
 **Open / next:** No build or tests run for this repository sync.
+
+## 2026-09-24 - Item Editor on the Mac: item window, zoom, console, concept renders (Claude Opus 5.5)
+**Goal:** First owner session with the Item Editor on the second Mac; fix what got in the way.
+
+**Done:**
+- Browse opens the selected item in its own resizable window instead of the narrow right
+  panel (Side by side doubles its width). The preview picture takes the mouse wheel (the
+  panel around it scrolled instead of zooming out) and has - / + zoom buttons.
+- The toolbar's Console box (editor and game consoles) is kept in `MuEditor.ini` (`ShowConsole`).
+- `concept_refs.find_blender` also finds `../astra-tools/Blender.app` and passes
+  `../astra-tools/blender-user/scripts` as `BLENDER_USER_SCRIPTS`, so reference renders work
+  where the art agents' Blender lives, without `/Applications` or a Source Tools install.
+- Built the `macos-arm64-mueditor` preset (same `-nostdinc++` / system Python workarounds).
+
+**Verified:** Editor build OK; ctest `preview|browse|item` 56/56; concept tool unittests OK.
+Reference renders 0-1 and 0-2 ran through the new lookup with the manual links removed. A real
+concept run (3 Short Sword variants) succeeded. Window, zoom and console change not yet
+screen-checked by the owner.
+
+**Open / next:**
+- `security add-generic-password ... -w` without a value cut the pasted OpenAI key to 128
+  characters (OpenAI rejected it with a 401). The concepts README should recommend
+  `-w "$(pbpaste)"`.
+- Opening `MU Item Editor.app` with `open` did not start the client here; running the script
+  inside it did. Not investigated.
+- The disk was nearly full again (about 1-2 GB free); 16 `MuMain-*` agent worktrees of about 3.3 GB each.
