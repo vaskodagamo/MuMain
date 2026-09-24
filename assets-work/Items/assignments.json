@@ -18,5 +18,10 @@
     "request": "2026-09-24-0-1-rebuild-short-sword-clean",
     "branch": "codex/item-req-0-1-rebuild-short-sword-clean",
     "worktree": "../MuMain-item-req-0-1-rebuild-short-sword-clean"
+  },
+  "item-req-8-2-rebuild-pad-set-reference": {
+    "request": "2026-09-24-8-2-rebuild-pad-set-reference",
+    "branch": "codex/item-req-8-2-rebuild-pad-set-reference",
+    "worktree": "../MuMain-item-req-8-2-rebuild-pad-set-reference"
   }
 }
