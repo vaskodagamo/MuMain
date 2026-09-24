@@ -135,6 +135,7 @@ mu_add_test(
         ${MU_EDITOR_ASSETS_DIR}/ItemRequestFolder.cpp
         ${MU_EDITOR_ASSETS_DIR}/ItemRequestScan.cpp
         ${MU_EDITOR_ASSETS_DIR}/JsonFields.cpp
+        ${MU_EDITOR_ASSETS_DIR}/ReferenceMesh.cpp
         ${MU_EDITOR_ASSETS_DIR}/RegenRequest.cpp
         ${MU_EDITOR_ASSETS_DIR}/RequestBrief.cpp
         ${MU_EDITOR_ASSETS_DIR}/RequestFolder.cpp

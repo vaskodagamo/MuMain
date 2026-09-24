@@ -46,6 +46,10 @@ constexpr SDL_DialogFileFilter CANDIDATE_FILE_FILTERS[] = {
     {"Game model or texture", "bmd;ozj;ozt"},
     {"All files", "*"},
 };
+constexpr SDL_DialogFileFilter REFERENCE_MESH_FILTERS[] = {
+    {"glTF binary (.glb)", "glb"},
+    {"All files", "*"},
+};
 
 struct DialogSpec
 {
@@ -64,6 +68,8 @@ constexpr std::array<DialogSpec, REQUEST_COUNT> DIALOG_SPECS = {{
      static_cast<int>(std::size(REFERENCE_IMAGE_FILTERS))},
     {"Select any file of the candidate's folder (its .bmd, .OZJ or .OZT)", CANDIDATE_FILE_FILTERS,
      static_cast<int>(std::size(CANDIDATE_FILE_FILTERS))},
+    {"Select the reference mesh from a 3D generator (.glb)", REFERENCE_MESH_FILTERS,
+     static_cast<int>(std::size(REFERENCE_MESH_FILTERS))},
 }};
 
 // One result slot per request. SDL may run the dialog callback on another

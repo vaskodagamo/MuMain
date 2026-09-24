@@ -420,6 +420,12 @@ names. The contract Codex works to is
    it: kind **redesign** (for a set, **Every part** redesign), the summary "Rebuild <item> exactly as
    the picked concept", and What to change / Keep / Avoid lines that say so. Edit or delete them
    for anything else. Without a concept the fields start empty.
+   **Reference mesh...** picks a `.glb` from a 3D generator (a high-poly model of the new look). The
+   editor copies it next to the checkouts, `item-sources/<item key>/` (never into git: `.gitignore`
+   and the validator keep `.glb` files out), puts the steps first in What to change (start from that
+   file, reduce it to the triangle limit in Blender, bake one diffuse texture, fit it to the original
+   model) and names the request "Rebuild <item> from the reference mesh". Picking another file
+   replaces those lines.
 6. **Scope** lists the files Codex may replace and the textures it must leave alone because other items
    or models use them too, and how the game draws each target. The request copies that from
    `render-facts.json` (`constraints.render`), and for every blended, alpha-blended or cut-out mesh it adds
