@@ -1,0 +1,268 @@
+{
+  "schema": "mu-item-regen-request/1",
+  "id": "2026-09-24-0-1-rebuild-short-sword-exactly",
+  "created": "2026-09-24T14:34:10+02:00",
+  "author": "owner (item editor)",
+  "status": "open",
+  "status_history": [
+    {
+      "status": "open",
+      "at": "2026-09-24T14:34:10+02:00",
+      "by": "item editor"
+    }
+  ],
+  "priority": "normal",
+  "kind": "redesign",
+  "base_commit": "616cdf2adcb8ad60b0a65f1f30797861ff9f12ed",
+  "supersedes": null,
+  "targets": [
+    {
+      "key": "0-1",
+      "group": 0,
+      "index": 1,
+      "name": "Short Sword",
+      "family": "swords",
+      "tier": 1,
+      "classes": {
+        "dw": 1,
+        "dk": 1,
+        "elf": 1,
+        "mg": 1,
+        "dl": 1,
+        "sum": 1,
+        "rf": 1
+      },
+      "size": [
+        1,
+        3
+      ],
+      "armour_set": null,
+      "models": [
+        {
+          "role": "item",
+          "bmd": "src/bin/Data/Item/Sword02.bmd",
+          "current_sha256": "33bf5614656dc2cc7575a76cea317f472ddc0f05de4a9fc998c713eb1bea2a7f",
+          "textures": {
+            "sword03.jpg": "src/bin/Data/Item/sword03.OZJ"
+          }
+        }
+      ],
+      "original": {
+        "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
+        "sha256": "33bf5614656dc2cc7575a76cea317f472ddc0f05de4a9fc998c713eb1bea2a7f"
+      }
+    }
+  ],
+  "change": {
+    "summary": "Rebuild Short Sword exactly as the picked concept",
+    "details": [
+      "Match the attached concept (ref-concept.jpg) as closely as possible: shapes, colours, materials and details",
+      "Where the game limits do not allow a detail, keep the closest simpler version"
+    ],
+    "keep": [
+      "Same fit on the character, same animations, same inventory size"
+    ],
+    "avoid": [
+      "Own design ideas that are not in the concept"
+    ],
+    "reference_images": [
+      "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-exactly/captures/ref-concept.jpg"
+    ]
+  },
+  "constraints": {
+    "shared_textures": {},
+    "frozen_textures": [],
+    "owned_files": [
+      "src/bin/Data/Item/Sword02.bmd",
+      "src/bin/Data/Item/sword03.OZJ"
+    ],
+    "protected_paths": [
+      "src/source/",
+      "src/MuEditor/",
+      "src/CMakeLists.txt",
+      "CMakeLists.txt",
+      "CMakePresets.json",
+      "cmake/",
+      "assets-work/Items/catalog.json",
+      "assets-work/Items/tiers.json",
+      "assets-work/Items/assignments.json",
+      "docs/agents/HANDOFF.md"
+    ],
+    "limits": {
+      "max_triangles": 1500,
+      "max_texture_size": 1024
+    },
+    "must_keep": [
+      "File names and paths: no renamed, added or deleted game files",
+      "Origin, orientation and scale: hands, back and shields attach through the model origin (RenderLinkObject angles are hard-coded)",
+      "Mesh count and mesh/material order (the engine hides and blends meshes by index)",
+      "Texture name suffixes _R, _S, _H, _N (they set render flags); no new ones",
+      "At most 1500 triangles per model; power-of-two textures up to 1024 px, .jpg opaque, 32-bit .tga for alpha",
+      "Armour and wings: the skeleton (bone count, order, names, parents) and every action with its key count",
+      "Size in the inventory (Width x Height of the item table) and a footprint that fits it",
+      "Redesign: origin, grip, size in the inventory slot and mesh order"
+    ],
+    "render": {
+      "0-1": {
+        "models": [
+          {
+            "role": "item",
+            "bmd": "src/bin/Data/Item/Sword02.bmd",
+            "meshes": [
+              {
+                "mesh": 0,
+                "texture": "sword03.jpg",
+                "worn": "opaque",
+                "dropped": "opaque",
+                "inventory": "opaque"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          "+level look: +3..+6 tinted light, +7 and up extra chrome/metal passes over the whole model",
+          "Excellent: a second additive pass of the own texture in a pulsing purple/blue light (bright texels glow, black stays black)",
+          "A swing trail (weapon blur) follows the blade during attacks; its texture comes from the attack, not from the item"
+        ]
+      }
+    }
+  },
+  "evidence": {
+    "captures": [
+      {
+        "file": "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-exactly/captures/01-front.jpg",
+        "variant": "current",
+        "view": "turntable",
+        "angle": 0.0,
+        "item_level": 0,
+        "excellent": false,
+        "ancient": false,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "client_commit": "616cdf2a"
+      },
+      {
+        "file": "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-exactly/captures/02-side.jpg",
+        "variant": "current",
+        "view": "turntable",
+        "angle": 90.0,
+        "item_level": 0,
+        "excellent": false,
+        "ancient": false,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "client_commit": "616cdf2a"
+      },
+      {
+        "file": "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-exactly/captures/03-back.jpg",
+        "variant": "current",
+        "view": "turntable",
+        "angle": 180.0,
+        "item_level": 0,
+        "excellent": false,
+        "ancient": false,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "client_commit": "616cdf2a"
+      },
+      {
+        "file": "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-exactly/captures/04-three-quarter.jpg",
+        "variant": "current",
+        "view": "turntable",
+        "angle": 45.0,
+        "item_level": 0,
+        "excellent": false,
+        "ancient": false,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "client_commit": "616cdf2a"
+      },
+      {
+        "file": "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-exactly/captures/05-inventory.jpg",
+        "variant": "current",
+        "view": "inventory",
+        "item_level": 0,
+        "excellent": false,
+        "ancient": false,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "client_commit": "616cdf2a"
+      },
+      {
+        "file": "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-exactly/captures/06-equipped.jpg",
+        "variant": "current",
+        "view": "equipped-front",
+        "item_level": 0,
+        "excellent": false,
+        "ancient": false,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "client_commit": "616cdf2a"
+      },
+      {
+        "file": "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-exactly/captures/07-glow-0-exc.jpg",
+        "variant": "current",
+        "view": "glow",
+        "item_level": 0,
+        "excellent": true,
+        "ancient": false,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "client_commit": "616cdf2a"
+      },
+      {
+        "file": "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-exactly/captures/08-glow-9-exc.jpg",
+        "variant": "current",
+        "view": "glow",
+        "item_level": 9,
+        "excellent": true,
+        "ancient": false,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "client_commit": "616cdf2a"
+      },
+      {
+        "file": "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-exactly/captures/09-glow-13-exc.jpg",
+        "variant": "current",
+        "view": "glow",
+        "item_level": 13,
+        "excellent": true,
+        "ancient": false,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "client_commit": "616cdf2a"
+      }
+    ],
+    "offline_previews": []
+  },
+  "handoff": {
+    "repo": "vaskodagamo/MuMain",
+    "branch": "codex/item-req-0-1-rebuild-short-sword-exactly",
+    "worktree": "../MuMain-item-req-0-1-rebuild-short-sword-exactly",
+    "deliver_to": "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-exactly/delivery/",
+    "push_allowed": false,
+    "claimed_by": null,
+    "claimed_at": null,
+    "start_commit": null
+  },
+  "result": null,
+  "decision": null
+}
