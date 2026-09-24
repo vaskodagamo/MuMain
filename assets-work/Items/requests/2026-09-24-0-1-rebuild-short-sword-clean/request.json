@@ -3,7 +3,7 @@
   "id": "2026-09-24-0-1-rebuild-short-sword-clean",
   "created": "2026-09-24T17:40:14+02:00",
   "author": "owner (item editor)",
-  "status": "claimed",
+  "status": "delivered",
   "status_history": [
     {
       "status": "open",
@@ -13,6 +13,11 @@
     {
       "status": "claimed",
       "at": "2026-09-24T17:47:00+02:00",
+      "by": "item-req-0-1-rebuild-short-sword-clean"
+    },
+    {
+      "status": "delivered",
+      "at": "2026-09-24T17:56:51+02:00",
       "by": "item-req-0-1-rebuild-short-sword-clean"
     }
   ],
@@ -272,6 +277,33 @@
     "claimed_at": "2026-09-24T17:47:00+02:00",
     "start_commit": "f42a3e513882d81acc15e462ac96dd59333e24dc"
   },
-  "result": null,
+  "result": {
+    "delivered_at": "2026-09-24T17:56:51+02:00",
+    "source_commits": [
+      "8d09d2ed0f0d7ddf89e1bc9cdd5bec7c4f63ba01"
+    ],
+    "installed_files": {
+      "src/bin/Data/Item/Sword02.bmd": "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-clean/delivery/0-1/exports/Sword02.bmd",
+      "src/bin/Data/Item/sword03.OZJ": "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-clean/delivery/0-1/exports/sword03.OZJ"
+    },
+    "validation": [
+      "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-clean/delivery/0-1/validation/summary.json"
+    ],
+    "review_images": [
+      "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-clean/delivery/0-1/review/after.png",
+      "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-clean/delivery/0-1/review/back.png",
+      "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-clean/delivery/0-1/review/before.png",
+      "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-clean/delivery/0-1/review/front.png",
+      "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-clean/delivery/0-1/review/hand-fit-schematic.png",
+      "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-clean/delivery/0-1/review/inventory-1x3-40x120.png",
+      "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-clean/delivery/0-1/review/inventory.png",
+      "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-clean/delivery/0-1/review/original-overlay.png",
+      "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-clean/delivery/0-1/review/wireframe.png"
+    ],
+    "notes": [
+      "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-clean/delivery/0-1/notes.md"
+    ],
+    "pr_url": null
+  },
   "decision": null
 }
