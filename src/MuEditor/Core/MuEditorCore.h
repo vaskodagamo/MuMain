@@ -70,6 +70,7 @@ private:
     ~CMuEditorCore();
 
     void ApplyUIScale();
+    void RememberConsoleChoice();
     // The studio's remembered window state and first UI scale (once the offline studio is up).
     void UpdateStudioPreferences();
     // Editor UI has the mouse this frame (see WantsOsCursor()); inside the ImGui frame.

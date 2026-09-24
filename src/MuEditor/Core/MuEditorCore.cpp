@@ -191,6 +191,15 @@ void CMuEditorCore::UpdateStudioPreferences()
         SetUIScale(Editor::StudioWindow::DefaultUIScale(m_pWindow));
 }
 
+// The toolbar's Console box is kept for the next start.
+void CMuEditorCore::RememberConsoleChoice()
+{
+    if (m_bShowConsole == g_MuEditorConfig.GetShowConsole())
+        return;
+    g_MuEditorConfig.SetShowConsole(m_bShowConsole);
+    g_MuEditorConfig.Save();
+}
+
 void CMuEditorCore::ApplyUIScale()
 {
     // ScaleAllSizes multiplies, so rebuild the style from scratch each time
@@ -461,6 +470,7 @@ void CMuEditorCore::Initialize(SDL_Window* window)
     g_MuEditorConsoleUI.LogEditor(std::string("Active locale: ") + I18N::GetCurrentLocale());
     if (g_MuEditorConfig.GetUIScale() > 0.0f)
         SetUIScale(g_MuEditorConfig.GetUIScale()); // the toolbar's last choice
+    m_bShowConsole = g_MuEditorConfig.GetShowConsole();
 
     fwprintf(stderr, L"[MuEditor] Initialize() completed\n");
     fflush(stderr);
@@ -688,6 +698,7 @@ void CMuEditorCore::Render()
 
     // Render toolbar (handles both open and closed states)
     g_MuEditorUI.RenderToolbar(m_bEditorMode, m_bShowItemEditor, m_bShowSkillEditor, m_bShowDevEditor, m_bShowMapEditor, m_bShowConsole);
+    RememberConsoleChoice();
 
     RenderEditorWindows();
 

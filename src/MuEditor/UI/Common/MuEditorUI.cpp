@@ -198,10 +198,9 @@ void CMuEditorUI::RenderToolbarFull(bool& editorEnabled, bool& showItemEditor, b
 
         // Console toggle
         ImGui::SameLine();
-        if (ImGui::Checkbox("Console", &showConsole))
-        {
-            // Toggle is handled by reference
-        }
+        ImGui::Checkbox("Console", &showConsole);
+        if (ImGui::IsItemHovered())
+            ImGui::SetTooltip("Editor and game consoles at the bottom (remembered for the next start)");
 
         // Language selector
         ImGui::SameLine();
