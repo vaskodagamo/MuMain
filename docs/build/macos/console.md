@@ -160,6 +160,16 @@ network library failing on Brotli. Make sure `/opt/homebrew/bin` precedes
 `/usr/local/bin` on `PATH`, install `pkgconf` from the arm64 Homebrew, and
 verify with `file -L` which library CMake picked (`CMakeCache.txt`).
 
+### `ImportError: ... pyexpat ... Symbol not found: _XML_SetAllocTrackerActivationThreshold`
+
+The `gen_wire_sizes.py` build step fails when an outdated Homebrew Python's
+`pyexpat` does not match the system `libexpat`. Upgrade it
+(`brew upgrade python@3.14`) or configure with the system Python:
+
+```bash
+cmake --preset macos-arm64 -DPython3_EXECUTABLE=/usr/bin/python3
+```
+
 ### Network library not built
 
 If configure prints `.NET SDK not found`, `dotnet` is not on the `PATH` of the
