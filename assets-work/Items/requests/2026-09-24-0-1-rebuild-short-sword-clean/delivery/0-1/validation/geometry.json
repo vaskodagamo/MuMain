@@ -1,0 +1,18 @@
+{
+  "triangles": 380,
+  "non_manifold_edges": 0,
+  "bake_margin_px": 32,
+  "bake_margin_type": "EXTEND",
+  "texture_size": 1024,
+  "source_reference": "/Users/lukasmac/Documents/claude-test-mumain/item-sources/0-1/0-1-short-sword.glb",
+  "method": "Closed shape retopology, no decimation",
+  "grip_original_y": [
+    -6.0052,
+    12.9662
+  ],
+  "grip_new_y": [
+    -6.012499999999998,
+    10.497500000000002
+  ],
+  "origin_inside_grip": true
+}
