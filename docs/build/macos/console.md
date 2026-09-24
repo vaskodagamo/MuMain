@@ -112,6 +112,22 @@ The same build produces `out/build/macos-arm64/tools/bmdconv/Release/bmdconv`, t
 converter described in [the asset pipeline](../../asset-pipeline.md). Python and Blender
 scripts live in `tools/`.
 
+### Item Editor concept renders
+
+**Render missing references** in the Item Editor renders items with Blender and the
+[Blender Source Tools](https://github.com/Artfunkel/BlenderSourceTools) add-on, which imports
+the game's models. The tool uses the first Blender it finds:
+
+1. `--blender` or `MU_BLENDER`;
+2. `/Applications/Blender.app`;
+3. the art agents' `astra-tools/Blender.app` next to the checkout (`../astra-tools`), with the
+   add-on in `../astra-tools/blender-user/scripts`, which the tool passes to Blender as
+   `BLENDER_USER_SCRIPTS` unless you set it.
+
+Where `astra-tools` exists nothing needs setting up. Otherwise install Blender into
+`/Applications` and install and enable Blender Source Tools in it (Edit > Preferences >
+Add-ons > Install from Disk).
+
 ## Tests
 
 ```bash
@@ -159,6 +175,16 @@ errors about files "built for macOS-x86_64", or the .NET Native AOT link of the
 network library failing on Brotli. Make sure `/opt/homebrew/bin` precedes
 `/usr/local/bin` on `PATH`, install `pkgconf` from the arm64 Homebrew, and
 verify with `file -L` which library CMake picked (`CMakeCache.txt`).
+
+### `ImportError: ... pyexpat ... Symbol not found: _XML_SetAllocTrackerActivationThreshold`
+
+The `gen_wire_sizes.py` build step fails when an outdated Homebrew Python's
+`pyexpat` does not match the system `libexpat`. Upgrade it
+(`brew upgrade python@3.14`) or configure with the system Python:
+
+```bash
+cmake --preset macos-arm64 -DPython3_EXECUTABLE=/usr/bin/python3
+```
 
 ### Network library not built
 

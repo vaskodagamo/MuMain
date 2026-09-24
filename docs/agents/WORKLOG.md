@@ -1341,3 +1341,66 @@ maps (`MapName.txt`). Map 82 would profit from an art pass (focal points in the 
 softer river edges). New maps made with `models_from` still name models by file, not by the source
 catalog. The acceptance deliverables are saved, not committed.
 
+
+## 2026-09-22 - Second Mac (`lukasmac`): build and local OpenMU (Claude Opus 5.5)
+**Goal:** Set up a fresh Apple Silicon Mac (macOS 26.1) to build the client and run OpenMU.
+
+**Done:**
+- Homebrew: cmake 4.4.3, ninja, pkgconf. .NET 10.0.301 was already in `~/.dotnet`; added
+  the PATH block to `~/.zshrc`. Initialized the SDL and imgui submodules.
+- Configured `macos-arm64` with two machine workarounds: the stale libc++ folder is present
+  here too (used the `-nostdinc++` flag from the macOS guide), and Homebrew `python@3.14`
+  3.14.5 has a broken `pyexpat` (`gen_wire_sizes.py` fails), so
+  `-DPython3_EXECUTABLE=/usr/bin/python3` is set in the cache.
+- OpenMU cloned to `../OpenMU`; `deploy/all-in-one/docker-compose.mumain-local.yml` is
+  standalone, localhost-only, admin panel `127.0.0.1:8090`, `RESOLVE_IP=127.0.0.1`. It uses
+  project `mumain-openmu` and containers `mumain-openmu` / `mumain-openmu-db` (logs:
+  `docker logs mumain-openmu`) because an older `all-in-one` stack from
+  `~/Documents/new-mu` already owns the default container names. Port 80 is Herd's; no nginx.
+- The runtime `config.ini` in the app bundle is set to `127.0.0.1:44406` (the template
+  seeds 44405, which is the original client's port).
+
+**Verified:** Release build OK; `ctest` 213/213 pass. OpenMU initialized its database (test
+accounts `test0`..`test9`, `testgm`, ...), game servers advertise `127.0.0.1:5590x`. Client
+started under Metal, connected on 44406, received the server list and a game-server connect
+response (`MuError.log`).
+
+**Open / next:** The disk ran full mid-build once (228 GB volume, little free space);
+Docker Desktop crashed and had to be force-quit. Keep >10 GB free.
+
+## 2026-09-23 - Pull latest MuMain changes (Codex)
+
+**Goal:** Update the local main checkout from origin.
+
+**Done:** Fast-forwarded main from `7b808473` to `60dc4463` and restored both
+local documentation edits, retaining both sets of appended worklog entries.
+
+**Verified:** HEAD matches origin/main; local documentation edits are preserved.
+
+**Open / next:** No build or tests run for this repository sync.
+
+## 2026-09-24 - Item Editor on the Mac: item window, zoom, console, concept renders (Claude Opus 5.5)
+**Goal:** First owner session with the Item Editor on the second Mac; fix what got in the way.
+
+**Done:**
+- Browse opens the selected item in its own resizable window instead of the narrow right
+  panel (Side by side doubles its width). The preview picture takes the mouse wheel (the
+  panel around it scrolled instead of zooming out) and has - / + zoom buttons.
+- The toolbar's Console box (editor and game consoles) is kept in `MuEditor.ini` (`ShowConsole`).
+- `concept_refs.find_blender` also finds `../astra-tools/Blender.app` and passes
+  `../astra-tools/blender-user/scripts` as `BLENDER_USER_SCRIPTS`, so reference renders work
+  where the art agents' Blender lives, without `/Applications` or a Source Tools install.
+- Built the `macos-arm64-mueditor` preset (same `-nostdinc++` / system Python workarounds).
+
+**Verified:** Editor build OK; ctest `preview|browse|item` 56/56; concept tool unittests OK.
+Reference renders 0-1 and 0-2 ran through the new lookup with the manual links removed. A real
+concept run (3 Short Sword variants) succeeded. Window, zoom and console change not yet
+screen-checked by the owner.
+
+**Open / next:**
+- `security add-generic-password ... -w` without a value cut the pasted OpenAI key to 128
+  characters (OpenAI rejected it with a 401). The concepts README should recommend
+  `-w "$(pbpaste)"`.
+- Opening `MU Item Editor.app` with `open` did not start the client here; running the script
+  inside it did. Not investigated.
+- The disk was nearly full again (about 1-2 GB free); 16 `MuMain-*` agent worktrees of about 3.3 GB each.

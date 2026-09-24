@@ -40,7 +40,7 @@ The quick start is for the Mac; everything after it is reference. The Map Editor
    4. **Ask Codex with it...** opens the request dialog with the picked concept attached.
 5. **Browse:** pick a class (**DW DK Elf MG DL SUM RF**) and its stage (for example *Dark Knight*,
    *Blade Knight*, *Blade Master*) to see only what that character can equip, a family (swords,
-   helms, wings-2, ...), and click an item: its 3D preview and facts appear on the right. See
+   helms, wings-2, ...), and click an item: its 3D preview and facts open in the item's own window. See
    [Browse](#browse) and [Preview](#preview).
 6. **Edit stats:** the **Stats table** tab is the table of every field; an item picked in Browse is
    selected and scrolled to there, and the other way round. See [Stats table](#stats-table).
@@ -51,8 +51,9 @@ The quick start is for the Mac; everything after it is reference. The Map Editor
    installed, your checkout, the originals and new versions (a Codex delivery, the style pilot's A and
    B), and **Side by side** shows two versions next to each other. See [A/B compare](#ab-compare).
 9. **Screen:** **Full screen** on the toolbar (or **Cmd+Ctrl+F**; **F11** on Windows and Linux) fills
-   the display, **Window** goes back. **- 125% +** sets the size of all editor text and buttons. Both
-   are remembered for the next start (`MuEditor/MuEditor.ini`); the first start on a display at least
+   the display, **Window** goes back. **- 125% +** sets the size of all editor text and buttons. Untick
+   **Console** to hide the editor and game consoles at the bottom and give the Item Editor their room.
+   All three are remembered for the next start (`MuEditor/MuEditor.ini`); the first start on a display at least
    1440 points high (a 1440p or 5K screen) uses 125%, else 100%.
 
 The other editors stay on the toolbar. Opening the **Map Editor** from the studio shows the map
@@ -96,7 +97,7 @@ tier and name, the concepts in the tile's corner and a check box on selected or 
 Linux) or its check box adds or removes one; **Shift-click** selects the range from the item clicked
 before. The bar above the list shows how many are selected, a chip per item (click it to take the
 item out), **Select all shown** (the items the filters show), **Clear**, and **Generate concepts
-(N)...**. The details panel on the right shows the item clicked last; it stays there after **Clear**.
+(N)...**. The item window shows the item clicked last; it stays there after **Clear**.
 Items the filters hide stay selected. The sort choice and **Ascending/Descending** are
 above it:
 
@@ -111,7 +112,8 @@ one family the tier order is the catalog's family order, so for example the Dark
 Short Sword, Kris, Rapier ... Knight Blade, Bone Blade, then the Divine Sword (a quest reward that
 never drops).
 
-**Right - the selected item:** name, key, the live 3D preview (see [Preview](#preview)), the
+**The item window:** a click on an item opens it (drag it anywhere, resize it by its corner, close it
+with its x; the next click opens it again, with the same place and size). It holds: name, key, the live 3D preview (see [Preview](#preview)), the
 [A/B compare](#ab-compare), your verdict
 (**Looks good** / **Needs work**), the item's open requests and **Ask Codex...** (see
 [Ask Codex](#ask-codex)), its **Concepts** (see [Concepts](#concepts)), classes, required and drop
@@ -164,17 +166,17 @@ Browse filters by class and stage only. Browse and the game share this rule
 ## Preview
 
 The item as the game draws it - the engine's own item and character code, not a picture of the model
-- in the details panel, with four views:
+- in the item window, with four views:
 
 | View | What you see | Mouse |
 |------|--------------|-------|
-| **Turntable** | The item alone, lit like a dropped item; long items (swords, staffs, spears, bows) stand upright on their grip. | Drag to turn, wheel to zoom. |
+| **Turntable** | The item alone, lit like a dropped item; long items (swords, staffs, spears, bows) stand upright on their grip. | Drag to turn, wheel or **- +** to zoom. |
 | **Inventory** | Exactly what the inventory shows: the game's own placement, angle and size for that item in a slot of its size (the lines are the slot's cells). | Point at it: it turns, as in the game. |
-| **Ground** | The item dropped on the map's ground (Lorencia's town square in the studio), as a player finds it. | Drag, wheel. |
-| **Equipped** | Worn by a character: see below. | Drag, wheel. |
+| **Ground** | The item dropped on the map's ground (Lorencia's town square in the studio), as a player finds it. | Drag, wheel, **- +**. |
+| **Equipped** | Worn by a character: see below. | Drag, wheel, **- +**. |
 
 Under the picture: **Front / Side / Back** put the camera there (front is the item's broad face: the
-flat of a blade or a shield's face, the front of armour and wings), **Reset** frames the item again,
+flat of a blade or a shield's face, the front of armour and wings), **Reset** frames the item again, **-** and **+** zoom out and in,
 **Turn** turns the view slowly by itself (on at start; any of the buttons stops it).
 
 **+level, Excellent, Ancient:** the slider sets +0..+15; the game's effects follow it (+3/+5 tints,
@@ -267,7 +269,7 @@ Talisman of Guardian, Rare Item Ticket, Elite SD Potion).
 
 Tick **Side by side** and choose the right picture's version (**right:** as built, current, original or
 a candidate). Both pictures use the same view, +level, options and camera: dragging or zooming either
-picture, and **Front / Side / Back**, turn both. The details panel gets twice as wide. The left picture is the
+picture, and **Front / Side / Back**, turn both. The item window gets twice as wide (and half again when you untick it). The left picture is the
 client's version (its label starts with *client:*), so to compare two candidates, show one in the
 client (e.g. **pilot A**) and pick the other on the right (**right: pilot B**). A candidate the client
 cannot load leaves the right picture empty with the reason.
@@ -344,7 +346,8 @@ The dialog runs `concepts.py plan` (a dry run: nothing is sent, nothing is paid)
 changes and shows per item whether its reference render exists and what it costs, then the total split
 into text prompt, reference image and output images, the caps (at most 30 images and $5 per run), the
 API key status, and why the tool would refuse. Items without a reference render: **Render missing
-references (N)** renders them offline with Blender (free), then the estimate updates. **Generate for $X**
+references (N)** renders them offline with Blender (free; setup in
+[the macOS build guide](../../../../docs/build/macos/console.md#item-editor-concept-renders)), then the estimate updates. **Generate for $X**
 is enabled only when the tool would run; it starts the run in the background and closes the dialog.
 
 ### Concepts job

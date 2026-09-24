@@ -36,6 +36,10 @@ public:
     bool GetStudioFullscreen() const { return m_studioFullscreen; }
     void SetStudioFullscreen(bool fullscreen) { m_studioFullscreen = fullscreen; }
 
+    // Whether the editor and game consoles at the bottom are shown (the toolbar's Console box).
+    bool GetShowConsole() const { return m_showConsole; }
+    void SetShowConsole(bool show) { m_showConsole = show; }
+
     // Skill Editor column visibility settings
     const std::map<std::string, bool>& GetSkillEditorColumnVisibility() const { return m_skillEditorColumnVisibility; }
     void SetSkillEditorColumnVisibility(const std::map<std::string, bool>& visibility) { m_skillEditorColumnVisibility = visibility; }
@@ -50,6 +54,7 @@ private:
     std::string m_language;
     float m_uiScale = 0.0f;
     bool m_studioFullscreen = false;
+    bool m_showConsole = true;
     std::map<std::string, bool> m_columnVisibility;  // Item Editor columns
     std::map<std::string, bool> m_skillEditorColumnVisibility;  // Skill Editor columns
 

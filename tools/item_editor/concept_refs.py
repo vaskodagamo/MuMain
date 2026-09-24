@@ -28,6 +28,12 @@ STUDY_PREPARE = Path('assets-work') / 'Items' / 'study' / 'prepare_previews.py'
 RENDER_SCRIPT = HERE / 'render_concept_refs.py'
 DEFAULT_BLENDER = Path('/Applications/Blender.app/Contents/MacOS/Blender')
 BLENDER_ENV = 'MU_BLENDER'
+# The art agents' Blender and its add-ons (Blender Source Tools), next to the checkouts
+# (docs/build/macos/console.md, "Item Editor concept renders").
+ASTRA_TOOLS = 'astra-tools'
+ASTRA_BLENDER = Path('Blender.app') / 'Contents' / 'MacOS' / 'Blender'
+ASTRA_USER_SCRIPTS = Path('blender-user') / 'scripts'
+USER_SCRIPTS_ENV = 'BLENDER_USER_SCRIPTS'
 BMDCONV_ENV = 'MU_BMDCONV'
 BMDCONV_GLOB = 'out/build/*/tools/bmdconv/*/bmdconv'
 # The main checkout next to a worktree usually has the tools build (read-only use).
@@ -70,8 +76,14 @@ def find_bmdconv(explicit=None, root=ROOT):
     return find_tool(explicit, BMDCONV_ENV, candidates, 'bmdconv', '--bmdconv')
 
 
-def find_blender(explicit=None):
-    return find_tool(explicit, BLENDER_ENV, [str(DEFAULT_BLENDER)], 'Blender', '--blender')
+def find_blender(explicit=None, root=ROOT):
+    astra = root.parent / ASTRA_TOOLS
+    blender = find_tool(explicit, BLENDER_ENV, [str(DEFAULT_BLENDER), str(astra / ASTRA_BLENDER)], 'Blender',
+                        '--blender')
+    # Blender runs as a child process and inherits this: the imports need Source Tools.
+    if (astra / ASTRA_USER_SCRIPTS).is_dir():
+        os.environ.setdefault(USER_SCRIPTS_ENV, str(astra / ASTRA_USER_SCRIPTS))
+    return blender
 
 
 def ref_path(refs_dir, key):

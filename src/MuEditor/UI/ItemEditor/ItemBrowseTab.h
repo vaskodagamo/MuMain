@@ -8,6 +8,8 @@
 #include "Assets/ItemCatalog.h"
 #include "Editing/ItemSelection.h"
 
+#include "imgui.h"
+
 #include <cstdint>
 #include <map>
 #include <string>
@@ -16,9 +18,9 @@
 // The Item Editor's Browse tab: every item as a list or a thumbnail grid,
 // filtered by class and stage (the engine's equip rule), family, tier, status
 // and name, sorted basic -> rare or by another key, with the selected item's
-// facts on the right. Several items can be selected (Cmd/Ctrl-click, Shift-click,
-// the check boxes) for "Generate concepts (N)..."; the primary one, shown on the
-// right, is shared with the Stats table tab.
+// facts in a window of its own. Several items can be selected (Cmd/Ctrl-click, Shift-click,
+// the check boxes) for "Generate concepts (N)..."; the primary one, shown in that
+// window, is shared with the Stats table tab.
 class CItemBrowseTab
 {
 public:
@@ -40,7 +42,6 @@ private:
     std::string CatalogNote() const;
     const Editor::Items::BrowseRow* RowOfType(int type) const;
 
-    float DetailsWidth(float filterWidth) const;
     void RenderFilterPanel();
     void RenderClassFilter();
     void RenderStageChoice();
@@ -51,6 +52,8 @@ private:
     void RenderListRow(const Editor::Items::BrowseRow& row, int& selectedType, float thumbSize);
     void RenderGrid(int& selectedType);
     void RenderGridTile(const Editor::Items::BrowseRow& row, int& selectedType, float tileSize);
+    void RenderDetailsWindow(int selectedType);
+    void FitDetailsToSideBySide();
     void RenderDetailsPanel(int selectedType);
     void RenderConceptBadge(const Editor::Items::BrowseRow& row) const;
     // A click on an item's row or tile, with the keyboard's Cmd/Ctrl and Shift.
@@ -82,6 +85,9 @@ private:
     Editor::Editing::ItemSelection m_selection;
     int m_lastSelected = -1;
     bool m_scrollToSelected = false;
+    bool m_detailsOpen = false;
+    bool m_detailsSideBySide = false;
+    ImVec2 m_detailsSize{0.0f, 0.0f}; // last frame's, for the side-by-side resize
 };
 
 #endif // _EDITOR

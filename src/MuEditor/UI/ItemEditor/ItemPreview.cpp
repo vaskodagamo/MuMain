@@ -34,6 +34,7 @@ constexpr int HIGHEST_RENDER_LEVEL = 4;
 constexpr int FRAMES_BEFORE_RELEASE = 3;
 
 constexpr float BUTTON_PITCH = 10.0f;
+constexpr float ZOOM_BUTTON_STEPS = 2.0f; // wheel notches per click of - or +
 
 constexpr ImU32 PICTURE_BORDER = IM_COL32(110, 110, 120, 255);
 constexpr ImU32 LABEL_BACKGROUND = IM_COL32(0, 0, 0, 170);
@@ -177,6 +178,8 @@ void CItemPreview::RenderPicture(float side, std::uint32_t texture, int textureS
     }
 
     ImGui::InvisibleButton(id, ImVec2(side, side));
+    // The wheel zooms the picture; without this the window around it scrolls instead.
+    ImGui::SetItemKeyOwner(ImGuiKey_MouseWheelY);
     input.hovered = input.hovered || ImGui::IsItemHovered();
     input.dragging = input.dragging || (ImGui::IsItemActive() && ImGui::IsMouseDragging(ImGuiMouseButton_Left, 0.0f));
 }
@@ -242,8 +245,14 @@ void CItemPreview::RenderCameraButtons()
     if (ImGui::SmallButton("Reset"))
         m_hasPrepared = false; // the next draw frames the subject again
     ImGui::SameLine();
+    if (ImGui::SmallButton(" - "))
+        m_orbit = Preview::Zoomed(m_orbit, -ZOOM_BUTTON_STEPS);
+    ImGui::SameLine();
+    if (ImGui::SmallButton(" + "))
+        m_orbit = Preview::Zoomed(m_orbit, ZOOM_BUTTON_STEPS);
+    ImGui::SameLine();
     ImGui::Checkbox("Turn", &m_autoTurn);
-    ImGui::TextColored(NOTE_COLOR, "Drag to turn, wheel to zoom.");
+    ImGui::TextColored(NOTE_COLOR, "Drag to turn, wheel or - + to zoom.");
 }
 
 void CItemPreview::RenderLookControls(const Editor::Items::BrowseRow& row)

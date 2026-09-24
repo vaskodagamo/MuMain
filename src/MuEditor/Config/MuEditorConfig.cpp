@@ -75,6 +75,10 @@ void CMuEditorConfig::Load()
                 {
                     m_studioFullscreen = (value == "1" || value == "true");
                 }
+                else if (key == "ShowConsole")
+                {
+                    m_showConsole = (value == "1" || value == "true");
+                }
             }
             else if (currentSection == "ColumnVisibility")
             {
@@ -108,7 +112,8 @@ void CMuEditorConfig::Save()
     file << "Language=" << m_language << "\n";
     if (m_uiScale > 0.0f)
         file << "UIScale=" << m_uiScale << "\n";
-    file << "StudioFullscreen=" << (m_studioFullscreen ? "1" : "0") << "\n\n";
+    file << "StudioFullscreen=" << (m_studioFullscreen ? "1" : "0") << "\n";
+    file << "ShowConsole=" << (m_showConsole ? "1" : "0") << "\n\n";
 
     // Write [ColumnVisibility] section
     file << "[ColumnVisibility]\n";

@@ -29,11 +29,12 @@ using Editor::Items::SortKey;
 
 // Layout, in pixels at 100% editor UI scale.
 constexpr float FILTER_PANEL_WIDTH = 235.0f;
-constexpr float DETAILS_PANEL_WIDTH = 460.0f; // room for the 3D preview
-// Two previews side by side (A/B compare), each as big as the single one; the item
-// list keeps at least MIN_LIST_WIDTH.
-constexpr float SIDE_BY_SIDE_DETAILS_WIDTH = 2.0f * DETAILS_PANEL_WIDTH;
-constexpr float MIN_LIST_WIDTH = 360.0f;
+// The selected item's own window, sized for a big 3D preview; the user can resize it.
+constexpr float DETAILS_WINDOW_WIDTH = 640.0f;
+constexpr float DETAILS_WINDOW_HEIGHT = 900.0f;
+constexpr float SIDE_BY_SIDE_FACTOR = 2.0f; // A/B side by side: two previews, each as big as one
+constexpr const char* DETAILS_WINDOW_ID = "###ItemDetails"; // one window, whatever item it shows
+constexpr const char* NO_ITEM_NAME = "(no name)";
 constexpr float LIST_THUMB_SIZE = 40.0f;
 constexpr float GRID_TILE_SIZE = 112.0f;
 constexpr float CLASS_BUTTON_WIDTH = 46.0f;
@@ -228,6 +229,7 @@ void CItemBrowseTab::Click(int type, int& selectedType)
     m_selection.Click(type, {io.KeyCtrl, io.KeyShift}, m_shownTypes);
     selectedType = m_selection.Primary();
     m_lastSelected = selectedType;
+    m_detailsOpen = true;
 }
 
 void CItemBrowseTab::ToggleSelected(int type, int& selectedType)
@@ -253,19 +255,18 @@ void CItemBrowseTab::Render(int& selectedType)
         if (selectedType >= 0)
             m_selection.SelectOnly(selectedType);
         m_scrollToSelected = true;
+        m_detailsOpen = selectedType >= 0;
     }
     g_ObjectThumbnail.BeginFrame();
 
     const float filterWidth = Scaled(FILTER_PANEL_WIDTH);
-    const float detailsWidth = DetailsWidth(filterWidth);
     ImGui::BeginChild("BrowseFilters", ImVec2(filterWidth, 0.0f), ImGuiChildFlags_Borders);
     RenderFilterPanel();
     ImGui::EndChild();
     UpdateShown();
 
     ImGui::SameLine();
-    const float middleWidth = ImGui::GetContentRegionAvail().x - detailsWidth - ImGui::GetStyle().ItemSpacing.x;
-    ImGui::BeginChild("BrowseItems", ImVec2(middleWidth, 0.0f), ImGuiChildFlags_Borders);
+    ImGui::BeginChild("BrowseItems", ImVec2(0.0f, 0.0f), ImGuiChildFlags_Borders);
     RenderResultBar();
     Editor::ItemEditor::BrowseSelection::RenderBar(m_selection, m_rows, m_shownTypes, selectedType);
     m_lastSelected = selectedType;
@@ -275,19 +276,37 @@ void CItemBrowseTab::Render(int& selectedType)
         RenderList(selectedType);
     ImGui::EndChild();
 
-    ImGui::SameLine();
-    ImGui::BeginChild("BrowseDetails", ImVec2(0.0f, 0.0f), ImGuiChildFlags_Borders);
-    RenderDetailsPanel(selectedType);
-    ImGui::EndChild();
+    RenderDetailsWindow(selectedType);
     m_scrollToSelected = false;
 }
 
-float CItemBrowseTab::DetailsWidth(float filterWidth) const
+// The selected item in a window of its own: opens on a click, closes with its x.
+void CItemBrowseTab::RenderDetailsWindow(int selectedType)
 {
-    if (!g_ItemAbCompare.IsSideBySide())
-        return Scaled(DETAILS_PANEL_WIDTH);
-    const float room = ImGui::GetContentRegionAvail().x - filterWidth - Scaled(MIN_LIST_WIDTH);
-    return std::clamp(room, Scaled(DETAILS_PANEL_WIDTH), Scaled(SIDE_BY_SIDE_DETAILS_WIDTH));
+    if (!m_detailsOpen || selectedType < 0)
+        return;
+    FitDetailsToSideBySide();
+    ImGui::SetNextWindowSize(ImVec2(Scaled(DETAILS_WINDOW_WIDTH), Scaled(DETAILS_WINDOW_HEIGHT)), ImGuiCond_FirstUseEver);
+    const BrowseRow* row = RowOfType(selectedType);
+    const std::string name = row != nullptr && !row->name.empty() ? row->name : NO_ITEM_NAME;
+    const std::string title = "Item: " + name + DETAILS_WINDOW_ID;
+    if (ImGui::Begin(title.c_str(), &m_detailsOpen))
+        RenderDetailsPanel(selectedType);
+    m_detailsSize = ImGui::GetWindowSize();
+    ImGui::End();
+}
+
+// Side by side doubles the window's width, and turning it off halves it again.
+void CItemBrowseTab::FitDetailsToSideBySide()
+{
+    const bool sideBySide = g_ItemAbCompare.IsSideBySide();
+    if (sideBySide == m_detailsSideBySide)
+        return;
+    m_detailsSideBySide = sideBySide;
+    if (m_detailsSize.x <= 0.0f)
+        return;
+    const float factor = sideBySide ? SIDE_BY_SIDE_FACTOR : 1.0f / SIDE_BY_SIDE_FACTOR;
+    ImGui::SetNextWindowSize(ImVec2(m_detailsSize.x * factor, m_detailsSize.y));
 }
 
 void CItemBrowseTab::RenderFilterPanel()
