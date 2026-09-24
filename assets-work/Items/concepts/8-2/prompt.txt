@@ -1,0 +1,12 @@
+Game-ready concept art for one item of a fantasy MMORPG with low-poly models (at most 1500 triangles, one hand-painted diffuse texture): "Pad armour set", a armour set, tier 1 of 7 (Common / grounded).
+The attached image is the item's current in-game model. Redesign it as a better version of the same item: keep its silhouette, proportions, length-to-width ratio, grip or attachment point and orientation, so it still fits the same model origin, hand position and inventory slot.
+Style: hand-painted MU Online fantasy, large readable forms, one dominant silhouette cue, restrained highlights, no noisy micro-detail; the design must read clearly at inventory-icon size.
+Tier palette (Common / grounded): metal #858B8D, base #343B42, leather #594132, accent #8A795B.
+Materials: steel / iron / bronze: Single diffuse map; broad mid-tone planes, painted bevel highlights and contact shadows; separate edge, face and rivet values without PBR maps. leather / wood: Warm restrained browns, directional grain painted at readable scale, dark seam and grip transitions. cloth / feathers: Distinct broad folds or feather groups, clear value grouping, alpha only where the source material already needs it. gems / magic: Small high-saturation accent, bright center and painted rim/glow; keep the base silhouette readable without bloom.
+No text, letters, logos, watermarks, signatures, frames, hands, characters or scenery; show only the item.
+
+Armour set of five parts worn together (helm, armour, pants, gloves, boots), shown on the neutral body pose of the reference: the parts read as one set with shared trim, colours and motifs; keep the proportions and the body pose.
+
+View: a single orthographic three-quarter view matching the reference camera angle, the whole item in frame and centred, generous margin, soft even studio lighting, no cast shadow, on a transparent or plain neutral grey background.
+
+Variation: a faithful refresh that stays close to the reference's design ideas, but cleaner, more readable and better crafted; each image may explore different details within these rules.

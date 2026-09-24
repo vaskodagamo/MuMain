@@ -1,1 +1,7 @@
-{}
+{
+  "item-req-8-2-rebuild-pad-armor-rest": {
+    "request": "2026-09-24-8-2-rebuild-pad-armor-rest",
+    "branch": "codex/item-req-8-2-rebuild-pad-armor-rest",
+    "worktree": "../MuMain-item-req-8-2-rebuild-pad-armor-rest"
+  }
+}

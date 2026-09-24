@@ -1,0 +1,53 @@
+{
+ "actual_cost_request": 0.070881,
+ "background": "transparent",
+ "batch": "20260924-122318-8-2",
+ "created": "2026-09-24T10:23:35+00:00",
+ "estimated_cost_request": 0.071033,
+ "family": "armour-set",
+ "hint": "same",
+ "image": "concept.jpg",
+ "images": [
+  "ref.png"
+ ],
+ "images_in_request": 3,
+ "key": "8-2",
+ "keys": [
+  "7-2",
+  "8-2",
+  "9-2",
+  "10-2",
+  "11-2"
+ ],
+ "lineage": [],
+ "model": "gpt-image-2.5-flare",
+ "name": "Pad armour set",
+ "note": null,
+ "output_format": "png",
+ "parent": null,
+ "picked": "2026-09-24",
+ "picked_from": "20260924-122318-8-2/8-2/v3.png",
+ "quality": "medium",
+ "ref_size": 512,
+ "reference": "ref.png",
+ "reference_sha256": "d5b679981f2a6724da8fba1c1ec7deda3633a4328ea2d764c050a3c39c337a38",
+ "request": "r1",
+ "request_id": "req_7d5f3212a1244f99a56b0446123376c3",
+ "revised_prompt": null,
+ "size": "1024x1024",
+ "tier": 1,
+ "usage": {
+  "input_tokens": 4431,
+  "input_tokens_details": {
+   "image_tokens": 3072,
+   "text_tokens": 1359
+  },
+  "output_tokens": 1317,
+  "output_tokens_details": {
+   "image_tokens": 1317,
+   "text_tokens": 0
+  },
+  "total_tokens": 5748
+ },
+ "variant": "v3"
+}

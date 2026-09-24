@@ -1,0 +1,49 @@
+{
+ "actual_cost_request": 0.070656,
+ "background": "transparent",
+ "batch": "20260924-113059-0-1",
+ "created": "2026-09-24T09:34:22+00:00",
+ "estimated_cost_request": 0.070789,
+ "family": "swords",
+ "hint": "same",
+ "image": "concept.jpg",
+ "images": [
+  "ref.png"
+ ],
+ "images_in_request": 3,
+ "key": "0-1",
+ "keys": [
+  "0-1"
+ ],
+ "lineage": [],
+ "model": "gpt-image-2.5-flare",
+ "name": "Short Sword",
+ "note": null,
+ "output_format": "png",
+ "parent": null,
+ "picked": "2026-09-24",
+ "picked_from": "20260924-113059-0-1/0-1/v1.png",
+ "quality": "medium",
+ "ref_size": 512,
+ "reference": "ref.png",
+ "reference_sha256": "a1939ac67009f132328f42d9410cd633e884503e43a772b38ca67857d81f636e",
+ "request": "r1",
+ "request_id": "req_192a7f0c007a4bbba1f3aa4e891b79b8",
+ "revised_prompt": null,
+ "size": "1024x1024",
+ "tier": 1,
+ "usage": {
+  "input_tokens": 4386,
+  "input_tokens_details": {
+   "image_tokens": 3072,
+   "text_tokens": 1314
+  },
+  "output_tokens": 1317,
+  "output_tokens_details": {
+   "image_tokens": 1317,
+   "text_tokens": 0
+  },
+  "total_tokens": 5703
+ },
+ "variant": "v1"
+}
