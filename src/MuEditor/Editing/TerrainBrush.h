@@ -4,6 +4,9 @@
 
 #include "TerrainLayers.h" // CellRect
 
+#include <utility>
+#include <vector>
+
 namespace Editor::Editing
 {
 // A round brush on a grid of terrain cells, in cell units (one cell is one tile,
@@ -13,6 +16,21 @@ struct BrushCircle
     float centerX = 0.0f;
     float centerY = 0.0f;
     float radius = 1.0f;
+};
+
+// A brush of any shape (an edit script's rectangle, polygon or path): how strongly it
+// acts on each cell of a rectangle, 0 to 1, row by row. Cells outside the rectangle
+// get 0.
+struct WeightMask
+{
+    // Not an aggregate, so a braced circle ({x, y, radius}) still means a BrushCircle.
+    WeightMask() = default;
+    WeightMask(CellRect cells, std::vector<float> cellWeights) : rect(cells), weights(std::move(cellWeights)) {}
+
+    CellRect rect;
+    std::vector<float> weights; // rect.Width() * rect.Height() values
+
+    float At(int x, int y) const;
 };
 
 // Where a cell's value lives: heights, terrain light and the overlay texture's

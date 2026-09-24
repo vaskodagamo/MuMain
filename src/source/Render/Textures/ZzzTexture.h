@@ -4,7 +4,10 @@
 #include "Render/Sprites/GlobalBitmap.h"
 //extern CGlobalBitmap Bitmaps;
 
-bool OpenJpegBuffer(wchar_t* filename, float* BufferFloat);
+// Reads Data/<filename>.OZJ (a 24-byte prefix and a JPEG) into `BufferFloat`, which
+// holds width * height RGB floats. An image of another size is refused (logged) instead
+// of being written past the buffer.
+bool OpenJpegBuffer(wchar_t* filename, float* BufferFloat, int width, int height);
 // DXP-12: bottomUp defaults true to match every pre-existing caller's row order
 // (raw glReadPixels/legacy buffers are bottom-up); pass false for a buffer that's
 // already top-down, such as SDL GPU frame readback.

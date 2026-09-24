@@ -7,6 +7,7 @@
 #include "MapEditorFileUtil.h"
 
 #include "Assets/TerrainLightFile.h"
+#include "Core/LiveMap.h"
 #include "Render/Terrain/ZzzLodTerrain.h" // TerrainLight, CreateTerrainLight
 #include "UI/Console/MuEditorConsoleUI.h"
 
@@ -36,7 +37,7 @@ bool Fail(const std::string& reason, std::string& outReport)
 }
 } // namespace
 
-bool Save(int world, std::string& outReport)
+bool Save(int world, std::string& outReport, Editor::Files::SavedFile* outSaved)
 {
     static_assert(TERRAIN_SIZE == Editor::LightMap::LIGHT_MAP_SIZE, "the light map is one pixel per terrain corner");
     const std::filesystem::path file = Editor::Files::TerrainLightFile(world);
@@ -54,7 +55,11 @@ bool Save(int world, std::string& outReport)
         return Fail("could not read back " + target + ": " + error, outReport);
     CreateTerrainLight();
 
-    outReport = Editor::Files::DescribeSavedFiles({Editor::Files::MirrorSavedFile(file)});
+    const Editor::Files::SavedFile saved = Editor::Files::MirrorSavedFile(file);
+    outReport = Editor::Files::DescribeSavedFiles({saved});
+    if (outSaved != nullptr)
+        *outSaved = saved;
+    Editor::LiveMap::NoteSaved(Editor::MapInspect::SaveUnit::Light, world);
     return true;
 }
 } // namespace Editor::LightSave

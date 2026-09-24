@@ -5,6 +5,8 @@
 #include "MapAttributeSave.h"
 #include "MapEditorFileUtil.h"
 
+#include "Core/LiveMap.h"
+
 #include "Render/Terrain/ZzzLodTerrain.h"   // TerrainWall / MapFileEncrypt / TERRAIN_SIZE
 #include "Core/Globals/_crypt.h"            // BuxConvert
 #include "UI/Console/MuEditorConsoleUI.h"
@@ -124,7 +126,7 @@ BYTE StaticAttribute(WORD wall)
     return static_cast<BYTE>((wall & 0xFF) & ~TW_CHARACTER);
 }
 
-bool SaveClientAtt(int world, int mapNumber, std::string& outReport)
+bool SaveClientAtt(int world, int mapNumber, std::string& outReport, Editor::Files::SavedFile* outSaved)
 {
     auto plain = std::make_unique<BYTE[]>(PLAIN_BYTES);
     plain[0] = ATT_VERSION;
@@ -164,7 +166,11 @@ bool SaveClientAtt(int world, int mapNumber, std::string& outReport)
         return false;
     }
 
-    outReport = Editor::Files::DescribeSavedFiles({Editor::Files::MirrorSavedFile(fileName)});
+    const Editor::Files::SavedFile saved = Editor::Files::MirrorSavedFile(fileName);
+    outReport = Editor::Files::DescribeSavedFiles({saved});
+    if (outSaved != nullptr)
+        *outSaved = saved;
+    Editor::LiveMap::NoteSaved(Editor::MapInspect::SaveUnit::Attribute, world);
     return true;
 }
 

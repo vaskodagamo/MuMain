@@ -1,5 +1,5 @@
-// doctest unit tests for the local stream socket transport, on Windows and
-// Linux alike.
+// doctest unit tests for the local stream socket transport, on Windows, Linux
+// and macOS alike.
 //
 // The listener is exercised against a real socket file in a temporary
 // directory; the "client" is a plain blocking socket created by the test, so
@@ -88,6 +88,21 @@ std::filesystem::path MakeSocketDirectory()
     return directory;
 }
 
+// The tests write a chunk and only then let the connection read it, on the same
+// thread. macOS gives a local stream socket 8 KiB of send buffer, so a blocking
+// 16 KiB send would wait for a reader that never comes; Linux and Windows start with
+// far more. Room for a few chunks keeps the tests about the transport, not the kernel.
+void AllowChunkWithoutReader(SOCKET handle)
+{
+#ifdef __APPLE__
+    constexpr int SendBufferBytes = 256 * 1024;
+    const int size = SendBufferBytes;
+    REQUIRE(::setsockopt(handle, SOL_SOCKET, SO_SNDBUF, &size, sizeof(size)) == 0);
+#else
+    (void)handle;
+#endif
+}
+
 // Blocking client side, standing in for a test script.
 SOCKET ConnectTo(const std::string& path)
 {
@@ -111,6 +126,7 @@ SOCKET ConnectTo(const std::string& path)
         closesocket(handle);
         return INVALID_SOCKET;
     }
+    AllowChunkWithoutReader(handle);
     return handle;
 }
 

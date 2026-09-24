@@ -79,31 +79,66 @@ HistoryStep CMapEditHistory::Render(bool editInProgress)
     return HistoryStep::None;
 }
 
-bool CMapEditHistory::Step(bool undo)
+StepResult CMapEditHistory::Step(bool undo)
 {
     const std::string label = undo ? m_stack.UndoLabel() : m_stack.RedoLabel();
     const StepResult result = undo ? m_stack.Undo() : m_stack.Redo();
     if (result == StepResult::Nothing)
-        return false;
+        return result;
     if (result == StepResult::Failed)
     {
         m_failure = HISTORY_MISMATCH;
         g_MuEditorConsoleUI.LogEditor(std::string("[MapEditor] ") + HISTORY_MISMATCH);
-        return true;
+        return result;
     }
     m_failure.clear();
     g_MuEditorConsoleUI.LogEditor(std::string("[MapEditor] ") + (undo ? "Undo: " : "Redo: ") + label);
-    return true;
+    return result;
 }
 
 bool CMapEditHistory::Undo()
 {
-    return Step(true);
+    return Step(true) != StepResult::Nothing;
 }
 
 bool CMapEditHistory::Redo()
 {
+    return Step(false) != StepResult::Nothing;
+}
+
+StepResult CMapEditHistory::UndoStep()
+{
+    return Step(true);
+}
+
+StepResult CMapEditHistory::RedoStep()
+{
     return Step(false);
+}
+
+const std::string& CMapEditHistory::UndoLabel() const
+{
+    return m_stack.UndoLabel();
+}
+
+const std::string& CMapEditHistory::RedoLabel() const
+{
+    return m_stack.RedoLabel();
+}
+
+std::vector<std::string> CMapEditHistory::UndoLabels() const
+{
+    return m_stack.UndoLabels();
+}
+
+std::vector<std::string> CMapEditHistory::RedoLabels() const
+{
+    return m_stack.RedoLabels();
+}
+
+std::size_t CMapEditHistory::MemoryBytes() const
+{
+    return m_stack.MemoryBytes();
 }
 
 void CMapEditHistory::Forget()

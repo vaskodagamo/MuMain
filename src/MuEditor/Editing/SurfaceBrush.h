@@ -36,6 +36,12 @@ CellRect PaintOverlay(const OverlayLayer& layer, const BrushCircle& circle, std:
 // the weight; a corner that reaches 0 loses its overlay slot.
 CellRect EraseOverlay(const OverlayLayer& layer, const BrushCircle& circle, float rate);
 
+// The same two with a brush of any shape (edit scripts): each corner by its weight in
+// `mask`. Of the corners it does not reach, only the first corners of tiles it reaches
+// take the slot at opacity 0 (a round brush gives it to every empty corner of its square).
+CellRect PaintOverlay(const OverlayLayer& layer, const WeightMask& mask, std::uint8_t tile, float opacity, float rate);
+CellRect EraseOverlay(const OverlayLayer& layer, const WeightMask& mask, float rate);
+
 // Calls visit(x, y) for every cell inside `circle` (hard edge) on a width x height map.
 template <typename Visit>
 void ForEachCellInside(const BrushCircle& circle, int width, int height, CellAnchor anchor, Visit visit)

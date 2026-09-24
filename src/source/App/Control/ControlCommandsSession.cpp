@@ -669,10 +669,12 @@ std::string Quit(const Request& request, std::unique_ptr<Act>&)
 
     // The main loop leaves on the next frame and ShutdownRuntime unlinks
     // the socket, so the caller gets its answer before the client goes.
+    g_ErrorReport.Write(L"Quit requested: the control socket's quit command\r\n");
     Destroy = true;
 
     json result;
     result["quitting"] = true;
+    result["pid"] = static_cast<unsigned long>(GetCurrentProcessId());
     return EncodeResult(request.EncodedId(), result.dump());
 }
 } // namespace App::Control::Commands

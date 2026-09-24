@@ -150,6 +150,17 @@ if(ENABLE_EDITOR)
     "MuEditor/*.cpp"
   )
   list(APPEND MU_CLIENT_SOURCES ${MU_EDITOR_SOURCES})
+
+  # Edit scripts promise the same map for the same seed with every compiler
+  # (MuEditor/MapScript/ScriptRandom.h): a * b + c stays two roundings there, never
+  # one fused multiply-add, which clang and GCC would otherwise pick on some targets
+  # (arm64). MSVC's cl does not fuse under its default /fp:precise, and x64 code
+  # built without /arch:AVX2 has no fused instruction to pick.
+  if(NOT MSVC)
+    set(MU_EDITOR_SCRIPT_SOURCES ${MU_EDITOR_SOURCES})
+    list(FILTER MU_EDITOR_SCRIPT_SOURCES INCLUDE REGEX "[/\\]MuEditor[/\\]MapScript[/\\]")
+    set_source_files_properties(${MU_EDITOR_SCRIPT_SOURCES} PROPERTIES COMPILE_OPTIONS -ffp-contract=off)
+  endif()
 endif()
 
 # ImGui static library (required when editor is enabled)

@@ -1,5 +1,6 @@
 #include <doctest.h>
 
+#include "Assets/TerrainHeightFile.h"
 #include "Assets/TerrainLightFile.h"
 
 #include "turbojpeg.h"
@@ -135,4 +136,26 @@ TEST_CASE("A light map of the wrong size or no JPEG is refused [editor][light]")
     CHECK_FALSE(DecodeOzj(Bytes(OZJ_PREFIX_BYTES, 0), LIGHT_MAP_SIZE, loaded.data(), error));
     CHECK_FALSE(DecodeOzj(Bytes(OZJ_PREFIX_BYTES + 100, 0x42), LIGHT_MAP_SIZE, loaded.data(), error));
     CHECK(EncodeOzj(nullptr, LIGHT_MAP_SIZE).empty());
+}
+
+TEST_CASE("Lorencia's shipped height file reads as the loader reads it, and a short one is refused [editor][light]")
+{
+    const Bytes shipped = ReadFile(std::filesystem::path(MU_REPO_ROOT) / "src/bin/Data/World1/TerrainHeight.OZB");
+    REQUIRE(shipped.size() == Editor::HeightMap::OZB_BYTES);
+    constexpr float FACTOR = 1.5f;
+    std::vector<float> heights(256 * 256, -1.0f);
+    std::string error;
+    REQUIRE(Editor::HeightMap::DecodeOzb(shipped, FACTOR, heights.data(), error));
+    // Corner (x, y) is byte 4 + 1080 + y * 256 + x.
+    CHECK(heights[123 * 256 + 135] == shipped[4 + 1080 + 123 * 256 + 135] * FACTOR);
+    CHECK(heights[0] == shipped[4 + 1080] * FACTOR);
+    const auto highest = *std::max_element(heights.begin(), heights.end());
+    CHECK(highest <= 255.0f * FACTOR);
+    CHECK(highest > 0.0f);
+
+    const Bytes cut(shipped.begin(), shipped.end() - 1);
+    std::vector<float> untouched(256 * 256, -1.0f);
+    CHECK_FALSE(Editor::HeightMap::DecodeOzb(cut, FACTOR, untouched.data(), error));
+    CHECK(error.find("66619 bytes") != std::string::npos);
+    CHECK(untouched[0] == -1.0f);
 }

@@ -5101,8 +5101,8 @@ bool IsModelType(int type)
     return type >= 0 && type < MAX_MODELS;
 }
 
-// The objects SaveObjects writes: live ones the map file placed or the Map
-// Editor added, not the ones a map spawns at run time.
+} // namespace
+
 bool IsSavedWorldObject(const OBJECT* o)
 {
     if (!o->Live || o->Type < 0)
@@ -5111,6 +5111,9 @@ bool IsSavedWorldObject(const OBJECT* o)
         return true;
     return s_fileTypesAboveWorldRange.count(o->Type) != 0;
 }
+
+namespace
+{
 
 void CreateObjectsFromFile(const wchar_t* fileName, const std::vector<ObjectFile::Record>& records)
 {

@@ -34,6 +34,8 @@ public:
     void SnapToPosition(const vec3_t pos, float yaw, float pitch);
     // Looks at `target` with the given yaw/pitch from `distance` units away.
     void LookAt(const vec3_t target, float yaw, float pitch, float distance);
+    // Where the camera is and its yaw/pitch (pitch 0 = straight down, -90 = level).
+    void GetPose(vec3_t outPosition, float& outYaw, float& outPitch) const;
     // Positions the camera high above the map centre looking (almost) straight
     // down, framing the whole 256x256 terrain, with far/cull/fog pushed out - for
     // capturing a top-down minimap screenshot.

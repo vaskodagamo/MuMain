@@ -12,13 +12,11 @@
 #include "Core/EditorCamera.h"
 #include "Core/MuEditorCore.h"
 #include "Engine/Object/w_ObjectInfo.h" // class OBJECT
-#include "Render/Models/ZzzBMD.h"       // Models[]
 
 #include "imgui.h"
 
 #include <algorithm>
 #include <cstdio>
-#include <cstring>
 
 namespace
 {
@@ -47,19 +45,6 @@ constexpr float ANGLE_COLUMN_WIDTH = 90.0f;
 constexpr float SCALE_COLUMN_WIDTH = 45.0f;
 
 const ImVec4 HINT_COLOR(0.7f, 0.9f, 1.0f, 1.0f);
-
-// The model's own name from its file, or its number when that is blank.
-std::string ModelName(int type)
-{
-    const BMD& model = Models[type];
-    char narrow[sizeof(model.Name) + 1] = {};
-    std::memcpy(narrow, model.Name, sizeof(model.Name));
-    if (narrow[0] != '\0')
-        return narrow;
-    char text[32];
-    std::snprintf(text, sizeof(text), "(type %d)", type);
-    return text;
-}
 } // namespace
 
 CMapOutliner& CMapOutliner::GetInstance()
@@ -105,7 +90,8 @@ void CMapOutliner::RefreshNames(int world)
     for (std::size_t type = 0; type < m_typeNames.size(); ++type)
     {
         const std::string* catalogName = g_MapAssetReview.CatalogNameOf(world, static_cast<int>(type));
-        m_typeNames[type] = catalogName != nullptr ? *catalogName : ModelName(static_cast<int>(type));
+        m_typeNames[type] =
+            catalogName != nullptr ? *catalogName : Editor::ObjectPlace::ModelName(static_cast<int>(type));
     }
     m_appliedFilter.clear();
     m_nameMatches.clear(); // rebuilt for the new names

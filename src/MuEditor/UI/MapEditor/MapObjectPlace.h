@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "Core/Globals/_types.h"  // vec3_t
+#include "MapEditorFileUtil.h"      // SavedFile
 
 class OBJECT;
 
@@ -37,8 +38,9 @@ namespace Editor::ObjectPlace
     // Saves all live objects back to Data/World{world}/EncTerrain{world}.obj
     // (encrypted by the engine SaveObjects) and copies the file into the
     // repository. Returns false on write failure. `outReport` gets the
-    // status-line text with the absolute paths written.
-    bool Save(int world, std::string& outReport);
+    // status-line text with the absolute paths written; `outSaved`, when given,
+    // where the file went.
+    bool Save(int world, std::string& outReport, Editor::Files::SavedFile* outSaved = nullptr);
 
     // Returns the visible object under the mouse cursor (ray pick), or nullptr.
     OBJECT* PickUnderCursor();
@@ -71,6 +73,11 @@ namespace Editor::ObjectPlace
 
     // The height of the ground under (x, y), the height a placed object gets.
     float GroundHeightAt(float x, float y);
+
+    // Model `type`'s own name from its file, or "(type N)" when that is blank. A name that
+    // is not UTF-8 (the Korean names of many of the game's models) comes back with each
+    // byte outside ASCII as %XX (Editor::Text::ValidUtf8).
+    std::string ModelName(int type);
 }
 
 #endif // _EDITOR

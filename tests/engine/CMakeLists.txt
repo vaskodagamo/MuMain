@@ -32,6 +32,26 @@ mu_add_test(
         MuClient
 )
 
+# The terrain loaders' bounds: a mapping or height file cut short, a light map of the
+# wrong size and the corners of the map's last row of tiles. Byte and index code in the
+# client library; turbojpeg comes with it.
+mu_add_test(
+    NAME terrain_file_tests
+    SOURCES
+        test_terrain_files.cpp
+    LINK_LIBS
+        MuClient
+)
+
+# The names of new maps (82 and up) from Data/World{N}/MapName.txt.
+mu_add_test(
+    NAME map_name_file_tests
+    SOURCES
+        test_map_names.cpp
+    LINK_LIBS
+        MuClient
+)
+
 # The class part of IsRequireEquipItem (which classes and stages may equip an
 # item), shared with the editor's item browser.
 mu_add_test(

@@ -2,6 +2,8 @@
 
 #ifdef _EDITOR
 
+#include "MapEditorFileUtil.h" // SavedFile
+
 #include <string>
 
 // In-game map editor: save helpers that write the live terrain globals back to
@@ -19,8 +21,10 @@ namespace Editor::MapSave
     // repository (Editor::Files::MirrorSavedFile). Returns false if the file could
     // not be written. `mapNumber` is the map id byte stored in the header
     // (conventionally == worldNumber). `outReport` gets the status-line text with
-    // the absolute paths written, or why the save failed.
-    bool SaveMappingEncrypted(int worldNumber, int mapNumber, std::string& outReport);
+    // the absolute paths written, or why the save failed; `outSaved`, when given, where
+    // the file went.
+    bool SaveMappingEncrypted(int worldNumber, int mapNumber, std::string& outReport,
+                              Editor::Files::SavedFile* outSaved = nullptr);
 }
 
 #endif // _EDITOR

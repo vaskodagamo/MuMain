@@ -134,6 +134,10 @@ public:
     [[nodiscard]] bool GetDouble(std::string_view key, double& out) const;
     [[nodiscard]] bool GetBool(std::string_view key, bool& out) const;
     [[nodiscard]] bool GetStringMap(std::string_view key, std::map<std::string, std::string>& out) const;
+    // The field as JSON text when it is an array or an object, for commands with
+    // structured arguments (`tile: [x, y]`); they decode it in their own translation
+    // unit, so this header stays free of the parser.
+    [[nodiscard]] bool GetStructured(std::string_view key, std::string& encoded) const;
 
 private:
     bool m_empty = false;
@@ -143,6 +147,7 @@ private:
     std::string m_command;
     std::string m_encodedId;
     std::map<std::string, Value, std::less<>> m_fields;
+    std::map<std::string, std::string, std::less<>> m_structured;
 };
 
 // Every command the dispatcher serves. Parsing rejects anything else with

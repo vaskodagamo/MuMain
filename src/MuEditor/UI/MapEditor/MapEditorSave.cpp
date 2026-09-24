@@ -5,6 +5,8 @@
 #include "MapEditorSave.h"
 #include "MapEditorFileUtil.h"
 
+#include "Core/LiveMap.h"
+
 #include "Render/Terrain/ZzzLodTerrain.h"   // terrain arrays + MapFileEncrypt + TERRAIN_SIZE
 #include "UI/Console/MuEditorConsoleUI.h"
 
@@ -29,7 +31,7 @@ namespace
     constexpr BYTE MAP_VERSION = 0;
 }
 
-bool SaveMappingEncrypted(int worldNumber, int mapNumber, std::string& outReport)
+bool SaveMappingEncrypted(int worldNumber, int mapNumber, std::string& outReport, Editor::Files::SavedFile* outSaved)
 {
     // Build the decrypted byte image exactly as the loader expects to read it.
     auto plain = std::make_unique<BYTE[]>(PLAIN_BYTES);
@@ -69,7 +71,11 @@ bool SaveMappingEncrypted(int worldNumber, int mapNumber, std::string& outReport
         return false;
     }
 
-    outReport = Editor::Files::DescribeSavedFiles({Editor::Files::MirrorSavedFile(fileName)});
+    const Editor::Files::SavedFile saved = Editor::Files::MirrorSavedFile(fileName);
+    outReport = Editor::Files::DescribeSavedFiles({saved});
+    if (outSaved != nullptr)
+        *outSaved = saved;
+    Editor::LiveMap::NoteSaved(Editor::MapInspect::SaveUnit::Texture, worldNumber);
     return true;
 }
 

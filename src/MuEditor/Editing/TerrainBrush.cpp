@@ -4,6 +4,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstddef>
 
 namespace Editor::Editing
 {
@@ -33,6 +34,16 @@ CellRect Clip(CellRect rect, int width, int height)
     return rect;
 }
 } // namespace
+
+float WeightMask::At(int x, int y) const
+{
+    if (rect.IsEmpty() || x < rect.minX || x > rect.maxX || y < rect.minY || y > rect.maxY)
+        return 0.0f;
+    const std::size_t row = static_cast<std::size_t>(y - rect.minY);
+    const std::size_t column = static_cast<std::size_t>(x - rect.minX);
+    const std::size_t cell = row * static_cast<std::size_t>(rect.Width()) + column;
+    return cell < weights.size() ? weights[cell] : 0.0f;
+}
 
 float Falloff(float distance, float radius)
 {

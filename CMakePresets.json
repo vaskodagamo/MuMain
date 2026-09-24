@@ -156,10 +156,11 @@
     {
       "name": "macos-arm64-mueditor",
       "displayName": "macOS arm64 MuEditor",
-      "description": "Native macOS Apple Silicon build with editor features",
+      "description": "Native macOS Apple Silicon developer build: editor features and the control socket for scripted clients",
       "inherits": "macos-arm64",
       "cacheVariables": {
-        "ENABLE_EDITOR": "ON"
+        "ENABLE_EDITOR": "ON",
+        "ENABLE_CONTROL_SOCKET": "ON"
       }
     }
   ],

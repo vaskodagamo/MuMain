@@ -5,6 +5,9 @@
 #include "MapObjectPlace.h"
 #include "MapEditorFileUtil.h"
 
+#include "Assets/EditorText.h"
+#include "Core/LiveMap.h"
+
 #include "Engine/Object/ZzzObject.h"        // CreateObject / SaveObjects / ObjectBlock
 #include "Engine/Object/w_ObjectInfo.h"     // class OBJECT (fields)
 #include "Engine/Object/WorldObjectFile.h"  // EncTerrain{N}.obj records
@@ -14,6 +17,7 @@
 #include "UI/Console/MuEditorConsoleUI.h"
 
 #include <algorithm>
+#include <cstdio>
 #include <cstring>
 #include <filesystem>
 #include <string>
@@ -68,7 +72,7 @@ void ComputePlacementPosition(float x, float y, bool snap, vec3_t outPos)
     outPos[2] = GroundHeightAt(px, py);
 }
 
-bool Save(int world, std::string& outReport)
+bool Save(int world, std::string& outReport, Editor::Files::SavedFile* outSaved)
 {
     const std::filesystem::path fileName = Editor::Files::TerrainObjectFile(world);
     std::wstring saveName = fileName.wstring(); // SaveObjects takes a mutable buffer
@@ -79,7 +83,11 @@ bool Save(int world, std::string& outReport)
         g_MuEditorConsoleUI.LogEditor("[MapEditor] SaveObjects FAILED");
         return false;
     }
-    outReport = Editor::Files::DescribeSavedFiles({Editor::Files::MirrorSavedFile(fileName)});
+    const Editor::Files::SavedFile saved = Editor::Files::MirrorSavedFile(fileName);
+    outReport = Editor::Files::DescribeSavedFiles({saved});
+    if (outSaved != nullptr)
+        *outSaved = saved;
+    Editor::LiveMap::NoteSaved(Editor::MapInspect::SaveUnit::Objects, world);
     return true;
 }
 
@@ -208,6 +216,19 @@ int FindRecordIndex(const std::filesystem::path& objFile, int type, const vec3_t
             return static_cast<int>(i);
     }
     return -1;
+}
+
+std::string ModelName(int type)
+{
+    const BMD& model = Models[type];
+    char narrow[sizeof(model.Name) + 1] = {};
+    std::memcpy(narrow, model.Name, sizeof(model.Name));
+    if (narrow[0] != '\0')
+        return Editor::Text::ValidUtf8(narrow); // many are Korean (CP949) bytes; JSON and ImGui take UTF-8
+
+    char text[32];
+    std::snprintf(text, sizeof(text), "(type %d)", type);
+    return text;
 }
 
 } // namespace Editor::ObjectPlace

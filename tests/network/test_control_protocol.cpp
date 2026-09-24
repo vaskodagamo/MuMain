@@ -82,11 +82,18 @@ TEST_CASE("Control protocol treats a blank line as no request [network][control-
 
 TEST_CASE("Control protocol serves the documented command vocabulary [network][control-protocol]")
 {
-    const std::vector<std::string> expected = {
+    std::vector<std::string> expected = {
         "ping",   "scene", "state",   "nearby", "events",   "wait-for", "screenshot", "login",  "select-char",
         "logout", "quit",  "move",    "warp",   "teleport", "attack",   "skill",      "pickup", "use",
         "equip",  "say",   "whisper", "party",  "halt",     "hotkey",   "click-ui",
     };
+#ifdef _EDITOR
+    // Editor builds add the Map Editor's commands.
+    expected.insert(expected.end(),
+                    {"map-open", "map-info", "map-camera", "map-export", "map-query", "map-apply", "map-undo",
+                     "map-redo", "map-history", "map-save", "map-revert", "map-new", "map-server-export", "gate-list",
+                     "gate-add", "gate-remove", "gate-show", "map-tab"});
+#endif
 
     for (const std::string& command : expected)
     {
@@ -96,6 +103,28 @@ TEST_CASE("Control protocol serves the documented command vocabulary [network][c
     CHECK(App::Control::CommandNames().size() == expected.size());
     CHECK_FALSE(App::Control::IsKnownCommand("shutdown"));
     CHECK_FALSE(App::Control::IsKnownCommand(""));
+}
+
+TEST_CASE("Control protocol hands structured arguments over as JSON text [network][control-protocol]")
+{
+    const Request request = Request::Parse(R"({"cmd":"move","tile":[3, 4],"box":{"rect":[1,2,3,4]},"x":5})");
+    REQUIRE(request.IsValid());
+
+    std::string tile;
+    REQUIRE(request.GetStructured("tile", tile));
+    CHECK(tile == "[3,4]");
+    std::string box;
+    REQUIRE(request.GetStructured("box", box));
+    CHECK(box == R"({"rect":[1,2,3,4]})");
+
+    // Scalars are no structured arguments, and a list is still no integer: commands
+    // that take plain fields answer bad_request for it, as before.
+    std::string scalar;
+    CHECK_FALSE(request.GetStructured("x", scalar));
+    CHECK_FALSE(request.GetStructured("missing", scalar));
+    int x = 0;
+    CHECK_FALSE(request.GetInt("tile", x));
+    CHECK(request.Has("tile"));
 }
 
 TEST_CASE("Control protocol encodes responses and echoes the id [network][control-protocol]")

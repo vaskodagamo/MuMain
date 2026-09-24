@@ -54,6 +54,8 @@ state of the development machine, the asset tooling and the open work are record
 - [`docs/agents/ASSET_REGENERATION_PLAN.md`](docs/agents/ASSET_REGENERATION_PLAN.md) - rules
   and phases for producing new assets in Blender.
 - [`docs/asset-pipeline.md`](docs/asset-pipeline.md) - asset formats and the conversion tools.
+- [`docs/agents/AI_MAP_EDITING.md`](docs/agents/AI_MAP_EDITING.md) - start here when the owner
+  asks to edit or expand a map ("expand X with Y"); drives the editor with `tools/world_editor/mapctl.py`.
 - [`ASTRA.md`](ASTRA.md) - role brief for the Blender artist agent (art direction, engine
   contract, asset workflow).
 

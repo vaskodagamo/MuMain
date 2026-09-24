@@ -1329,6 +1329,19 @@ void MuApplyWindowResolution(unsigned int width, unsigned int height, bool windo
     MuReapplyVSyncPreference();
 }
 
+// Editor builds say in MuError.log why the client leaves: a scripted session (the
+// control socket) otherwise sees only that its client is gone. Player builds log
+// nothing new.
+static void NoteQuitRequest(const wchar_t* reason)
+{
+#ifdef _EDITOR
+    if (!Destroy)
+        g_ErrorReport.Write(L"Quit requested: %ls\r\n", reason);
+#else
+    (void)reason;
+#endif
+}
+
 MSG MainLoop()
 {
     constexpr auto target_resolution = 1;
@@ -1361,6 +1374,8 @@ MSG MainLoop()
             switch (event.type)
             {
             case SDL_EVENT_QUIT:
+                NoteQuitRequest(L"the system asked the client to quit (Cmd+Q, Quit in the Dock or menu, a "
+                                L"logout, SIGINT/SIGTERM, or the game's own exit)");
                 Destroy = true;
                 break;
             case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
@@ -1368,6 +1383,7 @@ MSG MainLoop()
                 // solely on the SDL_EVENT_QUIT SDL derives from it - depending on that
                 // indirection left the first close press with no visible effect, only
                 // closing the window on a second press (#535).
+                NoteQuitRequest(L"the window was closed (its close button, or Alt+F4)");
                 Destroy = true;
                 break;
             case SDL_EVENT_MOUSE_MOTION:

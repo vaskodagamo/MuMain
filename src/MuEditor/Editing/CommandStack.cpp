@@ -92,6 +92,24 @@ const std::string& CommandStack::RedoLabel() const
     return m_redo.empty() ? NO_LABEL : m_redo.back()->Label();
 }
 
+std::vector<std::string> CommandStack::UndoLabels() const
+{
+    std::vector<std::string> labels;
+    labels.reserve(m_undo.size());
+    for (const std::unique_ptr<EditCommand>& command : m_undo)
+        labels.push_back(command->Label());
+    return labels;
+}
+
+std::vector<std::string> CommandStack::RedoLabels() const
+{
+    std::vector<std::string> labels;
+    labels.reserve(m_redo.size());
+    for (auto command = m_redo.rbegin(); command != m_redo.rend(); ++command)
+        labels.push_back((*command)->Label());
+    return labels;
+}
+
 std::size_t CommandStack::UndoCount() const
 {
     return m_undo.size();

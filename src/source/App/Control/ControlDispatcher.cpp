@@ -9,7 +9,10 @@
 #include <cassert>
 #include <chrono>
 #include <cstddef>
+#include <exception>
+#include <memory>
 #include <optional>
+#include <string>
 #include <utility>
 
 namespace
@@ -26,6 +29,27 @@ constexpr std::string_view HaltCommand = "halt";
 // events faster than frames are rendered, so a follower has to be allowed a
 // backlog; the cap keeps one busy stream from owning the frame.
 constexpr std::size_t MaxStreamedLinesPerFrame = 64;
+
+// A handler that throws (the JSON library refusing text it cannot encode, an
+// allocation failure) answers `failed` instead of ending the client: nothing
+// between here and the main loop catches, so the exception would reach
+// std::terminate and take the session's unsaved work with it.
+std::string RunHandler(const CommandEntry& entry, const App::Control::Request& request,
+                       std::unique_ptr<App::Control::Act>& act)
+{
+    try
+    {
+        return entry.handler(request, act);
+    }
+    catch (const std::exception& failure)
+    {
+        act.reset();
+        const std::string message = std::string("the command failed inside the client: ") + failure.what();
+        App::Control::Events::RecordError(request.Command(),
+                                          App::Control::ErrorCodeName(App::Control::ErrorCode::Failed), message);
+        return App::Control::EncodeError(request.EncodedId(), App::Control::ErrorCode::Failed, message);
+    }
+}
 
 const std::vector<CommandEntry>& CommandTable()
 {
@@ -55,6 +79,26 @@ const std::vector<CommandEntry>& CommandTable()
         {"whisper", SceneRequirement::World, &Commands::Whisper},
         {"party", SceneRequirement::World, &Commands::Party},
         {"halt", SceneRequirement::Any, &Commands::Halt},
+#ifdef _EDITOR
+        {"map-open", SceneRequirement::World, &Commands::MapOpen},
+        {"map-info", SceneRequirement::World, &Commands::MapInfo},
+        {"map-camera", SceneRequirement::World, &Commands::MapCamera},
+        {"map-export", SceneRequirement::World, &Commands::MapExport},
+        {"map-query", SceneRequirement::World, &Commands::MapQuery},
+        {"map-tab", SceneRequirement::World, &Commands::MapTab},
+        {"map-apply", SceneRequirement::World, &Commands::MapApply},
+        {"map-undo", SceneRequirement::World, &Commands::MapUndo},
+        {"map-redo", SceneRequirement::World, &Commands::MapRedo},
+        {"map-history", SceneRequirement::World, &Commands::MapHistory},
+        {"map-save", SceneRequirement::World, &Commands::MapSave},
+        {"map-revert", SceneRequirement::World, &Commands::MapRevert},
+        {"map-new", SceneRequirement::World, &Commands::MapNew},
+        {"map-server-export", SceneRequirement::World, &Commands::MapServerExport},
+        {"gate-list", SceneRequirement::World, &Commands::GateList},
+        {"gate-add", SceneRequirement::World, &Commands::GateAdd},
+        {"gate-remove", SceneRequirement::World, &Commands::GateRemove},
+        {"gate-show", SceneRequirement::World, &Commands::GateShow},
+#endif
     };
 
     // The parser keeps its own list of command names — it is free of the
@@ -206,7 +250,7 @@ void Dispatcher::Handle(const Request& request, std::size_t connection)
     }
 
     std::unique_ptr<Act> act;
-    std::string response = entry->handler(request, act);
+    std::string response = RunHandler(*entry, request, act);
 
     if (act && !act->IsAct())
     {

@@ -34,6 +34,22 @@ bool SetNonBlocking(SOCKET handle)
     return ioctlsocket(handle, FIONBIO, &nonBlocking) != SOCKET_ERROR;
 }
 
+// macOS: older kernels ignore MSG_NOSIGNAL, so the accepted socket also
+// carries the per-socket option Apple's stack has always honoured; and a local
+// stream socket starts there with 8 KiB of send buffer, which lets a large
+// answer out only one buffer per frame. Linux and Windows need neither.
+void PrepareAcceptedSocket(SOCKET handle)
+{
+#ifdef __APPLE__
+    constexpr int SendBufferBytes = 256 * 1024;
+    const int suppress = 1;
+    (void)::setsockopt(handle, SOL_SOCKET, SO_NOSIGPIPE, &suppress, sizeof(suppress));
+    (void)::setsockopt(handle, SOL_SOCKET, SO_SNDBUF, &SendBufferBytes, sizeof(SendBufferBytes));
+#else
+    (void)handle;
+#endif
+}
+
 // Whether a non-blocking connect has not finished yet, rather than failed.
 bool ConnectPending(int error)
 {
@@ -577,6 +593,7 @@ std::unique_ptr<LocalSocketConnection> LocalSocketListener::Accept()
         closesocket(accepted);
         return nullptr;
     }
+    PrepareAcceptedSocket(accepted);
 
     return std::make_unique<LocalSocketConnection>(accepted);
 }

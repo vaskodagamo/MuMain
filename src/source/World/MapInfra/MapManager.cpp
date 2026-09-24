@@ -20,7 +20,12 @@
 #include "GameLogic/Events/w_CursedTemple.h"
 #include "Network/Server/WSclient.h"
 #include "I18N/All.h"
+#include "World/MapInfra/MapNumbers.h"
+#ifdef _EDITOR
+#include "World/MapInfra/CustomMapName.h"
+#endif
 
+static_assert(World::MapNumbers::FIRST_NEW_MAP == NUM_WD, "new maps start after the maps the client knows");
 
 CMapManager gMapManager;
 
@@ -1795,5 +1800,14 @@ const wchar_t* CMapManager::GetMapName(int iMap)
     {
         return (I18N::Game::Karutan);
     }
+#ifdef _EDITOR
+    // Maps made with the Map Editor (82 and up) are named by Data/World{N}/MapName.txt. Editor
+    // builds only until the owner decides the player client should read that file too
+    // (docs/agents/WORLD_EDITOR_PLAN.md, M10): the player build keeps its old fallback.
+    if (const wchar_t* customName = World::MapNames::Find(iMap))
+    {
+        return customName;
+    }
+#endif
     return (I18N::Game::Lookup(30 + iMap));
 }

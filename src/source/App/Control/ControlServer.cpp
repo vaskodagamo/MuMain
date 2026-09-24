@@ -6,6 +6,7 @@
 #include "App/Control/ControlObjects.h"
 #include "App/Control/ControlTaps.h"
 #include "Core/Utilities/Log/MuLogger.h"
+#include "Render/Renderer/HiddenWindowTarget.h"
 #include "World/MapInfra/MapManager.h"
 
 #include <cstdlib>
@@ -46,6 +47,8 @@ bool ControlServer::Start(const std::string& buildIdentifier)
     Commands::SetBuildIdentifier(buildIdentifier);
     Events::SetObjectResolver(&DescribeGameObject);
     Events::SetEnabled(true);
+    // A driver keeps working while the window is minimized or covered.
+    Render::HiddenWindow::SetEnabled(true);
 
     mu::log::Get(LogChannel)->info("control socket listening on {}", m_listener.Path());
     return true;
@@ -74,6 +77,7 @@ void ControlServer::Stop()
     m_listener.Close();
     Events::SetEnabled(false);
     Events::SetObjectResolver(nullptr);
+    Render::HiddenWindow::SetEnabled(false);
 }
 
 void ControlServer::Poll()

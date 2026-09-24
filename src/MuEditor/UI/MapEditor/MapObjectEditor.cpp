@@ -9,7 +9,7 @@
 #include "MapEditorShortcuts.h"
 #include "MapObjectPlace.h"
 
-#include "Camera/CameraState.h" // g_Camera: the view the world was drawn with
+#include "Core/EditorCamera.h" // DrawnView: the view the world was drawn with
 #include "Core/MuEditorCore.h"
 #include "Editing/ObjectEditCommand.h"
 #include "Editing/ObjectTransform.h"
@@ -20,7 +20,6 @@
 
 #include <algorithm>
 #include <cstdio>
-#include <cstring>
 #include <functional>
 #include <memory>
 
@@ -85,19 +84,6 @@ constexpr GizmoKey GIZMO_KEYS[] = {
     {ImGuiKey_E, 'E', GizmoMode::Rotate},
     {ImGuiKey_R, 'R', GizmoMode::Scale},
 };
-
-// The camera the world was drawn with this frame (the Map Editor runs after the
-// world pass, see SceneManager's MainScene).
-Editor::Gizmo::View CurrentView()
-{
-    Editor::Gizmo::View view;
-    std::memcpy(view.matrix, g_Camera.Matrix, sizeof(view.matrix));
-    view.perspectiveX = g_Camera.PerspectiveX;
-    view.perspectiveY = g_Camera.PerspectiveY;
-    view.centerX = static_cast<float>(g_Camera.ScreenCenterX);
-    view.centerY = static_cast<float>(g_Camera.ScreenCenterY);
-    return view;
-}
 
 std::vector<ObjectState> StatesOf(const std::vector<KeyedObjectState>& objects)
 {
@@ -195,7 +181,8 @@ bool CMapObjectEditor::UpdateGizmo(const WorldInput& input)
     float pivot[3];
     Transform::Pivot(SelectionStates(), pivot);
     const bool mouseOverWorld = input.overWorld && !ImGui::GetIO().WantCaptureMouse;
-    const GizmoFrame frame = m_gizmo.Update(CurrentView(), {pivot[0], pivot[1], pivot[2]}, mouseOverWorld);
+    const GizmoFrame frame =
+        m_gizmo.Update(Editor::Camera::DrawnView(), {pivot[0], pivot[1], pivot[2]}, mouseOverWorld);
     switch (frame.phase)
     {
     case GizmoFrame::Phase::Idle:

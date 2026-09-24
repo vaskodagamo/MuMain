@@ -33,6 +33,7 @@
 
 #include "D3D12Diagnostics.h"
 #include "DrawCommandHistory.h"
+#include "HiddenWindowTarget.h"
 #include "MuRenderer.h"
 #include "QuadTopology.h"
 #include "ScreenLineRibbons.h"
@@ -253,6 +254,14 @@ static SDL_GPUTexture* s_swapchainTexture = nullptr;
 // Used for viewport calculations — distinct from logical window size on HiDPI/Retina.
 static Uint32 s_swapW = 0u;
 static Uint32 s_swapH = 0u;
+#if MU_ENABLE_CONTROL_SOCKET
+// The size of the last frame drawn to the window: a frame drawn while the window is
+// not visible (HiddenWindowTarget.h) keeps it.
+static Uint32 s_lastWindowW = 0u;
+static Uint32 s_lastWindowH = 0u;
+// This frame is drawn into the offscreen target, so EndFrame paces its submission.
+static bool s_frameOffscreen = false;
+#endif
 static std::uint32_t s_pendingFrameCaptureTextureId = 0u;
 static FrameReadbackState s_frameReadbackState;
 static SDL_GPUTexture* s_frameReadbackTexture = nullptr;
@@ -1649,6 +1658,10 @@ public:
             s_depthW = 0u;
             s_depthH = 0u;
         }
+#if MU_ENABLE_CONTROL_SOCKET
+        Render::HiddenWindow::FinishFrames(s_device);
+        Render::HiddenWindow::Release(s_device);
+#endif
 
         // Story 4.3.2 (AC-10): Release fog uniform buffers.
         if (s_fogUniformBuf)
@@ -1747,6 +1760,13 @@ public:
         s_swapH = 0u;
         s_swapchainTexture = nullptr;
 
+#if MU_ENABLE_CONTROL_SOCKET
+        if (BeginFrameWithoutWindow())
+        {
+            return;
+        }
+#endif
+
         if (!SDL_AcquireGPUSwapchainTexture(s_cmdBuf, s_window, &s_swapchainTexture, &s_swapW, &s_swapH))
         {
             mu::log::Get("render")->error("SDL_gpu -- SDL_AcquireGPUSwapchainTexture failed: {}", SDL_GetError());
@@ -1772,6 +1792,10 @@ public:
         // Story 7.9.7 (AC-3): Ensure depth texture matches swapchain dimensions.
         // Recreates on first frame or when window is resized.
         CreateOrResizeDepthTexture(s_swapW, s_swapH);
+#if MU_ENABLE_CONTROL_SOCKET
+        s_lastWindowW = s_swapW;
+        s_lastWindowH = s_swapH;
+#endif
 
         // Deferred rendering: do NOT begin the render pass here.
         // Draw calls record RenderCmds into s_renderCmds during the frame.
@@ -2157,6 +2181,9 @@ public:
             }
         }
 
+#if MU_ENABLE_CONTROL_SOCKET
+        SubmitOffscreenFrame();
+#endif
         if (s_cmdBuf)
         {
             SDL_SubmitGPUCommandBuffer(s_cmdBuf);
@@ -4460,6 +4487,60 @@ private:
     // matching the current swapchain dimensions. Called from Init() and
     // BeginFrame() when swapchain size changes.
     // -----------------------------------------------------------------------
+#if MU_ENABLE_CONTROL_SOCKET
+    // While the control socket serves, a window nobody can see is not waited for: the
+    // frame is drawn into an offscreen target of the window's last size instead
+    // (HiddenWindowTarget.h). False when this frame goes to the window as usual.
+    static bool BeginFrameWithoutWindow()
+    {
+        s_frameOffscreen = false;
+        if (!Render::HiddenWindow::ShouldBypassWindow(s_window))
+        {
+            // Back to the window: its swapchain paces the frames again.
+            Render::HiddenWindow::FinishFrames(s_device);
+            return false;
+        }
+
+        Uint32 width = s_lastWindowW;
+        Uint32 height = s_lastWindowH;
+        if (width == 0u || height == 0u)
+        {
+            int pixelWidth = 0;
+            int pixelHeight = 0;
+            SDL_GetWindowSizeInPixels(s_window, &pixelWidth, &pixelHeight);
+            width = static_cast<Uint32>(std::max(pixelWidth, 0));
+            height = static_cast<Uint32>(std::max(pixelHeight, 0));
+        }
+
+        SDL_GPUTexture* target = Render::HiddenWindow::Target(s_device, s_window, width, height);
+        if (target == nullptr || !CreateOrResizeDepthTexture(width, height))
+        {
+            return false;
+        }
+
+        s_swapchainTexture = target;
+        s_swapW = width;
+        s_swapH = height;
+        s_frameActive = true;
+        s_frameOffscreen = true;
+        return true;
+    }
+#endif
+
+#if MU_ENABLE_CONTROL_SOCKET
+    // A frame drawn for a hidden window goes to the GPU paced (HiddenWindowTarget.h,
+    // SubmitPaced): no swapchain limits it. Leaves s_cmdBuf empty when it took the frame.
+    static void SubmitOffscreenFrame()
+    {
+        if (!s_frameOffscreen || s_cmdBuf == nullptr)
+        {
+            return;
+        }
+        Render::HiddenWindow::SubmitPaced(s_device, s_cmdBuf);
+        s_cmdBuf = nullptr;
+    }
+#endif
+
     static bool CreateOrResizeDepthTexture(Uint32 width, Uint32 height)
     {
         if (width == 0 || height == 0)
