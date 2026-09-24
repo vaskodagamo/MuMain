@@ -67,6 +67,17 @@ class ReadmeExample(unittest.TestCase):
         report = self.validate(self.request)
         self.assertEqual(report.errors, [])
 
+    def test_a_reference_mesh_in_the_folder_is_refused(self):
+        (self.folder / 'delivery').mkdir()
+        (self.folder / 'delivery' / 'sword.glb').write_bytes(b'glTF')
+        self.assert_error(self.request, 'reference meshes stay outside the repository')
+
+    def test_an_oversized_delivery_file_is_refused(self):
+        (self.folder / 'delivery').mkdir()
+        with open(self.folder / 'delivery' / 'source.blend', 'wb') as handle:
+            handle.truncate((validator.MAX_DELIVERY_FILE_MB + 1) * validator.BYTES_PER_MB)
+        self.assert_error(self.request, 'over 8 MB')
+
     def test_render_block_is_required(self):
         request = copy.deepcopy(self.request)
         del request['constraints']['render']

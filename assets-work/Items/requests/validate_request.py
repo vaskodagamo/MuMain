@@ -41,6 +41,13 @@ DELIVERY_DIR = 'delivery/'
 WORKLOG = 'docs/agents/WORKLOG.md'
 GAME_DATA = 'src/bin/Data'
 FINDER_METADATA = '.DS_Store'
+# Reference meshes (tens of MB) stay outside the repository, in ../item-sources/<key>/.
+MESH_SUFFIXES = ('.glb', '.gltf')
+MESH_FOLDER = '../item-sources/<item key>/'
+# A 1500-triangle item with its baked texture is well under this; a bigger file still holds
+# the high-poly reference (a source.blend with the imported .glb).
+MAX_DELIVERY_FILE_MB = 8
+BYTES_PER_MB = 1024 * 1024
 
 SCHEMA = 'mu-item-regen-request/1'
 REPO = 'vaskodagamo/MuMain'
@@ -1121,6 +1128,14 @@ def check_folder(folder, report):
         report.error(f'{BRIEF_FILE} is missing next to {REQUEST_FILE}')
     if folder.parent.resolve() != HERE:
         report.warn(f'the request folder is not directly under {HERE.relative_to(ROOT).as_posix()}/')
+    for path in sorted(folder.rglob('*')):
+        if path.suffix.lower() in MESH_SUFFIXES:
+            report.error(f'{path.relative_to(folder).as_posix()}: reference meshes stay outside the repository '
+                         f'({MESH_FOLDER}); keep only the reduced model in source.blend and exports/')
+        elif path.is_file() and path.stat().st_size > MAX_DELIVERY_FILE_MB * BYTES_PER_MB:
+            size = path.stat().st_size / BYTES_PER_MB
+            report.error(f'{path.relative_to(folder).as_posix()}: {size:.1f} MB, over {MAX_DELIVERY_FILE_MB} MB; '
+                         f'remove the high-poly reference and orphan data from it')
 
 
 def validate(folder, reference):

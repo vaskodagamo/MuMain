@@ -79,3 +79,7 @@ __pycache__/
 
 # Local-only files
 docs/reviews/
+
+# Reference meshes from 3D generators (tens of MB): they stay in ../item-sources/, never in git.
+*.glb
+*.gltf
