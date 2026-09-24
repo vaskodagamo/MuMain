@@ -1,0 +1,270 @@
+{
+  "schema": "mu-item-regen-request/1",
+  "id": "2026-09-24-0-1-rebuild-short-sword-reference",
+  "created": "2026-09-24T16:05:33+02:00",
+  "author": "owner (item editor)",
+  "status": "open",
+  "status_history": [
+    {
+      "status": "open",
+      "at": "2026-09-24T16:05:33+02:00",
+      "by": "item editor"
+    }
+  ],
+  "priority": "normal",
+  "kind": "redesign",
+  "base_commit": "08658c6c9d57a9187631643a521badbc2f4e7c78",
+  "supersedes": null,
+  "targets": [
+    {
+      "key": "0-1",
+      "group": 0,
+      "index": 1,
+      "name": "Short Sword",
+      "family": "swords",
+      "tier": 1,
+      "classes": {
+        "dw": 1,
+        "dk": 1,
+        "elf": 1,
+        "mg": 1,
+        "dl": 1,
+        "sum": 1,
+        "rf": 1
+      },
+      "size": [
+        1,
+        3
+      ],
+      "armour_set": null,
+      "models": [
+        {
+          "role": "item",
+          "bmd": "src/bin/Data/Item/Sword02.bmd",
+          "current_sha256": "33bf5614656dc2cc7575a76cea317f472ddc0f05de4a9fc998c713eb1bea2a7f",
+          "textures": {
+            "sword03.jpg": "src/bin/Data/Item/sword03.OZJ"
+          }
+        }
+      ],
+      "original": {
+        "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
+        "sha256": "33bf5614656dc2cc7575a76cea317f472ddc0f05de4a9fc998c713eb1bea2a7f"
+      }
+    }
+  ],
+  "change": {
+    "summary": "Rebuild Short Sword from the reference mesh",
+    "details": [
+      "Start from the reference mesh /Users/lukasmac/Documents/claude-test-mumain/item-sources/0-1-short-sword.glb (50000 triangles, 3 textures); it matches the picked concept",
+      "Reduce it in Blender to at most 1500 triangles (Decimate, then clean up), keeping the silhouette",
+      "Bake its colour and detail onto one 512 x 512 diffuse texture",
+      "Match the original Sword02.bmd: grip at the model origin, same length, same orientation"
+    ],
+    "keep": [
+      "Same fit on the character, same animations, same inventory size"
+    ],
+    "avoid": [
+      "Own design ideas that are not in the concept"
+    ],
+    "reference_images": [
+      "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-reference/captures/ref-concept.jpg"
+    ]
+  },
+  "constraints": {
+    "shared_textures": {},
+    "frozen_textures": [],
+    "owned_files": [
+      "src/bin/Data/Item/Sword02.bmd",
+      "src/bin/Data/Item/sword03.OZJ"
+    ],
+    "protected_paths": [
+      "src/source/",
+      "src/MuEditor/",
+      "src/CMakeLists.txt",
+      "CMakeLists.txt",
+      "CMakePresets.json",
+      "cmake/",
+      "assets-work/Items/catalog.json",
+      "assets-work/Items/tiers.json",
+      "assets-work/Items/assignments.json",
+      "docs/agents/HANDOFF.md"
+    ],
+    "limits": {
+      "max_triangles": 1500,
+      "max_texture_size": 1024
+    },
+    "must_keep": [
+      "File names and paths: no renamed, added or deleted game files",
+      "Origin, orientation and scale: hands, back and shields attach through the model origin (RenderLinkObject angles are hard-coded)",
+      "Mesh count and mesh/material order (the engine hides and blends meshes by index)",
+      "Texture name suffixes _R, _S, _H, _N (they set render flags); no new ones",
+      "At most 1500 triangles per model; power-of-two textures up to 1024 px, .jpg opaque, 32-bit .tga for alpha",
+      "Armour and wings: the skeleton (bone count, order, names, parents) and every action with its key count",
+      "Size in the inventory (Width x Height of the item table) and a footprint that fits it",
+      "Redesign: origin, grip, size in the inventory slot and mesh order"
+    ],
+    "render": {
+      "0-1": {
+        "models": [
+          {
+            "role": "item",
+            "bmd": "src/bin/Data/Item/Sword02.bmd",
+            "meshes": [
+              {
+                "mesh": 0,
+                "texture": "sword03.jpg",
+                "worn": "opaque",
+                "dropped": "opaque",
+                "inventory": "opaque"
+              }
+            ]
+          }
+        ],
+        "effects": [
+          "+level look: +3..+6 tinted light, +7 and up extra chrome/metal passes over the whole model",
+          "Excellent: a second additive pass of the own texture in a pulsing purple/blue light (bright texels glow, black stays black)",
+          "A swing trail (weapon blur) follows the blade during attacks; its texture comes from the attack, not from the item"
+        ]
+      }
+    }
+  },
+  "evidence": {
+    "captures": [
+      {
+        "file": "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-reference/captures/01-front.jpg",
+        "variant": "current",
+        "view": "turntable",
+        "angle": 0.0,
+        "item_level": 0,
+        "excellent": false,
+        "ancient": false,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "client_commit": "08658c6c"
+      },
+      {
+        "file": "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-reference/captures/02-side.jpg",
+        "variant": "current",
+        "view": "turntable",
+        "angle": 90.0,
+        "item_level": 0,
+        "excellent": false,
+        "ancient": false,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "client_commit": "08658c6c"
+      },
+      {
+        "file": "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-reference/captures/03-back.jpg",
+        "variant": "current",
+        "view": "turntable",
+        "angle": 180.0,
+        "item_level": 0,
+        "excellent": false,
+        "ancient": false,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "client_commit": "08658c6c"
+      },
+      {
+        "file": "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-reference/captures/04-three-quarter.jpg",
+        "variant": "current",
+        "view": "turntable",
+        "angle": 45.0,
+        "item_level": 0,
+        "excellent": false,
+        "ancient": false,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "client_commit": "08658c6c"
+      },
+      {
+        "file": "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-reference/captures/05-inventory.jpg",
+        "variant": "current",
+        "view": "inventory",
+        "item_level": 0,
+        "excellent": false,
+        "ancient": false,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "client_commit": "08658c6c"
+      },
+      {
+        "file": "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-reference/captures/06-equipped.jpg",
+        "variant": "current",
+        "view": "equipped-front",
+        "item_level": 0,
+        "excellent": false,
+        "ancient": false,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "client_commit": "08658c6c"
+      },
+      {
+        "file": "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-reference/captures/07-glow-0-exc.jpg",
+        "variant": "current",
+        "view": "glow",
+        "item_level": 0,
+        "excellent": true,
+        "ancient": false,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "client_commit": "08658c6c"
+      },
+      {
+        "file": "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-reference/captures/08-glow-9-exc.jpg",
+        "variant": "current",
+        "view": "glow",
+        "item_level": 9,
+        "excellent": true,
+        "ancient": false,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "client_commit": "08658c6c"
+      },
+      {
+        "file": "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-reference/captures/09-glow-13-exc.jpg",
+        "variant": "current",
+        "view": "glow",
+        "item_level": 13,
+        "excellent": true,
+        "ancient": false,
+        "resolution": [
+          1024,
+          1024
+        ],
+        "client_commit": "08658c6c"
+      }
+    ],
+    "offline_previews": []
+  },
+  "handoff": {
+    "repo": "vaskodagamo/MuMain",
+    "branch": "codex/item-req-0-1-rebuild-short-sword-reference",
+    "worktree": "../MuMain-item-req-0-1-rebuild-short-sword-reference",
+    "deliver_to": "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-reference/delivery/",
+    "push_allowed": false,
+    "claimed_by": null,
+    "claimed_at": null,
+    "start_commit": null
+  },
+  "result": null,
+  "decision": null
+}
