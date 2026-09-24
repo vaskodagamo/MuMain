@@ -3,5 +3,10 @@
     "request": "2026-09-24-8-2-rebuild-pad-armor-rest",
     "branch": "codex/item-req-8-2-rebuild-pad-armor-rest",
     "worktree": "../MuMain-item-req-8-2-rebuild-pad-armor-rest"
+  },
+  "item-req-0-1-rebuild-short-sword-exactly": {
+    "request": "2026-09-24-0-1-rebuild-short-sword-exactly",
+    "branch": "codex/item-req-0-1-rebuild-short-sword-exactly",
+    "worktree": "../MuMain-item-req-0-1-rebuild-short-sword-exactly"
   }
 }
