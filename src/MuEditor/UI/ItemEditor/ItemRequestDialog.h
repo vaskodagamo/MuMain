@@ -77,6 +77,9 @@ private:
     void RenderReferences();
     void RenderConcept();
     void PollReferencePick();
+    void RenderReferenceMesh();
+    void PollMeshPick();
+    void UseReferenceMesh(const std::filesystem::path& stored);
     void RenderScope();
     void RenderWarnings();
     void RenderValidatorReport();
@@ -116,6 +119,7 @@ private:
     int m_kind = 0;    // ItemRequestKind
     int m_setKind = 0; // ItemRequestKind of every part of a set
     int m_priority = static_cast<int>(Editor::Assets::RequestPriority::Normal);
+    std::filesystem::path m_referenceMesh; // stored under ../item-sources/<key>/, never in git
     char m_summary[256] = {};
     char m_details[2048] = {};
     char m_keep[1024] = {};

@@ -22,8 +22,6 @@ constexpr const char* CAPTURE_VARIANT = "current";
 constexpr const char* OTHER_CONSUMER_PREFIX = "other:";
 constexpr int FIRST_ARMOUR_GROUP = 7;
 constexpr int LAST_ARMOUR_GROUP = 11;
-constexpr int MAX_TRIANGLES = 1500;
-constexpr int MAX_TEXTURE_SIZE = 1024;
 constexpr int JSON_INDENT = 2;
 
 // Only these folders hold files a worker may replace; a texture elsewhere is frozen.
@@ -212,7 +210,7 @@ ordered_json ConstraintsJson(const ItemRequestDraft& draft)
     json["frozen_textures"] = scope.frozenTextures;
     json["owned_files"] = scope.ownedFiles;
     json["protected_paths"] = draft.domain.protectedPaths;
-    json["limits"] = {{"max_triangles", MAX_TRIANGLES}, {"max_texture_size", MAX_TEXTURE_SIZE}};
+    json["limits"] = {{"max_triangles", ITEM_MAX_TRIANGLES}, {"max_texture_size", ITEM_MAX_TEXTURE_SIZE}};
     json["must_keep"] = ItemRequestMustKeep(draft);
     json["render"] = RenderJson(draft.targets);
     return json;

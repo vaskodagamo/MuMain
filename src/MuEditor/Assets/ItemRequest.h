@@ -28,6 +28,9 @@ enum class ItemRequestKind
     Set,      // one of the above for the parts of one armour set
 };
 constexpr int ITEM_REQUEST_KIND_COUNT = 5;
+// constraints.limits of every item request (the engine's item budget).
+constexpr int ITEM_MAX_TRIANGLES = 1500;
+constexpr int ITEM_MAX_TEXTURE_SIZE = 1024;
 
 // request.json's name of a kind ("upscale" ...), and back.
 const char* ItemKindName(ItemRequestKind kind);

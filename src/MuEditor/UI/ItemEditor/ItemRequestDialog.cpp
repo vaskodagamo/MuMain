@@ -11,6 +11,7 @@
 #include "Assets/FileDigest.h"
 #include "Assets/GitCheckout.h"
 #include "Assets/RequestFolder.h"
+#include "Assets/ReferenceMesh.h"
 #include "Assets/RequestNaming.h"
 #include "Core/EditorFiles.h"
 #include "Core/MuEditorCore.h"
@@ -87,6 +88,11 @@ void CopyText(char* buffer, std::size_t size, const std::string& text)
 std::string Lines(const std::vector<std::string>& lines)
 {
     return Editor::Text::Join(lines, "\n");
+}
+
+std::string ConceptSummary(const std::string& itemName, bool set)
+{
+    return CONCEPT_SUMMARY_START + itemName + (set ? CONCEPT_SUMMARY_SET : "") + CONCEPT_SUMMARY_END;
 }
 
 std::string DisplayName(const ItemCatalogEntry& item)
@@ -175,6 +181,7 @@ void CItemRequestDialog::Reset(const ItemCatalogEntry& item, const ItemCatalog& 
     m_includeCaptures = true;
     m_supersedes.reset();
     m_references.clear();
+    m_referenceMesh.clear();
     m_conceptFile = m_repo.empty() ? fs::path() : ItemConceptImage(m_repo, item.key);
     std::error_code ec;
     if (!m_conceptFile.empty() && !fs::is_regular_file(m_conceptFile, ec))
@@ -195,9 +202,7 @@ void CItemRequestDialog::FillConceptDefaults(const ItemCatalogEntry& item)
         m_setKind = static_cast<int>(ItemRequestKind::Redesign);
     else
         m_kind = static_cast<int>(ItemRequestKind::Redesign);
-    const std::string summary =
-        CONCEPT_SUMMARY_START + item.name + (CanBeSet() ? CONCEPT_SUMMARY_SET : "") + CONCEPT_SUMMARY_END;
-    CopyText(m_summary, sizeof(m_summary), summary);
+    CopyText(m_summary, sizeof(m_summary), ConceptSummary(item.name, CanBeSet()));
     CopyText(m_details, sizeof(m_details), CONCEPT_DETAILS);
     CopyText(m_keep, sizeof(m_keep), CONCEPT_KEEP);
     CopyText(m_avoid, sizeof(m_avoid), CONCEPT_AVOID);
@@ -375,6 +380,7 @@ void CItemRequestDialog::Render()
 void CItemRequestDialog::RenderForm()
 {
     PollReferencePick();
+    PollMeshPick();
     RenderHeader();
     RenderKindChoice();
     RenderNotes();
@@ -461,6 +467,61 @@ void CItemRequestDialog::RenderReferences()
     ImGui::EndDisabled();
     ImGui::SameLine();
     ImGui::TextDisabled("JPEG; copied as captures/ref-01.jpg, ref-02.jpg, ...");
+    RenderReferenceMesh();
+}
+
+// A high-poly .glb to build from; it stays outside git (Assets/ReferenceMesh.h).
+void CItemRequestDialog::RenderReferenceMesh()
+{
+    using Editor::Files::FilePickRequest;
+    const bool picking = Editor::Files::IsOpenFilePending(FilePickRequest::ReferenceMesh);
+    ImGui::BeginDisabled(picking);
+    if (ImGui::Button(picking ? "Choosing..." : "Reference mesh..."))
+        Editor::Files::RequestOpenFile(FilePickRequest::ReferenceMesh);
+    ImGui::EndDisabled();
+    ImGui::SameLine();
+    if (m_referenceMesh.empty())
+        ImGui::TextDisabled(".glb from a 3D generator; kept outside git, Codex reduces it to a game model");
+    else
+        ImGui::TextDisabled("%s (outside git)", Editor::Text::PathToUtf8(m_referenceMesh).c_str());
+}
+
+void CItemRequestDialog::PollMeshPick()
+{
+    using Editor::Files::FilePickRequest;
+    using Editor::Files::FilePickState;
+    const Editor::Files::FilePickResult pick = Editor::Files::PollOpenFile(FilePickRequest::ReferenceMesh);
+    if (pick.state == FilePickState::Failed)
+        m_error = "The file dialog could not be shown: " + pick.error;
+    if (pick.state != FilePickState::Picked)
+        return;
+    std::string error;
+    const fs::path stored = ReferenceMesh::Store(pick.path, m_repo, m_targets.front().item.key, error);
+    if (stored.empty())
+    {
+        m_error = error;
+        return;
+    }
+    m_error.clear();
+    UseReferenceMesh(stored);
+}
+
+// The mesh's steps go first in What to change, and the summary (which names the
+// request) says so, unless the owner already wrote one of their own.
+void CItemRequestDialog::UseReferenceMesh(const fs::path& stored)
+{
+    std::string rest = m_details;
+    const std::string earlier = m_referenceMesh.empty() ? "" : Lines(ReferenceMesh::DetailLines(m_referenceMesh));
+    if (!earlier.empty() && rest.rfind(earlier, 0) == 0) // another mesh picked: its lines go
+        rest = rest.substr(std::min(rest.size(), earlier.size() + 1));
+    m_referenceMesh = stored;
+    std::vector<std::string> lines = ReferenceMesh::DetailLines(stored);
+    if (!rest.empty())
+        lines.push_back(rest);
+    CopyText(m_details, sizeof(m_details), Lines(lines));
+    const std::string& name = m_targets.front().item.name;
+    if (m_summary[0] == '\0' || m_summary == ConceptSummary(name, CanBeSet()))
+        CopyText(m_summary, sizeof(m_summary), ReferenceMesh::Summary(name));
 }
 
 void CItemRequestDialog::RenderConcept()

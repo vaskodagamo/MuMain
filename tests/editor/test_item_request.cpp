@@ -13,6 +13,7 @@
 #include "Assets/ItemRequestFolder.h"
 #include "Assets/ItemRequestScan.h"
 #include "Assets/ItemRenderFacts.h"
+#include "Assets/ReferenceMesh.h"
 #include "Assets/RequestFolder.h"
 #include "Editing/ItemCapturePlan.h"
 
@@ -681,5 +682,33 @@ TEST_CASE("The Codex prompt fills in the request and drops the introduction [edi
     const std::string prompt = Prompt::Fill(text, id, branch);
     CHECK(prompt.find(id) != std::string::npos);
     CHECK(prompt.find('$') == std::string::npos);
+}
+
+TEST_CASE("A reference mesh is stored next to the checkouts and named in What to change [editor][item-requests]")
+{
+    namespace Mesh = Editor::Assets::ReferenceMesh;
+    TempTree tree("mu-reference-mesh");
+    const fs::path repo = tree.Root() / "MuMain";
+    const fs::path download = tree.Root() / "Downloads" / "sword.glb";
+    EditorTest::WriteText(download, "glTF new");
+
+    const fs::path folder = tree.Root() / "item-sources" / "0-1";
+    CHECK(Mesh::Folder(repo, "0-1") == folder);
+    std::string error;
+    const fs::path stored = Mesh::Store(download, repo, "0-1", error);
+    CHECK(error.empty());
+    CHECK(stored == folder / "sword.glb");
+    CHECK(ReadText(stored) == "glTF new");
+
+    // A file already stored is kept, and picking the stored file itself works.
+    EditorTest::WriteText(download, "glTF changed");
+    CHECK(ReadText(Mesh::Store(download, repo, "0-1", error)) == "glTF new");
+    CHECK(Mesh::Store(stored, repo, "0-1", error) == stored);
+
+    const std::vector<std::string> lines = Mesh::DetailLines(stored);
+    REQUIRE(lines.size() == 4);
+    CHECK(lines[0].find(stored.string()) != std::string::npos);
+    CHECK(lines[1].find("1500 triangles") != std::string::npos);
+    CHECK(Mesh::Summary("Short Sword") == "Rebuild Short Sword from the reference mesh");
 }
 #endif

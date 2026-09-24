@@ -24,6 +24,7 @@ enum class FilePickRequest
     ServerBaseAtt,  // Attribute "Load server base .att...":   .att
     ReferenceImage, // Item Editor, Ask Codex "Add image...":  .jpg/.jpeg
     CandidateFile,  // Item Editor, A/B "Load candidate from folder...": .bmd/.ozj/.ozt
+    ReferenceMesh,  // Item Editor, Ask Codex "Reference mesh...":  .glb
     Count
 };
 
