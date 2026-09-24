@@ -6,12 +6,14 @@
 
 #include "Assets/ItemBrowse.h"
 #include "Assets/ItemCatalog.h"
+#include "Assets/ItemRenderFacts.h"
 #include "Editing/ItemSelection.h"
 
 #include "imgui.h"
 
 #include <cstdint>
 #include <map>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -62,6 +64,7 @@ private:
 
     bool m_catalogLoaded = false;
     Editor::Assets::ItemCatalogLoad m_load;
+    std::optional<Editor::Assets::ItemRenderFacts> m_renderFacts; // how the game draws each item
     std::string m_repoNote; // why there is no catalog path (no checkout found)
     std::vector<std::string> m_families; // in item group order
 

@@ -3,6 +3,7 @@
 #ifdef _EDITOR
 
 #include "Assets/ItemBrowse.h"
+#include "Assets/ItemRenderFacts.h"
 
 #include <string>
 
@@ -13,9 +14,11 @@ namespace Editor::ItemEditor
 // `catalogNote` says why catalog facts are missing (no checkout, no catalog, the
 // item is not in it); empty when the row has its catalog entry. `filterClass` and
 // `filterStage` are the Browse class filter; the preview dresses that class.
-// `catalog` (may be null) gives Ask Codex the other parts of an armour set.
+// `catalog` (may be null) gives Ask Codex the other parts of an armour set;
+// `renderFacts` (may be null) says how the game draws the item.
 void RenderItemDetails(const Items::BrowseRow& row, const std::string& catalogNote, int filterClass,
-                       int filterStage, const Assets::ItemCatalog* catalog);
+                       int filterStage, const Assets::ItemCatalog* catalog,
+                       const Assets::ItemRenderFacts* renderFacts);
 } // namespace Editor::ItemEditor
 
 #endif // _EDITOR

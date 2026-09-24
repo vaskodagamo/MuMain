@@ -159,6 +159,7 @@ void CItemBrowseTab::EnsureCatalog()
         return;
     }
     m_load = Editor::Assets::LoadItemCatalog(repo);
+    m_renderFacts = Editor::Assets::LoadItemRenderFacts(repo).facts;
     if (!m_load.catalog)
         return;
     // Families in item group order: swords first, potions and skill books last.
@@ -622,7 +623,9 @@ void CItemBrowseTab::RenderDetailsPanel(int selectedType)
         return;
     }
     const Editor::Assets::ItemCatalog* catalog = m_load.catalog ? &*m_load.catalog : nullptr;
-    Editor::ItemEditor::RenderItemDetails(*row, CatalogNote(), m_filter.baseClass, m_filter.classStage, catalog);
+    const Editor::Assets::ItemRenderFacts* renderFacts = m_renderFacts ? &*m_renderFacts : nullptr;
+    Editor::ItemEditor::RenderItemDetails(*row, CatalogNote(), m_filter.baseClass, m_filter.classStage, catalog,
+                                          renderFacts);
 }
 
 #endif // _EDITOR

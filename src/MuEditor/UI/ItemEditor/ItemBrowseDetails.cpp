@@ -85,6 +85,19 @@ void RenderCatalogFacts(const ItemCatalogEntry& item)
     RenderFact("Size", size);
 }
 
+void RenderDrawnFact(const Items::BrowseRow& row, const Assets::ItemRenderFacts* renderFacts)
+{
+    const Assets::ItemRenderEntry* render = renderFacts != nullptr ? renderFacts->Find(row.key) : nullptr;
+    if (render == nullptr)
+    {
+        RenderFact("Drawn", "unknown (build assets-work/Items/render-facts.json)");
+        return;
+    }
+    RenderFact("Drawn", render->drawn);
+    if (!render->summary.empty() && ImGui::IsItemHovered())
+        ImGui::SetTooltip("%s", render->summary.c_str());
+}
+
 void RenderModel(const ItemModel& model)
 {
     std::string heading = model.role;
@@ -119,7 +132,7 @@ void RenderModels(const ItemCatalogEntry& item)
 } // namespace
 
 void RenderItemDetails(const Items::BrowseRow& row, const std::string& catalogNote, int filterClass, int filterStage,
-                       const Assets::ItemCatalog* catalog)
+                       const Assets::ItemCatalog* catalog, const Assets::ItemRenderFacts* renderFacts)
 {
     ImGui::TextUnformatted(row.name.empty() ? NO_NAME : row.name.c_str());
     ImGui::SameLine();
@@ -139,6 +152,7 @@ void RenderItemDetails(const Items::BrowseRow& row, const std::string& catalogNo
         RenderTableFacts(row);
         if (row.catalog != nullptr)
             RenderCatalogFacts(*row.catalog);
+        RenderDrawnFact(row, renderFacts);
         ImGui::EndTable();
     }
     if (row.catalog == nullptr)
