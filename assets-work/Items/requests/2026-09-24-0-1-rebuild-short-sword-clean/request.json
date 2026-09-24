@@ -3,12 +3,17 @@
   "id": "2026-09-24-0-1-rebuild-short-sword-clean",
   "created": "2026-09-24T17:40:14+02:00",
   "author": "owner (item editor)",
-  "status": "open",
+  "status": "claimed",
   "status_history": [
     {
       "status": "open",
       "at": "2026-09-24T17:40:14+02:00",
       "by": "item editor"
+    },
+    {
+      "status": "claimed",
+      "at": "2026-09-24T17:47:00+02:00",
+      "by": "item-req-0-1-rebuild-short-sword-clean"
     }
   ],
   "priority": "normal",
@@ -263,9 +268,9 @@
     "worktree": "../MuMain-item-req-0-1-rebuild-short-sword-clean",
     "deliver_to": "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-clean/delivery/",
     "push_allowed": false,
-    "claimed_by": null,
-    "claimed_at": null,
-    "start_commit": null
+    "claimed_by": "item-req-0-1-rebuild-short-sword-clean",
+    "claimed_at": "2026-09-24T17:47:00+02:00",
+    "start_commit": "f42a3e513882d81acc15e462ac96dd59333e24dc"
   },
   "result": null,
   "decision": null
