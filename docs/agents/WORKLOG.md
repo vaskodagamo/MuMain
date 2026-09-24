@@ -1425,3 +1425,10 @@ Soul mixed); 529/529 tests and the tools tests.
 - Verified: original overlay and schematic hand-on-grip review; zero non-manifold edges/degenerate faces and all five components outward; 32 px extend bake, neighbouring-colour atlas fill, quality-98 JPEG. Engine validate and texture check pass; compare's expected geometry difference has unchanged bone/action counts and zero bone motion difference. Before/after, both sides, wireframe and 1×3 inventory reviews are offline.
 - Open: owner client/animation/effects review. Push disabled by request; no PR or merge. Delivery details and raw validation are under the request's delivery/0-1 folder.
 - Final request validation: delivered status passes with 0 errors and 0 warnings; raw output saved as delivery/0-1/validation/request.txt.
+
+## 2026-09-24 — Short Sword marked tip correction
+
+- Goal: fix the notch identified by the owner in the client comparison, following the marked straight diagonal edge.
+- Done: replaced the recessed blade-tip ring with a planar diagonal cap, rebaked reference colour and padding, refreshed all reviews, source and exports, and reinstalled both owned files in the assigned worktree.
+- Verified: 380 triangles, zero non-manifold edges/degenerate faces, all component normals outward; original attachment preserved. Engine and texture validation pass; expected geometry-only compare difference with unchanged skeleton/action. Corrected preview and final atlas inspected offline.
+- Open: owner review of the corrected candidate in the client. Push remains disabled; no PR or merge.

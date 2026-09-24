@@ -28,3 +28,7 @@ Use the repository's Blender Source Tools installation (`BLENDER_USER_RESOURCES=
 Export `source.blend` with `tools/blender/mu_bmd_export.py`, preserving animations; wrap the JPEG with `tools/mu_texture.py wrap`. Remove intermediate `exports/bake_raw.png` and `.blend1` backups. `build.py` requires the reference GLB at its external sibling location; never copy it into the repository. The packed final `source.blend` contains only the reduced item and original rig, and can be exported independently of the GLB.
 
 No push or PR: `handoff.push_allowed` is false. Never merged.
+
+## Owner correction — diagonal blade tip
+
+The owner marked the intended straight diagonal from the blade corner to its point in a client comparison. The first retopology recessed its intermediate tip vertices, leaving a notch in that view. Replaced that ring with a planar diagonal cap, rebaked from the external reference, and regenerated all reviews and exports. Triangle count remains 380; attachment, bounds, guard and grip are unchanged. Rechecked zero non-manifold edges, zero degenerate triangles, outward component volumes, padded atlas and engine compatibility. The corrected candidate was inspected offline; the owner's screenshot documents the previous candidate, not a client test of this correction.

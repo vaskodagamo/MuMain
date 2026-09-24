@@ -20,15 +20,21 @@ def rings(name,sections):
   for i in range(n): faces.append((k*n+i,k*n+(i+1)%n,(k+1)*n+(i+1)%n,(k+1)*n+i))
  return mesh(name,verts,faces)
 
+def blade_tip_section():
+ # A planar diagonal cap joins heel to point without a recessed ridge/notch.
+ tip_y, tip_z = -.711, .187
+ heel_y, heel_z = -.515, .045
+ profile = [(0,tip_z),(.004,.168),(.006,.116),(.003,.060),
+            (0,heel_z),(-.003,.060),(-.006,.116),(-.004,.168)]
+ return [(x, heel_y+(z-heel_z)/(tip_z-heel_z)*(tip_y-heel_y),z)
+         for x,z in profile]
+
 def blade():
- sections=[]
- for y,top,low,width in [(-.60,.183,.083,.006),(-.50,.176,.046,.018),(-.25,.174,.067,.017),(.13,.18,.096,.014)]:
+ sections=[blade_tip_section()]
+ for y,top,low,width in [(-.50,.176,.046,.018),(-.25,.174,.067,.017),(.13,.18,.096,.014)]:
   mid=(top+low)/2
   coords=[(0,top),(width*.60,top-.019),(width,mid),(width*.55,low+.013),(0,low),(-width*.55,low+.013),(-width,mid),(-width*.60,top-.019)]
-  section=[(x,y,z) for x,z in coords]
-  if y==-.60:
-   section=[(x*.05, -.711 if i==0 else (-.515 if i==4 else -.54), .187 if i==0 else (.045 if i==4 else .139)) for i,(x,z) in enumerate(coords)]
-  sections.append(section)
+  sections.append([(x,y,z) for x,z in coords])
  return rings('Blade_closed',sections)
 
 def guard():
