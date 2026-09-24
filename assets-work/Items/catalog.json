@@ -32,7 +32,7 @@
   "missing_textures": 14,
   "models": 939,
   "owner_tiers": 0,
-  "requests": 0,
+  "requests": 3,
   "table_items_without_model": 70,
   "tiers": {
    "1": 114,
@@ -48,7 +48,9 @@
  "generated_by": "tools/item_editor/build_item_catalog.py",
  "generated_from": [
   "assets-work/Items/assignments.json",
+  "assets-work/Items/client-review.json",
   "assets-work/Items/openmu-items.json",
+  "assets-work/Items/requests/*/request.json",
   "assets-work/Items/tiers.json",
   "bmdconv info of every model BMD",
   "git history of HEAD",
@@ -217,7 +219,11 @@
     "set_types": [],
     "socket_item": false
    },
-   "client_review": null,
+   "client_review": {
+    "date": "2026-09-24",
+    "note": "",
+    "verdict": "looks-good"
+   },
    "family": "swords",
    "group": 0,
    "in_table": true,
@@ -313,7 +319,18 @@
     "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
     "sha256": "33bf5614656dc2cc7575a76cea317f472ddc0f05de4a9fc998c713eb1bea2a7f"
    },
-   "requests": [],
+   "requests": [
+    {
+     "assigned_to": "item-req-0-1-rebuild-short-sword-exactly",
+     "id": "2026-09-24-0-1-rebuild-short-sword-exactly",
+     "status": "withdrawn"
+    },
+    {
+     "assigned_to": "item-req-0-1-rebuild-short-sword-reference",
+     "id": "2026-09-24-0-1-rebuild-short-sword-reference",
+     "status": "open"
+    }
+   ],
    "shared_with": {},
    "table": {
     "classes": {
@@ -8086,7 +8103,13 @@
     "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
     "sha256": "ae5c1a9ca296681fd9c7b1b043065a3f5c62f618067529fa62d3f7227b297025"
    },
-   "requests": [],
+   "requests": [
+    {
+     "assigned_to": "item-req-8-2-rebuild-pad-armor-rest",
+     "id": "2026-09-24-8-2-rebuild-pad-armor-rest",
+     "status": "open"
+    }
+   ],
    "shared_with": {},
    "table": {
     "classes": {
@@ -17250,7 +17273,13 @@
     "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
     "sha256": "6e758d670cc3ee5dbb6f6dcf2e7675b57ced5a95684a5655fe0ab6ff62b0edb8"
    },
-   "requests": [],
+   "requests": [
+    {
+     "assigned_to": "item-req-8-2-rebuild-pad-armor-rest",
+     "id": "2026-09-24-8-2-rebuild-pad-armor-rest",
+     "status": "open"
+    }
+   ],
    "shared_with": {
     "src/bin/Data/Player/boots_04b.ozt": [
      "11-10"
@@ -94787,7 +94816,13 @@
     "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
     "sha256": "f4d63e18797bbb401d2aa68dd1e926484c9e3d24502df99fb972741e952c6acf"
    },
-   "requests": [],
+   "requests": [
+    {
+     "assigned_to": "item-req-8-2-rebuild-pad-armor-rest",
+     "id": "2026-09-24-8-2-rebuild-pad-armor-rest",
+     "status": "open"
+    }
+   ],
    "shared_with": {},
    "table": {
     "classes": {
@@ -104630,7 +104665,11 @@
     ],
     "socket_item": false
    },
-   "client_review": null,
+   "client_review": {
+    "date": "2026-09-24",
+    "note": "",
+    "verdict": "looks-good"
+   },
    "family": "armours",
    "group": 8,
    "in_table": true,
@@ -104729,7 +104768,13 @@
     "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
     "sha256": "1412b9e338fdca3f29ea8fb09f0e90c68260abca2806bbe3fb85e64bc0b76cc2"
    },
-   "requests": [],
+   "requests": [
+    {
+     "assigned_to": "item-req-8-2-rebuild-pad-armor-rest",
+     "id": "2026-09-24-8-2-rebuild-pad-armor-rest",
+     "status": "open"
+    }
+   ],
    "shared_with": {
     "src/bin/Data/Player/skin_barbarian_01.OZJ": [
      "7-1",
@@ -115317,7 +115362,13 @@
     "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
     "sha256": "9b832295b088983b6b1acf3e7face2bb4f8ef0ea9d2984f9fac10d4acf9abe0e"
    },
-   "requests": [],
+   "requests": [
+    {
+     "assigned_to": "item-req-8-2-rebuild-pad-armor-rest",
+     "id": "2026-09-24-8-2-rebuild-pad-armor-rest",
+     "status": "open"
+    }
+   ],
    "shared_with": {},
    "table": {
     "classes": {
@@ -123602,7 +123653,42 @@
    "kind": "postgres"
   }
  },
- "requests": [],
+ "requests": [
+  {
+   "assigned_to": "item-req-0-1-rebuild-short-sword-exactly",
+   "id": "2026-09-24-0-1-rebuild-short-sword-exactly",
+   "items": [
+    "0-1"
+   ],
+   "kind": "redesign",
+   "path": "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-exactly",
+   "status": "withdrawn"
+  },
+  {
+   "assigned_to": "item-req-0-1-rebuild-short-sword-reference",
+   "id": "2026-09-24-0-1-rebuild-short-sword-reference",
+   "items": [
+    "0-1"
+   ],
+   "kind": "redesign",
+   "path": "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-reference",
+   "status": "open"
+  },
+  {
+   "assigned_to": "item-req-8-2-rebuild-pad-armor-rest",
+   "id": "2026-09-24-8-2-rebuild-pad-armor-rest",
+   "items": [
+    "8-2",
+    "7-2",
+    "9-2",
+    "10-2",
+    "11-2"
+   ],
+   "kind": "set",
+   "path": "assets-work/Items/requests/2026-09-24-8-2-rebuild-pad-armor-rest",
+   "status": "open"
+  }
+ ],
  "schema": "mu-item-catalog/1",
  "table_items_without_model": [
   {
