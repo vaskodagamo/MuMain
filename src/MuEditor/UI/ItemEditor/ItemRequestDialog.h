@@ -66,6 +66,8 @@ private:
     void LoadRenderFacts();
     void FindOpenRequests();
     void LoadConcept();
+    // A picked concept: kind redesign and the "build it as the concept" text, to edit.
+    void FillConceptDefaults(const Editor::Assets::ItemCatalogEntry& item);
     void ReleaseConcept();
 
     void RenderForm();

@@ -57,6 +57,17 @@ constexpr int PART_KIND_COUNT = ITEM_REQUEST_KIND_COUNT - 1;
 // In RequestPriority order.
 constexpr const char* PRIORITY_LABELS[] = {"low", "normal", "high"};
 
+// With a picked concept the owner usually wants the item built as the concept shows it; the
+// form starts with that request filled in, to edit or delete.
+constexpr const char* CONCEPT_SUMMARY_START = "Rebuild ";
+constexpr const char* CONCEPT_SUMMARY_SET = " and the rest of its armour set";
+constexpr const char* CONCEPT_SUMMARY_END = " exactly as the picked concept";
+constexpr const char* CONCEPT_DETAILS =
+    "Match the attached concept (ref-concept.jpg) as closely as possible: shapes, colours, materials and details\n"
+    "Where the game limits do not allow a detail, keep the closest simpler version";
+constexpr const char* CONCEPT_KEEP = "Same fit on the character, same animations, same inventory size";
+constexpr const char* CONCEPT_AVOID = "Own design ideas that are not in the concept";
+
 const ImVec4 COLOR_ERROR(1.0f, 0.45f, 0.4f, 1.0f);
 const ImVec4 COLOR_OK(0.45f, 0.85f, 0.45f, 1.0f);
 constexpr std::string_view LIST_SEPARATOR = ", ";
@@ -170,10 +181,26 @@ void CItemRequestDialog::Reset(const ItemCatalogEntry& item, const ItemCatalog& 
         m_conceptFile.clear();
     m_includeConcept = !m_conceptFile.empty();
     LoadConcept();
+    if (m_includeConcept)
+        FillConceptDefaults(item);
     m_folder.clear();
     m_validated = false;
     m_validatorReport.clear();
     m_error.clear();
+}
+
+void CItemRequestDialog::FillConceptDefaults(const ItemCatalogEntry& item)
+{
+    if (CanBeSet())
+        m_setKind = static_cast<int>(ItemRequestKind::Redesign);
+    else
+        m_kind = static_cast<int>(ItemRequestKind::Redesign);
+    const std::string summary =
+        CONCEPT_SUMMARY_START + item.name + (CanBeSet() ? CONCEPT_SUMMARY_SET : "") + CONCEPT_SUMMARY_END;
+    CopyText(m_summary, sizeof(m_summary), summary);
+    CopyText(m_details, sizeof(m_details), CONCEPT_DETAILS);
+    CopyText(m_keep, sizeof(m_keep), CONCEPT_KEEP);
+    CopyText(m_avoid, sizeof(m_avoid), CONCEPT_AVOID);
 }
 
 ItemRequestTarget CItemRequestDialog::TargetOf(const ItemCatalogEntry& item) const
