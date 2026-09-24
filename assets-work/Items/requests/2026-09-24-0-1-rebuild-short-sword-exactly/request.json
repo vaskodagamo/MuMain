@@ -3,12 +3,18 @@
   "id": "2026-09-24-0-1-rebuild-short-sword-exactly",
   "created": "2026-09-24T14:34:10+02:00",
   "author": "owner (item editor)",
-  "status": "open",
+  "status": "withdrawn",
   "status_history": [
     {
       "status": "open",
       "at": "2026-09-24T14:34:10+02:00",
       "by": "item editor"
+    },
+    {
+      "status": "withdrawn",
+      "at": "2026-09-24T16:09:04+02:00",
+      "by": "owner (item editor)",
+      "note": "shit"
     }
   ],
   "priority": "normal",
@@ -264,5 +270,11 @@
     "start_commit": null
   },
   "result": null,
-  "decision": null
+  "decision": {
+    "status": "withdrawn",
+    "at": "2026-09-24T16:09:04+02:00",
+    "by": "owner (item editor)",
+    "reason": "shit",
+    "ledger_entry": null
+  }
 }
