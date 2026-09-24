@@ -155,6 +155,51 @@ ordered_json ChangeJson(const ItemRequestDraft& draft)
     return json;
 }
 
+ordered_json DrawModeJson(const std::string& mode)
+{
+    return NameOrNull(mode); // empty: the model is not used in that context
+}
+
+ordered_json RenderModelJson(const ItemModelDraw& model)
+{
+    ordered_json meshes = ordered_json::array();
+    for (const ItemMeshDraw& mesh : model.meshes)
+    {
+        ordered_json json;
+        json["mesh"] = mesh.mesh;
+        json["texture"] = mesh.texture;
+        json["worn"] = DrawModeJson(mesh.worn);
+        json["dropped"] = DrawModeJson(mesh.dropped);
+        json["inventory"] = DrawModeJson(mesh.inventory);
+        meshes.push_back(json);
+    }
+    ordered_json json;
+    json["role"] = model.role;
+    json["bmd"] = model.bmd;
+    json["meshes"] = meshes;
+    return json;
+}
+
+// constraints.render: per target, how the game draws its meshes and what it adds.
+ordered_json RenderJson(const std::vector<ItemRequestTarget>& targets)
+{
+    ordered_json render = ordered_json::object();
+    for (const ItemRequestTarget& target : targets)
+    {
+        ordered_json models = ordered_json::array();
+        ordered_json effects = ordered_json::array();
+        if (target.render)
+        {
+            for (const ItemModelDraw& model : target.render->models)
+                models.push_back(RenderModelJson(model));
+            for (const std::string& effect : target.render->effects)
+                effects.push_back(effect);
+        }
+        render[target.item.key] = {{"models", models}, {"effects", effects}};
+    }
+    return render;
+}
+
 ordered_json ConstraintsJson(const ItemRequestDraft& draft)
 {
     const ItemRequestScope scope = ComputeItemScope(PartKind(draft.input), draft.targets);
@@ -168,7 +213,8 @@ ordered_json ConstraintsJson(const ItemRequestDraft& draft)
     json["owned_files"] = scope.ownedFiles;
     json["protected_paths"] = draft.domain.protectedPaths;
     json["limits"] = {{"max_triangles", MAX_TRIANGLES}, {"max_texture_size", MAX_TEXTURE_SIZE}};
-    json["must_keep"] = ItemMustKeep(draft.input);
+    json["must_keep"] = ItemRequestMustKeep(draft);
+    json["render"] = RenderJson(draft.targets);
     return json;
 }
 
@@ -311,6 +357,30 @@ std::vector<std::string> ItemMustKeep(const ItemOwnerInput& input)
     lines.push_back(KIND_MUST_KEEP[static_cast<int>(PartKind(input))]);
     if (input.kind == ItemRequestKind::Set)
         lines.push_back(KIND_MUST_KEEP[static_cast<int>(ItemRequestKind::Set)]);
+    return lines;
+}
+
+std::vector<std::string> ItemRenderMustKeep(const std::vector<ItemRequestTarget>& targets)
+{
+    std::vector<std::string> lines;
+    for (const ItemRequestTarget& target : targets)
+    {
+        if (!target.render)
+            continue;
+        for (const std::string& line : target.render->mustKeep)
+        {
+            if (std::find(lines.begin(), lines.end(), line) == lines.end())
+                lines.push_back(line);
+        }
+    }
+    return lines;
+}
+
+std::vector<std::string> ItemRequestMustKeep(const ItemRequestDraft& draft)
+{
+    std::vector<std::string> lines = ItemMustKeep(draft.input);
+    for (const std::string& line : ItemRenderMustKeep(draft.targets))
+        lines.push_back(line);
     return lines;
 }
 

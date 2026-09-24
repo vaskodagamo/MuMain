@@ -39,7 +39,7 @@ class ReadmeExample(unittest.TestCase):
         (self.scratch / 'src').symlink_to(ROOT / 'src')
         items = self.scratch / 'assets-work' / 'Items'
         items.mkdir(parents=True)
-        for name in ('catalog.json', 'tiers.json', 'assignments.json'):
+        for name in ('catalog.json', 'tiers.json', 'assignments.json', 'render-facts.json'):
             shutil.copy(ROOT / 'assets-work' / 'Items' / name, items / name)
         self.request = readme_example()
         self.folder = items / 'requests' / self.request['id']
@@ -66,6 +66,45 @@ class ReadmeExample(unittest.TestCase):
     def test_readme_example_is_valid(self):
         report = self.validate(self.request)
         self.assertEqual(report.errors, [])
+
+    def test_render_block_is_required(self):
+        request = copy.deepcopy(self.request)
+        del request['constraints']['render']
+        self.assert_error(request, 'constraints: missing "render"')
+
+    def test_render_block_must_equal_render_facts(self):
+        request = copy.deepcopy(self.request)
+        request['constraints']['render']['0-0']['models'][0]['meshes'][0]['worn'] = 'blended-additive'
+        self.assert_error(request, 'constraints.render.0-0: differs from render-facts.json')
+
+    def test_render_block_keys_are_the_targets(self):
+        request = copy.deepcopy(self.request)
+        request['constraints']['render']['12-0'] = request['constraints']['render']['0-0']
+        self.assert_error(request, "constraints.render: keys ['0-0', '12-0']")
+
+    def test_a_blended_wing_needs_the_blended_line(self):
+        facts = json.loads((ROOT / 'assets-work' / 'Items' / 'render-facts.json').read_text(encoding='utf-8'))
+        wing = facts['items']['12-0']
+        request = copy.deepcopy(self.request)
+        request['targets'][0]['key'] = '12-0'
+        request['constraints']['render'] = {'12-0': validator.render_block(wing)}
+        line = ('Blended meshes of Wing01.bmd (mesh 0): the game draws them additively - paint on black '
+                '(black is fully transparent, brightness becomes glow); no opaque background, no baked dark outlines')
+        self.assertEqual(wing['request']['must_keep'], [line])
+        self.assert_error(request, 'missing the render lines of render-facts.json')
+        request['constraints']['must_keep'].append(line)
+        errors = [error for error in self.validate(request).errors if 'render' in error]
+        self.assertEqual(errors, [])
+
+    def test_a_finished_request_keeps_its_render_facts(self):
+        request = copy.deepcopy(self.request)
+        request['constraints']['render']['0-0']['effects'] = ['an older reading']
+        request['status'] = 'withdrawn'
+        request['status_history'].append({'status': 'withdrawn', 'at': '2026-09-24T09:00:00+02:00', 'by': 'owner'})
+        request['decision'] = {'status': 'withdrawn', 'at': '2026-09-24T09:00:00+02:00', 'by': 'owner',
+                               'reason': 'test', 'ledger_entry': None}
+        errors = [error for error in self.validate(request).errors if 'render' in error]
+        self.assertEqual(errors, [])
 
     def test_upscale_may_not_own_a_bmd(self):
         request = copy.deepcopy(self.request)
@@ -125,6 +164,9 @@ class ReadmeExample(unittest.TestCase):
         request['change'].pop('reference_images')
         request['evidence']['captures'] = []
         request['constraints']['owned_files'] = sorted({c for m in entry['models'] for c in m['textures'].values() if c})
+        facts = json.loads((ROOT / 'assets-work/Items/render-facts.json').read_text(encoding='utf-8'))['items'][entry['key']]
+        request['constraints']['render'] = {entry['key']: validator.render_block(facts)}
+        request['constraints']['must_keep'] += facts['request']['must_keep']
         self.folder = self.folder.parent / request['id']
         (self.folder / 'captures').mkdir(parents=True)
         (self.folder / 'brief.md').write_text('# retargeted\n', encoding='utf-8')

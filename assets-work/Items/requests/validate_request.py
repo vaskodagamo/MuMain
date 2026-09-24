@@ -11,6 +11,8 @@ status-dependent fields) and the rules a schema cannot express:
   (open/claimed/delivered), every copied fact equals the catalog;
 - a set request covers parts of one armour set; shared and frozen textures are complete; owned
   files respect frozen textures and the kind; must_keep holds the lines of the kind;
+- while live, constraints.render and the render must_keep lines (blended, alpha-blended and cut-out
+  meshes) equal assets-work/Items/render-facts.json (tools/item_editor/render_facts.py);
 - with git: base_commit exists and holds the targets' current_sha256; a claimed or delivered
   request records start_commit (the main commit the worker branched from, which contains the
   filed request and the coordinator's assignment, and the same target files as base_commit), and
@@ -113,7 +115,10 @@ TARGET_KEYS = {'key', 'group', 'index', 'name', 'family', 'tier', 'classes', 'si
 TARGET_OPTIONAL = {'armour_set'}
 MODEL_KEYS = {'role', 'bmd', 'current_sha256', 'textures'}
 CHANGE_KEYS = {'summary', 'details', 'keep', 'avoid'}
-CONSTRAINT_KEYS = {'shared_textures', 'frozen_textures', 'owned_files', 'protected_paths', 'limits', 'must_keep'}
+CONSTRAINT_KEYS = {'shared_textures', 'frozen_textures', 'owned_files', 'protected_paths', 'limits', 'must_keep',
+                   'render'}
+RENDER_FACTS_SCHEMA = 'mu-item-render-facts/1'
+RENDER_CONTEXTS = ('worn', 'dropped', 'inventory')
 EVIDENCE_KEYS = {'captures', 'offline_previews'}
 CAPTURE_KEYS = {'file', 'variant', 'view', 'resolution', 'client_commit'}
 CAPTURE_OPTIONAL = {'angle', 'item_level', 'excellent', 'ancient', 'note'}
@@ -352,6 +357,15 @@ def load_reference(root=ROOT, items_dir=ITEMS_DIR, git_root=None):
             catalog = read_json(catalog_path)
         except ValueError as error:
             problems.append(f'catalog.json is not valid JSON ({error})')
+    render_facts = None
+    render_path = items_dir / 'render-facts.json'
+    if render_path.exists():
+        try:
+            render_facts = read_json(render_path)
+        except ValueError as error:
+            problems.append(f'render-facts.json is not valid JSON ({error})')
+        if isinstance(render_facts, dict) and render_facts.get('schema') != RENDER_FACTS_SCHEMA:
+            problems.append(f'render-facts.json is not {RENDER_FACTS_SCHEMA}')
     assignments = {}
     assignments_path = items_dir / 'assignments.json'
     if assignments_path.exists():
@@ -361,6 +375,7 @@ def load_reference(root=ROOT, items_dir=ITEMS_DIR, git_root=None):
             problems.append(f'assignments.json is not valid JSON ({error})')
     return {'root': root, 'items_dir': items_dir,
             'items': catalog.get('items', {}) if isinstance(catalog, dict) else None,
+            'render': render_facts.get('items', {}) if isinstance(render_facts, dict) else None,
             'assignments': assignments if isinstance(assignments, dict) else {},
             'git': Git(git_root or root), 'problems': problems}
 
@@ -544,6 +559,55 @@ def check_catalog_facts(request, keys, reference, report):
             if isinstance(model, dict) and model.get('current_sha256') != original.get('sha256'):
                 report.warn(f'{key}: {model.get("bmd")} current_sha256 differs from catalog.json '
                             '(the catalog is older than base_commit?)')
+
+
+def render_block(facts):
+    """constraints.render[<key>] of a live request: every model's per-mesh draw modes and the
+    effect sentences, copied from render-facts.json."""
+    models = [{'role': model['role'], 'bmd': model['bmd'],
+               'meshes': [{'mesh': mesh['mesh'], 'texture': mesh['texture'],
+                           **{context: mesh[context] for context in RENDER_CONTEXTS}} for mesh in model['meshes']]}
+              for model in facts['models']]
+    return {'models': models, 'effects': facts['request']['effects']}
+
+
+def expected_render_lines(keys, reference):
+    lines = []
+    for key in keys:
+        for line in reference['render'][key]['request']['must_keep']:
+            if line not in lines:
+                lines.append(line)
+    return lines
+
+
+def check_render(request, keys, reference, report):
+    """While live, constraints.render and the render must_keep lines equal render-facts.json."""
+    constraints = request.get('constraints') if isinstance(request.get('constraints'), dict) else {}
+    if 'render' not in constraints:
+        return  # check_keys reports the missing field
+    render = constraints.get('render')
+    if not isinstance(render, dict):
+        report.error('constraints.render: must be an object keyed by target key')
+        return
+    if sorted(render) != sorted(keys):
+        report.error(f'constraints.render: keys {sorted(render)} but the targets are {sorted(keys)}')
+    if request.get('status') not in LIVE_STATUSES:
+        return
+    if reference['render'] is None:
+        report.error('render-facts.json is missing; run tools/item_editor/render_facts.py')
+        return
+    missing_keys = [key for key in keys if key not in reference['render']]
+    if missing_keys:
+        report.error(f'render-facts.json has no entry for {missing_keys}; rebuild it')
+        return
+    for key in keys:
+        if render.get(key) != render_block(reference['render'][key]):
+            report.error(f'constraints.render.{key}: differs from render-facts.json (copy its models and '
+                         'request.effects)')
+    must_keep = constraints.get('must_keep') if isinstance(constraints.get('must_keep'), list) else []
+    missing = [line for line in expected_render_lines(keys, reference) if line not in must_keep]
+    if missing:
+        report.error(f'constraints.must_keep: missing the render lines of render-facts.json: {missing}')
 
 
 def check_change(request, request_id, reference, report):
@@ -1080,6 +1144,7 @@ def validate(folder, reference):
     check_set(request, keys, reference, report)
     owned, frozen, protected = check_constraints(request, keys, reference, report)
     check_catalog_facts(request, keys, reference, report)
+    check_render(request, keys, reference, report)
     check_evidence(request, request_id, reference, report)
     check_handoff(request, request_id, folder, report)
     installed = check_result(request, owned, keys, reference, report)

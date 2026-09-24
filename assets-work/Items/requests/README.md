@@ -97,6 +97,35 @@ The engine effects (+7..+15 glow, excellent shine, ancient effect) are drawn by 
 `RenderPartObjectEffect`, not by the asset; a request cannot change them. They are shown in the
 `glow` captures so the worker sees how the new texture will look under them.
 
+## How the game draws the item: `constraints.render` and the render lines
+
+The client draws some meshes blended, and that decides how their texture has to be painted: an
+opaque repaint of an additive wing turns into hard streaks or white blades in the game (the
+Wing01 pilot). [`../render-facts.json`](../render-facts.json) records, per item, model and mesh,
+how the engine draws it when **worn**, **dropped** (on the ground) and in the **inventory**, and
+what it adds on top; [`../README.md`](../README.md) ("How the game draws items") explains the modes
+and effects. A request copies both:
+
+- `constraints.render`: an object keyed by target key; each value is
+  `{"models": [...], "effects": [...]}`. `models` is the target's `render-facts.json` `models`
+  with, per model, `role`, `bmd` and `meshes`, and per mesh only `mesh`, `texture`, `worn`,
+  `dropped` and `inventory` (a mode, or `null` where the model is not used). `effects` is the
+  target's `request.effects`: the +level and excellent sentences, then every effect the engine
+  adds (sprites, particles, joints, extra mesh passes, UV animation, pulsing, cloth).
+- After the kind's lines, `constraints.must_keep` gets every target's `request.must_keep` lines
+  verbatim (each line once), one per model and mode that occurs:
+  - `Blended meshes of <bmd> (mesh 0 | meshes 0, 1): the game draws them additively - paint on black (black is fully transparent, brightness becomes glow); no opaque background, no baked dark outlines`
+  - `Alpha-blended meshes of <bmd> (...): the game draws them see-through at partial opacity - keep them light and even; no opaque background, nothing that has to read as solid`
+  - `Cut-out meshes of <bmd> (...): the game discards texels at or below 25% alpha and blends the rest - keep the 32-bit .tga alpha as the silhouette; no opaque background, no matte fringe`
+
+  `<bmd>` is the file name of the model (`Wing01.bmd`). A mesh counts when any of worn, dropped or
+  inventory draws it that way. Opaque meshes get no line. For the Wings of Elf (`12-0`) the line is
+  `Blended meshes of Wing01.bmd (mesh 0): the game draws them additively - paint on black (black is fully transparent, brightness becomes glow); no opaque background, no baked dark outlines`.
+
+While the request is live the validator requires `constraints.render` and these lines to equal
+`render-facts.json`; rebuild it with `python3 tools/item_editor/render_facts.py` when the engine's
+item render code or a model changes.
+
 ## How the editor fills a request
 
 - `base_commit`: the full sha of the checkout's `HEAD` (it must be on `origin`).
@@ -111,7 +140,8 @@ The engine effects (+7..+15 glow, excellent shine, ancient effect) are drawn by 
 - `constraints.owned_files`: the files the worker may replace (table above), never a frozen one.
 - `constraints.protected_paths`: at least `src/source/`, `src/MuEditor/` and
   `assets-work/Items/catalog.json`; the editor writes the list of the example.
-- `constraints.must_keep` and `constraints.limits`: as above.
+- `constraints.must_keep` and `constraints.limits`: as above; `constraints.render` and the render
+  lines from `render-facts.json` (the editor reads it next to `catalog.json`).
 - `change`: the owner's summary, details, keep and avoid; `set_kind` for a set;
   `reference_images` for the images the owner attached, copied to `captures/ref-1.jpg`, ...
 - `evidence.captures`: one entry per screenshot without the editor overlay: `view` is `inventory`,
@@ -158,7 +188,9 @@ a new one.
    (`docs(assets): claim item request <id>`) before you produce anything. If the validator says
    the request is stale, stop and tell the owner.
 2. Read `brief.md`, `request.json`, the targets' catalog entries (models, textures, `shared_with`,
-   structure) and [`ASTRA.md`](../../../ASTRA.md) (weapons, armour).
+   structure), their `render-facts.json` entries (which meshes the game blends, what it adds on
+   top) and [`ASTRA.md`](../../../ASTRA.md) (weapons, armour, "How the game draws items"). Paint a
+   blended mesh for blending and never paint the engine's effects into a texture.
 3. `constraints` are binding and the validator checks your working tree against `start_commit`:
    change only `owned_files` (replace, never add, delete or rename), never a frozen texture or a
    protected path; outside the request folder change nothing else but `docs/agents/WORKLOG.md`;
@@ -195,7 +227,8 @@ python3 assets-work/Items/requests/validate_request.py --all
 ```
 
 Besides the schema, the validator checks that the id, folder, branch, worktree and `deliver_to`
-agree; every path exists; targets are catalog items and, while live, equal the catalog; a set
+agree; every path exists; targets are catalog items and, while live, equal the catalog and
+`render-facts.json` (`constraints.render` and the render lines of `must_keep`); a set
 covers one armour set; shared and frozen textures are complete; owned files fit the kind and are
 never frozen or protected; `must_keep` has the lines of the kind; captures and reference images
 are JPEGs at most 1920 px wide whose size equals `resolution`; `base_commit` holds every target
@@ -208,7 +241,8 @@ exports; `owner-decision.json`, when present, has a valid verdict.
 
 `assets-work/Items/requests/2026-09-23-0-0-sharper-blade/request.json`: an `upscale` of the Kris
 (its model is `Sword01.bmd`, its only texture `sword02.jpg`, used by no other model, so it is
-owned). `tools/item_editor/tests/test_validate_request.py` validates exactly this text.
+owned; drawn opaque, so no render line). `tools/item_editor/tests/test_validate_request.py`
+validates exactly this text.
 
 ```json
 {
@@ -285,7 +319,25 @@ owned). `tools/item_editor/tests/test_validate_request.py` validates exactly thi
       "Armour and wings: the skeleton (bone count, order, names, parents) and every action with its key count",
       "Size in the inventory (Width x Height of the item table) and a footprint that fits it",
       "Upscale: the design, the mesh and the UV layout (unless the request says otherwise), the texture name suffixes"
-    ]
+    ],
+    "render": {
+      "0-0": {
+        "models": [
+          {
+            "role": "item",
+            "bmd": "src/bin/Data/Item/Sword01.bmd",
+            "meshes": [
+              { "mesh": 0, "texture": "sword02.jpg", "worn": "opaque", "dropped": "opaque", "inventory": "opaque" }
+            ]
+          }
+        ],
+        "effects": [
+          "+level look: +3..+6 tinted light, +7 and up extra chrome/metal passes over the whole model",
+          "Excellent: a second additive pass of the own texture in a pulsing purple/blue light (bright texels glow, black stays black)",
+          "A swing trail (weapon blur) follows the blade during attacks; its texture comes from the attack, not from the item"
+        ]
+      }
+    }
   },
   "evidence": {
     "captures": [
