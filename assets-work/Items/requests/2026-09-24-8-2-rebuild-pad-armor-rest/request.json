@@ -3,12 +3,17 @@
   "id": "2026-09-24-8-2-rebuild-pad-armor-rest",
   "created": "2026-09-24T13:15:54+02:00",
   "author": "owner (item editor)",
-  "status": "open",
+  "status": "withdrawn",
   "status_history": [
     {
       "status": "open",
       "at": "2026-09-24T13:15:54+02:00",
       "by": "item editor"
+    },
+    {
+      "status": "withdrawn",
+      "at": "2026-09-24T20:54:29+02:00",
+      "by": "owner (item editor)"
     }
   ],
   "priority": "normal",
@@ -605,5 +610,11 @@
     "start_commit": null
   },
   "result": null,
-  "decision": null
+  "decision": {
+    "status": "withdrawn",
+    "at": "2026-09-24T20:54:29+02:00",
+    "by": "owner (item editor)",
+    "reason": "Made with the old method; the set is redone from a reference mesh.",
+    "ledger_entry": null
+  }
 }
