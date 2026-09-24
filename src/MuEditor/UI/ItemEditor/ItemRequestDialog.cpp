@@ -228,7 +228,8 @@ void CItemRequestDialog::LoadRenderFacts()
 // The other parts of an armour part's set, in catalog order.
 void CItemRequestDialog::CollectSetParts(const ItemCatalog& catalog)
 {
-    const ItemCatalogEntry& clicked = m_targets.front().item;
+    // A copy: adding parts below grows m_targets, which would leave a reference dangling.
+    const ItemCatalogEntry clicked = m_targets.front().item;
     if (!IsArmourGroup(clicked.group) || !clicked.armourSet)
         return;
     for (const std::string& key : clicked.armourSetParts)
