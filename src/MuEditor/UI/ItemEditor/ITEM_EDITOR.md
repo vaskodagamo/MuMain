@@ -468,6 +468,7 @@ For the selected request:
 
 | Button | When | What it writes | Then |
 |--------|------|----------------|------|
+| **Copy Codex prompt** | open or claimed | Nothing: copies the prompt of `assets-work/Items/requests/codex-prompt.md` with this request's id, branch and worker label to the clipboard. | Paste it into a new Codex session, one session per request (after the request is committed, pushed and assigned). Edit that file to change the prompt for every request. |
 | **Withdraw...** | open or claimed | In `request.json` only `status` `withdrawn`, a `decision` and one `status_history` entry, with your optional reason. | Commit and push on `main` (the commands are shown). |
 | **Accept** / **Reject with notes** | delivered (the worker's branch pulled) | `owner-decision.json` next to `request.json`: `{"verdict": "accept" or "reject", "notes", "date"}`. Nothing else. | Commit it on the worker branch and push it; the coordinator accepts or rejects the request on `main`. |
 | **Re-file with notes...** | rejected, or your verdict was reject | Nothing yet: opens Ask Codex for the item with the same kind and notes, the rejection notes added to **What to change**, and the new request superseding the old one. | As for any new request. |

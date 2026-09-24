@@ -123,6 +123,7 @@ mu_add_test(
         ${PROJECT_SOURCE_DIR}/src/MuEditor/Editing/ItemCapturePlan.cpp
         ${MU_EDITOR_ASSETS_DIR}/AssetCatalog.cpp
         ${MU_EDITOR_ASSETS_DIR}/CaptureImage.cpp
+        ${MU_EDITOR_ASSETS_DIR}/CodexPrompt.cpp
         ${MU_EDITOR_ASSETS_DIR}/EditorText.cpp
         ${MU_EDITOR_ASSETS_DIR}/FileDigest.cpp
         ${MU_EDITOR_ASSETS_DIR}/GitCheckout.cpp

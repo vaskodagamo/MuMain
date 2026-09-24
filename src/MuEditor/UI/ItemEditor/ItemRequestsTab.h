@@ -30,6 +30,7 @@ private:
     void RenderRow(const Editor::Assets::ItemRequestSummary& request, int& selectedType,
                    const Editor::Assets::ItemCatalog* catalog);
     void RenderSelected(bool& showInBrowse, const Editor::Assets::ItemCatalog* catalog);
+    void RenderCodexPrompt(const Editor::Assets::ItemRequestSummary& request);
     void RenderWithdraw(const Editor::Assets::ItemRequestSummary& request);
     void RenderVerdict(const Editor::Assets::ItemRequestSummary& request, bool& showInBrowse);
     void RenderCompare(const Editor::Assets::ItemRequestSummary& request, bool& showInBrowse);

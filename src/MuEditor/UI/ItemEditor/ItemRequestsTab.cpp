@@ -8,6 +8,7 @@
 #include "ItemRequestDialog.h"
 #include "ItemRequestWatch.h"
 
+#include "Assets/CodexPrompt.h"
 #include "Assets/EditorText.h"
 #include "Assets/ItemRequestDecision.h"
 #include "Assets/RequestNaming.h"
@@ -251,10 +252,33 @@ void CItemRequestsTab::RenderSelected(bool& showInBrowse, const ItemCatalog* cat
     if (ImGui::Button(m_validation.valid() ? "Validating..." : "Validate"))
         Validate(*request);
     ImGui::EndDisabled();
+    RenderCodexPrompt(*request);
     RenderWithdraw(*request);
     RenderVerdict(*request, showInBrowse);
     RenderFollowUp(*request, showInBrowse, catalog);
     RenderResult();
+}
+
+// The owner's prompt (requests/codex-prompt.md) for this request, to paste into Codex.
+void CItemRequestsTab::RenderCodexPrompt(const ItemRequestSummary& request)
+{
+    if (request.status != "open" && request.status != "claimed")
+        return;
+    ImGui::SameLine();
+    if (!ImGui::Button("Copy Codex prompt"))
+        return;
+    const fs::path templateFile = Editor::Assets::CodexPrompt::TemplateFile(request.folder.parent_path());
+    const std::vector<unsigned char> bytes = Editor::Files::ReadWholeFile(templateFile);
+    const std::string prompt =
+        Editor::Assets::CodexPrompt::Fill(std::string(bytes.begin(), bytes.end()), request.id, request.branch);
+    if (prompt.empty())
+    {
+        m_error = "No prompt in " + templateFile.string() + " (it needs a \"## prompt\" heading).";
+        return;
+    }
+    ImGui::SetClipboardText(prompt.c_str());
+    m_error.clear();
+    m_result = "Copied the Codex prompt for " + request.id + ": paste it into a new Codex session.";
 }
 
 void CItemRequestsTab::RenderWithdraw(const ItemRequestSummary& request)

@@ -3,6 +3,7 @@
 #include "TempTree.h"
 
 #include "Assets/CaptureImage.h"
+#include "Assets/CodexPrompt.h"
 #include "Assets/FileDigest.h"
 #include "Assets/GitCheckout.h"
 #include "Assets/ItemCatalog.h"
@@ -663,5 +664,22 @@ TEST_CASE("validate_request.py accepts the requests the editor writes [editor][i
 
     std::string report;
     CHECK_MESSAGE(RunValidator(tree.Root(), folders, report) == 0, report);
+}
+
+TEST_CASE("The Codex prompt fills in the request and drops the introduction [editor][item-requests]")
+{
+    namespace Prompt = Editor::Assets::CodexPrompt;
+    const std::string id = "2026-09-24-8-2-rebuild-pad-armor";
+    const std::string branch = "codex/item-req-8-2-rebuild-pad-armor";
+    CHECK(Prompt::WorkerLabel(branch) == "item-req-8-2-rebuild-pad-armor");
+    CHECK(Prompt::Fill("intro\n## prompt\n\nDo $id as \"$label\" on $branch; $id again.\n", id, branch) ==
+          "Do " + id + " as \"item-req-8-2-rebuild-pad-armor\" on " + branch + "; " + id + " again.");
+    CHECK(Prompt::Fill("no heading", id, branch).empty());
+
+    // The owner's template in the repository has a prompt that names the request.
+    const std::string text = ReadText(Prompt::TemplateFile(fs::path(MU_REPO_ROOT) / "assets-work/Items/requests"));
+    const std::string prompt = Prompt::Fill(text, id, branch);
+    CHECK(prompt.find(id) != std::string::npos);
+    CHECK(prompt.find('$') == std::string::npos);
 }
 #endif
