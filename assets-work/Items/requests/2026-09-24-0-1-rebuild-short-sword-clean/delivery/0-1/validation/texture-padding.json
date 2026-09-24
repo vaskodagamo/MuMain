@@ -1,0 +1,7 @@
+{
+  "margin_px": 32,
+  "margin_type": "EXTEND",
+  "unused_pixels": "filled iteratively with neighbouring baked colours",
+  "black_pixels": 0,
+  "jpeg_quality": 98
+}

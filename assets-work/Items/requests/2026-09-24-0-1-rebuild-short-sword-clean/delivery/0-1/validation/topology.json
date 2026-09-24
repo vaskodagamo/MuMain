@@ -1,0 +1,19 @@
+{
+  "non_manifold_edges": 0,
+  "degenerate_triangles": 0,
+  "connected_closed_components": 5,
+  "signed_component_volumes": [
+    1728.5917271773021,
+    416.2209330639639,
+    152.90435252369693,
+    39.80166749159495,
+    4.124410937229793
+  ],
+  "outward_normals": true,
+  "triangles": 380,
+  "bone_assignments": [
+    1
+  ],
+  "uv_layers": 1,
+  "material": "sword03.jpg"
+}

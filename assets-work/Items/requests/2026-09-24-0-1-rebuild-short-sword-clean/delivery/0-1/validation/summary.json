@@ -1,0 +1,108 @@
+{
+  "offline_only": true,
+  "tools": {
+    "original_info": {
+      "command": [
+        "../MuMain/out/build/macos-arm64/tools/bmdconv/Release/bmdconv",
+        "info",
+        "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-clean/delivery/0-1/original/Sword02.bmd"
+      ],
+      "exit_code": 0,
+      "stdout": "model assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-clean/delivery/0-1/original/Sword02.bmd\n  name field: Data2\\Item\\Sword\\Sword03.smd  version: 10\n  meshes: 1  bones: 1  actions: 1  triangles: 44\n  bounds (bind pose): min -2.32 -102.18 -16.90  max 2.29 12.97 15.12  size 4.61 115.14 32.02\n  mesh 0: triangles=44 vertices=30 normals=52 uvs=21 texture=sword03.jpg\n  bone 0: \"knife_a\" parent=-1\n  action 0: keys=1 lock=0\n",
+      "stderr": ""
+    },
+    "export_info": {
+      "command": [
+        "../MuMain/out/build/macos-arm64/tools/bmdconv/Release/bmdconv",
+        "info",
+        "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-clean/delivery/0-1/exports/Sword02.bmd"
+      ],
+      "exit_code": 0,
+      "stdout": "model assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-clean/delivery/0-1/exports/Sword02.bmd\n  name field: Sword02.smd  version: 12\n  meshes: 1  bones: 1  actions: 1  triangles: 380\n  bounds (bind pose): min -1.78 -102.18 -15.02  max 2.29 12.64 15.77  size 4.07 114.82 30.79\n  mesh 0: triangles=380 vertices=200 normals=260 uvs=477 texture=sword03.jpg\n  bone 0: \"knife_a\" parent=-1\n  action 0: keys=1 lock=0\n",
+      "stderr": ""
+    },
+    "bmdconv_validate": {
+      "command": [
+        "../MuMain/out/build/macos-arm64/tools/bmdconv/Release/bmdconv",
+        "validate",
+        "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-clean/delivery/0-1/exports/Sword02.smd"
+      ],
+      "exit_code": 0,
+      "stdout": "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-clean/delivery/0-1/exports/Sword02.smd: bones=1 frames=1 triangles=380 materials=1\nOK\n",
+      "stderr": ""
+    },
+    "bmdconv_compare": {
+      "command": [
+        "../MuMain/out/build/macos-arm64/tools/bmdconv/Release/bmdconv",
+        "compare",
+        "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-clean/delivery/0-1/original/Sword02.bmd",
+        "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-clean/delivery/0-1/exports/Sword02.bmd"
+      ],
+      "exit_code": 2,
+      "stdout": "meshes 1 vs 1, bones 1 vs 1, actions 1 vs 1, triangles 44 vs 380\nunmatched triangles: 44  max corner distance: 0.0000  max bone distance: 0.0000  differing bone names: 0\nDIFFERENT\n",
+      "stderr": ""
+    },
+    "wrap": {
+      "command": [
+        "python3",
+        "tools/mu_texture.py",
+        "wrap",
+        "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-clean/delivery/0-1/exports/sword03.jpg",
+        "--out",
+        "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-clean/delivery/0-1/exports/sword03.OZJ"
+      ],
+      "exit_code": 0,
+      "stdout": "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-clean/delivery/0-1/exports/sword03.OZJ\n",
+      "stderr": ""
+    },
+    "mu_texture_check": {
+      "command": [
+        "python3",
+        "tools/mu_texture.py",
+        "check",
+        "assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-clean/delivery/0-1/exports/sword03.OZJ"
+      ],
+      "exit_code": 0,
+      "stdout": "OK assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-clean/delivery/0-1/exports/sword03.OZJ\n",
+      "stderr": ""
+    }
+  },
+  "geometry": {
+    "non_manifold_edges": 0,
+    "degenerate_triangles": 0,
+    "connected_closed_components": 5,
+    "signed_component_volumes": [
+      1728.5917271773021,
+      416.2209330639639,
+      152.90435252369693,
+      39.80166749159495,
+      4.124410937229793
+    ],
+    "outward_normals": true,
+    "triangles": 380,
+    "bone_assignments": [
+      1
+    ],
+    "uv_layers": 1,
+    "material": "sword03.jpg"
+  },
+  "padding": {
+    "margin_px": 32,
+    "margin_type": "EXTEND",
+    "unused_pixels": "filled iteratively with neighbouring baked colours",
+    "black_pixels": 0,
+    "jpeg_quality": 98
+  },
+  "assessment": {
+    "bmdconv_validate": "PASS",
+    "texture_check": "PASS",
+    "bmdconv_compare": "Expected exit 2: redesigned geometry differs (44 to 380 triangles); same mesh/bone/action counts, 0 differing bone names and 0 maximum bone distance.",
+    "attachment": "Original overlaid in Blender; replacement grip surrounds model origin and blade points toward negative Y.",
+    "client_check": "Not performed; all reviews are offline. Hand review uses an explicitly schematic glove.",
+    "tip_correction": "Replaced recessed cap ridge with a planar diagonal cap following the owner-marked straight edge; inspected updated diffuse review."
+  },
+  "installed_sha256": {
+    "Sword02.bmd": "2416aa35cf4a0c3f5ec77253c4da27db65f372975dc29cff2f7dcae5db61eff6",
+    "sword03.OZJ": "6019cb05e76e75255a84cf09630e975b85f0415a59a780923eb050b3065bab42"
+  }
+}

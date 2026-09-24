@@ -1,0 +1,7 @@
+model assets-work/Items/requests/2026-09-24-0-1-rebuild-short-sword-clean/delivery/0-1/original/Sword02.bmd
+  name field: Data2\Item\Sword\Sword03.smd  version: 10
+  meshes: 1  bones: 1  actions: 1  triangles: 44
+  bounds (bind pose): min -2.32 -102.18 -16.90  max 2.29 12.97 15.12  size 4.61 115.14 32.02
+  mesh 0: triangles=44 vertices=30 normals=52 uvs=21 texture=sword03.jpg
+  bone 0: "knife_a" parent=-1
+  action 0: keys=1 lock=0
