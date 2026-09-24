@@ -421,6 +421,22 @@ Status:
   - Not verified: "Load candidate from folder..." (file dialog), armour class-variant switching,
     Rage Fighter hand models and inventory-only models (not switched), a real Codex delivery,
     Windows.
+- **Render facts and the blending rule (2026-09-24).** `tools/item_editor/render_facts.py` writes
+  `assets-work/Items/render-facts.json` (`mu-item-render-facts/1`): per item model and mesh how the
+  game draws it worn, dropped and in the inventory (opaque / cut-out / alpha-blended / additive /
+  hidden) and every built-in effect, each with the code line it comes from (a sourced table plus
+  texture-suffix rules; `--check` keeps it current). 306 of 889 items have effects; 91 weapons and
+  shields have code effects, 45 of them additive meshes; 61 cases stay `unverified`.
+  - Requests for items with blended or cut-out meshes carry an extra verbatim `must_keep` line per
+    model and mode (e.g. Wing01 mesh 0: paint on black, black is transparent, brightness glows)
+    and a `constraints.render` block; README, schema, `validate_request.py`, the editor's
+    `ItemRequest` builder and the brief ("How the game draws this item") agree; the details panel
+    shows a "Drawn" line. Guidance for Codex in `assets-work/Items/README.md` and ASTRA.md.
+  - Checked in the client with test-pattern textures: Wings of Elf additive, Curse opaque, Heaven
+    cut-out at 25 %, Soul mixed; 529/529 tests and the tools tests.
+  - Later "item effects" milestone (owner, not started): move the per-type effect code into a data
+    table one engine function reads, an `effect` request kind that edits table rows and effect
+    textures (no C++ for Codex), and a preview toggle for sprites and particles.
 - **Concept images (added by the owner, 2026-09-23; built the same day).** Before Codex models an
   item, `tools/item_editor/concepts.py` generates concept art through the OpenAI Images API
   (`/v1/images/edits` with the item's current render as reference), the owner picks one, and the

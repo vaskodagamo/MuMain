@@ -1404,3 +1404,16 @@ screen-checked by the owner.
 - Opening `MU Item Editor.app` with `open` did not start the client here; running the script
   inside it did. Not investigated.
 - The disk was nearly full again (about 1-2 GB free); 16 `MuMain-*` agent worktrees of about 3.3 GB each.
+
+## 2026-09-24 - Item render facts and the blending rule (Claude Opus 5.5)
+**Goal:** The style pilot's wings failed because the game draws them blended; tell Codex exactly
+how each item is drawn and inventory the built-in effects for a later effects milestone.
+
+**Done:** `render_facts.py` and `render-facts.json`; blended / alpha / cut-out `must_keep` lines
+and `constraints.render` in item requests (README, schema, validator, editor builder, brief);
+"Drawn" line in the Item Editor; painting guidance in the Items README and ASTRA.md.
+
+**Verified:** test-pattern textures in the client (Elf additive, Curse opaque, Heaven cut-out,
+Soul mixed); 529/529 tests and the tools tests.
+
+**Open / next:** 61 unverified cases (pets/mounts worn, some event items); item effects milestone.
