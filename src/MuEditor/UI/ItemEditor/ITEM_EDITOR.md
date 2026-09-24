@@ -412,6 +412,10 @@ names. The contract Codex works to is
    **Pick** in the [Concepts](#concepts) section) is shown as a thumbnail and included as
    `captures/ref-concept.jpg` unless you untick it. **Add image...** adds any JPEG as `ref-01.jpg`,
    `ref-02.jpg`, ... (wider than 1920 pixels: scaled down).
+   **With a picked concept the form starts filled in** for building the item as the concept shows
+   it: kind **redesign** (for a set, **Every part** redesign), the summary "Rebuild <item> exactly as
+   the picked concept", and What to change / Keep / Avoid lines that say so. Edit or delete them
+   for anything else. Without a concept the fields start empty.
 6. **Scope** lists the files Codex may replace and the textures it must leave alone because other items
    or models use them too.
 
