@@ -3,6 +3,10 @@
 #include "CameraState.h"
 #include "CameraConfig.h"
 #include "Render/Renderer/MuRenderer.h"
+#include "UI/Scaling/UITransform.h"
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 // External window dimensions
 extern unsigned int WindowWidth;
@@ -11,37 +15,73 @@ extern int OpenglWindowX;
 extern int OpenglWindowY;
 extern int OpenglWindowWidth;
 extern int OpenglWindowHeight;
+extern EGameScene SceneFlag;
 
-// Actual viewport dimensions (distinct from OpenglWindowWidth/Height which are full window)
-static int s_ViewportWidth = 0;
-static int s_ViewportHeight = 0;
-
-void CameraProjection::SetupPerspective(CameraState& state, float fov, float aspect,
-                                          float zNear, float zFar)
+void CameraProjection::UpdateView(CameraState& state, int x, int y, int width, int height)
 {
-    gluPerspective(fov, aspect, zNear, zFar);
+    width = std::max(width, 1);
+    height = std::max(height, 1);
 
-    // Use actual viewport dimensions (set by SetViewport) for screen center and
-    // perspective. This accounts for the game viewport being narrower/shorter than
-    // the full window when UI panels (inventory, NPC shop, etc.) are open.
-    int vpWidth = s_ViewportWidth > 0 ? s_ViewportWidth : OpenglWindowWidth;
-    int vpHeight = s_ViewportHeight > 0 ? s_ViewportHeight : OpenglWindowHeight;
+    // The ops the renderer's matrix stack applied, so the view matches what it built bit for bit.
+    glm::mat4 view(1.f);
+    view = glm::rotate(view, glm::radians(state.Angle[1]), glm::vec3(0.f, 1.f, 0.f));
+    if (state.TopViewEnable == false)
+        view = glm::rotate(view, glm::radians(state.Angle[0]), glm::vec3(1.f, 0.f, 0.f));
+    view = glm::rotate(view, glm::radians(state.Angle[2]), glm::vec3(0.f, 0.f, 1.f));
+    view = glm::translate(view, glm::vec3(-state.Position[0], -state.Position[1], -state.Position[2]));
+    for (int i = 0; i < 3; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            state.Matrix[i][j] = view[j][i];
+        }
+    }
 
-    state.ScreenCenterX = OpenglWindowX + vpWidth / 2;
-    state.ScreenCenterY = OpenglWindowY + vpHeight / 2;
+    state.ScreenCenterX = x + width / 2;
+    state.ScreenCenterY = y + height / 2;
     state.ScreenCenterYFlip = WindowHeight - state.ScreenCenterY;
 
-    float fovRad = fov * 0.5f * Q_PI / 180.0f;
-    state.PerspectiveX = tanf(fovRad) / (float)(vpWidth / 2) * aspect;
-    state.PerspectiveY = tanf(fovRad) / (float)(vpHeight / 2);
+    const float aspect = static_cast<float>(width) / height;
+    const float fovRad = state.FOV * 0.5f * Q_PI / 180.0f;
+    state.PerspectiveX = tanf(fovRad) / (float)(width / 2) * aspect;
+    state.PerspectiveY = tanf(fovRad) / (float)(height / 2);
+}
+
+void CameraProjection::ApplyView(const CameraState& state, int width, int height)
+{
+    width = std::max(width, 1);
+    height = std::max(height, 1);
+
+    auto& renderer = mu::GetRenderer();
+    renderer.SetMatrixMode(GL_PROJECTION);
+    renderer.LoadIdentity();
+    gluPerspective(state.FOV, static_cast<float>(width) / height, state.ViewNear,
+                   state.ViewFar * RENDER_DISTANCE_MULTIPLIER);
+
+    float view[16] = {};
+    for (int i = 0; i < 3; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            view[j * 4 + i] = state.Matrix[i][j];
+        }
+    }
+    view[15] = 1.f;
+    renderer.SetMatrixMode(GL_MODELVIEW);
+    renderer.LoadMatrix(view);
+}
+
+float CameraProjection::WorldAspectRatio()
+{
+    if (SceneFlag == MAIN_SCENE)
+        return UI::Scaling::WorldViewportAspect(WindowWidth, WindowHeight, g_Camera.TopViewEnable);
+    return static_cast<float>(WindowWidth) / WindowHeight;
 }
 
 void CameraProjection::SetViewport(int x, int y, int width, int height)
 {
     OpenglWindowX = x;
     OpenglWindowY = y;
-    s_ViewportWidth = width;
-    s_ViewportHeight = height;
 
     mu::GetRenderer().SetViewport(x, y, width, height);
     mu::GetRenderer().SetScissor(x, y, width, height);
@@ -84,6 +124,20 @@ void CameraProjection::WorldToScreen(const CameraState& state, const vec3_t worl
     // Convert to 640×480 reference coordinates
     *outX = *outX * REFERENCE_WIDTH / (int)WindowWidth;
     *outY = *outY * REFERENCE_HEIGHT / (int)WindowHeight;
+}
+
+bool CameraProjection::WorldToWindowPixel(const CameraState& state, const vec3_t worldPos, float* outX, float* outY)
+{
+    vec3_t transformPos;
+    VectorTransform(worldPos, state.Matrix, transformPos);
+    if (transformPos[2] >= 0.0f)
+    {
+        return false;
+    }
+
+    *outX = static_cast<float>(state.ScreenCenterX) - transformPos[0] / (state.PerspectiveX * transformPos[2]);
+    *outY = static_cast<float>(state.ScreenCenterY) + transformPos[1] / (state.PerspectiveY * transformPos[2]);
+    return true;
 }
 
 void CameraProjection::TransformPosition(const CameraState& state, const vec3_t position,

@@ -3,8 +3,9 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "UI/Legacy/UIWindows.h"
-#include "UI/Legacy/UIManager.h"
+#include "Core/Utilities/Random.h"
+#include "Network/Server/WSclient.h"
+#include "UI/Core/UIManager.h"
 #include "Audio/DSPlaySound.h"
 #include "Render/Textures/ZzzOpenglUtil.h"
 #include "Render/Textures/ZzzTexture.h"
@@ -14,6 +15,7 @@
 #include "Scenes/SceneCore.h"
 #include "Render/Effects/ZzzEffect.h"
 #include "Engine/AI/ZzzAI.h"
+#include "Engine/Object/ZzzObject.h"
 #include "Engine/Object/ZzzOpenData.h"
 #include "Engine/Physics/PhysicsManager.h"
 #include "Character/CSParts.h"
@@ -26,10 +28,10 @@
 #include "Engine/Object/ZzzInterface.h"
 #include "Camera/CameraProjection.h"
 #include "UI/Scaling/UITransform.h"
+#include "Render/Effects/EffectDraw.h"
 #ifdef _EDITOR
 #include "../MuEditor/Core/OfflineWorld.h"
 #endif
-
 
 extern  int     WaterTextureNumber;
 extern  char* NUM_MUSIC;
@@ -126,7 +128,7 @@ namespace battleCastle
 
         if (InArea(Position[0], Position[1], o->Position, Range) && o->CurrentAction != AniType)
         {
-            //            if ( Range<=350.f && rand()%(int)(100-(Range-350.f)/10) )
+            //            if ( Range<=350.f && Random::Rand()%(int)(100-(Range-350.f)/10) )
             if (Hero->Helper.Type == MODEL_HORN_OF_FENRIR && AniType == PLAYER_HIGH_SHOCK)
             {
                 SetAction_Fenrir_Damage(Hero, o);
@@ -149,7 +151,7 @@ namespace battleCastle
             {
                 if (InArea(Position[0], Position[1], o->Position, Range))
                 {
-                    //                    if ( Range<=350.f && rand()%(int)(100-(Range-350.f)/10) )
+                    //                    if ( Range<=350.f && Random::Rand()%(int)(100-(Range-350.f)/10) )
                     {
                         SetAction(o, AniType);
                     }
@@ -277,9 +279,17 @@ namespace battleCastle
         }
     }
 
-    void RenderAurora(int Type, int RenderType, float x, float y, float sx, float sy, vec3_t Light)
+    // The pulse of a dark aurora: its second pass is lit by (1 - pulse) x pulse.
+    static float AuroraPulse()
     {
-        float   Luminosity = sinf(WorldTime * 0.0015f) * 0.3f + 0.7f;
+        return sinf(WorldTime * 0.0015f) * 0.3f + 0.7f;
+    }
+
+    void RenderAurora(int Type, int RenderType, float x, float y, float sx, float sy, const vec3_t light)
+    {
+        vec3_t Light;
+        VectorCopy(light, Light);
+        float Luminosity = AuroraPulse();
 
         if (RenderType == RENDER_DARK)
         {
@@ -292,14 +302,16 @@ namespace battleCastle
             Vector(Luminosity * Light[0], Luminosity * Light[1], Luminosity * Light[2], Light);
         }
 
-        RenderTerrainAlphaBitmap(Type, x, y, sx, sy, Light, WorldTime * 0.01f);
+        Render::EffectDrawing::ActiveEffectDrawer().DrawDecal(
+            Render::EffectDrawing::Decal(Type, x, y, sx, sy, Light, WorldTime * 0.01f));
 
         if (RenderType == RENDER_DARK)
         {
             Luminosity = 1.f - Luminosity;
             Vector(Luminosity * Light[0], Luminosity * Light[1], Luminosity * Light[2], Light);
         }
-        RenderTerrainAlphaBitmap(Type, x, y, sx, sy, Light, -WorldTime * 0.01f);
+        Render::EffectDrawing::ActiveEffectDrawer().DrawDecal(
+            Render::EffectDrawing::Decal(Type, x, y, sx, sy, Light, -WorldTime * 0.01f));
     }
 
     void SetBuildTimeLocation(OBJECT* o)
@@ -609,11 +621,11 @@ namespace battleCastle
         const DWORD smokeColor = RGBA(77, 77, 64, 255);
         float WindX2 = (float)((int)WorldTime % 100000) * 0.0005f;
         RenderBitmapUV(BITMAP_CHROME + 3, 0.f, 0.f, (float)REFERENCE_WIDTH,
-            UI::Scaling::ScreenOverlayContentHeight(WindowWidth, WindowHeight), WindX2, 0.f, 3.f, 2.f, smokeColor);
+            UI::Scaling::ScreenOverlayFullHeight(WindowWidth, WindowHeight), WindX2, 0.f, 3.f, 2.f, smokeColor);
         EnableAlphaBlend();
         float WindX = (float)((int)WorldTime % 100000) * 0.0002f;
         RenderBitmapUV(BITMAP_CHROME + 2, 0.f, 0.f, (float)REFERENCE_WIDTH,
-            UI::Scaling::ScreenOverlayContentHeight(WindowWidth, WindowHeight), WindX, 0.f, 0.3f, 0.3f, smokeColor);
+            UI::Scaling::ScreenOverlayFullHeight(WindowWidth, WindowHeight), WindX, 0.f, 0.3f, 0.3f, smokeColor);
     }
 
     bool CreateFireSnuff(PARTICLE* o)
@@ -626,30 +638,34 @@ namespace battleCastle
         }
 
         o->Type = BITMAP_FIRE_SNUFF;
-        o->Scale = rand() % 50 / 100.f + 0.5f;
+        o->Scale = Random::Rand() % 50 / 100.f + 0.5f;
         vec3_t Position;
 
         if (gMapManager.WorldActive == WD_55LOGINSCENE)
         {
-            Vector(Hero->Object.Position[0] + (float)(rand() % 1600 - 800), Hero->Object.Position[1] + (float)(rand() % 1400 - 500), Hero->Object.Position[2] + (float)(rand() % 1000 + 50), Position);
+            Vector(Hero->Object.Position[0] + (float)(Random::Rand() % 1600 - 800),
+                   Hero->Object.Position[1] + (float)(Random::Rand() % 1400 - 500),
+                   Hero->Object.Position[2] + (float)(Random::Rand() % 1000 + 50), Position);
         }
         else
         {
-            Vector(Hero->Object.Position[0] + (float)(rand() % 1600 - 800), Hero->Object.Position[1] + (float)(rand() % 1400 - 500), Hero->Object.Position[2] + (float)(rand() % 300 + 50), Position);
+            Vector(Hero->Object.Position[0] + (float)(Random::Rand() % 1600 - 800),
+                   Hero->Object.Position[1] + (float)(Random::Rand() % 1400 - 500),
+                   Hero->Object.Position[2] + (float)(Random::Rand() % 300 + 50), Position);
         }
 
         VectorCopy(Position, o->Position);
         VectorCopy(Position, o->StartPosition);
-        o->Velocity[0] = -(float)(rand() % 64 + 64) * 0.1f;
+        o->Velocity[0] = -(float)(Random::Rand() % 64 + 64) * 0.1f;
         if (Position[1] < g_Camera.Position[1] + 400.f)
         {
             o->Velocity[0] = -o->Velocity[0] + 3.2f;
         }
-        o->Velocity[1] = (float)(rand() % 32 - 16) * 0.1f;
-        o->Velocity[2] = (float)(rand() % 32 - 16) * 0.1f;
-        o->TurningForce[0] = (float)(rand() % 16 - 8) * 0.1f;
-        o->TurningForce[1] = (float)(rand() % 64 - 32) * 0.1f;
-        o->TurningForce[2] = (float)(rand() % 16 - 8) * 0.1f;
+        o->Velocity[1] = (float)(Random::Rand() % 32 - 16) * 0.1f;
+        o->Velocity[2] = (float)(Random::Rand() % 32 - 16) * 0.1f;
+        o->TurningForce[0] = (float)(Random::Rand() % 16 - 8) * 0.1f;
+        o->TurningForce[1] = (float)(Random::Rand() % 64 - 32) * 0.1f;
+        o->TurningForce[2] = (float)(Random::Rand() % 16 - 8) * 0.1f;
 
         Vector(1.f, 0.f, 0.f, o->Light);
 
@@ -745,23 +761,23 @@ namespace battleCastle
         PlayBuffer(SOUND_BC_AMBIENT);
         if (IsBattleCastleStart() && rand_fps_check(10))
         {
-            if (rand_fps_check(100))
+            if (Random::Rand() % 100 == 0)
             {
                 PlayBuffer(SOUND_BC_AMBIENT_BATTLE1);
             }
-            if (rand_fps_check(100))
+            if (Random::Rand() % 100 == 0)
             {
                 PlayBuffer(SOUND_BC_AMBIENT_BATTLE2);
             }
-            if (rand_fps_check(100))
+            if (Random::Rand() % 100 == 0)
             {
                 PlayBuffer(SOUND_BC_AMBIENT_BATTLE3);
             }
-            if (rand_fps_check(100))
+            if (Random::Rand() % 100 == 0)
             {
                 PlayBuffer(SOUND_BC_AMBIENT_BATTLE4);
             }
-            if (rand_fps_check(100))
+            if (Random::Rand() % 100 == 0)
             {
                 PlayBuffer(SOUND_BC_AMBIENT_BATTLE5);
             }
@@ -773,17 +789,19 @@ namespace battleCastle
             {
                 LastStoneFlyEffect = WorldTime;
                 int HeroY = (Hero->PositionY);
-                if (rand() % 3)
+                if (Random::Rand() % 3)
                 {
                     if (HeroY > 50 && HeroY < 131)
                     {
-                        int dx = rand() % 1000 - 500;
+                        int dx = Random::Rand() % 1000 - 500;
                         vec3_t Position;
                         vec3_t Angle = { 0.f, 0.f, 0.f };
                         vec3_t Light = { 1.f, 1.f, 1.f };
 
-                        if (dx < 30 && dx>0) dx = 100 + rand() % 30;
-                        else if (dx > -30 && dx < 0) dx -= 100 + rand() % 30;
+                        if (dx < 30 && dx > 0)
+                            dx = 100 + Random::Rand() % 30;
+                        else if (dx > -30 && dx < 0)
+                            dx -= 100 + Random::Rand() % 30;
 
                         Position[0] = Hero->Object.Position[0] + dx;
                         Position[2] = 500.f;
@@ -795,9 +813,9 @@ namespace battleCastle
                         }
                         else
                         {
-                            SiegePositionY = HeroY - (rand() % 10 + 10);
+                            SiegePositionY = HeroY - (Random::Rand() % 10 + 10);
                         }
-                        Position[1] = SiegePositionY * TERRAIN_SCALE + (rand() % 40 - 20);
+                        Position[1] = SiegePositionY * TERRAIN_SCALE + (Random::Rand() % 40 - 20);
                         CreateEffect(MODEL_FLY_BIG_STONE1, Position, Angle, Light, 0);
                     }
                 }
@@ -805,13 +823,15 @@ namespace battleCastle
                 {
                     if (HeroY > 70 && HeroY < 177)
                     {
-                        int dx = rand() % 1000 - 500;
+                        int dx = Random::Rand() % 1000 - 500;
                         vec3_t Position;
                         vec3_t Angle = { 0.f, 0.f, 0.f };
                         vec3_t Light = { 1.f, 1.f, 1.f };
 
-                        if (dx < 100 && dx>0) dx = 100 + rand() % 30;
-                        else if (dx > -100 && dx < 0) dx -= 100 + rand() % 30;
+                        if (dx < 100 && dx > 0)
+                            dx = 100 + Random::Rand() % 30;
+                        else if (dx > -100 && dx < 0)
+                            dx -= 100 + Random::Rand() % 30;
 
                         Position[0] = Hero->Object.Position[0] + dx;
                         Position[2] = 500.f;
@@ -823,9 +843,9 @@ namespace battleCastle
                         }
                         else
                         {
-                            SiegePositionY = HeroY - (rand() % 10 + 10);
+                            SiegePositionY = HeroY - (Random::Rand() % 10 + 10);
                         }
-                        Position[1] = SiegePositionY * TERRAIN_SCALE - (rand() % 40 - 20);
+                        Position[1] = SiegePositionY * TERRAIN_SCALE - (Random::Rand() % 40 - 20);
                         CreateEffect(MODEL_FLY_BIG_STONE2, Position, Angle, Light, 0);
                     }
                 }
@@ -837,11 +857,13 @@ namespace battleCastle
                 if (LastArrowEffectOnBattlefield < WorldTime - ArrowEffectOnBattlefieldInterval)
                 {
                     LastArrowEffectOnBattlefield = WorldTime;
-                    int length = (rand() % 4 + 2) / 2;
-                    int dx = (rand() % 1400 - 700) - 60.f * length;
+                    int length = (Random::Rand() % 4 + 2) / 2;
+                    int dx = (Random::Rand() % 1400 - 700) - 60.f * length;
 
-                    if (dx < 100 && dx>0) dx = 100 + rand() % 30;
-                    else if (dx > -100 && dx < 0) dx -= 100 + rand() % 30;
+                    if (dx < 100 && dx > 0)
+                        dx = 100 + Random::Rand() % 30;
+                    else if (dx > -100 && dx < 0)
+                        dx -= 100 + Random::Rand() % 30;
 
                     vec3_t Position;
                     vec3_t Angle = { 0.f, 0.f, 0.f };
@@ -853,7 +875,7 @@ namespace battleCastle
                         Position[0] = Hero->Object.Position[0] + dx;
                         Position[2] = 350.f;
 
-                        bool attArrow = rand() % 2;
+                        bool attArrow = Random::Rand() % 2;
                         if (HeroY < 113)
                         {
                             attArrow = true;
@@ -865,16 +887,16 @@ namespace battleCastle
 
                         if (attArrow)
                         {
-                            int SiegePositionY = HeroY - (rand() % 1 + 10);
-                            Position[1] = SiegePositionY * TERRAIN_SCALE/*+(rand()%60-30)*/;
+                            int SiegePositionY = HeroY - (Random::Rand() % 1 + 10);
+                            Position[1] = SiegePositionY * TERRAIN_SCALE /*+(Random::Rand()%60-30)*/;
 
                             Angle[2] = 180.f;
                             CreateEffect(MODEL_ARROW, Position, Angle, Light, 4);
                         }
                         else
                         {
-                            int SiegePositionY = HeroY + (rand() % 1 + 10);
-                            Position[1] = SiegePositionY * TERRAIN_SCALE/*-(rand()%60-30)*/;
+                            int SiegePositionY = HeroY + (Random::Rand() % 1 + 10);
+                            Position[1] = SiegePositionY * TERRAIN_SCALE /*-(Random::Rand()%60-30)*/;
 
                             CreateEffect(MODEL_ARROW, Position, Angle, Light, 4);
                         }
@@ -891,9 +913,11 @@ namespace battleCastle
                     vec3_t Angle = { 0.f, 0.f, 0.f };
                     vec3_t Light = { 1.f, 1.f, 1.f };
 
-                    int dx = rand() % 1400 - 700;
-                    if (dx < 100 && dx>0) dx = 100 + rand() % 30;
-                    else if (dx > -100 && dx < 0) dx -= 100 + rand() % 30;
+                    int dx = Random::Rand() % 1400 - 700;
+                    if (dx < 100 && dx > 0)
+                        dx = 100 + Random::Rand() % 30;
+                    else if (dx > -100 && dx < 0)
+                        dx -= 100 + Random::Rand() % 30;
 
                     Position[0] = Hero->Object.Position[0] + dx;
                     Position[2] = 350.f;
@@ -908,7 +932,7 @@ namespace battleCastle
                         }
                     }
 
-                    bool attArrow = rand() % 2;
+                    bool attArrow = Random::Rand() % 2;
                     if (HeroY < 82)
                     {
                         attArrow = true;
@@ -920,16 +944,16 @@ namespace battleCastle
 
                     if (attArrow)
                     {
-                        int SiegePositionY = HeroY - (rand() % 3 + 10);
-                        Position[1] = SiegePositionY * TERRAIN_SCALE + (rand() % 60 - 30);
+                        int SiegePositionY = HeroY - (Random::Rand() % 3 + 10);
+                        Position[1] = SiegePositionY * TERRAIN_SCALE + (Random::Rand() % 60 - 30);
 
                         Angle[2] = 180.f;
                         CreateEffect(MODEL_ARROW, Position, Angle, Light, subtype);
                     }
                     else
                     {
-                        int SiegePositionY = HeroY + (rand() % 3 + 10);
-                        Position[1] = SiegePositionY * TERRAIN_SCALE - (rand() % 60 - 30);
+                        int SiegePositionY = HeroY + (Random::Rand() % 3 + 10);
+                        Position[1] = SiegePositionY * TERRAIN_SCALE - (Random::Rand() % 60 - 30);
 
                         CreateEffect(MODEL_ARROW, Position, Angle, Light, subtype);
                     }
@@ -1048,7 +1072,7 @@ namespace battleCastle
             break;
 
         case 41:
-            o->Timer = float(rand() % 1000) * 0.01f;
+            o->Timer = float(Random::Rand() % 1000) * 0.01f;
             break;
 
         case 77:
@@ -1091,7 +1115,7 @@ namespace battleCastle
         case    0:
             if (IsBattleCastleStart() == false)
             {
-                Luminosity = (float)(rand() % 4 + 3) * 0.1f;
+                Luminosity = (float)(Random::Rand() % 4 + 3) * 0.1f;
                 Vector(Luminosity, Luminosity * 0.6f, Luminosity * 0.2f, Light);
                 AddTerrainLight(o->Position[0], o->Position[1], Light, 3, PrimaryTerrainLight);
             }
@@ -1101,7 +1125,7 @@ namespace battleCastle
         case 53:
             if (IsBattleCastleStart())
             {
-                Luminosity = (float)(rand() % 4 + 3) * 0.1f;
+                Luminosity = (float)(Random::Rand() % 4 + 3) * 0.1f;
                 Vector(Luminosity, Luminosity * 0.6f, Luminosity * 0.2f, Light);
                 AddTerrainLight(o->Position[0], o->Position[1], Light, 3, PrimaryTerrainLight);
             }
@@ -1140,7 +1164,7 @@ namespace battleCastle
         return true;
     }
 
-    bool RenderBattleCastleVisual(OBJECT* o, BMD* b)
+    bool UpdateBattleCastleObjectEffects(OBJECT* o, BMD* b)
     {
         if (gMapManager.InBattleCastle() == false) return false;
 
@@ -1185,7 +1209,7 @@ namespace battleCastle
             if (IsBattleCastleStart() == false)
             {
                 Vector(1.f, 1.f, 1.f, Light);
-                CreateParticleFpsChecked(BITMAP_WATERFALL_3 + (rand() % 2), o->Position, o->Angle, Light, 0);
+                CreateParticleFpsChecked(BITMAP_WATERFALL_3 + (Random::Rand() % 2), o->Position, o->Angle, Light, 0);
             }
             break;
         }
@@ -1193,46 +1217,52 @@ namespace battleCastle
         return true;
     }
 
-    bool    RenderBattleCastleObjectMesh(OBJECT* o, BMD* b)
+    bool RenderBattleCastleObjectMesh(const OBJECT* o, DrawLook& look, BMD* b)
     {
         if (gMapManager.InBattleCastle() == false)  return false;
 
         if (o->Type == 12)
         {
             Vector(1.f, 1.f, 1.f, b->BodyLight);
-            b->RenderMesh(0, RENDER_TEXTURE, o->Alpha, o->BlendMesh, o->BlendMeshLight, o->BlendMeshTexCoordU, o->BlendMeshTexCoordV);
-            b->RenderMesh(1, RENDER_TEXTURE, o->Alpha, o->BlendMesh, o->BlendMeshLight, o->BlendMeshTexCoordU, o->BlendMeshTexCoordV, BITMAP_INTERFACE_MAP);
+            b->RenderMesh(0, RENDER_TEXTURE, look.alpha, look.blendMesh, look.blendMeshLight, look.blendMeshU,
+                          look.blendMeshV);
+            b->RenderMesh(1, RENDER_TEXTURE, look.alpha, look.blendMesh, look.blendMeshLight, look.blendMeshU,
+                          look.blendMeshV, BITMAP_INTERFACE_MAP);
             return true;
         }
         else if (o->Type == 17)
         {
             b->StreamMesh = 0;
             Vector(0.45f, 0.45f, 0.45f, b->BodyLight);
-            b->RenderBody(RENDER_TEXTURE, o->Alpha, o->BlendMesh, o->BlendMeshLight, o->BlendMeshTexCoordU, (int)WorldTime % 10000 * 0.0002f, o->HiddenMesh);
+            b->RenderBody(RENDER_TEXTURE, look.alpha, look.blendMesh, look.blendMeshLight, look.blendMeshU,
+                          (int)WorldTime % 10000 * 0.0002f, look.hiddenMesh);
             b->StreamMesh = -1;
             return true;
         }
         else if (o->Type == 51)
         {
             b->StreamMesh = 0;
-            b->RenderBody(RENDER_TEXTURE | RENDER_BRIGHT, o->Alpha, o->BlendMesh, o->BlendMeshLight, -(int)WorldTime % 10000 * 0.0002f, o->BlendMeshTexCoordV, o->HiddenMesh);
+            b->RenderBody(RENDER_TEXTURE | RENDER_BRIGHT, look.alpha, look.blendMesh, look.blendMeshLight,
+                          -(int)WorldTime % 10000 * 0.0002f, look.blendMeshV, look.hiddenMesh);
             b->StreamMesh = -1;
             return true;
         }
         else if (o->Type == 66)
         {
             Vector(0.1f, 0.4f, 0.6f, b->BodyLight);
-            b->RenderBody(RENDER_CHROME | RENDER_BRIGHT, o->Alpha, o->BlendMesh, sinf(WorldTime * 0.001f) * 0.2f + 0.3f, o->BlendMeshTexCoordU, o->BlendMeshTexCoordV, o->HiddenMesh);
+            b->RenderBody(RENDER_CHROME | RENDER_BRIGHT, look.alpha, look.blendMesh,
+                          sinf(WorldTime * 0.001f) * 0.2f + 0.3f, look.blendMeshU, look.blendMeshV, look.hiddenMesh);
             return true;
         }
         else if (o->Type == 50 || o->Type == 83 || o->Type == 84 || o->Type == 85)
         {
-            b->RenderBody(RENDER_TEXTURE, o->Alpha, o->BlendMesh, o->BlendMeshLight, o->BlendMeshTexCoordU, o->BlendMeshTexCoordV, o->HiddenMesh);
+            b->RenderBody(RENDER_TEXTURE, look.alpha, look.blendMesh, look.blendMeshLight, look.blendMeshU,
+                          look.blendMeshV, look.hiddenMesh);
 
             if (IsBattleCastleStart() == false)
             {
                 DisableAlphaBlend();
-                b->RenderBodyShadow(o->BlendMesh, o->HiddenMesh);
+                b->RenderBodyShadow(look.blendMesh, look.hiddenMesh);
             }
             return true;
         }
@@ -1240,41 +1270,45 @@ namespace battleCastle
         {
             if (IsBattleCastleStart())
             {
-                b->BeginRender(o->Alpha);
-                b->RenderMesh(3, RENDER_TEXTURE, o->Alpha, o->BlendMesh, o->BlendMeshLight, o->BlendMeshTexCoordU, o->BlendMeshTexCoordV);
+                b->BeginRender(look.alpha);
+                b->RenderMesh(3, RENDER_TEXTURE, look.alpha, look.blendMesh, look.blendMeshLight, look.blendMeshU,
+                              look.blendMeshV);
                 Vector(0.3f, 0.3f, 0.3f, b->BodyLight);
-                b->RenderMesh(3, RENDER_BRIGHT | RENDER_CHROME, o->Alpha, o->BlendMesh, o->BlendMeshLight, o->BlendMeshTexCoordU, o->BlendMeshTexCoordV, BITMAP_CHROME);
+                b->RenderMesh(3, RENDER_BRIGHT | RENDER_CHROME, look.alpha, look.blendMesh, look.blendMeshLight,
+                              look.blendMeshU, look.blendMeshV, BITMAP_CHROME);
                 Vector(0.2f, 0.2f, 0.5f, b->BodyLight);
-                b->RenderMesh(3, RENDER_BRIGHT | RENDER_METAL, o->Alpha, o->BlendMesh, o->BlendMeshLight, o->BlendMeshTexCoordU, o->BlendMeshTexCoordV, BITMAP_CHROME);
+                b->RenderMesh(3, RENDER_BRIGHT | RENDER_METAL, look.alpha, look.blendMesh, look.blendMeshLight,
+                              look.blendMeshU, look.blendMeshV, BITMAP_CHROME);
                 Vector(1.f, 1.f, 1.f, b->BodyLight);
                 b->EndRender();
             }
             else
             {
-                b->RenderBody(RENDER_TEXTURE, o->Alpha, o->BlendMesh, o->BlendMeshLight, o->BlendMeshTexCoordU, o->BlendMeshTexCoordV, o->HiddenMesh);
+                b->RenderBody(RENDER_TEXTURE, look.alpha, look.blendMesh, look.blendMeshLight, look.blendMeshU,
+                              look.blendMeshV, look.hiddenMesh);
                 Vector(0.3f, 0.3f, 0.3f, b->BodyLight);
-                b->RenderBody(RENDER_BRIGHT | RENDER_CHROME, o->Alpha, 0.5f, o->BlendMeshLight, o->BlendMeshTexCoordU, o->BlendMeshTexCoordV, o->HiddenMesh, BITMAP_CHROME);
+                b->RenderBody(RENDER_BRIGHT | RENDER_CHROME, look.alpha, 0, look.blendMeshLight, look.blendMeshU,
+                              look.blendMeshV, look.hiddenMesh, BITMAP_CHROME);
                 Vector(0.2f, 0.2f, 0.5f, b->BodyLight);
-                b->RenderBody(RENDER_BRIGHT | RENDER_METAL, o->Alpha, 0.5f, o->BlendMeshLight, o->BlendMeshTexCoordU, o->BlendMeshTexCoordV, o->HiddenMesh, BITMAP_CHROME);
+                b->RenderBody(RENDER_BRIGHT | RENDER_METAL, look.alpha, 0, look.blendMeshLight, look.blendMeshU,
+                              look.blendMeshV, look.hiddenMesh, BITMAP_CHROME);
                 Vector(1.f, 1.f, 1.f, b->BodyLight);
             }
             return true;
         }
         else if (o->Type >= BATTLE_CASTLE_WALL1 && o->Type <= BATTLE_CASTLE_WALL4)
         {
+            // A wall's debris effect (SubType 1) shows only the debris its first move spawns.
             if (o->SubType == 0)
             {
-                b->RenderBody(RENDER_TEXTURE, o->Alpha, o->BlendMesh, o->BlendMeshLight, o->BlendMeshTexCoordU, o->BlendMeshTexCoordV, o->HiddenMesh);
-            }
-            else
-            {
-                b->RenderMeshEffect(0, MODEL_WALL_PART1);
+                b->RenderBody(RENDER_TEXTURE, look.alpha, look.blendMesh, look.blendMeshLight, look.blendMeshU,
+                              look.blendMeshV, look.hiddenMesh);
             }
             return true;
         }
         else
         {
-            return RenderBattleCastleMonsterObjectMesh(o, b);
+            return RenderBattleCastleMonsterObjectMesh(o, look, b);
         }
 
         return false;
@@ -1394,7 +1428,7 @@ namespace battleCastle
             c = CreateCharacter(Key, MODEL_NPC_CLERK, PositionX, PositionY);
             c->NotRotateOnMagicHit = true;
             c->Object.Scale = 1.f;
-            c->Object.SubType = rand() % 2 + 10;
+            c->Object.SubType = Random::Rand() % 2 + 10;
             c->Weapon[0].Type = -1;
             c->Weapon[1].Type = -1;
             break;
@@ -1492,28 +1526,19 @@ namespace battleCastle
             }
             c->Object.HiddenMesh = -1;
             break;
+        default:
+            break;
         }
 
         return c;
     }
 
-    bool    SettingBattleCastleMonsterLinkBone(CHARACTER* c, int Type)
+    void ResetCastleGateAttackCount(CHARACTER* c, int Type)
     {
-        switch (Type)
+        if (Type == MODEL_CASTLE_GATE1)
         {
-        case MODEL_NPC_CAPATULT_ATT:
-            Vector(-200.f, -50.f, -100.f, c->Object.BoundingBoxMin);
-            Vector(200.f, 50.f, 100.f, c->Object.BoundingBoxMax);
-            break;
-
-        case MODEL_CASTLE_GATE1:
-            Vector(-140.f, -140.f, 0.f, c->Object.BoundingBoxMin);
-            Vector(140.f, 140.f, 300.f, c->Object.BoundingBoxMax);
             c->SwordCount = 0;
-            return true;
         }
-
-        return false;
     }
 
     bool    StopBattleCastleMonster(CHARACTER* c, OBJECT* o)
@@ -1581,6 +1606,8 @@ namespace battleCastle
             }
         }
         return true;
+        default:
+            break;
         }
         return false;
     }
@@ -1686,24 +1713,18 @@ namespace battleCastle
                 g_fLifeStoneLocation[1] = o->Position[1];
             }
             break;
+        default:
+            break;
         }
         return false;
     }
 
-    bool SetCurrentAction_BattleCastleMonster(CHARACTER* c, OBJECT* o)
+    void SetGuardAttackState(OBJECT* o)
     {
-        switch (o->Type)
+        if (o->Type == MODEL_BATTLE_GUARD1 || o->Type == MODEL_BATTLE_GUARD2)
         {
-        case 11:
-            break;
-
-        case MODEL_BATTLE_GUARD1:
-        case MODEL_BATTLE_GUARD2:
             o->AI = GUARD_ATTACK;
-            SetAction(o, 5);
-            return true;
         }
-        return false;
     }
 
     bool AttackEffect_BattleCastleMonster(CHARACTER* c, OBJECT* o, BMD* b)
@@ -1741,6 +1762,8 @@ namespace battleCastle
                 CreateEffect(BITMAP_JOINT_FORCE, o->Position, o->Angle, o->Light);
             }
             return true;
+        default:
+            break;
         }
         return false;
     }
@@ -1779,6 +1802,14 @@ namespace battleCastle
         }
     }
 
+    // The light a dark aurora's draw left on the body it stands under, which its next draw lit the body with.
+    static void SetDarkAuroraBodyLight(OBJECT* o)
+    {
+        const float pulse = AuroraPulse();
+        const float light = (1.f - pulse) * pulse;
+        Vector(light, light, light, o->Light);
+    }
+
     bool MoveBattleCastleMonsterVisual(OBJECT* o, BMD* b)
     {
         if (gMapManager.InBattleCastle() == false) return false;
@@ -1809,6 +1840,8 @@ namespace battleCastle
 
         case MODEL_GUARDIAN_STATUE:
             o->Angle[2] = 0.f;
+            if (!IsBattleCastleStart())
+                SetDarkAuroraBodyLight(o);
 
             Luminosity = sinf(WorldTime * 0.0005) * 0.58f + 0.42f;
             Vector(Luminosity * 0.2f, Luminosity * 0.7f, Luminosity * 1.f, Light);
@@ -1833,13 +1866,15 @@ namespace battleCastle
 
         case MODEL_CANON_TOWER:
             o->Angle[2] = 45.f;
+            if (IsBattleCastleStart())
+                SetDarkAuroraBodyLight(o);
             return true;
         }
 
         return false;
     }
 
-    bool    RenderBattleCastleMonsterVisual(CHARACTER* c, OBJECT* o, BMD* b)
+    bool UpdateBattleCastleMonsterEffects(CHARACTER* c, OBJECT* o, BMD* b)
     {
         if (gMapManager.InBattleCastle() == false) return false;
 
@@ -1850,25 +1885,10 @@ namespace battleCastle
         case MODEL_CASTLE_GATE1:
             break;
 
-        case MODEL_GUARDIAN_STATUE:
-            if (IsBattleCastleStart())
-            {
-                Vector(0.3f, 0.2f, 0.f, Light);
-                RenderAurora(BITMAP_MAGIC + 1, RENDER_BRIGHT, o->Position[0], o->Position[1], 9.f, 9.f, Light);
-            }
-            else
-            {
-                RenderAurora(BITMAP_MAGIC + 1, RENDER_DARK, o->Position[0], o->Position[1], 5.5f, 5.5f, o->Light);
-            }
-            return true;
-
         case MODEL_LIFE_STONE:
             if (o->m_byBuildTime >= 5)
             {
                 o->BlendMeshLight = sinf(WorldTime * 0.001f) * 0.3 + 0.3f;
-
-                Vector(0.3f, 0.2f, 0.f, Light);
-                RenderAurora(BITMAP_MAGIC + 1, RENDER_BRIGHT, o->Position[0], o->Position[1], 9.f, 9.f, Light);
             }
             else
             {
@@ -1876,7 +1896,7 @@ namespace battleCastle
                 VectorCopy(o->Position, Position);
                 Position[2] += 50.f;
                 CreateSprite(BITMAP_LIGHT, Position, 4.f, Light, NULL);
-                CreateSprite(BITMAP_SHINY + 1, Position, 2.5f, Light, NULL, rand() % 360);
+                CreateSprite(BITMAP_SHINY + 1, Position, 2.5f, Light, NULL, Random::Rand() % 360);
             }
             return true;
 
@@ -1892,12 +1912,10 @@ namespace battleCastle
                 Position[2] += sinf(WorldTime * 0.001f) * 60.f + 60.f;
 
                 CreateSprite(BITMAP_LIGHT, Position, 3.f, Light, NULL);
-                CreateSprite(BITMAP_SHINY + 1, Position, 1.5f, Light, NULL, rand() % 360);
+                CreateSprite(BITMAP_SHINY + 1, Position, 1.5f, Light, NULL, Random::Rand() % 360);
 
                 b->TransformPosition(o->BoneTransform[2], p, Position, true);
                 CreateSprite(BITMAP_LIGHT, Position, 4.f, Light, NULL);
-
-                RenderAurora(BITMAP_MAGIC + 1, RENDER_DARK, o->Position[0], o->Position[1], 5.5f, 5.5f, o->Light);
             }
             else
             {
@@ -1924,12 +1942,88 @@ namespace battleCastle
         return false;
     }
 
-    bool    RenderBattleCastleMonsterCloth(CHARACTER* c, OBJECT* o, bool Translate, int Select)
+    bool RenderBattleCastleMonsterVisual(const CHARACTER* c, const OBJECT* o, BMD* b)
+    {
+        if (gMapManager.InBattleCastle() == false)
+            return false;
+
+        vec3_t Light;
+
+        switch (o->Type)
+        {
+        case MODEL_GUARDIAN_STATUE:
+            if (IsBattleCastleStart())
+            {
+                Vector(0.3f, 0.2f, 0.f, Light);
+                RenderAurora(BITMAP_MAGIC + 1, RENDER_BRIGHT, o->Position[0], o->Position[1], 9.f, 9.f, Light);
+            }
+            else
+            {
+                RenderAurora(BITMAP_MAGIC + 1, RENDER_DARK, o->Position[0], o->Position[1], 5.5f, 5.5f, o->Light);
+            }
+            return true;
+
+        case MODEL_LIFE_STONE:
+            if (o->m_byBuildTime >= 5)
+            {
+                Vector(0.3f, 0.2f, 0.f, Light);
+                RenderAurora(BITMAP_MAGIC + 1, RENDER_BRIGHT, o->Position[0], o->Position[1], 9.f, 9.f, Light);
+            }
+            return true;
+
+        case MODEL_CANON_TOWER:
+            if (IsBattleCastleStart())
+            {
+                RenderAurora(BITMAP_MAGIC + 1, RENDER_DARK, o->Position[0], o->Position[1], 5.5f, 5.5f, o->Light);
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    bool RenderBattleCastleMonsterCloth(const CHARACTER* c, const OBJECT* o, bool Translate, int Select)
     {
         return false;
     }
 
-    bool    RenderBattleCastleMonsterObjectMesh(OBJECT* o, BMD* b)
+    void UpdateBattleCastleObjectMeshEffects(OBJECT* o, BMD* b)
+    {
+        if (gMapManager.InBattleCastle() == false)
+            return;
+
+        switch (o->Type)
+        {
+        case MODEL_CASTLE_GATE1:
+            if (o->CurrentAction == MONSTER01_DIE)
+            {
+                o->Live = false;
+                PlayBuffer(SOUND_HIT_GATE2);
+                SkinObjectMeshes(o, b, true);
+                b->SpawnMeshEffects(0, MODEL_GATE_PART1);
+            }
+            break;
+
+        case MODEL_GUARDIAN_STATUE:
+            if (IsBattleCastleStart())
+            {
+                if (o->CurrentAction != MONSTER01_DIE)
+                    o->HiddenMesh = -1;
+
+                if (o->CurrentAction == MONSTER01_DIE)
+                {
+                    o->Live = false;
+
+                    PlayBuffer(SOUND_BC_GUARD_STONE_DIS);
+                    SkinObjectMeshes(o, b, true);
+                    b->SpawnMeshEffects(0, MODEL_STONE_COFFIN);
+                }
+            }
+            break;
+        }
+    }
+
+    bool RenderBattleCastleMonsterObjectMesh(const OBJECT* o, DrawLook& look, BMD* b)
     {
         if (gMapManager.InBattleCastle() == false) return false;
 
@@ -1939,7 +2033,8 @@ namespace battleCastle
         {
         case MODEL_NPC_CAPATULT_ATT:
         {
-            b->RenderBody(RENDER_TEXTURE, o->Alpha, o->BlendMesh, o->BlendMeshLight, o->BlendMeshTexCoordU, o->BlendMeshTexCoordV, o->HiddenMesh);
+            b->RenderBody(RENDER_TEXTURE, look.alpha, look.blendMesh, look.blendMeshLight, look.blendMeshU,
+                          look.blendMeshV, look.hiddenMesh);
 
             OBB_t   OBB;
             vec3_t  Temp, p, Position;
@@ -1957,7 +2052,8 @@ namespace battleCastle
                 VectorCopy(Position, linkBmd->BodyOrigin);
                 linkBmd->Animation(BoneTransform, 0.f, 0.f, 0, o->Angle, o->Angle, true);
                 linkBmd->Transform(BoneTransform, Temp, Temp, &OBB, true);
-                linkBmd->RenderBody(RENDER_TEXTURE, o->Alpha, o->BlendMesh, o->BlendMeshLight, o->BlendMeshTexCoordU, o->BlendMeshTexCoordV, o->HiddenMesh);
+                linkBmd->RenderBody(RENDER_TEXTURE, look.alpha, look.blendMesh, look.blendMeshLight, look.blendMeshU,
+                                    look.blendMeshV, look.hiddenMesh);
             }
 
             if (o->CurrentAction == 1 && o->AnimationFrame > 13.f && o->AnimationFrame < 22.f)
@@ -1967,7 +2063,8 @@ namespace battleCastle
                 VectorCopy(Position, linkBmd->BodyOrigin);
                 linkBmd->Animation(BoneTransform, 0.f, 0.f, 0, o->Angle, o->Angle, true);
                 linkBmd->Transform(BoneTransform, Temp, Temp, &OBB, true);
-                linkBmd->RenderBody(RENDER_TEXTURE, o->Alpha, o->BlendMesh, o->BlendMeshLight, o->BlendMeshTexCoordU, o->BlendMeshTexCoordV, o->HiddenMesh);
+                linkBmd->RenderBody(RENDER_TEXTURE, look.alpha, look.blendMesh, look.blendMeshLight, look.blendMeshU,
+                                    look.blendMeshV, look.hiddenMesh);
             }
         }
         success = true;
@@ -1975,60 +2072,44 @@ namespace battleCastle
 
         case MODEL_NPC_BARRIER:
             Vector(0.3f, 0.3f, 1.f, b->BodyLight);
-            b->RenderBody(RENDER_TEXTURE | RENDER_BRIGHT, o->Alpha, o->BlendMesh, o->BlendMeshLight, o->BlendMeshTexCoordU, o->BlendMeshTexCoordV, o->HiddenMesh, BITMAP_WATER + WaterTextureNumber);
+            b->RenderBody(RENDER_TEXTURE | RENDER_BRIGHT, look.alpha, look.blendMesh, look.blendMeshLight,
+                          look.blendMeshU, look.blendMeshV, look.hiddenMesh, BITMAP_WATER + WaterTextureNumber);
             Vector(0.3f, 1.f, 0.3f, b->BodyLight);
-            b->RenderBody(RENDER_TEXTURE | RENDER_BRIGHT, o->Alpha, o->BlendMesh, o->BlendMeshLight, o->BlendMeshTexCoordU, o->BlendMeshTexCoordV, o->HiddenMesh, BITMAP_WATER + ((int)(WorldTime * 0.01f) % 32));
+            b->RenderBody(RENDER_TEXTURE | RENDER_BRIGHT, look.alpha, look.blendMesh, look.blendMeshLight,
+                          look.blendMeshU, look.blendMeshV, look.hiddenMesh,
+                          BITMAP_WATER + ((int)(WorldTime * 0.01f) % 32));
             success = true;
             break;
 
         case MODEL_CASTLE_GATE1:
-            if (o->CurrentAction == MONSTER01_DIE)
+            // Dying, it shows only the debris UpdateBattleCastleObjectMeshEffects spawns.
+            if (o->CurrentAction != MONSTER01_DIE)
             {
-                if (o->CurrentAction == MONSTER01_DIE)
-                {
-                    o->Live = false;
-                }
-                PlayBuffer(SOUND_HIT_GATE2);
-                b->RenderMeshEffect(0, MODEL_GATE_PART1);
-            }
-            else
-            {
-                b->RenderBody(RENDER_TEXTURE, o->Alpha, o->BlendMesh, o->BlendMeshLight, o->BlendMeshTexCoordU, o->BlendMeshTexCoordV, o->HiddenMesh);
+                b->RenderBody(RENDER_TEXTURE, look.alpha, look.blendMesh, look.blendMeshLight, look.blendMeshU,
+                              look.blendMeshV, look.hiddenMesh);
             }
             break;
 
         case MODEL_GUARDIAN_STATUE:
-            if (IsBattleCastleStart())
+            // Dying, it shows only the debris UpdateBattleCastleObjectMeshEffects spawns.
+            if (IsBattleCastleStart() && o->CurrentAction != MONSTER01_DIE)
             {
-                if (o->CurrentAction != MONSTER01_DIE)
-                    o->HiddenMesh = -1;
-
-                if (o->CurrentAction == MONSTER01_DIE)
-                {
-                    if (o->CurrentAction == MONSTER01_DIE)
-                    {
-                        o->Live = false;
-                    }
-
-                    PlayBuffer(SOUND_BC_GUARD_STONE_DIS);
-                    b->RenderMeshEffect(0, MODEL_STONE_COFFIN);
-                }
-                else
-                {
-                    b->RenderBody(RENDER_TEXTURE, o->Alpha, o->BlendMesh, o->BlendMeshLight, o->BlendMeshTexCoordU, o->BlendMeshTexCoordV, o->HiddenMesh);
-                    Vector(0.3f, 0.3f, 0.3f, b->BodyLight);
-                    b->RenderBody(RENDER_BRIGHT | RENDER_CHROME, o->Alpha, 0.5f, o->BlendMeshLight, o->BlendMeshTexCoordU, o->BlendMeshTexCoordV, o->HiddenMesh, BITMAP_CHROME);
-                    Vector(0.2f, 0.2f, 0.5f, b->BodyLight);
-                    b->RenderBody(RENDER_BRIGHT | RENDER_METAL, o->Alpha, 0.5f, o->BlendMeshLight, o->BlendMeshTexCoordU, o->BlendMeshTexCoordV, o->HiddenMesh, BITMAP_CHROME);
-                    Vector(1.f, 1.f, 1.f, b->BodyLight);
-                }
+                b->RenderBody(RENDER_TEXTURE, look.alpha, look.blendMesh, look.blendMeshLight, look.blendMeshU,
+                              look.blendMeshV, look.hiddenMesh);
+                Vector(0.3f, 0.3f, 0.3f, b->BodyLight);
+                b->RenderBody(RENDER_BRIGHT | RENDER_CHROME, look.alpha, 0, look.blendMeshLight, look.blendMeshU,
+                              look.blendMeshV, look.hiddenMesh, BITMAP_CHROME);
+                Vector(0.2f, 0.2f, 0.5f, b->BodyLight);
+                b->RenderBody(RENDER_BRIGHT | RENDER_METAL, look.alpha, 0, look.blendMeshLight, look.blendMeshU,
+                              look.blendMeshV, look.hiddenMesh, BITMAP_CHROME);
+                Vector(1.f, 1.f, 1.f, b->BodyLight);
             }
             success = true;
             break;
 
         case MODEL_LIFE_STONE:
-            o->BlendMeshLight = o->m_byBuildTime / 10.f;
-            Vector(o->BlendMeshLight, o->BlendMeshLight, o->BlendMeshLight, b->BodyLight);
+            look.blendMeshLight = o->m_byBuildTime / 10.f;
+            Vector(look.blendMeshLight, look.blendMeshLight, look.blendMeshLight, b->BodyLight);
             if (o->m_byBuildTime >= 2)
             {
                 b->RenderMesh(0, RENDER_TEXTURE);
@@ -2039,7 +2120,8 @@ namespace battleCastle
             }
             if (o->m_byBuildTime >= 4)
             {
-                Vector(o->BlendMeshLight * 0.5f, o->BlendMeshLight * 0.5f, o->BlendMeshLight * 0.5f, b->BodyLight);
+                Vector(look.blendMeshLight * 0.5f, look.blendMeshLight * 0.5f, look.blendMeshLight * 0.5f,
+                       b->BodyLight);
                 b->RenderMesh(1, RENDER_TEXTURE | RENDER_BRIGHT);
             }
             if (o->m_byBuildTime >= 5)
@@ -2057,7 +2139,7 @@ namespace battleCastle
         return success;
     }
 
-    void RenderMonsterHitEffect(OBJECT* o)
+    void SpawnMonsterHitEffect(OBJECT* o)
     {
         if (gMapManager.InBattleCastle() == false) return;
 
@@ -2083,9 +2165,10 @@ namespace battleCastle
                 {
                     Position[0] = o->Position[0];
                     Position[1] = o->Position[1];
-                    Position[2] = o->Position[2] + 200 + rand() % 30;
+                    Position[2] = o->Position[2] + 200 + Random::Rand() % 30;
 
-                    CreateEffect(MODEL_GATE_PART1 + rand() % 3, Position, o->Angle, o->Light, rand() % 2 + 1);
+                    CreateEffect(MODEL_GATE_PART1 + Random::Rand() % 3, Position, o->Angle, o->Light,
+                                 Random::Rand() % 2 + 1);
                 }
             }
         }
@@ -2100,7 +2183,7 @@ namespace battleCastle
                 {
                     Position[0] = o->Position[0];
                     Position[1] = o->Position[1];
-                    Position[2] = o->Position[2] + 200 + rand() % 30;
+                    Position[2] = o->Position[2] + 200 + Random::Rand() % 30;
 
                     CreateEffect(MODEL_STONE_COFFIN + 1, Position, o->Angle, o->Light);
                 }

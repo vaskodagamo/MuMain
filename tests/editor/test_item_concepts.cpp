@@ -242,7 +242,7 @@ TEST_CASE("Run events become per-item states, the actual cost and the end [edito
     CHECK_FALSE(ApplyLine(state, R"({"protocol": 1, "command": "plan"})", 0.0));
 }
 
-TEST_CASE("A cancelled run keeps its resume arguments; failures can be retried [editor][concepts]")
+TEST_CASE("A cancelled run keeps its resume arguments, and failures can be retried [editor][concepts]")
 {
     ConceptJobState cancelled;
     cancelled.Item("0-2");

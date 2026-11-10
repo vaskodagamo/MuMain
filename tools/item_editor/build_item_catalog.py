@@ -4,7 +4,7 @@ editor and Codex read. Standard library only; reads game data, never writes it.
 
 Inputs:
     tools/item_editor/item_models.json        item -> model files (gen_item_models.py, from the C++ load code)
-    src/bin/Data/Local/Eng/item_eng.bmd        the client item table (--item-table for another language)
+    src/bin/Data/Items/Group*.json             the client item data (--item-table for an Item_<lang>.bmd)
     src/bin/Data/Local/ItemSetType.bmd         client "can be ancient" records
     src/bin/Data/Local/ItemAddOption.bmd       client 380 options
     assets-work/Items/openmu-items.json        optional OpenMU export (export_openmu_items.py)
@@ -43,7 +43,7 @@ ROOT = HERE.parents[1]
 ITEMS_DIR = ROOT / 'assets-work' / 'Items'
 OUTPUT = ITEMS_DIR / 'catalog.json'
 MODELS_FILE = HERE / 'item_models.json'
-ITEM_TABLE = ROOT / 'src/bin/Data/Local/Eng/item_eng.bmd'
+ITEM_TABLE = ROOT / 'src/bin/Data/Items'
 SET_TYPE_FILE = ROOT / 'src/bin/Data/Local/itemsettype.bmd'
 ADD_OPTION_FILE = ROOT / 'src/bin/Data/Local/ItemAddOption.bmd'
 OPENMU_FILE = ITEMS_DIR / 'openmu-items.json'
@@ -331,7 +331,7 @@ def sort_key(key):
 
 def build(bmdconv, table_path=ITEM_TABLE, openmu_path=OPENMU_FILE):
     models = load_models()
-    table = item_table.read_item_table(Path(table_path).read_bytes())
+    table = item_table.read_items(table_path)
     client = {
         'sockets': set(models['socket_items']),
         'set_types': item_table.read_set_types(SET_TYPE_FILE.read_bytes()),
@@ -462,7 +462,8 @@ def render(doc):
 def main(argv=None):
     parser = argparse.ArgumentParser(description='Build assets-work/Items/catalog.json.')
     parser.add_argument('--bmdconv', help='path to the bmdconv binary')
-    parser.add_argument('--item-table', type=Path, default=ITEM_TABLE, help='Item_<lang>.bmd to read')
+    parser.add_argument('--item-table', type=Path, default=ITEM_TABLE,
+                        help='the item data to read: the Data/Items folder, or an Item_<lang>.bmd')
     parser.add_argument('--output', type=Path, default=OUTPUT)
     parser.add_argument('--check', action='store_true', help='exit 1 when the catalog is out of date')
     args = parser.parse_args(argv)

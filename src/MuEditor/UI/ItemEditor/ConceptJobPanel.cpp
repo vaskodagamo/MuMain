@@ -182,8 +182,10 @@ void Render()
 {
     if (!g_ConceptJob.HasJob())
         return;
-    const ImGuiIO& io = ImGui::GetIO();
-    ImGui::SetNextWindowPos(ImVec2(io.DisplaySize.x - WINDOW_MARGIN, io.DisplaySize.y - WINDOW_MARGIN),
+    // In the game window's bottom right corner the first time (its viewport's place).
+    const ImGuiViewport* game = ImGui::GetMainViewport();
+    ImGui::SetNextWindowPos(ImVec2(game->Pos.x + game->Size.x - WINDOW_MARGIN,
+                                   game->Pos.y + game->Size.y - WINDOW_MARGIN),
                             ImGuiCond_FirstUseEver, ImVec2(1.0f, 1.0f));
     ImGui::SetNextWindowSize(ImVec2(Scaled(WINDOW_WIDTH), Scaled(WINDOW_HEIGHT)), ImGuiCond_FirstUseEver);
     if (ImGui::Begin(WINDOW_TITLE, nullptr, ImGuiWindowFlags_NoCollapse))

@@ -31,6 +31,22 @@ mu_add_test(
 )
 
 mu_add_test(
+    NAME test_version_files
+    SOURCES
+        test_version_files.cpp
+    LINK_LIBS
+        MuClient
+)
+
+mu_add_test(
+    NAME test_reading_language_log
+    SOURCES
+        test_reading_language_log.cpp
+    LINK_LIBS
+        MuClient
+)
+
+mu_add_test(
     NAME test_narrow_path
     SOURCES
         test_narrow_path.cpp
@@ -42,6 +58,14 @@ mu_add_test(
     NAME test_scene_state
     SOURCES
         test_scene_state.cpp
+    LINK_LIBS
+        MuClient
+)
+
+mu_add_test(
+    NAME test_scene_names
+    SOURCES
+        test_scene_names.cpp
     LINK_LIBS
         MuClient
 )
@@ -103,6 +127,26 @@ if(ENABLE_CONTROL_SOCKET)
         LINK_LIBS
             MuClient
     )
+
+    # The tooltip commands' argument checks, which return before they need item data.
+    mu_add_test(
+        NAME test_control_tooltip_commands
+        SOURCES
+            test_control_tooltip_commands.cpp
+            ${CMAKE_SOURCE_DIR}/src/source/App/Platform/Windows/Winmain.cpp
+        LINK_LIBS
+            MuClient
+    )
+
+    # The item commands' argument checks, which return before they need item data.
+    mu_add_test(
+        NAME test_control_item_commands
+        SOURCES
+            test_control_item_commands.cpp
+            ${CMAKE_SOURCE_DIR}/src/source/App/Platform/Windows/Winmain.cpp
+        LINK_LIBS
+            MuClient
+    )
 endif()
 
 mu_add_test(
@@ -117,9 +161,22 @@ mu_add_test(
         test_cpu_usage_math.cpp
 )
 
-add_test(
-    NAME msvc_runtime_dll_staging_contract
-    COMMAND "${CMAKE_COMMAND}"
-        "-DMU_CMAKE_SOURCE=${CMAKE_SOURCE_DIR}/src/CMakeLists.txt"
-        -P "${CMAKE_CURRENT_SOURCE_DIR}/test_msvc_runtime_dll_staging.cmake"
+mu_add_test(
+    NAME gold_amount_tier_tests
+    SOURCES
+        test_gold_amount_tier.cpp
+        ${CMAKE_SOURCE_DIR}/src/source/GameLogic/Items/GoldAmountTier.cpp
+)
+
+mu_add_test(
+    NAME zen_amount_tests
+    SOURCES
+        test_zen_amount.cpp
+)
+
+mu_add_test(
+    NAME number_parse_tests
+    SOURCES
+        test_number_parse.cpp
+        ${CMAKE_SOURCE_DIR}/src/source/Core/Text/NumberParse.cpp
 )

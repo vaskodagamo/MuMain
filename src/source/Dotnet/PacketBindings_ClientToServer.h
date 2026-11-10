@@ -20,7 +20,7 @@
 #include "PacketFunctions_CommonEnums.h"
 #include "PacketFunctions_ClientToServer_Enums.h"
 
-typedef void(CORECLR_DELEGATE_CALLTYPE* SendPing)(int32_t, uint32_t , uint16_t );
+typedef void(CORECLR_DELEGATE_CALLTYPE* SendPing)(int32_t, uint32_t , uint16_t , uint16_t );
 
 typedef void(CORECLR_DELEGATE_CALLTYPE* SendChecksumResponse)(int32_t, uint32_t );
 
@@ -51,6 +51,8 @@ typedef void(CORECLR_DELEGATE_CALLTYPE* SendPlayerShopItemListRequest)(int32_t, 
 typedef void(CORECLR_DELEGATE_CALLTYPE* SendPlayerShopItemBuyRequest)(int32_t, uint16_t , const char16_t* , BYTE );
 
 typedef void(CORECLR_DELEGATE_CALLTYPE* SendPlayerShopCloseOther)(int32_t, uint16_t , const char16_t* );
+
+typedef void(CORECLR_DELEGATE_CALLTYPE* SendPlayerShopSetItemPriceExtended)(int32_t, uint32_t , uint16_t , uint16_t , BYTE );
 
 typedef void(CORECLR_DELEGATE_CALLTYPE* SendPickupItemRequest)(int32_t, uint16_t );
 
@@ -104,13 +106,13 @@ typedef void(CORECLR_DELEGATE_CALLTYPE* SendCastleSiegeDefenseUpgradeRequest)(in
 
 typedef void(CORECLR_DELEGATE_CALLTYPE* SendCastleSiegeTaxInfoRequest)(int32_t);
 
-typedef void(CORECLR_DELEGATE_CALLTYPE* SendCastleSiegeTaxChangeRequest)(int32_t, BYTE , uint32_t );
+typedef void(CORECLR_DELEGATE_CALLTYPE* SendCastleSiegeTaxChangeRequest)(int32_t, CastleSiegeTaxType , uint32_t );
 
 typedef void(CORECLR_DELEGATE_CALLTYPE* SendCastleSiegeTaxMoneyWithdraw)(int32_t, uint32_t );
 
 typedef void(CORECLR_DELEGATE_CALLTYPE* SendToggleCastleGateRequest)(int32_t, BYTE , uint16_t );
 
-typedef void(CORECLR_DELEGATE_CALLTYPE* SendCastleGuildCommand)(int32_t, BYTE , BYTE , BYTE , BYTE );
+typedef void(CORECLR_DELEGATE_CALLTYPE* SendCastleGuildCommand)(int32_t, BYTE , BYTE , BYTE , CastleSiegeGuildCommandType );
 
 typedef void(CORECLR_DELEGATE_CALLTYPE* SendCastleSiegeHuntingZoneEntranceSetting)(int32_t, BYTE );
 
@@ -170,7 +172,7 @@ typedef void(CORECLR_DELEGATE_CALLTYPE* SendCashShopStorageItemConsumeRequest)(i
 
 typedef void(CORECLR_DELEGATE_CALLTYPE* SendCashShopEventItemListRequest)(int32_t, uint32_t );
 
-typedef void(CORECLR_DELEGATE_CALLTYPE* SendUnlockVault)(int32_t, uint16_t );
+typedef void(CORECLR_DELEGATE_CALLTYPE* SendUnlockVault)(int32_t, uint16_t , const char16_t* );
 
 typedef void(CORECLR_DELEGATE_CALLTYPE* SendSetVaultPin)(int32_t, uint16_t , const char16_t* );
 
@@ -290,7 +292,7 @@ typedef void(CORECLR_DELEGATE_CALLTYPE* SendRemoveAllianceGuildRequest)(int32_t,
 
 typedef void(CORECLR_DELEGATE_CALLTYPE* SendPingResponse)(int32_t);
 
-typedef void(CORECLR_DELEGATE_CALLTYPE* SendItemRepair)(int32_t, BYTE );
+typedef void(CORECLR_DELEGATE_CALLTYPE* SendItemRepair)(int32_t, BYTE , BYTE );
 
 typedef void(CORECLR_DELEGATE_CALLTYPE* SendChaosMachineMixRequest)(int32_t, ChaosMachineMixType , BYTE );
 
@@ -320,7 +322,7 @@ typedef void(CORECLR_DELEGATE_CALLTYPE* SendPetInfoRequest)(int32_t, PetType , S
 
 typedef void(CORECLR_DELEGATE_CALLTYPE* SendIllusionTempleEnterRequest)(int32_t, BYTE , BYTE );
 
-typedef void(CORECLR_DELEGATE_CALLTYPE* SendIllusionTempleSkillRequest)(int32_t, uint16_t , BYTE , BYTE );
+typedef void(CORECLR_DELEGATE_CALLTYPE* SendIllusionTempleSkillRequest)(int32_t, uint16_t , uint16_t , BYTE );
 
 typedef void(CORECLR_DELEGATE_CALLTYPE* SendIllusionTempleRewardRequest)(int32_t);
 
@@ -400,6 +402,22 @@ typedef void(CORECLR_DELEGATE_CALLTYPE* SendDuelStopRequest)(int32_t);
 
 typedef void(CORECLR_DELEGATE_CALLTYPE* SendDuelChannelJoinRequest)(int32_t, BYTE );
 
-typedef void(CORECLR_DELEGATE_CALLTYPE* SendDuelChannelQuitRequest)(int32_t);
+typedef void(CORECLR_DELEGATE_CALLTYPE* SendDuelChannelQuitRequest)(int32_t, BYTE );
 
 typedef void(CORECLR_DELEGATE_CALLTYPE* SendChatCommandListRequest)(int32_t);
+
+typedef void(CORECLR_DELEGATE_CALLTYPE* SendDiscordIntegrationInfoRequest)(int32_t);
+
+typedef void(CORECLR_DELEGATE_CALLTYPE* SendDiscordLinkCodeRequest)(int32_t);
+
+typedef void(CORECLR_DELEGATE_CALLTYPE* SendDiscordUnlinkRequest)(int32_t);
+
+typedef void(CORECLR_DELEGATE_CALLTYPE* SendCharacterRenameRequest)(int32_t, const char16_t* , const char16_t* );
+
+typedef void(CORECLR_DELEGATE_CALLTYPE* SendInventoryItemEquipRequest)(int32_t, BYTE , BYTE );
+
+typedef void(CORECLR_DELEGATE_CALLTYPE* SendRequestD000)(int32_t);
+
+typedef void(CORECLR_DELEGATE_CALLTYPE* SendGameServerChannelRequest)(int32_t, BYTE );
+
+typedef void(CORECLR_DELEGATE_CALLTYPE* SendGameGuardAuthResponse)(int32_t, const BYTE* , uint32_t);

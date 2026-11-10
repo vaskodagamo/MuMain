@@ -46,14 +46,24 @@ const ImU32 PIVOT_COLOR = IM_COL32(255, 255, 255, 230);
 const ImU32 LABEL_BACKGROUND = IM_COL32(0, 0, 0, 180);
 const ImU32 LABEL_TEXT = IM_COL32(255, 255, 255, 255);
 
+// The gizmo works in the game window's pixels. While the editor's windows are OS windows
+// of their own, ImGui's coordinates (the mouse, the draw lists) are the desktop's, and the
+// game window's top left is where its viewport is; inside the game window both are zero.
+ImVec2 GameWindowOrigin()
+{
+    return ImGui::GetMainViewport()->Pos;
+}
+
 ImVec2 ToImVec(const Vec2& v)
 {
-    return ImVec2(v.x, v.y);
+    const ImVec2 origin = GameWindowOrigin();
+    return ImVec2(v.x + origin.x, v.y + origin.y);
 }
 
 Vec2 FromImVec(const ImVec2& v)
 {
-    return {v.x, v.y};
+    const ImVec2 origin = GameWindowOrigin();
+    return {v.x - origin.x, v.y - origin.y};
 }
 
 Vec3 RingPoint(const Vec3& pivot, int axis, float radius, float angle)
@@ -123,16 +133,16 @@ void DrawArrowHead(ImDrawList* draw, const Vec2& start, const Vec2& end, ImU32 c
         return;
     const Vec2 direction = {(end.x - start.x) / length, (end.y - start.y) / length};
     const Vec2 side = {-direction.y, direction.x};
-    const ImVec2 tip(end.x + direction.x * ARROW_LENGTH, end.y + direction.y * ARROW_LENGTH);
-    const ImVec2 left(end.x + side.x * ARROW_HALF_WIDTH, end.y + side.y * ARROW_HALF_WIDTH);
-    const ImVec2 right(end.x - side.x * ARROW_HALF_WIDTH, end.y - side.y * ARROW_HALF_WIDTH);
-    draw->AddTriangleFilled(tip, left, right, color);
+    const Vec2 tip = {end.x + direction.x * ARROW_LENGTH, end.y + direction.y * ARROW_LENGTH};
+    const Vec2 left = {end.x + side.x * ARROW_HALF_WIDTH, end.y + side.y * ARROW_HALF_WIDTH};
+    const Vec2 right = {end.x - side.x * ARROW_HALF_WIDTH, end.y - side.y * ARROW_HALF_WIDTH};
+    draw->AddTriangleFilled(ToImVec(tip), ToImVec(left), ToImVec(right), color);
 }
 
 void DrawSquare(ImDrawList* draw, const Vec2& center, float halfSide, ImU32 color)
 {
-    draw->AddRectFilled(ImVec2(center.x - halfSide, center.y - halfSide),
-                        ImVec2(center.x + halfSide, center.y + halfSide), color);
+    draw->AddRectFilled(ToImVec({center.x - halfSide, center.y - halfSide}),
+                        ToImVec({center.x + halfSide, center.y + halfSide}), color);
 }
 } // namespace
 

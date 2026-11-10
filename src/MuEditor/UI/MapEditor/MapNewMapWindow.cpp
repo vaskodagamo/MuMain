@@ -32,6 +32,7 @@ constexpr int NO_WORLD = 0;
 constexpr std::array<std::uint16_t, 5> WALK_VALUES = {Attributes::WALKABLE, Attributes::SAFEZONE, Attributes::BLOCKED,
                                                       Attributes::VOID_GROUND, Attributes::WATER};
 const ImVec2 WINDOW_SIZE(460.0f, 520.0f);
+constexpr float FIRST_USE_OFFSET = 80.0f; // from the game window's top left corner
 const ImVec4 NUMBER_COLOR(0.9f, 0.9f, 0.6f, 1.0f);
 
 std::string WorldLabel(int world)
@@ -52,6 +53,11 @@ void CMapNewMapWindow::Render(bool* open)
     if (!m_refreshed)
         Refresh();
     ImGui::SetNextWindowSize(WINDOW_SIZE, ImGuiCond_FirstUseEver);
+    // The first time over the game window (its viewport's place: ImGui's coordinates are
+    // the desktop's while the editor's windows are OS windows of their own).
+    const ImGuiViewport* game = ImGui::GetMainViewport();
+    ImGui::SetNextWindowPos(ImVec2(game->Pos.x + FIRST_USE_OFFSET, game->Pos.y + FIRST_USE_OFFSET),
+                            ImGuiCond_FirstUseEver);
     if (!ImGui::Begin("New map", open))
     {
         ImGui::End();

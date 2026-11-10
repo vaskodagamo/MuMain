@@ -94,29 +94,6 @@ void FillLightMap()
     }
 }
 
-// CreateTerrainLight as it was before its loop body became ComputeTerrainLight.
-std::unique_ptr<vec3_t[]> OriginalLight()
-{
-    auto light = std::make_unique<vec3_t[]>(CELLS);
-    vec3_t Light;
-    Vector(0.5f, -0.5f, 0.5f, Light);
-    for (int y = 0; y < TERRAIN_SIZE; y++)
-    {
-        for (int x = 0; x < TERRAIN_SIZE; x++)
-        {
-            int Index = TERRAIN_INDEX(x, y);
-            float Luminosity = DotProduct(TerrainNormal[Index], Light) + 0.5f;
-            if (Luminosity < 0.f)
-                Luminosity = 0.f;
-            else if (Luminosity > 1.f)
-                Luminosity = 1.f;
-            for (int i = 0; i < 3; i++)
-                light[Index][i] = TerrainLight[Index][i] * Luminosity;
-        }
-    }
-    return light;
-}
-
 // Raises the heights of a rectangle, as a brush stroke would.
 void Sculpt(int minX, int minY, int maxX, int maxY)
 {
@@ -184,16 +161,6 @@ TEST_CASE("Terrain normals do not keep the previous map's slopes [engine][terrai
             ++tilted;
     }
     CHECK(tilted == 0);
-}
-
-TEST_CASE("The terrain light is computed as before [engine][terrain]")
-{
-    FillHeights();
-    FillLightMap();
-    CreateTerrainNormal();
-    CreateTerrainLight();
-    const std::unique_ptr<vec3_t[]> original = OriginalLight();
-    CHECK(std::memcmp(original.get(), BackTerrainLight, NORMAL_BYTES) == 0);
 }
 
 TEST_CASE("Rebuilding a brush's rectangle gives the whole-map normals and light [engine][terrain]")

@@ -5,6 +5,7 @@
 #include "stdafx.h"
 #include "CharacterScene.h"
 #include "SceneCore.h"
+#include "Audio/SoundEventPlay.h"
 #include "Character/CharacterManager.h"
 #include "World/MapInfra/MapManager.h"
 #include "Render/Textures/ZzzOpenglUtil.h"
@@ -18,12 +19,16 @@
 #include "Render/Effects/ZzzEffect.h"
 #include "Engine/AI/GOBoid.h"
 #include "GameLogic/Pets/w_PetProcess.h"
-#include "UI/Legacy/UIMng.h"
+#include "UI/Core/SceneUICoordinator.h"
+#include "UI/Windows/SysMenuWin.h"
+#include "Character/CharSelMainWin.h"
+#include "Character/CharMakeWin.h"
 #include "Core/Input/Input.h"
+#include "Core/Input/UiInputRouter.h"
 #include "Network/Server/WSclient.h"
 #include "Network/Server/CSMapServer.h"
 #include "Core/Utilities/Log/muConsoleDebug.h"
-#include "UI/NewUI/NewUISystem.h"
+#include "UI/Core/WindowSystem.h"
 #include "Audio/DSPlaySound.h"
 #include "App/Platform/Windows/Winmain.h"
 #include "SceneCommon.h"
@@ -33,10 +38,13 @@
 #include "LoginScene.h"
 #include "Camera/CameraProjection.h"
 #include "UI/Scaling/UITransform.h"
+#include "Core/Input/ImeInput.h"
 #ifdef _EDITOR
 #include "Camera/CameraMode.h"
 #include "Camera/FrustumRenderer.h"
 #endif
+#include "Scenes/SceneLightingSetup.h"
+#include "Scenes/ScenePostProcessing.h"
 
 // External declarations
 extern EGameScene SceneFlag;
@@ -45,9 +53,6 @@ extern CHARACTER CharacterView;
 extern int SelectedCharacter;
 extern int g_iKeyPadEnable;
 extern int g_iChatInputType;
-extern BOOL g_bIMEBlock;
-extern DWORD g_dwBKConv;
-extern DWORD g_dwBKSent;
 extern HWND g_hWnd;
 extern CErrorReport g_ErrorReport;
 extern double WorldTime;
@@ -67,7 +72,7 @@ void StartGame()
         }
 
         if (CTLCODE_01BLOCKCHAR & CharactersClient[SelectedHero].CtlCode)
-            CUIMng::Instance().PopUpMsgWin(MESSAGE_BLOCKED_CHARACTER);
+            CSceneUICoordinator::Instance().PopUpMsgWin(MESSAGE_BLOCKED_CHARACTER);
         else
         {
             CharacterAttribute->Level = CharactersClient[SelectedHero].Level;
@@ -149,7 +154,7 @@ void CreateCharacterScene()
     CharacterView.Object.Kind = 0;
 
     SelectedHero = -1;
-    CUIMng::Instance().CreateCharacterScene();
+    CSceneUICoordinator::Instance().CreateCharacterScene();
 
     ClearInventory();
     CharacterAttribute->SkillNumber = 0;
@@ -174,7 +179,7 @@ void CreateCharacterScene()
 
     for (int i = 0; i < MAX_WHISPER; i++)
     {
-        g_pChatListBox->AddText(L"", L"", SEASON3B::TYPE_WHISPER_MESSAGE);
+        g_pChatListBox->AddText(L"", L"", mu::ui::window::TYPE_WHISPER_MESSAGE);
     }
 
     HIMC hIMC = ImmGetContext(g_hWnd);
@@ -194,12 +199,25 @@ void CreateCharacterScene()
     g_ErrorReport.Write(L"> Character scene init success.\r\n");
 }
 
-void NewMoveCharacterScene()
+static void UpdateSelectedCharacterEffects();
+
+// Moves the camera and builds the view the frame draws and picks with, before anything tests visibility against it.
+static void UpdateCharacterSceneView()
 {
-    if (CurrentProtocolState < RECEIVE_CHARACTERS_LIST)
-    {
-        return;
-    }
+    MoveMainCamera();
+
+    const auto viewport = UI::Scaling::FullReferenceViewport();
+    UpdateCameraView(viewport.x, viewport.y, viewport.width, viewport.height);
+    CreateFrustrum(static_cast<float>(viewport.width) / REFERENCE_WIDTH,
+                   static_cast<float>(viewport.height) / REFERENCE_HEIGHT);
+    CameraProjection::ScreenToWorldRay(g_Camera, MouseX, MouseY, MouseTarget);
+}
+
+static void MoveCharacterSceneState()
+{
+    // Picks the character under the cursor in what the last frame drew, before anything resets the mouse state.
+    if (!CSceneUICoordinator::Instance().IsCursorOnUI() && !Core::Input::IsMouseOverUI())
+        Input::Selection::SelectObjects();
 
     MouseOnWindow = false;
 
@@ -214,6 +232,7 @@ void NewMoveCharacterScene()
 
     // Update camera BEFORE checking character visibility
     MoveCamera();
+    UpdateCharacterSceneView();
 
     // Now check character visibility with updated frustum
     MoveCharactersClient();
@@ -225,6 +244,11 @@ void NewMoveCharacterScene()
     MoveBoids();
 
     ThePetProcess().UpdatePets();
+    UpdateCharacterEffects();
+    UpdateObjectEffects();
+    UpdateMountEffects();
+    UpdateEffectModelEffects();
+    UpdateSelectedCharacterEffects();
 
 #if defined _DEBUG || defined FOR_WORK
     std::wstring lpszTemp = { 0 };
@@ -236,15 +260,16 @@ void NewMoveCharacterScene()
 #endif
 
     CInput& rInput = CInput::Instance();
-    CUIMng& rUIMng = CUIMng::Instance();
+    CSceneUICoordinator& rUIMng = CSceneUICoordinator::Instance();
 
     if (rInput.IsKeyDown(VK_RETURN))
     {
-        if (!(rUIMng.m_MsgWin.IsShow() || rUIMng.m_CharMakeWin.IsShow()
-            || rUIMng.m_SysMenuWin.IsShow() || rUIMng.m_OptionWin.IsShow())
+        if (!(g_MsgWin.IsVisible() || g_CharMakeWin.IsVisible()
+            || g_SysMenuWin.IsVisible())
             && SelectedHero > -1 && SelectedHero < MAX_CHARACTERS_PER_ACCOUNT)
         {
-            ::PlayBuffer(SOUND_CLICK01);
+            // Enter is the Connect button: its theme's click kind (Q-UI1).
+            g_CharSelMainWin.PlayButtonClick("btn_connect");
 
             if (SelectedCharacter >= 0)
                 SelectedHero = SelectedCharacter;
@@ -252,14 +277,21 @@ void NewMoveCharacterScene()
             ::StartGame();
         }
     }
-    // ESC menu toggle is handled by CUIMng::Update()
+    // ESC menu toggle is handled by CSceneUICoordinator::Update()
 
-    if (rUIMng.IsCursorOnUI())
+    // Core::Input::IsMouseOverUI() added as a 2nd gate -- IsCursorOnUI() alone runs on CCharSelMainWin's own
+    // UpdateMouseEvent() rect (CalculateFixedAnchorLayout()'s hand-duplicated math), which has
+    // already gone stale relative to the real RmlUi-rendered buttons once (see that function's
+    // own comment on the Delete-button no-op bug). RmlUi's own hit-test is authoritative here
+    // without any new per-window bounding-box query: char_sel_main.rml's #panel spans the full
+    // screen but is pointer-events:none, so IsMouseOverUI() only reports true over the real
+    // interactive children.
+    if (rUIMng.IsCursorOnUI() || Core::Input::IsMouseOverUI())
     {
         return;
     }
 
-    if (rInput.IsLBtnDbl() && rUIMng.m_CharSelMainWin.IsShow())
+    if (rInput.IsLBtnDbl() && g_CharSelMainWin.IsVisible())
     {
         if (SelectedCharacter < 0 || SelectedCharacter >= MAX_CHARACTERS_PER_ACCOUNT)
         {
@@ -274,11 +306,46 @@ void NewMoveCharacterScene()
         if (SelectedCharacter < 0 || SelectedCharacter >= MAX_CHARACTERS_PER_ACCOUNT)
             SelectedHero = -1;
         else
+        {
             SelectedHero = SelectedCharacter;
-        rUIMng.m_CharSelMainWin.UpdateDisplay();
+            // A click on a character (Q-UI1).
+            Audio::PlayInterfaceEventSound(Data::Sounds::CharacterSelectedEvent, {});
+        }
+        g_CharSelMainWin.UpdateDisplay();
     }
 
     g_ConsoleDebug->UpdateMainScene();
+}
+
+// Where the characters stand and how they are lit for the draw, once the input has chosen the selected one.
+static void PlaceCharactersForDraw()
+{
+    for (int i = 0; i < MAX_CHARACTERS_PER_ACCOUNT; i++)
+    {
+        CharactersClient[i].Object.Position[2] = 163.0f;
+        Vector(0.0f, 0.0f, 0.0f, CharactersClient[i].Object.Light);
+    }
+    if (SelectedHero == -1)
+        return;
+    OBJECT* o = &CharactersClient[SelectedHero].Object;
+    if (!o->Live)
+        return;
+    vec3_t Light;
+    Vector(1.0f, 1.0f, 1.0f, Light);
+    Vector(1.0f, 1.0f, 1.0f, o->Light);
+    AddTerrainLight(o->Position[0], o->Position[1], Light, 1, PrimaryTerrainLight);
+}
+
+void NewMoveCharacterScene()
+{
+    if (CurrentProtocolState < RECEIVE_CHARACTERS_LIST)
+    {
+        return;
+    }
+    MoveCharacterSceneState();
+    PlaceCharactersForDraw();
+    CullWorld();
+    Scenes::Lighting::PinWorldDynamicLights();
 }
 
 /**
@@ -289,54 +356,26 @@ void NewMoveCharacterScene()
  */
 static void SetupCharacterSceneViewport(int& outWidth, int& outHeight)
 {
-    vec3_t pos;
-    Vector(9758.0f, 18913.0f, 675.0f, pos);
-
-    MoveMainCamera();
-
     const auto viewport = UI::Scaling::FullReferenceViewport();
     outWidth = viewport.width;
     outHeight = viewport.height;
 
     mu::GetRenderer().SetClearColor(0.f, 0.f, 0.f, 1.f);
     BeginOpengl(viewport.x, viewport.y, outWidth, outHeight);
-
-    // Build global frustum arrays for TestFrustrum/TestFrustrum2D
-    // Must be called after BeginOpengl (needs GL matrices) in every scene that renders terrain/objects
-    {
-        vec3_t cameraPos;
-        VectorCopy(g_Camera.Position, cameraPos);
-        CreateFrustrum((float)outWidth / (float)REFERENCE_WIDTH,
-                       (float)outHeight / (float)REFERENCE_HEIGHT, cameraPos);
-    }
-
-    CameraProjection::ScreenToWorldRay(g_Camera, MouseX, MouseY, MouseTarget);
-
-    // Reset character positions and lighting
-    for (int i = 0; i < MAX_CHARACTERS_PER_ACCOUNT; i++)
-    {
-        CharactersClient[i].Object.Position[2] = 163.0f;
-        Vector(0.0f, 0.0f, 0.0f, CharactersClient[i].Object.Light);
-    }
+    Scenes::Lighting::SubmitSceneLighting();
 }
 
-/**
- * @brief Applies lighting to the currently selected character.
- */
+// The render state the selected character's lighting left (PlaceCharactersForDraw sets the light).
 static void ApplySelectedCharacterLighting()
 {
     if (SelectedHero == -1)
         return;
 
-    OBJECT* o = &CharactersClient[SelectedHero].Object;
+    const OBJECT* o = &CharactersClient[SelectedHero].Object;
     if (!o->Live)
         return;
 
     EnableAlphaBlend();
-    vec3_t Light;
-    Vector(1.0f, 1.0f, 1.0f, Light);
-    Vector(1.0f, 1.0f, 1.0f, o->Light);
-    AddTerrainLight(o->Position[0], o->Position[1], Light, 1, PrimaryTerrainLight);
     DisableAlphaBlend();
 }
 
@@ -345,24 +384,19 @@ static void ApplySelectedCharacterLighting()
  */
 static void RenderCharacterScene3D()
 {
-    // DXP-16 increment 1: terrain has a real D3D11 path now -- call unconditionally.
-    // DXP-16 increment 2: RenderObjects() (BMD static world meshes) joins it.
-    // DXP-16 increment 3: RenderCharactersClient()/RenderMount() join it too (see LoginScene.cpp's
+    // Terrain has a real D3D11 path now -- call unconditionally. RenderObjects() (BMD static world
+    // meshes) joins it. RenderCharactersClient()/RenderMount() join it too (see LoginScene.cpp's
     RenderTerrain(false);
     RenderObjects();
     RenderCharactersClient();
     RenderMount();
 
-    if (!CUIMng::Instance().IsCursorOnUI())
-        Input::Selection::SelectObjects();
-
     RenderBlurs();
     RenderJoints();
     RenderEffects();
-    ThePetProcess().RenderPets();
+    Scenes::PostProcessing::RenderPetsWithoutBloom();
     RenderBoids();
     RenderObjects_AfterCharacter();
-    CheckSprites();
 }
 
 /**
@@ -373,7 +407,7 @@ static void RenderSelectedCharacterEffects()
     if (SelectedHero == -1)
         return;
 
-    OBJECT* o = &CharactersClient[SelectedHero].Object;
+    const OBJECT* o = &CharactersClient[SelectedHero].Object;
     if (!o->Live)
         return;
 
@@ -392,8 +426,18 @@ static void RenderSelectedCharacterEffects()
     RenderTerrainAlphaBitmap(BITMAP_GM_AURORA, o->Position[0], o->Position[1], 1.8f, 1.8f, vLight, WorldTime * 0.01f);
     RenderTerrainAlphaBitmap(BITMAP_GM_AURORA, o->Position[0], o->Position[1], 1.2f, 1.2f, vLight, -WorldTime * 0.01f);
     DisableAlphaBlend();
+}
 
-    float Rotation = (int)WorldTime % 3600 / (float)10.f;
+// The selected character's particles and the server's hero name, while the scene draws it.
+static void UpdateSelectedCharacterEffects()
+{
+    if (SelectedHero == -1)
+        return;
+
+    OBJECT* o = &CharactersClient[SelectedHero].Object;
+    if (!o->Live)
+        return;
+
     Vector(0.15f, 0.15f, 0.15f, o->Light);
     CreateParticleFpsChecked(BITMAP_EFFECT, o->Position, o->Angle, o->Light, 4);
     CreateParticleFpsChecked(BITMAP_EFFECT, o->Position, o->Angle, o->Light, 5);
@@ -402,16 +446,22 @@ static void RenderSelectedCharacterEffects()
 }
 
 /**
- * @brief Renders UI elements for character selection scene.
+ * @brief Renders the sprites, particles and damage points of the character selection scene.
  */
-static void RenderCharacterSceneUI()
+static void RenderCharacterSceneSprites()
 {
     BeginSprite();
     RenderSprites();
     RenderParticles();
     RenderPoints();
     EndSprite();
+}
 
+/**
+ * @brief Renders UI elements for character selection scene.
+ */
+static void RenderCharacterSceneUI()
+{
     BeginBitmap();
     RenderInfomation();
 
@@ -464,13 +514,25 @@ bool NewRenderCharacterScene(HDC hDC)
     }
 #endif
 
+    RenderCharacterSceneSprites();
+    Scenes::PostProcessing::EndSceneGeometry();
     RenderCharacterSceneUI();
 
-    // Handle option window in login/character scenes (can't use full g_pNewUISystem update)
-    if (g_pNewUISystem->IsVisible(SEASON3B::INTERFACE_OPTION))
+    // Handle option window in login/character scenes (can't use full g_pNewUISystem update).
+    // Update() (not just UpdateMouseEvent()/UpdateKeyEvent()) is required here too -- it's what
+    // runs SyncRmlModel(), which pushes this window's own C++ state (tab/row labels, checkbox
+    // values, everything bound via {{}}) into its RmlUi data model. Without it, every bound field
+    // stays at its default-constructed empty value and the window renders with no text at all
+    // (found live: fixed the moment CManager::Update() started running this window normally, i.e.
+    // after reaching a scene that pumps the full g_pNewUISystem update -- the model, once
+    // populated there, stays populated even back in a scene that skips this call again, which is
+    // why the symptom didn't reappear after visiting one such scene). Same order the full
+    // CManager sweep uses (UpdateMouseEvent -> UpdateKeyEvent -> Update -> Render).
+    if (g_pNewUISystem->IsVisible(mu::ui::window::INTERFACE_OPTION))
     {
         g_pOption->UpdateMouseEvent();
         g_pOption->UpdateKeyEvent();
+        g_pOption->Update();
         BeginBitmap();
         g_pOption->Render();
         EndBitmap();

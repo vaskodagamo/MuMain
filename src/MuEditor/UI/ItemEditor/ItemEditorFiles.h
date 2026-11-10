@@ -5,22 +5,26 @@
 #include "Core/EditorFiles.h"
 
 #include <filesystem>
+#include <vector>
 
-// The Item Editor's files in the client data tree, for the language the client
-// runs in (config.ini LanguageSelection, e.g. Eng); the save, mirror and read
-// helpers every editor shares are in Core/EditorFiles.h. Each path is spelled
-// as the file on disk when it exists (the game asks for Item_Eng.bmd, git
-// tracks item_eng.bmd), so a save names the file git tracks.
+// The item data the item tools save, mirrored into the checkout. The game and the
+// item tools read and write the JSON item data next to the executable
+// (Data/Items, and the glow colors and render styles in Data/Effects); the build
+// copies src/bin/Data over that folder again, so a save is only durable once the
+// changed files are in <repo>/src/bin/Data too. The save, mirror and read helpers
+// every editor shares are in Core/EditorFiles.h.
 namespace Editor::Files
 {
-std::filesystem::path LanguageDir(); // Data/Local/{lang}
+std::filesystem::path ItemDataDir(); // Data/Items
 
-// The item table the game loads and the Item Editor saves.
-std::filesystem::path ItemTableFile(); // Data/Local/{lang}/Item_{lang}.bmd
-
-// Exports for other tools; the game does not read them.
-std::filesystem::path ItemLegacyExportFile(); // Data/Local/{lang}/Item_S6E3.bmd
-std::filesystem::path ItemCsvExportFile();    // Data/Local/{lang}/Item.csv
+// Call right after the item tools saved (CItemDataHandler::Save) with the time
+// taken just before the save: copies every item data file the save wrote (written
+// since then; a save rewrites only the files whose content changed) and whose
+// bytes differ from the checkout's copy into <repo>/src/bin/Data, backing up what
+// it replaces (MirrorSavedFile). Files the save left alone are not copied, so a
+// build folder older than the checkout never overwrites it. Without a checkout
+// nothing is copied. Returns the files it mirrored.
+std::vector<SavedFile> MirrorSavedItemData(std::filesystem::file_time_type savedSince);
 } // namespace Editor::Files
 
 #endif // _EDITOR

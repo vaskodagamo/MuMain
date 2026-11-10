@@ -1,7 +1,4 @@
-﻿// Event.cpp: implementation of the CEvent class.
-//
-//////////////////////////////////////////////////////////////////////
-
+﻿
 // common
 #include "stdafx.h"
 #include "Engine/Object/ZzzInfomation.h"
@@ -14,7 +11,7 @@
 #include "Render/Effects/ZzzEffect.h"
 #include "Render/Terrain/ZzzLodTerrain.h"
 #include "Render/Models/BoneManager.h"
-#include "UI/Legacy/UIManager.h"
+#include "UI/Core/UIManager.h"
 #include "GameLogic/Events/Cinematic/CKANTURUDirection.h"
 #include "GameLogic/Events/Cinematic/CDirection.h"
 #include "UI/Widgets/UIBaseDef.h"
@@ -139,18 +136,12 @@ void CXmasEvent::LoadXmasEventEffect()
     LoadBitmap(L"Effect\\snowseff02.jpg", BITMAP_SNOW_EFFECT_2, GL_LINEAR, GL_CLAMP);
 }
 
-void CXmasEvent::LoadXmasEventItem()
-{
-    gLoadData.AccessModel(MODEL_CHRISTMAS_STAR, L"Data\\Item\\", L"MagicBox", 2);
-    gLoadData.OpenTexture(MODEL_CHRISTMAS_STAR, L"Item\\");
-}
-
 void CXmasEvent::LoadXmasEventSound()
 {
-    LoadWaveFile(SOUND_XMAS_JUMP_SNOWMAN, L"Data\\Sound\\xmasjumpsnowman.wav", 1);
-    LoadWaveFile(SOUND_XMAS_JUMP_DEER, L"Data\\Sound\\xmasjumpsasum.wav", 1);
-    LoadWaveFile(SOUND_XMAS_JUMP_SANTA, L"Data\\Sound\\xmasjumpsanta.wav", 1);
-    LoadWaveFile(SOUND_XMAS_TURN, L"Data\\Sound\\xmasturn.wav", 1);
+    LoadGameSound(SOUND_XMAS_JUMP_SNOWMAN);
+    LoadGameSound(SOUND_XMAS_JUMP_DEER);
+    LoadGameSound(SOUND_XMAS_JUMP_SANTA);
+    LoadGameSound(SOUND_XMAS_TURN);
 }
 
 void CXmasEvent::CreateXmasEventEffect(CHARACTER* pCha, OBJECT* pObj, int iType)
@@ -257,7 +248,7 @@ void CNewYearsDayEvent::LoadModel()
 
 void CNewYearsDayEvent::LoadSound()
 {
-    LoadWaveFile(SOUND_NEWYEARSDAY_DIE, L"Data\\Sound\\newyeardie.wav", 1);
+    LoadGameSound(SOUND_NEWYEARSDAY_DIE);
 }
 
 CHARACTER* CNewYearsDayEvent::CreateMonster(int iType, int iPosX, int iPosY, int iKey)
@@ -306,7 +297,7 @@ bool CNewYearsDayEvent::MoveMonsterVisual(CHARACTER* c, OBJECT* o, BMD* b)
                 Vector(1.0f, 0.4f, 0.0f, vLight);
                 CreateParticle(BITMAP_LIGHT + 2, vWorldPos, o->Angle, vLight, 0, 0.28f);
 
-                if (rand_fps_check(2))
+                if (Random::Rand() % 2 == 0)
                 {
                     Vector(0.8f, 0.6f, 0.1f, vLight);
                 }
@@ -330,7 +321,7 @@ bool CNewYearsDayEvent::MoveMonsterVisual(CHARACTER* c, OBJECT* o, BMD* b)
 
                 for (int i = 0; i < 5; ++i)
                 {
-                    if (rand_fps_check(2))
+                    if (Random::Rand() % 2 == 0)
                     {
                         Vector(0.8f, 0.6f, 0.1f, vLight);
                     }
@@ -371,7 +362,7 @@ bool CNewYearsDayEvent::MoveMonsterVisual(CHARACTER* c, OBJECT* o, BMD* b)
             {
                 if (o->AnimationFrame >= 4.5f)
                 {
-                    CreateEffectFpsChecked(o->m_iAnimation, vWorldPos, o->Angle, vLight);
+                    CreateEffect(o->m_iAnimation, vWorldPos, o->Angle, vLight);
                 }
             }
         }
@@ -430,10 +421,10 @@ void C09SummerEvent::LoadModel() {}
 
 void C09SummerEvent::LoadSound()
 {
-    LoadWaveFile(SOUND_UMBRELLA_MONSTER_WALK1, L"Data\\Sound\\UmbMon_Walk01.wav", 1);
-    LoadWaveFile(SOUND_UMBRELLA_MONSTER_WALK2, L"Data\\Sound\\UmbMon_Walk02.wav", 1);
-    LoadWaveFile(SOUND_UMBRELLA_MONSTER_DAMAGE, L"Data\\Sound\\UmbMon_Damage01.wav", 1);
-    LoadWaveFile(SOUND_UMBRELLA_MONSTER_DEAD, L"Data\\Sound\\UmbMon_Dead.wav", 1);
+    LoadGameSound(SOUND_UMBRELLA_MONSTER_WALK1);
+    LoadGameSound(SOUND_UMBRELLA_MONSTER_WALK2);
+    LoadGameSound(SOUND_UMBRELLA_MONSTER_DAMAGE);
+    LoadGameSound(SOUND_UMBRELLA_MONSTER_DEAD);
 }
 
 CHARACTER* C09SummerEvent::CreateMonster(int iType, int iPosX, int iPosY, int iKey)

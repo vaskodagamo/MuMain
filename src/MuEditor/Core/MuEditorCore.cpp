@@ -4,36 +4,80 @@
 
 #include "MuEditorCore.h"
 #include "imgui.h"
-#include "imgui_internal.h" // ImGui::ClosePopupsExceptModals
+#include "imgui_internal.h"
 #include "imgui_impl_sdl3.h"
 #include "imgui_impl_sdlgpu3.h"
+#include <cstdlib>
+#include <string_view>
+#include <SDL3/SDL_events.h>
+#include <SDL3/SDL_keyboard.h>
+#include <SDL3/SDL_mouse.h>
+#include <SDL3/SDL_video.h>
 #include "ModelHotReload.h"
 #include "MuInputBlockerCore.h"
+#include "MuEditorCursor.h"
 #include "OfflineWorld.h"
 #include "StudioWindow.h"
 #include "ViewCapture.h"
+#include "Data/DataHandler/ItemData/ItemDataHandler.h"
+#include "MuEditorPlatformWindows.h"
+#include "Core/Input/KeyState.h"
+#include "Core/Input/SyntheticInput.h"
 #include "../Config/MuEditorConfig.h"
+#include "../MuEditor/UI/Colors/MuColorsUI.h"
+#include "../MuEditor/UI/StyleEditor/MuStyleEditorUI.h"
 #include "../MuEditor/UI/Common/MuEditorCenterPaneUI.h"
+#include "../MuEditor/UI/DataChecks/MuDataChecksUI.h"
 #include "../MuEditor/UI/ItemEditor/ConceptImageCache.h"
 #include "../MuEditor/UI/ItemEditor/ConceptJob.h"
 #include "../MuEditor/UI/ItemEditor/ConceptJobPanel.h"
 #include "../MuEditor/UI/ItemEditor/ItemAbCompare.h"
 #include "../MuEditor/UI/ItemEditor/ItemPreview.h"
 #include "../MuEditor/UI/ItemEditor/MuItemEditorUI.h"
+#include "../MuEditor/UI/ItemTools/ItemHeldByCharacter.h"
+#include "../MuEditor/UI/ItemTools/MuItemBasicsUI.h"
+#include "../MuEditor/UI/ItemTools/MuItemBrowserUI.h"
+#include "../MuEditor/UI/ItemTools/MuItemCategoriesUI.h"
+#include "../MuEditor/UI/ItemTools/MuItemFormulasUI.h"
+#include "../MuEditor/UI/ItemTools/MuItemSyncUI.h"
+#include "../MuEditor/UI/ItemTools/MuItemTooltipUI.h"
+#include "../MuEditor/UI/ItemTools/MuItemModelUI.h"
+#include "../MuEditor/UI/ItemTools/MuItemRequirementsUI.h"
+#include "../MuEditor/UI/ItemTools/MuItemRulesUI.h"
 #include "../MuEditor/UI/SkillEditor/MuSkillEditorUI.h"
 #include "../MuEditor/UI/DevEditor/DevEditorUI.h"
 #include "../MuEditor/UI/MapEditor/MapEditorShortcuts.h"
 #include "../MuEditor/UI/MapEditor/MapEditorUI.h"
+#include "../MuEditor/UI/EffectBrowser/MuEffectBrowserUI.h"
+#include "../MuEditor/UI/ItemTranslations/MuItemTranslationsUI.h"
+#include "../MuEditor/UI/MonsterTools/MuMonsterBrowserUI.h"
+#include "../MuEditor/UI/MonsterTools/MuMonsterAttacksUI.h"
+#include "../MuEditor/UI/MonsterTools/MuMonsterSoundsUI.h"
+#include "../MuEditor/UI/MonsterTools/MuMonsterModelUI.h"
+#include "../MuEditor/UI/MonsterTools/MuMonsterPreviewUI.h"
+#include "../MuEditor/UI/MonsterTools/MuMonsterTranslationsUI.h"
+#include "../MuEditor/UI/ServerList/MuServerListUI.h"
+#include "Network/Server/ServerListManager.h"
 #include "../UI/Common/MuEditorUI.h"
 #include "../UI/Console/MuEditorConsoleUI.h"
 #include "I18N/All.h"
+#include "Core/Utilities/AssetLoadWorld.h"
+#include "Data/DataHandler/ItemData/ItemDataHandler.h"
+#include "Data/DataHandler/MonsterData/MonsterDataHandler.h"
+#include "GameLogic/Monsters/MonsterModelChanges.h"
+#include "Render/Items/ItemEffects.h"
+#include "Render/Items/ItemRenderStyles.h"
+#include "Core/Utilities/WorldClearing.h"
 #include "Core/Utilities/StringUtils.h"
+#include "World/MapInfra/MapManager.h"
 #include "Render/Renderer/MuRenderer.h"
+#include "UI/SoundEditor/MuSoundEditorUI.h"
+#include "UI/SoundEditor/SoundEditorEdits.h"
+#include "UI/SoundMixer/MuSoundMixerUI.h"
 
 namespace mu
 {
 void QueueEditorRenderCommand();
-SDL_GPUGraphicsPipeline* GetEditorOverlayPipeline();
 }
 
 #ifndef _WIN32
@@ -64,23 +108,36 @@ namespace
 }
 #endif
 
-// Windows cursor display counter thresholds
+// Cursor display counter thresholds (Win32's counter, or the game's ShowCursor
+// shim over SDL's cursor off Windows)
 // The cursor is visible when the counter is >= CURSOR_VISIBLE_THRESHOLD
 // The cursor is hidden when the counter is < CURSOR_VISIBLE_THRESHOLD
 constexpr int CURSOR_VISIBLE_THRESHOLD = 0;
 
-// "Open Editor" button layout constants (scaled by the editor UI scale)
-constexpr float EDITOR_BTN_X_OFFSET = 110.0f;
-constexpr float EDITOR_BTN_Y = 8.0f;
-constexpr float EDITOR_BTN_WIDTH = 100.0f;
-constexpr float EDITOR_BTN_HEIGHT = 24.0f;
+// The frames in a row the game skips while the GPU is behind; more, and its
+// window is out of sight (RenderPlatformWindows).
+constexpr int SkippedGameFramesWhileBehind = 1;
 
-// Editor UI scale limits (the toolbar's -/+ buttons step by 0.1).
+// Editor UI scale limits (the menu bar's -/+ buttons step by 0.1).
 constexpr float UI_SCALE_MIN = 0.7f;
 constexpr float UI_SCALE_MAX = 2.5f;
 
 namespace
 {
+// The editor's own windows present without waiting for the display where the
+// driver can, so that they never hold back the game's frame.
+SDL_GPUPresentMode EditorWindowPresentMode(SDL_GPUDevice* device, SDL_Window* gameWindow)
+{
+    for (const SDL_GPUPresentMode mode : {SDL_GPU_PRESENTMODE_MAILBOX, SDL_GPU_PRESENTMODE_IMMEDIATE})
+    {
+        if (SDL_WindowSupportsGPUPresentMode(device, gameWindow, mode))
+        {
+            return mode;
+        }
+    }
+    return SDL_GPU_PRESENTMODE_VSYNC;
+}
+
 bool InitializeImGuiBackends(SDL_Window* window)
 {
     SDL_GPUDevice* device = static_cast<SDL_GPUDevice*>(mu::GetRenderer().GetDevice());
@@ -110,6 +167,7 @@ bool InitializeImGuiBackends(SDL_Window* window)
     initInfo.Device = device;
     initInfo.ColorTargetFormat = colorTargetFormat;
     initInfo.MSAASamples = SDL_GPU_SAMPLECOUNT_1;
+    initInfo.PresentMode = EditorWindowPresentMode(device, window);
     if (!ImGui_ImplSDLGPU3_Init(&initInfo))
     {
         fwprintf(stderr, L"[MuEditor] ImGui_ImplSDLGPU3_Init failed\n");
@@ -119,6 +177,16 @@ bool InitializeImGuiBackends(SDL_Window* window)
     }
 
     return true;
+}
+
+// Whether MU_EDITOR_IN_GAME_WINDOW asks for the editor inside the game window ("1", "true", "on").
+bool EditorStaysInGameWindow()
+{
+    const char* value = std::getenv("MU_EDITOR_IN_GAME_WINDOW");
+    if (value == nullptr)
+        return false;
+    const std::string_view text(value);
+    return text == "1" || text == "true" || text == "on";
 }
 
 bool AnyMouseButtonDown()
@@ -137,22 +205,16 @@ CMuEditorCore::CMuEditorCore()
     , m_bInitialized(false)
     , m_bFrameStarted(false)
     , m_bDrawDataReady(false)
-    , m_bShowItemEditor(false)
-    , m_bShowSkillEditor(false)
-    , m_bShowDevEditor(false)
-    , m_bShowMapEditor(false)
-    , m_bShowConsole(true)
     , m_bHoveringUI(false)
     , m_bPreviousFrameHoveringUI(false)
     , m_UIScale(1.0f)
     , m_bScaleDirty(false)
-    , m_pWindow(nullptr)
 {
 }
 
 void CMuEditorCore::SetUIScale(float scale)
 {
-    // Clamp to something sane; the toolbar steps this in 0.1 increments.
+    // Clamp to something sane; the menu bar steps this in 0.1 increments.
     if (scale < UI_SCALE_MIN) scale = UI_SCALE_MIN;
     if (scale > UI_SCALE_MAX) scale = UI_SCALE_MAX;
     if (scale == m_UIScale)
@@ -170,33 +232,33 @@ void CMuEditorCore::ChooseUIScale(float scale)
 
 bool CMuEditorCore::IsFullscreen() const
 {
-    return Editor::StudioWindow::IsFullscreen(m_pWindow);
+    return Editor::StudioWindow::IsFullscreen(m_pGameWindow);
 }
 
 void CMuEditorCore::ToggleFullscreen()
 {
-    Editor::StudioWindow::SetFullscreen(m_pWindow, !IsFullscreen());
+    Editor::StudioWindow::SetFullscreen(m_pGameWindow, !IsFullscreen());
 }
 
 void CMuEditorCore::UpdateStudioPreferences()
 {
     if (!Editor::OfflineWorld::IsItemStudio())
         return;
-    Editor::StudioWindow::Update(m_pWindow);
+    Editor::StudioWindow::Update(m_pGameWindow);
     if (m_bStudioScaleChecked)
         return;
     m_bStudioScaleChecked = true;
     // The first start on a large display: readable without looking for the + button.
     if (g_MuEditorConfig.GetUIScale() <= 0.0f)
-        SetUIScale(Editor::StudioWindow::DefaultUIScale(m_pWindow));
+        SetUIScale(Editor::StudioWindow::DefaultUIScale(m_pGameWindow));
 }
 
-// The toolbar's Console box is kept for the next start.
+// Whether the console is shown (Windows > Console) is kept for the next start.
 void CMuEditorCore::RememberConsoleChoice()
 {
-    if (m_bShowConsole == g_MuEditorConfig.GetShowConsole())
+    if (m_windows.console == g_MuEditorConfig.GetShowConsole())
         return;
-    g_MuEditorConfig.SetShowConsole(m_bShowConsole);
+    g_MuEditorConfig.SetShowConsole(m_windows.console);
     g_MuEditorConfig.Save();
 }
 
@@ -247,6 +309,8 @@ void CMuEditorCore::Initialize(SDL_Window* window)
     if (m_bInitialized)
         return;
 
+    ConnectGameHooks();
+
     if (window == nullptr)
     {
         fwprintf(stderr, L"[MuEditor] Initialize failed: window is null\n");
@@ -261,9 +325,35 @@ void CMuEditorCore::Initialize(SDL_Window* window)
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
 
-    // Let ImGui manage the mouse cursor (Windows cursor) when editor is open
-    // Game cursor is disabled when editor is open (see ZzzScene.cpp)
-    io.MouseDrawCursor = false; // Don't let ImGui draw its own cursor, use Windows cursor
+    // The OS cursor over the editor; the game cursor is hidden there (see
+    // UpdateCursorVisibility)
+    io.MouseDrawCursor = false; // Don't let ImGui draw its own cursor, use the OS cursor
+#ifndef _WIN32
+    // Off Windows SDL has one cursor for all of the game's windows, which the
+    // game keeps blank: the editor sets it over its windows itself
+    // (UpdateCursorVisibility), so the backend must not.
+    io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
+#endif
+
+    // The editor's windows dock into one another and can leave the game window
+    // (an OS window each, see SelectWindowMode), staying in front of it: the
+    // platform backend makes them children of the game window, except on
+    // macOS, where they float above it while MU is the active app
+    // (MuEditor::PlatformWindows::BeforeNewFrame). Those windows have the OS
+    // title bar with its buttons.
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    io.ConfigViewportsNoDefaultParent = false;
+    io.ConfigViewportsNoDecoration = false;
+    m_pGameWindow = window;
+    // ImGui sees the game window's keys too, and its Ctrl+Tab window switch
+    // (force attack and the minimap in the game) would move the keyboard into
+    // an editor window.
+    ImGui::GetCurrentContext()->ConfigNavWindowingKeyNext = 0;
+    ImGui::GetCurrentContext()->ConfigNavWindowingKeyPrev = 0;
+    // The arrow keys move through the editor's lists while the keyboard is the
+    // editor's (UpdateKeyboardNavigation); moving through them alone does not
+    // take the game's keys.
+    io.ConfigNavCaptureKeyboard = false;
 
     fwprintf(stderr, L"[MuEditor] ImGui context created\n");
     fflush(stderr);
@@ -357,9 +447,7 @@ void CMuEditorCore::Initialize(SDL_Window* window)
         }
     }
 #elif __APPLE__
-    // macOS: Try system fonts. Skip paths that don't exist (PingFang moved out of
-    // /System/Library/Fonts in newer macOS), since ImGui reports a missing font file
-    // as an error - an assert in Debug builds.
+    // macOS: Try system fonts
     const char* macFonts[] = {
         "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
         "/System/Library/Fonts/Helvetica.ttc",
@@ -367,6 +455,8 @@ void CMuEditorCore::Initialize(SDL_Window* window)
     };
     for (const char* fontPath : macFonts)
     {
+        // Skip paths that don't exist (PingFang moved out of /System/Library/Fonts in newer
+        // macOS): ImGui reports a missing font file as an error - an assert in Debug builds.
         if (FontFileExists(fontPath) &&
             io.Fonts->AddFontFromFileTTF(fontPath, 16.0f, &fontConfig, ranges.Data) != nullptr)
         {
@@ -455,11 +545,13 @@ void CMuEditorCore::Initialize(SDL_Window* window)
         return;
     }
 
+    MuEditor::PlatformWindows::Install();
+    LogVideoDriver();
+
     fwprintf(stderr, L"[MuEditor] ImGui backends initialized\n");
     fflush(stderr);
 
     m_bInitialized = true;
-    m_pWindow = window;
     g_MuEditorConsoleUI.LogEditor("MU Editor initialized");
 
     // Editor config holds editor-only preferences (column visibility etc.).
@@ -467,13 +559,37 @@ void CMuEditorCore::Initialize(SDL_Window* window)
     // Winmain before we got here; do not touch I18N::SetLocale from editor
     // init or it'll overwrite the game-side selection.
     g_MuEditorConfig.Load();
+    // The Server List window's preview of the offline servers, as it was left.
+    g_ServerListManager->SetOfflinePreview(g_MuEditorConfig.GetShowOfflineServers(),
+                                           g_MuEditorConfig.GetOfflineServerLoad());
+    // The item checks know the looks; they are drawing code.
+    g_ItemDataHandler.SetLookNames(Render::Items::Styles::Exists, Render::Items::ItemEffects::Exists);
     g_MuEditorConsoleUI.LogEditor(std::string("Active locale: ") + I18N::GetCurrentLocale());
     if (g_MuEditorConfig.GetUIScale() > 0.0f)
-        SetUIScale(g_MuEditorConfig.GetUIScale()); // the toolbar's last choice
-    m_bShowConsole = g_MuEditorConfig.GetShowConsole();
+        SetUIScale(g_MuEditorConfig.GetUIScale()); // the menu bar's last choice
+    m_windows.console = g_MuEditorConfig.GetShowConsole();
 
     fwprintf(stderr, L"[MuEditor] Initialize() completed\n");
     fflush(stderr);
+}
+
+void CMuEditorCore::ConnectGameHooks()
+{
+    // The effect browser shows what loaded each model and texture; the
+    // records take the map of the moment from the map manager.
+    Core::AssetLoadWorld::SetSource([] { return gMapManager.WorldActive; });
+    // The effect browser's world preview removes its objects before the game
+    // clears its pools.
+    Core::WorldClearing::SetListener([] { g_MuEffectBrowserUI.OnWorldClearing(); });
+    // The game's key reads leave out what is pressed in the editor's own windows.
+    Core::Input::SetOtherWindowQuery([](int virtualKey) { return g_MuEditorCore.IsWithEditorWindow(virtualKey); });
+    // The cloth of worn pants keeps data of its model's slot: it goes before
+    // the item tools change an opened item model, and the game makes it again;
+    // the Grand Soul pants' mesh is made their cloth grid again after.
+    g_ItemDataHandler.SetOpenedModelHooks({&MuEditor::Items::DropWornCloth, &MuEditor::Items::PrepareClothMeshes});
+    // Characters of a monster model the monster tools opened again stay
+    // inside its animations.
+    g_MonsterDataHandler.SetModelsReopenedCallback(&GameLogic::Monsters::ModelChanges::ClampAnimations);
 }
 
 void CMuEditorCore::Shutdown()
@@ -481,11 +597,12 @@ void CMuEditorCore::Shutdown()
     if (!m_bInitialized)
         return;
 
-    // Save item editor preferences before shutting down
-    g_MuItemEditorUI.SaveColumnPreferences();
+    // Do not touch the editor singletons here: their destructors already save the column
+    // preferences, and when this runs from ~CMuEditorCore during static destruction they
+    // would be built from scratch or, if they were opened, already destroyed.
 
-    // Save skill editor preferences before shutting down
-    g_MuSkillEditorUI.SaveColumnPreferences();
+    Core::WorldClearing::SetListener(nullptr);
+    Core::Input::SetOtherWindowQuery(nullptr);
 
     // The Item Editor preview's render target and character, and the A/B compare's
     // model copies, while the renderer and engine still run.
@@ -499,10 +616,12 @@ void CMuEditorCore::Shutdown()
     ImGui_ImplSDLGPU3_Shutdown();
     ImGui_ImplSDL3_Shutdown();
     ImGui::DestroyContext();
+    MuEditor::PlatformWindows::Release();
+    MuEditor::Cursor::Release();
 
     m_bInitialized = false;
     m_bDrawDataReady = false;
-    m_pWindow = nullptr;
+    m_bPlatformWindowsPending = false;
 }
 
 void CMuEditorCore::Update()
@@ -512,12 +631,22 @@ void CMuEditorCore::Update()
 
     UpdateStudioPreferences();
 
+    // Once per frame: the game's mouse-button reads ask it many times.
+    m_bMouseInEditorWindow = FindMouseInEditorWindow();
+
+    // The texts that name items follow the editor's name edits, undo and revert.
+    g_ItemDataHandler.RefreshItemTextsIfNamesChanged();
+
     // Apply a pending UI scale change between frames (never mid-frame).
     if (m_bScaleDirty)
     {
         ApplyUIScale();
         m_bScaleDirty = false;
     }
+
+    // ImGui needs the editor's own windows updated after each frame it ended,
+    // also when that frame ended away from the main loop's.
+    RenderPlatformWindows();
 
     // Model reloads asked for in the Assets tab also run between frames: they free
     // textures that the previous frame's draws and ImGui draw lists used.
@@ -533,148 +662,364 @@ void CMuEditorCore::Update()
         m_bDrawDataReady = false;
         ImGui_ImplSDLGPU3_NewFrame();
 
+        // Between frames: the effect browser's preview releases its texture
+        // only before the renderer's frame starts.
+        g_MuEffectBrowserUI.BeforeFrame();
+        g_MuItemModelUI.BeforeFrame();
+        g_MuStyleEditorUI.BeforeFrame();
+        g_MuMonsterPreviewUI.BeforeFrame();
+        // Between frames too: item models the item tools changed are opened
+        // again, and so are the monster models the monster tools changed.
+        ReopenChangedItemModels();
+        g_MonsterDataHandler.ReopenChangedModels();
+
+        SelectWindowMode();
+        UpdateKeyboardNavigation();
         // The SDL3 backend fills display size and mouse/keyboard from the SDL
         // events fed via ImGui_ImplSDL3_ProcessEvent, so it works the same
         // whether the editor is open or only the "Open Editor" button is shown
         // (issue #442) - no manual Win32 frame setup needed.
         ImGui_ImplSDL3_NewFrame();
+        MuEditor::PlatformWindows::BeforeNewFrame();
 
         ImGui::NewFrame();
         m_bFrameStarted = true;
+
+        // Once per ImGui frame: a frame that carries over keeps its key presses.
+        ToggleFullscreenOnF11();
     }
 
     // A view capture asked for in the last frame takes this one (see ViewCapture.h).
     Editor::ViewCapture::BeginFrame();
 
-    // When editor is closed, check for "Open Editor" button click (after ImGui frame started)
+    // Block the game's input under the editor: the Open Editor button while it
+    // is closed, its windows while it is open
     if (!m_bEditorMode)
     {
-        ImGuiIO& io = ImGui::GetIO();
-
-        // Get mouse position
-        POINT mousePos;
-        if (GetCursorPos(&mousePos))
-        {
-            extern HWND g_hWnd;
-            ScreenToClient(g_hWnd, &mousePos);
-
-            // Check if mouse is over button area (top-right corner)
-            RECT rect;
-            GetClientRect(g_hWnd, &rect);
-            float screenWidth = (float)(rect.right - rect.left);
-            float buttonX = screenWidth - EDITOR_BTN_X_OFFSET * m_UIScale;
-            float buttonY = EDITOR_BTN_Y * m_UIScale;
-            float buttonWidth = EDITOR_BTN_WIDTH * m_UIScale;
-            float buttonHeight = EDITOR_BTN_HEIGHT * m_UIScale;
-
-            if (mousePos.x >= buttonX && mousePos.x <= (buttonX + buttonWidth) &&
-                mousePos.y >= buttonY && mousePos.y <= (buttonY + buttonHeight))
-            {
-                // Check for click
-                extern bool MouseLButtonPush;
-                if (MouseLButtonPush)
-                {
-                    m_bEditorMode = true;
-
-                    // Clear the click so it doesn't go to game
-                    extern bool MouseLButton, MouseLButtonPop, MouseLButtonDBClick;
-                    MouseLButton = false;
-                    MouseLButtonPop = false;
-                    MouseLButtonPush = false;
-                    MouseLButtonDBClick = false;
-                }
-            }
-        }
+        BlockGameInputOverOpenButton();
     }
-
-    // When editor is closed, handle "Open Editor" button hover to block game input
-    if (!m_bEditorMode)
+    else
     {
-        ImGuiIO& io = ImGui::GetIO();
-        io.WantCaptureMouse = false;
-        io.WantCaptureKeyboard = false;
-
-        // Check if mouse is over button area (top-right corner)
-        float buttonX = io.DisplaySize.x - EDITOR_BTN_X_OFFSET * m_UIScale;
-        float buttonY = EDITOR_BTN_Y * m_UIScale;
-        float buttonWidth = EDITOR_BTN_WIDTH * m_UIScale;
-        float buttonHeight = EDITOR_BTN_HEIGHT * m_UIScale;
-
-        if (io.MousePos.x >= buttonX && io.MousePos.x <= (buttonX + buttonWidth) &&
-            io.MousePos.y >= buttonY && io.MousePos.y <= (buttonY + buttonHeight))
-        {
-            // Mouse is over button - block game input for this frame
-            extern bool MouseLButton, MouseLButtonPop, MouseLButtonPush, MouseLButtonDBClick;
-            MouseLButton = false;
-            MouseLButtonPop = false;
-            MouseLButtonPush = false;
-            MouseLButtonDBClick = false;
-        }
-    }
-    // When editor is open, block input based on UI state
-    else if (m_bEditorMode)
-    {
-        // Block mouse input when hovering UI (from previous frame)
-        if (m_bPreviousFrameHoveringUI)
-        {
-            extern bool MouseLButton, MouseLButtonPop, MouseLButtonPush, MouseLButtonDBClick;
-            extern bool MouseRButton, MouseRButtonPop, MouseRButtonPush;
-            extern bool MouseMButton;
-
-            MouseLButton = false;
-            MouseLButtonPop = false;
-            MouseLButtonPush = false;
-            MouseLButtonDBClick = false;
-            MouseRButton = false;
-            MouseRButtonPop = false;
-            MouseRButtonPush = false;
-            MouseMButton = false;
-        }
-
-        // Process input blocking for editor UI (keyboard)
-        g_MuInputBlockerCore.ProcessInputBlocking();
-
-        // Capture the mouse for the Map Editor and stop painting clicks from
-        // reaching the game (so the hero doesn't walk while painting). Runs here,
-        // before the scene consumes input this frame.
-        g_MapEditorUI.CaptureInputForPainting();
-
-        // Note: Keyboard blocking is now handled in ScanAsyncKeyState() in NewUICommon.cpp
-        // It prevents the game from scanning keyboard state when ImGui wants to capture it
+        BlockGameInputOverEditor();
     }
 }
 
-void CMuEditorCore::RenderEditorWindows()
+// The fork's Item Editor (Browse, Requests) and the window of its concepts job.
+void CMuEditorCore::RenderItemEditor()
 {
-    if (!m_bEditorMode)
+    if (m_windows.itemEditor)
     {
-        // Editor fully closed: make sure the Map Editor releases EditFlag so the
-        // game doesn't stay stuck in an edit mode.
-        g_MapEditorUI.Render(nullptr);
-        return;
+        g_MuItemEditorUI.Render(m_windows.itemEditor);
     }
-
-    // Render center pane (handles all editor windows and input blocking)
-    g_MuEditorCenterPaneUI.Render(m_bShowItemEditor, m_bShowSkillEditor);
-
-    // Render Dev Editor
-    if (m_bShowDevEditor)
-    {
-        g_DevEditorUI.Render(&m_bShowDevEditor);
-    }
-
     // The concepts job's window, also while the Item Editor window is closed.
     Editor::ItemEditor::ConceptJobPanel::Render();
+}
 
-    // Render Map Editor. Called every frame (not gated on the show flag) so
-    // it can restore the game to normal mode the frame after it is closed;
-    // it owns EditFlag while its window is open.
-    g_MapEditorUI.Render(&m_bShowMapEditor);
-
-    // Render console (if enabled)
-    if (m_bShowConsole)
+// The item tools beside the item browser; they show the item it selects.
+void CMuEditorCore::RenderItemTools()
+{
+    if (m_windows.itemBasics)
     {
-        g_MuEditorConsoleUI.Render();
+        g_MuItemBasicsUI.Render(&m_windows.itemBasics);
+    }
+    if (m_windows.itemRequirements)
+    {
+        g_MuItemRequirementsUI.Render(&m_windows.itemRequirements);
+    }
+    if (m_windows.itemRules)
+    {
+        g_MuItemRulesUI.Render(&m_windows.itemRules);
+    }
+    if (m_windows.itemCategories)
+    {
+        g_MuItemCategoriesUI.Render(&m_windows.itemCategories);
+    }
+    // After the Map Editor and the effect browser: its preview opens a capture
+    // of its own.
+    if (m_windows.itemModel)
+    {
+        g_MuItemModelUI.Render(&m_windows.itemModel);
+    }
+    // The named colors: a root per use, all of them item edits for now.
+    if (m_windows.colors)
+    {
+        g_MuColorsUI.Render(&m_windows.colors);
+    }
+    // After the Item Model window, as its preview.
+    if (m_windows.styleEditor)
+    {
+        g_MuStyleEditorUI.Render(&m_windows.styleEditor);
+    }
+    if (m_windows.itemTooltip)
+    {
+        g_MuItemTooltipUI.Render(&m_windows.itemTooltip);
+    }
+    if (m_windows.itemFormulas)
+    {
+        g_MuItemFormulasUI.Render(&m_windows.itemFormulas);
+    }
+    if (m_windows.itemSync)
+    {
+        g_MuItemSyncUI.Render(&m_windows.itemSync);
+    }
+}
+
+// The monster browser and the monster tools beside it; they show the monster
+// it selects.
+void CMuEditorCore::RenderMonsterTools()
+{
+    if (m_windows.monsterBrowser)
+    {
+        g_MuMonsterBrowserUI.Render(&m_windows.monsterBrowser);
+    }
+    if (m_windows.monsterModel)
+    {
+        g_MuMonsterModelUI.Render(&m_windows.monsterModel);
+    }
+    if (m_windows.monsterPreview)
+    {
+        g_MuMonsterPreviewUI.Render(&m_windows.monsterPreview);
+    }
+    if (m_windows.monsterAttacks)
+    {
+        g_MuMonsterAttacksUI.Render(&m_windows.monsterAttacks);
+    }
+    if (m_windows.monsterSounds)
+    {
+        g_MuMonsterSoundsUI.Render(&m_windows.monsterSounds);
+    }
+    if (m_windows.monsterTranslations)
+    {
+        g_MuMonsterTranslationsUI.Render(&m_windows.monsterTranslations);
+    }
+}
+
+void CMuEditorCore::ReopenChangedItemModels()
+{
+    if (!g_ItemDataHandler.HasModelsToReopen())
+    {
+        return;
+    }
+    const std::vector<Data::Items::ItemModelProblem> problems =
+        g_ItemDataHandler.ReopenChangedModels({Render::Items::Styles::Exists, Render::Items::ItemEffects::Exists});
+    for (const Data::Items::ItemModelProblem& problem : problems)
+    {
+        g_MuEditorConsoleUI.LogEditor("Item model " + problem.ToLogString());
+    }
+}
+
+void CMuEditorCore::ToggleFullscreenOnF11()
+{
+    // F11 in one of the editor's own windows; in the game window it stays the
+    // game's (the game reads no keys pressed in the editor's windows). Not for
+    // the borderless windows of popups and tooltips.
+    if (!m_bEditorMode || !ImGui::IsKeyPressed(ImGuiKey_F11, false))
+    {
+        return;
+    }
+    SDL_Window* keyboardWindow = SDL_GetKeyboardFocus();
+    if (IsEditorWindow(keyboardWindow) && (SDL_GetWindowFlags(keyboardWindow) & SDL_WINDOW_BORDERLESS) == 0)
+    {
+        MuEditor::PlatformWindows::ToggleFullscreen(keyboardWindow);
+    }
+}
+
+void CMuEditorCore::BlockGameInputOverOpenButton()
+{
+    ImGuiIO& io = ImGui::GetIO();
+    io.WantCaptureMouse = false;
+    io.WantCaptureKeyboard = false;
+
+    // Over the Open Editor button as it was last drawn (RenderToolbarOpen,
+    // which also opens the editor on a click), with this frame's mouse. A
+    // click the control socket injects is somewhere else than the real
+    // pointer, which is what ImGui's mouse position follows.
+    if (g_MuEditorUI.IsOnOpenButton(io.MousePos.x, io.MousePos.y) && !Core::Input::Synthetic::IsInjecting())
+    {
+        // Mouse is over button - block game input for this frame
+        extern bool MouseLButton, MouseLButtonPop, MouseLButtonPush, MouseLButtonDBClick;
+        MouseLButton = false;
+        MouseLButtonPop = false;
+        MouseLButtonPush = false;
+        MouseLButtonDBClick = false;
+    }
+}
+
+void CMuEditorCore::BlockGameInputOverEditor()
+{
+    // Block mouse input when hovering UI (from previous frame)
+    if (m_bPreviousFrameHoveringUI)
+    {
+        extern bool MouseLButton, MouseLButtonPop, MouseLButtonPush, MouseLButtonDBClick;
+        extern bool MouseRButton, MouseRButtonPop, MouseRButtonPush;
+        extern bool MouseMButton;
+
+        MouseLButton = false;
+        MouseLButtonPop = false;
+        MouseLButtonPush = false;
+        MouseLButtonDBClick = false;
+        MouseRButton = false;
+        MouseRButtonPop = false;
+        MouseRButtonPush = false;
+        MouseMButton = false;
+    }
+
+    // Process input blocking for editor UI (keyboard)
+    g_MuInputBlockerCore.ProcessInputBlocking();
+
+    // Capture the mouse for the Map Editor and stop painting clicks from
+    // reaching the game (so the hero doesn't walk while painting). Runs here,
+    // before the scene consumes input this frame.
+    g_MapEditorUI.CaptureInputForPainting();
+
+    // Note: Keyboard blocking is now handled in ScanAsyncKeyState() in WindowCommon.cpp
+    // It prevents the game from scanning keyboard state when ImGui wants to capture it
+}
+
+void CMuEditorCore::LogVideoDriver() const
+{
+    const char* videoDriver = SDL_GetCurrentVideoDriver();
+    const bool platformHasWindows = (ImGui::GetIO().BackendFlags & ImGuiBackendFlags_PlatformHasViewports) != 0;
+    g_MuEditorConsoleUI.LogEditor(std::string("Video driver: ") + (videoDriver != nullptr ? videoDriver : "none") +
+                                  (platformHasWindows ? " (the editor's windows can leave the game window)"
+                                                      : " (the editor stays inside the game window)"));
+}
+
+void CMuEditorCore::SelectWindowMode()
+{
+    // A full-screen game covers the editor's own windows and holds the cursor
+    // in its window: the editor's windows then stay inside the game window,
+    // as they do where the platform has no windows of their own (the Wayland
+    // video driver; editor builds prefer X11 on Linux, see Winmain.cpp).
+    ImGuiIO& io = ImGui::GetIO();
+    const bool platformHasWindows = (io.BackendFlags & ImGuiBackendFlags_PlatformHasViewports) != 0;
+    const bool gameFullscreen = (SDL_GetWindowFlags(m_pGameWindow) & SDL_WINDOW_FULLSCREEN) != 0;
+    // MU_EDITOR_IN_GAME_WINDOW=1 keeps them there too: one window to look at, and what a
+    // frame capture of the game window (MU_CAPTURE_FRAME, the control socket's screenshot)
+    // shows includes the editor.
+    static const bool keptInGameWindow = EditorStaysInGameWindow();
+    if (platformHasWindows && !gameFullscreen && !keptInGameWindow)
+    {
+        io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+    }
+    else
+    {
+        io.ConfigFlags &= ~ImGuiConfigFlags_ViewportsEnable;
+    }
+}
+
+bool CMuEditorCore::IsEditorWindow(SDL_Window* window) const
+{
+    return m_bInitialized && window != nullptr && window != m_pGameWindow;
+}
+
+bool CMuEditorCore::IsKeyboardInEditorWindow() const
+{
+    return IsEditorWindow(SDL_GetKeyboardFocus());
+}
+
+bool CMuEditorCore::IsKeyboardWithEditor() const
+{
+    return IsKeyboardInEditorWindow() || (m_bEditorMode && m_bKeyboardOnEditorInGameWindow);
+}
+
+void CMuEditorCore::UpdateKeyboardNavigation()
+{
+    ImGuiIO& io = ImGui::GetIO();
+    if (m_bEditorMode && IsKeyboardWithEditor())
+    {
+        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    }
+    else
+    {
+        io.ConfigFlags &= ~ImGuiConfigFlags_NavEnableKeyboard;
+    }
+}
+
+bool CMuEditorCore::IsWithEditorWindow(int virtualKey) const
+{
+    const bool mouseButton = virtualKey == VK_LBUTTON || virtualKey == VK_RBUTTON || virtualKey == VK_MBUTTON;
+    return mouseButton ? IsMouseInEditorWindow() : IsKeyboardWithEditor();
+}
+
+bool CMuEditorCore::FindMouseInEditorWindow() const
+{
+    if (!m_bInitialized)
+    {
+        return false;
+    }
+    // A held button keeps the window it was pressed in, whatever is under the
+    // mouse now.
+    SDL_Window* focus = SDL_GetMouseFocus();
+    const bool mouseInEditorWindow = focus != nullptr && IsEditorWindow(focus);
+    if (SDL_GetMouseState(nullptr, nullptr) != 0)
+    {
+        return mouseInEditorWindow;
+    }
+    // Over a window's frame and title bar SDL reports no window, and on macOS
+    // the game window can have the mouse while an editor window floats over it.
+    return mouseInEditorWindow || MuEditor::PlatformWindows::IsMouseOverOsWindow();
+}
+
+bool CMuEditorCore::ClaimsEvent(const SDL_Event& event)
+{
+    if (!m_bInitialized || ImGui::GetCurrentContext() == nullptr)
+    {
+        return false;
+    }
+    // What happens in the editor's own windows is the editor's, but for the
+    // releases below. Over an editor window in the game window: the windows
+    // that say so, and with the editor open also what ImGui captures (popups,
+    // combos, the Dev Editor).
+    const ImGuiIO& io = ImGui::GetIO();
+    const bool ofEditorWindow = IsEditorWindow(SDL_GetWindowFromEvent(&event));
+    const bool wantsMouse = ofEditorWindow || m_bHoveringUI || (m_bEditorMode && io.WantCaptureMouse);
+    switch (event.type)
+    {
+    case SDL_EVENT_MOUSE_BUTTON_DOWN:
+        // An editor window inside the game window takes the keyboard with a
+        // click, the game with a click into it, also one that only closes a
+        // popup. While a popup is open the tool windows count the whole
+        // window as the editor's (so that click stays out of the game); then
+        // what ImGui would capture without the popup decides. The Open Editor
+        // button of the closed editor takes no keyboard: the editor opens
+        // leaving it with the game, as with F12.
+        m_bKeyboardOnEditorInGameWindow =
+            !ofEditorWindow && m_bEditorMode &&
+            ((m_bHoveringUI && !ImGui::IsPopupOpen("", ImGuiPopupFlags_AnyPopupId | ImGuiPopupFlags_AnyPopupLevel)) ||
+             io.WantCaptureMouseUnlessPopupClose);
+        if (!wantsMouse)
+        {
+            return false;
+        }
+        m_claimedButtons |= SDL_BUTTON_MASK(event.button.button);
+        return true;
+    case SDL_EVENT_MOUSE_BUTTON_UP:
+    {
+        const unsigned int button = SDL_BUTTON_MASK(event.button.button);
+        const bool claimed = (m_claimedButtons & button) != 0;
+        m_claimedButtons &= ~button;
+        return claimed;
+    }
+    case SDL_EVENT_KEY_UP:
+        return false;
+    case SDL_EVENT_WINDOW_FOCUS_GAINED:
+        // The game window got the keyboard from another window; an editor
+        // window's focus stays the editor's, as its other events do but for
+        // the key releases.
+        if (!ofEditorWindow)
+        {
+            m_bKeyboardOnEditorInGameWindow = false;
+        }
+        return ofEditorWindow;
+    case SDL_EVENT_MOUSE_WHEEL:
+        return wantsMouse;
+    case SDL_EVENT_KEY_DOWN:
+    case SDL_EVENT_TEXT_INPUT:
+    case SDL_EVENT_TEXT_EDITING:
+        return ofEditorWindow || (m_bEditorMode && (io.WantCaptureKeyboard || m_bKeyboardOnEditorInGameWindow));
+    default:
+        return ofEditorWindow;
     }
 }
 
@@ -687,25 +1032,113 @@ void CMuEditorCore::Render()
     if (!m_bFrameStarted)
         return;
 
-    // Reset hover state at start of frame. While a popup is open (and until the click that
-    // closes it is released) the mouse is the editor's: ImGui then reports no window as
-    // hovered, and that click would otherwise select, place or paint behind the window.
+    // Reset hover state at start of frame: the mouse over one of the editor's
+    // own windows is over the editor for every tool window below. While a popup is open
+    // (and until the click that closes it is released) the mouse is the editor's too:
+    // ImGui then reports no window as hovered, and that click would otherwise select,
+    // place or paint behind the window.
     const bool popupOpen = m_bEditorMode && Editor::Shortcuts::IsPopupOpen();
-    m_bHoveringUI = m_popupMouseGuard.Update(popupOpen, AnyMouseButtonDown());
+    const bool popupHasMouse = m_popupMouseGuard.Update(popupOpen, AnyMouseButtonDown());
+    m_bHoveringUI = IsMouseInEditorWindow() || popupHasMouse;
 
     // Concept images not drawn for a while give their textures back (before this frame draws any).
     g_ConceptImages.BeginFrame();
 
-    // Render toolbar (handles both open and closed states)
-    g_MuEditorUI.RenderToolbar(m_bEditorMode, m_bShowItemEditor, m_bShowSkillEditor, m_bShowDevEditor, m_bShowMapEditor, m_bShowConsole);
+    // The editor window when open, else the Open Editor button. Before the
+    // tool windows: they dock into the editor window.
+    g_MuEditorUI.Render(m_bEditorMode, m_windows);
     RememberConsoleChoice();
 
-    RenderEditorWindows();
+    if (m_bEditorMode)
+    {
+        // Render center pane (handles all editor windows and input blocking)
+        g_MuEditorCenterPaneUI.Render(m_windows.itemBrowser, m_windows.skillEditor);
+        RenderItemEditor();
+
+        // Render Dev Editor
+        if (m_windows.devEditor)
+        {
+            g_DevEditorUI.Render(&m_windows.devEditor);
+        }
+
+        // Render Map Editor. Called every frame (not gated on the show flag) so
+        // it can restore the game to normal mode the frame after it is closed;
+        // it owns EditFlag while its window is open.
+        g_MapEditorUI.Render(&m_windows.mapEditor);
+
+        // After the Map Editor: its object browser starts a thumbnail only
+        // while no capture is pending, and the effect preview leaves one
+        // pending until the frame ends.
+        if (m_windows.effectBrowser)
+        {
+            g_MuEffectBrowserUI.Render(&m_windows.effectBrowser);
+        }
+
+        if (m_windows.itemTranslations)
+        {
+            g_MuItemTranslationsUI.Render(&m_windows.itemTranslations);
+        }
+        if (m_windows.serverList)
+        {
+            g_MuServerListUI.Render(&m_windows.serverList);
+        }
+        RenderItemTools();
+        RenderMonsterTools();
+        if (m_windows.dataChecks)
+        {
+            g_MuDataChecksUI.Render(&m_windows.dataChecks);
+        }
+        if (m_windows.soundMixer)
+        {
+            g_MuSoundMixerUI.Render(&m_windows.soundMixer);
+        }
+        // Also while the Sound Editor is closed: its folders keep the sounds
+        // whose keys the windows above changed (a set renamed in Monster
+        // Sounds, a file picked in the Map Editor's Sounds tab).
+        g_SoundEdits.FollowKeyChanges();
+        if (m_windows.soundEditor)
+        {
+            g_MuSoundEditorUI.Render(&m_windows.soundEditor);
+        }
+
+        // Render console (if enabled)
+        if (m_windows.console)
+        {
+            g_MuEditorConsoleUI.Render(&m_windows.console);
+        }
+    }
+    else
+    {
+        // Editor fully closed: make sure the Map Editor releases EditFlag so the
+        // game doesn't stay stuck in an edit mode.
+        g_MapEditorUI.Render(nullptr);
+    }
+
+    // The Sound Mixer's overlay over the game, also while the editor is
+    // closed: its frame's sources are taken either way. After the Sound
+    // Mixer's window, so the row under the mouse this frame is marked.
+    g_MuSoundMixerUI.RenderOverlay();
+
+    // After the game's move and draw, also while the editor is hidden: the
+    // effect browser's world preview keeps what it created running.
+    g_MuEffectBrowserUI.AfterRender(m_windows.effectBrowser);
 
     // After the editors, which leave Esc alone while a popup is open (Editor::Shortcuts).
     CloseMenusOnEscape();
     if (m_bEditorMode && Editor::OfflineWorld::IsItemStudio() && Editor::StudioWindow::FullscreenShortcutPressed())
         ToggleFullscreen();
+
+    // With the editor open, the mouse over any of its windows in the game
+    // window, or holding one of its widgets, is over the editor. The item studio
+    // is all UI: its preview and the gaps between its panels too.
+    const bool overEditorWindow =
+        ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow | ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
+    const bool draggingEditorWidget = ImGui::IsAnyItemActive() && ImGui::IsAnyMouseDown();
+    const bool itemStudio = Editor::OfflineWorld::IsItemStudio();
+    if (m_bEditorMode && (overEditorWindow || draggingEditorWidget || itemStudio))
+    {
+        m_bHoveringUI = true;
+    }
 
     // Store current hover state for next frame's input blocking
     m_bPreviousFrameHoveringUI = m_bHoveringUI;
@@ -714,11 +1147,17 @@ void CMuEditorCore::Render()
     // overlay and the game cursor (the Map Editor's Assets tab asked for it).
     const bool captureFrame = Editor::ViewCapture::IsCleanFrame();
 
-    UpdateCursors(captureFrame);
+    UpdateCursorVisibility(captureFrame);
 
-    // Finalize draw data. Task 4.2 uploads and renders it inside the engine's
-    // existing SDL GPU pass; starting another pass here would break ownership.
+    // The game draws this frame unless it skipped it (see RenderPlatformWindows).
+    m_bGameFrameActive = mu::GetRenderer().IsFrameActive();
+    m_skippedGameFrames = m_bGameFrameActive ? 0 : m_skippedGameFrames + 1;
+
+    // Finalize draw data. The renderer draws the game window's part over the
+    // frame, after RmlUi; the editor's own windows follow once that frame went
+    // to the GPU (RenderPlatformWindows).
     ImGui::Render();
+    m_bPlatformWindowsPending = true;
     if (!captureFrame)
     {
         m_bDrawDataReady = true;
@@ -729,46 +1168,66 @@ void CMuEditorCore::Render()
     m_bFrameStarted = false;
 }
 
-bool CMuEditorCore::IsMouseOverEditorUI() const
+void CMuEditorCore::UpdateCursorVisibility(bool captureFrame)
 {
-    // The windows that claim the mouse themselves (plus the gizmo drag, an open popup and
-    // the closed toolbar's button, a NoInputs window ImGui never reports as hovered), and
-    // whatever ImGui sees: any window, child region, image or gap between widgets, and a
-    // drag that started on a panel and left it. The item studio is all UI: its preview and
-    // the gaps between its panels too.
-    constexpr ImGuiHoveredFlags anyWindow = ImGuiHoveredFlags_AnyWindow |
-        ImGuiHoveredFlags_AllowWhenBlockedByPopup | ImGuiHoveredFlags_AllowWhenBlockedByActiveItem;
-    const bool itemStudio = m_bEditorMode && Editor::OfflineWorld::IsItemStudio();
-    return m_bHoveringUI || itemStudio || ImGui::GetIO().WantCaptureMouse || ImGui::IsWindowHovered(anyWindow);
+    // Control game cursor rendering via global flag
+    // When hovering UI, hide game cursor; otherwise show it
+    m_bWantsOsCursor = m_bHoveringUI;
+    extern bool g_bRenderGameCursor;
+    g_bRenderGameCursor = !m_bHoveringUI && !captureFrame;
+
+    // The OS cursor shows over the editor and hides over the game, which draws
+    // its own. Windows maintains an internal display counter - cursor is
+    // visible when counter >= 0 - and off Windows the game's ShowCursor keeps
+    // the same counter over SDL's cursor. We need to loop to force the counter
+    // to the correct state.
+    static bool lastHoveringState = false;
+    if (m_bHoveringUI != lastHoveringState)
+    {
+        if (m_bHoveringUI)
+        {
+            // Force cursor visible (counter >= CURSOR_VISIBLE_THRESHOLD)
+            while (ShowCursor(TRUE) < CURSOR_VISIBLE_THRESHOLD);
+        }
+        else
+        {
+            // Force cursor hidden (counter < CURSOR_VISIBLE_THRESHOLD)
+            while (ShowCursor(FALSE) >= CURSOR_VISIBLE_THRESHOLD);
+        }
+        lastHoveringState = m_bHoveringUI;
+    }
+    if (m_bHoveringUI)
+    {
+        MuEditor::Cursor::ShowImGuiShape();
+    }
 }
 
-void CMuEditorCore::UpdateCursors(bool captureFrame)
+void CMuEditorCore::RenderPlatformWindows()
 {
-    // The game draws its cursor sprite before ImGui, so over editor UI it would sit under
-    // the panels: there the OS pointer is shown instead, over the world the sprite.
-    m_bWantsOsCursor = IsMouseOverEditorUI();
-    extern bool g_bRenderGameCursor;
-    g_bRenderGameCursor = !m_bWantsOsCursor && !captureFrame;
-
-    // ImGui's SDL backend shows the OS pointer every frame; over the world it leaves the
-    // pointer alone, over the UI it picks the shape (arrow, text beam, resize).
-    ImGuiIO& io = ImGui::GetIO();
-    if (m_bWantsOsCursor)
-        io.ConfigFlags &= ~ImGuiConfigFlags_NoMouseCursorChange;
-    else
-        io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
-
-    if (m_bOsCursorApplied && m_bOsCursorShown == m_bWantsOsCursor)
+    if (!m_bPlatformWindowsPending)
+    {
         return;
-    // ShowCursor keeps the Win32 display counter (visible while >= CURSOR_VISIBLE_THRESHOLD)
-    // on every platform; the SDL version in WinUser.cpp returns it too. Loop to force the
-    // state, since the game also hides the pointer on its own (at start, WM_SETCURSOR).
-    if (m_bWantsOsCursor)
-        while (ShowCursor(TRUE) < CURSOR_VISIBLE_THRESHOLD);
-    else
-        while (ShowCursor(FALSE) >= CURSOR_VISIBLE_THRESHOLD);
-    m_bOsCursorShown = m_bWantsOsCursor;
-    m_bOsCursorApplied = true;
+    }
+    m_bPlatformWindowsPending = false;
+
+    // ImGui wants the update after every frame it ended, also while the
+    // editor's windows stay inside the game window (it does nothing then).
+    ImGui::UpdatePlatformWindows();
+    // A frame the game skipped while the GPU is behind keeps the editor's
+    // windows' picture (their previews are drawn in the game's frame). From
+    // the second skipped frame in a row they are drawn, as the game window may
+    // be minimized, hidden or covered and they can stay on screen then (macOS,
+    // some Linux window managers); an uncapped game behind the GPU gets there
+    // too, so the previews show their last picture then
+    // (EffectPreviewTarget::KeepLastPicture).
+    const bool platformWindowsOn = (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable) != 0;
+    const SDL_WindowFlags gameWindowFlags = SDL_GetWindowFlags(m_pGameWindow);
+    const bool gameWindowHidden = (gameWindowFlags & (SDL_WINDOW_MINIMIZED | SDL_WINDOW_HIDDEN)) != 0 ||
+                                  m_skippedGameFrames > SkippedGameFramesWhileBehind;
+    if (platformWindowsOn && (m_bGameFrameActive || gameWindowHidden))
+    {
+        ImGui::RenderPlatformWindowsDefault();
+    }
 }
 
 void CMuEditorCore::PrepareDrawData(SDL_GPUCommandBuffer* commandBuffer)
@@ -788,8 +1247,7 @@ void CMuEditorCore::RenderDrawData(SDL_GPUCommandBuffer* commandBuffer, SDL_GPUR
         return;
     }
 
-    // The renderer's copy of ImGui's pipeline declares the pass's depth attachment.
-    ImGui_ImplSDLGPU3_RenderDrawData(ImGui::GetDrawData(), commandBuffer, renderPass, mu::GetEditorOverlayPipeline());
+    ImGui_ImplSDLGPU3_RenderDrawData(ImGui::GetDrawData(), commandBuffer, renderPass);
     m_bDrawDataReady = false;
 }
 

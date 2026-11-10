@@ -400,9 +400,13 @@ void CConceptsPanel::RenderPopups()
 
 void CConceptsPanel::RenderViewer()
 {
-    const ImVec2 display = ImGui::GetIO().DisplaySize;
+    // Centred on the window the Item Editor is in (the game window in the studio, else
+    // wherever it is docked or floats).
+    const ImGuiViewport* viewport = ImGui::GetWindowViewport();
+    const ImVec2 display = viewport->Size;
     ImGui::SetNextWindowSize(ImVec2(display.x * VIEWER_SHARE, display.y * VIEWER_SHARE), ImGuiCond_Always);
-    ImGui::SetNextWindowPos(ImVec2(display.x * 0.5f, display.y * 0.5f), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+    ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x + display.x * 0.5f, viewport->Pos.y + display.y * 0.5f),
+                            ImGuiCond_Always, ImVec2(0.5f, 0.5f));
     if (!ImGui::BeginPopupModal(VIEWER_TITLE, nullptr, ImGuiWindowFlags_NoSavedSettings))
         return;
     g_MuEditorCore.SetHoveringUI(true);

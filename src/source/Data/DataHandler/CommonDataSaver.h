@@ -10,6 +10,10 @@
 class CommonDataSaver
 {
 public:
+    // SaveData returns false and puts this into the change log when the file
+    // already has the data; callers can tell that apart from a failure.
+    static constexpr const char* NoChangesMessage = "No changes detected.\n";
+
     // Create a backup of the file before saving
     static bool CreateBackup(const wchar_t* fileName);
 
@@ -30,11 +34,6 @@ public:
         // Legacy format support (optional)
         size_t legacyFileStructSize = 0; // Set to sizeof(legacy struct) if legacy support needed
         std::function<void(TRuntime&, BYTE*, size_t)> convertFromFileLegacy; // Legacy file -> Runtime
-
-        // Keeping loaded bytes (optional): overwrites `record` (file layout, not yet
-        // encrypted) with the bytes the record was loaded from when the item is
-        // unchanged since the load, so a save keeps what the conversion drops.
-        std::function<void(size_t, const TRuntime&, BYTE*)> keepLoadedBytes;
 
         // Encryption/Decryption (optional, can be nullptr for no encryption)
         std::function<void(BYTE*, std::size_t)> encryptBuffer; // Called once on entire buffer

@@ -6,6 +6,10 @@
 
 #include <string>
 
+#ifdef _WIN32
+#include <commdlg.h> // GetOpenFileNameW
+#endif
+
 namespace fs = std::filesystem;
 
 namespace Editor::Files

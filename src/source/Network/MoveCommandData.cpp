@@ -1,10 +1,11 @@
-// MoveCommandData.cpp: implementation of the CMoveCommandData class.
-//////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
 #include "MoveCommandData.h"
+#include "Data/DataHandler/DataFileIO.h"
+#include "Core/Utilities/FileHandle.h"
 
 using namespace SEASON3B;
+using namespace mu::ui::window;
 
 #pragma pack(push, 1)
 typedef struct
@@ -34,18 +35,25 @@ CMoveCommandData* CMoveCommandData::GetInstance()
 
 bool CMoveCommandData::Create(const std::wstring& filename)
 {
-    FILE* fp = _wfopen(filename.c_str(), L"rb");
-    if (fp == NULL)
+    Core::Utilities::FileHandle fp(_wfopen(filename.c_str(), L"rb"));
+    if (!fp)
         return false;
 
     int count = 0;
-    fread(&count, sizeof(int), 1, fp);
+    if (!DataFileIO::ReadExact(fp.get(), &count, sizeof(int)))
+    {
+        return false;
+    }
 
     for (int i = 0; i < count; i++)
     {
-        auto* pMoveInfoData = new MOVEINFODATA;
         MOVEREQINFO_FILE moveReqInfo{};
-        fread(&moveReqInfo, sizeof moveReqInfo, 1, fp);
+        if (!DataFileIO::ReadExact(fp.get(), &moveReqInfo, sizeof moveReqInfo))
+        {
+            return false;
+        }
+        // Value-initialised: the flags stay false until the move window sets them.
+        auto* pMoveInfoData = new MOVEINFODATA{};
 
         // cppcheck-suppress dangerousTypeCast
         BuxConvert((BYTE*)&moveReqInfo, sizeof moveReqInfo);
@@ -61,7 +69,6 @@ bool CMoveCommandData::Create(const std::wstring& filename)
 
         m_listMoveInfoData.push_back(pMoveInfoData);
     }
-    fclose(fp);
 
     return true;
 }

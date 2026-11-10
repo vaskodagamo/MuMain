@@ -78,7 +78,7 @@ vec_t Q_rint(vec_t in)
     return floorf(in + 0.5f);
 }
 
-void VectorMul(vec3_t va, vec3_t vb, vec3_t vc)
+void VectorMul(const vec3_t va, const vec3_t vb, vec3_t vc)
 {
     vc[0] = va[0] * vb[0];
     vc[1] = va[1] * vb[1];
@@ -261,9 +261,9 @@ void R_ConcatTransforms(const float in1[3][4], const float in2[3][4], float out[
 void VectorRotate(const vec3_t in1, const float in2[3][4], vec3_t out)
 {
     assert(in1 != out && "VectorRotate!");
-    out[0] = DotProduct(in1, in2[0]);
-    out[1] = DotProduct(in1, in2[1]);
-    out[2] = DotProduct(in1, in2[2]);
+    out[0] = VectorDotProduct(in1, in2[0]);
+    out[1] = VectorDotProduct(in1, in2[1]);
+    out[2] = VectorDotProduct(in1, in2[2]);
 }
 
 // rotate by the inverse of the matrix
@@ -283,9 +283,9 @@ void VectorTranslate(const vec3_t in1, const float in2[3][4], vec3_t out)
 
 void VectorTransform(const vec3_t in1, const float in2[3][4], vec3_t out)
 {
-    out[0] = DotProduct(in1, in2[0]) + in2[0][3];
-    out[1] = DotProduct(in1, in2[1]) + in2[1][3];
-    out[2] = DotProduct(in1, in2[2]) + in2[2][3];
+    out[0] = VectorDotProduct(in1, in2[0]) + in2[0][3];
+    out[1] = VectorDotProduct(in1, in2[1]) + in2[1][3];
+    out[2] = VectorDotProduct(in1, in2[2]) + in2[2][3];
 }
 
 void AngleQuaternion(const vec3_t angles, vec4_t quaternion)

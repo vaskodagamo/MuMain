@@ -1,28 +1,31 @@
-﻿//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 //  CSChaosCastle.cpp
 //////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
 
 #include "Core/Utilities/Random.h"
-#include "UI/Legacy/UIWindows.h"
+#include "UI/Social/SocialWindowManager.h"
 #include "Render/Textures/ZzzOpenglUtil.h"
 #include "Render/Textures/ZzzTexture.h"
 #include "Render/Models/ZzzBMD.h"
 #include "Scenes/SceneCore.h"
 #include "Render/Effects/ZzzEffect.h"
-#include "UI/Legacy/UIManager.h"
+#include "UI/Core/UIManager.h"
 #include "CSChaosCastle.h"
+#include "Engine/Object/ZzzCharacter.h"
 
-#include "UI/NewUI/Dialogs/NewUICustomMessageBox.h"
+#include "UI/Dialogs/CustomMessageBox.h"
 #include "World/MapInfra/MapManager.h"
 #include "Character/CharacterManager.h"
 #include "Audio/DSPlaySound.h"
-#include "UI/NewUI/NewUISystem.h"
+#include "UI/Core/WindowSystem.h"
 
 #include <algorithm>
 #include <array>
 #include <cstdint>
+#include <utility>
+#include <vector>
 
 extern int g_iChatInputType;
 extern int g_iCustomMessageBoxButton[NUM_BUTTON_CMB][NUM_PAR_BUTTON_CMB];
@@ -127,6 +130,21 @@ void ClearChaosCastleHelper(CHARACTER* c)
 #endif
 }
 
+namespace
+{
+void CloseChaosCastleFriendWindows()
+{
+    g_pWindowMgr->Dialogs().CancelAddFriend();
+    if (g_pUIManager->IsOpen(MUTEX_FRIEND))
+    {
+        CUIFriendWindow* t_pFW = g_pWindowMgr->GetFriendMainWindow();
+        if (t_pFW)
+            t_pFW->Close();
+    }
+
+}
+}
+
 void ChangeChaosCastleUnit(CHARACTER* c)
 {
     if (gMapManager.InChaosCastle() == false)
@@ -134,16 +152,7 @@ void ChangeChaosCastleUnit(CHARACTER* c)
 
     ClearChaosCastleHelper(c);
 
-    DWORD t_dwUIID = g_pWindowMgr->GetAddFriendWindow();
-    if (t_dwUIID != 0)
-    {
-        g_pWindowMgr->SendUIMessage(UI_MESSAGE_CLOSE, t_dwUIID, 0);
-    }
-    if (g_pUIManager->IsOpen(INTERFACE_FRIEND))
-    {
-        CUIFriendWindow* t_pFW = g_pWindowMgr->GetFriendMainWindow();
-        t_pFW->Close();
-    }
+    CloseChaosCastleFriendWindows();
 
     int Class = gCharacterManager.GetBaseClass(c->Class);
 
@@ -375,7 +384,7 @@ bool CreateChaosCastleObject(OBJECT* o)
     return true;
 }
 
-bool RenderChaosCastleVisual(OBJECT* o, BMD* b)
+bool UpdateChaosCastleObjectEffects(OBJECT* o, BMD* b)
 {
     if (gMapManager.InChaosCastle() == false)
         return false;
@@ -528,7 +537,7 @@ bool RenderChaosCastleVisual(OBJECT* o, BMD* b)
         if (o->PKKey && o->HiddenMesh != -2)
         {
             Vector(0.f, 0.f, 0.f, p);
-            b->TransformPosition(BoneTransform[1], p, Position);
+            b->TransformPosition(Engine::Object::Pose::World(o, b)[1], p, Position);
             if ((int)o->LifeTime == 10)
             {
                 CreateJoint(BITMAP_JOINT_THUNDER + 1, Position, Position, o->Angle, 2, NULL,
@@ -566,21 +575,40 @@ bool RenderChaosCastleVisual(OBJECT* o, BMD* b)
     return true;
 }
 
-void RenderTerrainVisual(int xi, int yi)
+namespace
 {
-    if (gMapManager.InChaosCastle() == false || Random::RangeInt(0, 7) != 0)
+// The limit-area tiles the draws since the last update drew.
+std::vector<std::pair<int, int>> s_drawnLimitTiles;
+} // namespace
+
+void NoteDrawnTerrain(int xi, int yi)
+{
+    if (gMapManager.InChaosCastle() == false)
     {
         return;
     }
 
     const CastleAreaSet* areaSet = SelectLimitArea(g_currentCastleLevel);
-    if (areaSet == nullptr)
+    if (areaSet != nullptr && IsWithinLimitArea(*areaSet, xi, yi))
     {
-        return;
+        s_drawnLimitTiles.emplace_back(xi, yi);
     }
+}
 
-    if (IsWithinLimitArea(*areaSet, xi, yi))
+void ForgetDrawnTerrain()
+{
+    s_drawnLimitTiles.clear();
+}
+
+void UpdateTerrainEffects()
+{
+    for (const auto& [xi, yi] : s_drawnLimitTiles)
     {
+        if (Random::RangeInt(0, 7) != 0)
+        {
+            continue;
+        }
+
         vec3_t Light = {1.f, 1.f, 1.f};
         vec3_t Angle = {0.f, 0.f, 0.f};
         vec3_t Position;
@@ -592,7 +620,8 @@ void RenderTerrainVisual(int xi, int yi)
 
         if (rand_fps_check(5))
         {
-            EarthQuake = Random::RangeFloat(-3, -1) * 0.1f;
+            RequestEarthQuake(Random::RangeFloat(-3, -1) * 0.1f);
         }
     }
+    s_drawnLimitTiles.clear();
 }

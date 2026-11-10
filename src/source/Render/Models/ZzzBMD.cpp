@@ -2,33 +2,61 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
+#include "Core/Utilities/Random.h"
+#include "Core/Utilities/DrawSpawnCheck.h"
 #include <cstdint>
+// u_char is used below. On glibc it arrives transitively through other
+// headers; musl targets (Emscripten) need its declaring header explicitly.
+#include <sys/types.h>
+#include <cstring>
 #include <cmath>
 #include <cassert>
+#include <climits>
+#include <map>
+#include <optional>
+#include <type_traits>
+#include <limits>
 #include <set>
+#include <span>
+#include <tuple>
 #include <utility>
 #include "Render/Textures/ZzzOpenglUtil.h"
 
 #include "Engine/Object/ZzzInfomation.h"
 #include "ZzzBMD.h"
+#include "Render/Models/AnimationSampling.h"
+#include "Render/Models/Gltf/SkinnedModel.h"
 #include "Engine/Object/ZzzObject.h"
 #include "Engine/Object/ZzzCharacter.h"
 #include "Render/Terrain/ZzzLodTerrain.h"
 #include "Render/Textures/ZzzTexture.h"
 #include "Engine/AI/ZzzAI.h"
 #include "SMD.h"
+#include "BmdModulusCipher.h"
 #include "Render/Effects/ZzzEffect.h"
 #include "Core/Utilities/Log/ErrorReport.h"
+#include "Core/Utilities/Log/MuLogger.h"
 #include "Camera/CameraState.h"
 
-#include "UI/Legacy/UIMng.h"
 #include "Camera/CameraMove.h"
 #include "Engine/Physics/PhysicsManager.h"
-#include "UI/NewUI/NewUISystem.h"
+#include "UI/Core/WindowSystem.h"
 #include "Render/Models/GpuSkinningPath.h"
+#include "Render/Models/SkinnedVertexPacking.h"
+#include "Render/Effects/EffectDraw.h"
+#include "Render/Models/ModelDraw.h"
 #include "Render/Renderer/MuRenderer.h"
 #include "Render/Renderer/RenderUtils.h"
+#include "Render/Terrain/TerrainHeightGrid.h"
 #include "Core/Utilities/FrameProfiler.h"
+#include "Scenes/MainScene.h"
+#include "Render/Lighting/LightMoodSetting.h"
+#include "Render/Lighting/DynamicLightsSetting.h"
+#include "Render/Lighting/ModelLight.h"
+#include "Render/Lighting/SunShadow.h"
+#include "Render/Lighting/LightShadowCasters.h"
+#include "Render/Lighting/WorldDynamicLights.h"
+#include "Render/Look/LookProfileSetting.h"
 
 using mu::PackABGR;
 
@@ -41,6 +69,9 @@ vec3_t BoundingMin[MAX_BONES];
 vec3_t BoundingMax[MAX_BONES];
 
 float  BoneTransform[MAX_BONES][3][4];
+// BoneTransform's slots from here on are identity; Animation's tail fill only rewrites what lies
+// below it. Starts at MAX_BONES: the zero-initialised array is not identity.
+static int s_boneTransformWrittenEnd = MAX_BONES;
 const float (*g_pActiveBoneTransform)[3][4] = nullptr;
 unsigned int g_BoneTransformVersion = 0;
 
@@ -55,12 +86,12 @@ vec3_t NormalTransform[MAX_MESH][MAX_VERTICES];
 float  IntensityTransform[MAX_MESH][MAX_VERTICES];
 vec3_t LightTransform[MAX_MESH][MAX_VERTICES];
 
-// DXP-20 increment 4: lazy CPU-skin materialization. Bumped by every TransformCheap() call;
+// Lazy CPU-skin materialization. Bumped by every TransformCheap() call;
 // a BMD's m_SkinStamp matching this value means it currently owns VertexTransform/NormalTransform/
 // IntensityTransform (last-writer-wins global scratch, same sharing model as before this increment).
 // g_LazyCpuSkin is a kill switch -- false reproduces pre-increment-4 eager behavior exactly.
 static uint32_t g_SkinStampCounter = 0;
-static bool g_LazyCpuSkin = true; // DXP-20 inc4 Step D: gate flipped on -- see DXP-20-inc4-plan.md
+static bool g_LazyCpuSkin = true; // Lazy CPU-skin gate, on by default.
 
 vec3_t RenderArrayVertices[MAX_VERTICES * 3];
 vec4_t RenderArrayColors[MAX_VERTICES * 3];
@@ -78,9 +109,10 @@ std::span<mu::Vertex3D> GetRendererVertexScratch(std::size_t requiredVertexCount
     return {vertices.data(), requiredVertexCount};
 }
 
-std::span<mu::SkinnedVertex3D> GetRendererSkinnedVertexScratch(std::size_t requiredVertexCount)
+template <typename Vertex = mu::SkinnedVertex3D>
+std::span<Vertex> GetRendererSkinnedVertexScratch(std::size_t requiredVertexCount)
 {
-    static thread_local std::vector<mu::SkinnedVertex3D> vertices;
+    static thread_local std::vector<Vertex> vertices;
     if (vertices.size() < requiredVertexCount)
     {
         vertices.resize(requiredVertexCount);
@@ -119,9 +151,75 @@ bool CanGpuSkinMesh(int finalRenderFlags, int renderFlags, const float (*boneMat
     return boneMatrices && supportedMaterial && !(renderFlags & (RENDER_SHADOWMAP | RENDER_WAVE));
 }
 
+// The bone palette of a GPU-skinned draw and the version the renderer's upload cache keys on.
+struct SkinPalette
+{
+    std::span<const float> matrices;
+    std::uint32_t version = 0;
+};
+
+// The weighted palette of a glTF model's current bones, rebuilt only when the
+// bones or scales changed since the last draw (one body draws several meshes).
+SkinPalette CurrentWeightedSkinPalette(const Render::Models::Gltf::SkinnedModel& model,
+                                       const Render::ModelDrawing::ModelSkin& skin)
+{
+    const float (*boneMatrices)[3][4] = skin.bones;
+    const float boneScale = skin.boneScale;
+    const float restPoseScale = skin.restPoseScale;
+    static thread_local struct
+    {
+        const Render::Models::Gltf::SkinnedModel* model = nullptr;
+        const float (*boneMatrices)[3][4] = nullptr;
+        unsigned int boneVersion = 0;
+        float boneScale = 0.f;
+        float restPoseScale = 0.f;
+        std::vector<float> palette;
+        std::uint32_t version = 0;
+    } cache;
+    const bool current = cache.model == &model && cache.boneMatrices == boneMatrices &&
+                         cache.boneVersion == skin.boneVersion && cache.boneScale == boneScale &&
+                         cache.restPoseScale == restPoseScale && !cache.palette.empty();
+    if (!current)
+    {
+        Render::Models::BuildWeightedSkinPalette(model, boneMatrices, boneScale, restPoseScale, cache.palette);
+        cache.model = &model;
+        cache.boneMatrices = boneMatrices;
+        cache.boneVersion = skin.boneVersion;
+        cache.boneScale = boneScale;
+        cache.restPoseScale = restPoseScale;
+        ++cache.version;
+    }
+    return {cache.palette, cache.version};
+}
+
+// A packed mesh's triangle corners (the mesh cache draws without indices), plus a scrolling texture's offset.
+std::span<const mu::SkinnedWeightedVertex3D> WeightedCorners(const Render::Models::Gltf::PackedMesh& mesh, float waveU,
+                                                             float waveV)
+{
+    const std::size_t cornerCount = mesh.indices.empty() ? mesh.vertices.size() : mesh.indices.size();
+    auto corners = GetRendererSkinnedVertexScratch<mu::SkinnedWeightedVertex3D>(cornerCount);
+    for (std::size_t i = 0; i < cornerCount; ++i)
+    {
+        corners[i] = mesh.vertices[mesh.indices.empty() ? i : mesh.indices[i]];
+        corners[i].u += waveU;
+        corners[i].v += waveV;
+    }
+    return corners;
+}
+
 std::pair<int, int> ResolveMeshRange(int meshCount, int requestedStart, int requestedEnd)
 {
     return {requestedStart == -1 ? 0 : requestedStart, requestedEnd == -1 ? meshCount : requestedEnd};
+}
+
+// One cached shadow stream per model and RenderBodyShadow() mesh selection (model, start, end, hidden mesh,
+// blend texture); an entry's address is its key in the renderer's mesh cache. Kept outside BMD, which
+// OpenPlayers() zero-fills, and never destroyed, so a model released at exit still finds it.
+using ShadowStreamId = std::tuple<std::uintptr_t, int, int, int, int>;
+std::map<ShadowStreamId, char>& ShadowStreams()
+{
+    static auto* streams = new std::map<ShadowStreamId, char>();
+    return *streams;
 }
 } // namespace
 
@@ -131,9 +229,35 @@ thread_local float ParentMatrix[3][4];
 static vec3_t LightVector = { 0.f, -0.1f, -0.8f };
 static vec3_t LightVector2 = { 0.f, -0.5f, -0.8f };
 
+// A joint's local pose in a model from a glTF binary at one sample of the
+// playback rule: MU key time t of the action is clip time t / K x cycle.
+static void GltfSample(const Render::Models::Gltf::SkinnedModel& gltf, const Action_t* Actions, int joint,
+                       const Render::Models::AnimationSampling::KeySample& sample,
+                       Render::Models::Gltf::JointPose& pose)
+{
+    const Action_t& action = Actions[sample.action];
+    const int intervals = Render::Models::Gltf::SkinnedModel::ClipKeyIntervals(action.NumAnimationKeys,
+                                                                               action.LockPositions, action.Loop);
+    gltf.SampleJoint(joint, sample.action, sample.time, intervals, pose);
+}
+
+// The key time of the crossfade into `action` that the model file sets, or
+// nothing (a BMD, or the playback rule's fade).
+static std::optional<float> GltfCrossfadeKeyTime(const BMD& model, unsigned short action)
+{
+    const auto* gltf = Render::Models::Gltf::SkinnedModelOf(model);
+    if (!gltf || action >= gltf->actionCrossfades.size() || !gltf->actionCrossfades[action])
+    {
+        return std::nullopt;
+    }
+    const Action_t& a = model.Actions[action];
+    return Render::Models::AnimationSampling::CrossfadeKeyTime(
+        {a.NumAnimationKeys, a.LockPositions, a.PlaySpeed, a.Loop}, *gltf->actionCrossfades[action]);
+}
+
 void BMD::Animation(float (*BoneMatrix)[3][4], float AnimationFrame, float PriorFrame, unsigned short PriorAction,
-                    vec3_t Angle, vec3_t HeadAngle, bool Parent, bool Translate, const float (*ExtParentMatrix)[4],
-                    short CurrentActionArg, int BoneMatrixCapacity)
+                    const vec3_t Angle, const vec3_t HeadAngle, bool Parent, bool Translate,
+                    const float (*ExtParentMatrix)[4], short CurrentActionArg, int BoneMatrixCapacity)
 {
     if (NumActions <= 0) return;
 
@@ -141,24 +265,35 @@ void BMD::Animation(float (*BoneMatrix)[3][4], float AnimationFrame, float Prior
     if (PriorAction >= NumActions) PriorAction = 0;
     if (currentAction >= NumActions) currentAction = 0;
 
-    vec4_t boneQuaternion[MAX_BONES] = {};
-
-    float currentAnimation = AnimationFrame;
-    int currentAnimationFrame = (int)AnimationFrame;
-    float s1 = (currentAnimation - currentAnimationFrame);
-    float s2 = 1.f - s1;
-    auto PriorAnimationFrame = (int)PriorFrame;
-    if (NumActions > 0)
+    // Which keys of which action the pose is made of (the playback rule, see
+    // AnimationSampling.h): MU's blend of key floor(PriorFrame) into key
+    // floor(AnimationFrame) except for skipped keys and an action change.
+    namespace Sampling = Render::Models::AnimationSampling;
+    const auto timelineOf = [this](unsigned short action)
     {
-        if (PriorAnimationFrame < 0)
-            PriorAnimationFrame = 0;
-        if (currentAnimationFrame < 0)
-            currentAnimationFrame = 0;
-        if (PriorAnimationFrame >= Actions[PriorAction].NumAnimationKeys)
-            PriorAnimationFrame = 0;
-        if (currentAnimationFrame >= Actions[currentAction].NumAnimationKeys)
-            currentAnimationFrame = 0;
+        const Action_t& a = Actions[action];
+        return Sampling::ActionTimeline{a.NumAnimationKeys, a.LockPositions, a.PlaySpeed, a.Loop};
+    };
+    Sampling::PosePlan pose = Sampling::PlanPose(timelineOf(PriorAction), PriorAction, PriorFrame,
+                                                 timelineOf(currentAction), currentAction, AnimationFrame);
+    // A model file may set the crossfade's length (Data/Models/ModelFiles.json).
+    if (const auto fade = GltfCrossfadeKeyTime(*this, currentAction))
+    {
+        Sampling::SetCrossfadeLength(pose, AnimationFrame, *fade);
     }
+    // A model from a glTF binary samples MU's blend of neighbouring keys at the
+    // continuous key time it stands for, so detail between its keys shows.
+    if (Render::Models::Gltf::SkinnedModelOf(*this))
+    {
+        if (const auto phase = Sampling::MuBlendPhase(timelineOf(currentAction), pose))
+        {
+            pose.from = *phase;
+            pose.to = *phase;
+            pose.weight = 0.f;
+        }
+    }
+    const float s1 = pose.weight;
+    const float s2 = 1.f - s1;
 
     // Pre-calculate localParentMatrix ONCE outside bone loop for thread-safe root transforms
     float localParentMatrix[3][4];
@@ -188,31 +323,71 @@ void BMD::Animation(float (*BoneMatrix)[3][4], float AnimationFrame, float Prior
         }
     }
 
-    // Pre-calculate Head bone quaternions ONCE outside loop
+    // Pre-calculate Head bone quaternions ONCE outside loop. HeadAngle turns every
+    // sampled key before it becomes a quaternion.
     vec4_t headQ1, headQ2;
     const bool hasHeadBone = (BoneHead >= 0 && BoneHead < NumBones && !Bones[BoneHead].Dummy);
-    if (hasHeadBone)
+    constexpr float radFactor = 1.0f / (180.f / Q_PI);
+    const float HeadAngleX = HeadAngle[0] * radFactor;
+    const float HeadAngleY = HeadAngle[1] * radFactor;
+    // A model from a glTF binary samples its clips at the same points (see GltfSample).
+    const auto* gltf = Render::Models::Gltf::SkinnedModelOf(*this);
+    if (hasHeadBone && !gltf)
     {
         const Bone_t* hb = &Bones[BoneHead];
-        const BoneMatrix_t* hbm1 = &hb->BoneMatrixes[PriorAction];
-        const BoneMatrix_t* hbm2 = &hb->BoneMatrixes[currentAction];
-
-        vec3_t Angle1, Angle2;
-        VectorCopy(hbm1->Rotation[PriorAnimationFrame], Angle1);
-        VectorCopy(hbm2->Rotation[currentAnimationFrame], Angle2);
-
-        constexpr float radFactor = 1.0f / (180.f / Q_PI);
-        const float HeadAngleX = HeadAngle[0] * radFactor;
-        const float HeadAngleY = HeadAngle[1] * radFactor;
-
-        Angle1[0] -= HeadAngleX;
-        Angle2[0] -= HeadAngleX;
-        Angle1[2] -= HeadAngleY;
-        Angle2[2] -= HeadAngleY;
-
-        AngleQuaternion(Angle1, headQ1);
-        AngleQuaternion(Angle2, headQ2);
+        const auto headKey = [&](const Sampling::KeySample& sample, int key, vec4_t out)
+        {
+            vec3_t angle;
+            VectorCopy(hb->BoneMatrixes[sample.action].Rotation[key], angle);
+            angle[0] -= HeadAngleX;
+            angle[2] -= HeadAngleY;
+            AngleQuaternion(angle, out);
+        };
+        const auto headSample = [&](const Sampling::KeySample& sample, vec4_t out)
+        {
+            headKey(sample, sample.key0, out);
+            if (sample.fraction == 0.f || sample.key0 == sample.key1)
+                return;
+            vec4_t next, from;
+            headKey(sample, sample.key1, next);
+            QuaternionCopy(out, from);
+            if (!QuaternionCompare(from, next))
+                QuaternionNLERP(from, next, sample.fraction, out);
+        };
+        headSample(pose.from, headQ1);
+        headSample(pose.to, headQ2);
     }
+
+    // One action's rotation and position of a bone at a sample: the key itself,
+    // or its two keys blended by the fraction.
+    const auto sampleRotation = [](const Bone_t* bone, const Sampling::KeySample& sample,
+                                   vec4_t scratch) -> const float*
+    {
+        const BoneMatrix_t* bm = &bone->BoneMatrixes[sample.action];
+        const float* q0 = bm->Quaternion[sample.key0];
+        if (sample.fraction == 0.f || sample.key0 == sample.key1)
+            return q0;
+        const float* q1 = bm->Quaternion[sample.key1];
+        if (QuaternionCompare(q0, q1))
+            return q0;
+        QuaternionNLERP(q0, q1, sample.fraction, scratch);
+        return scratch;
+    };
+    const auto samplePosition = [](const Bone_t* bone, const Sampling::KeySample& sample,
+                                   vec3_t scratch) -> const float*
+    {
+        const BoneMatrix_t* bm = &bone->BoneMatrixes[sample.action];
+        const float* p0 = bm->Position[sample.key0];
+        if (sample.fraction == 0.f || sample.key0 == sample.key1)
+            return p0;
+        const float* p1 = bm->Position[sample.key1];
+        const float t1 = sample.fraction;
+        const float t0 = 1.f - t1;
+        scratch[0] = p0[0] * t0 + p1[0] * t1;
+        scratch[1] = p0[1] * t0 + p1[1] * t1;
+        scratch[2] = p0[2] * t0 + p1[2] * t1;
+        return scratch;
+    };
 
     const bool bLockPositions = (Actions[PriorAction].LockPositions || Actions[currentAction].LockPositions);
 
@@ -222,7 +397,7 @@ void BMD::Animation(float (*BoneMatrix)[3][4], float AnimationFrame, float Prior
         const Bone_t* b = &Bones[i];
         if (b->Dummy)
         {
-            // DXP-24 fix (part 2): Dummy bones carry no name/parent/animation data (see Open2's
+            // Dummy bones carry no name/parent/animation data (see Open2's
             // loader -- the !Dummy branch is the only one that reads anything), so this slot was
             // previously left holding whatever the LAST model to animate into this shared buffer
             // wrote there. If that was a differently-positioned character (character-select roster),
@@ -244,41 +419,77 @@ void BMD::Animation(float (*BoneMatrix)[3][4], float AnimationFrame, float Prior
             BoneMatrix[i][2][3] = 0.f;
             continue;
         }
-        const BoneMatrix_t* bm1 = &b->BoneMatrixes[PriorAction];
-        const BoneMatrix_t* bm2 = &b->BoneMatrixes[currentAction];
-
+        vec4_t rotationScratch1, rotationScratch2;
+        vec3_t positionScratch1, positionScratch2;
         const float* q1;
         const float* q2;
+        const float* Position1;
+        const float* Position2;
+        // A locked root keeps x and y of the current action's key 0.
+        vec3_t lockedRoot;
 
-        if (i == BoneHead)
+        if (gltf)
         {
-            q1 = headQ1;
-            q2 = headQ2;
+            Render::Models::Gltf::JointPose from, to;
+            GltfSample(*gltf, Actions, i, pose.from, from);
+            GltfSample(*gltf, Actions, i, pose.to, to);
+            if (i == BoneHead && hasHeadBone)
+            {
+                Render::Models::Gltf::SkinnedModel::TurnHead(from.rotation, HeadAngleX, HeadAngleY);
+                Render::Models::Gltf::SkinnedModel::TurnHead(to.rotation, HeadAngleX, HeadAngleY);
+            }
+            QuaternionCopy(from.rotation.data(), rotationScratch1);
+            QuaternionCopy(to.rotation.data(), rotationScratch2);
+            VectorCopy(from.position.data(), positionScratch1);
+            VectorCopy(to.position.data(), positionScratch2);
+            q1 = rotationScratch1;
+            q2 = rotationScratch2;
+            Position1 = positionScratch1;
+            Position2 = positionScratch2;
+            if (i == 0 && bLockPositions)
+            {
+                Render::Models::Gltf::JointPose key0;
+                GltfSample(*gltf, Actions, i, Sampling::KeyAt(currentAction, 0), key0);
+                VectorCopy(key0.position.data(), lockedRoot);
+            }
         }
         else
         {
-            q1 = bm1->Quaternion[PriorAnimationFrame];
-            q2 = bm2->Quaternion[currentAnimationFrame];
+            if (i == BoneHead)
+            {
+                q1 = headQ1;
+                q2 = headQ2;
+            }
+            else
+            {
+                q1 = sampleRotation(b, pose.from, rotationScratch1);
+                q2 = sampleRotation(b, pose.to, rotationScratch2);
+            }
+            Position1 = samplePosition(b, pose.from, positionScratch1);
+            Position2 = samplePosition(b, pose.to, positionScratch2);
+            if (i == 0 && bLockPositions)
+            {
+                VectorCopy(b->BoneMatrixes[currentAction].Position[0], lockedRoot);
+            }
         }
 
+        vec4_t boneQuaternion;
         if (!QuaternionCompare(q1, q2))
         {
-            QuaternionNLERP(q1, q2, s1, boneQuaternion[i]);
+            QuaternionNLERP(q1, q2, s1, boneQuaternion);
         }
         else
         {
-            QuaternionCopy(q1, boneQuaternion[i]);
+            QuaternionCopy(q1, boneQuaternion);
         }
 
         float Matrix[3][4];
-        QuaternionMatrix(boneQuaternion[i], Matrix);
-        const float* Position1 = bm1->Position[PriorAnimationFrame];
-        const float* Position2 = bm2->Position[currentAnimationFrame];
+        QuaternionMatrix(boneQuaternion, Matrix);
 
         if (i == 0 && bLockPositions)
         {
-            Matrix[0][3] = bm2->Position[0][0];
-            Matrix[1][3] = bm2->Position[0][1];
+            Matrix[0][3] = lockedRoot[0];
+            Matrix[1][3] = lockedRoot[1];
             Matrix[2][3] = Position1[2] * s2 + Position2[2] * s1 + BodyHeight;
         }
         else
@@ -309,7 +520,7 @@ void BMD::Animation(float (*BoneMatrix)[3][4], float AnimationFrame, float Prior
         }
     }
 
-    // DXP-24 fix: this model's own skeleton may have fewer than MAX_BONES real bones, and the loop
+    // This model's own skeleton may have fewer than MAX_BONES real bones, and the loop
     // above only ever writes BoneMatrix[0..NumBones). BoneMatrix is caller-supplied and shared/reused
     // across different models' Animation() calls (not cleared between them), so slots >= NumBones
     // would otherwise keep holding a PREVIOUS, differently-boned model's real (not garbage) transform
@@ -320,7 +531,15 @@ void BMD::Animation(float (*BoneMatrix)[3][4], float AnimationFrame, float Prior
     // declared buffer capacity -- NOT MAX_BONES -- because several internal callers pass
     // NumBones-sized heap scratch buffers (AnimationTransformWithAttachHighModel* /
     // AnimationTransformOnlySelf), which a MAX_BONES-bound loop would overflow.
-    for (int i = NumBones; i < BoneMatrixCapacity; i++)
+    // The shared BoneTransform tracks how far the last models wrote, so the tail fill stops there
+    // instead of rewriting slots that are already identity.
+    const bool sharedPalette = BoneMatrix == BoneTransform && BoneMatrixCapacity == MAX_BONES;
+    const int fillEnd = sharedPalette ? std::max<int>(NumBones, s_boneTransformWrittenEnd) : BoneMatrixCapacity;
+    if (sharedPalette)
+    {
+        s_boneTransformWrittenEnd = NumBones;
+    }
+    for (int i = NumBones; i < fillEnd; i++)
     {
         BoneMatrix[i][0][0] = 1.f;
         BoneMatrix[i][0][1] = 0.f;
@@ -338,9 +557,23 @@ void BMD::Animation(float (*BoneMatrix)[3][4], float AnimationFrame, float Prior
 }
 
 extern EGameScene SceneFlag;
+extern float g_fSpecialHeight;
 extern int EditFlag;
 
 bool HighLight = true;
+
+// The light mood's highlight shoulder on a CPU-lit model colour; a knee of 1 (Classic) leaves it.
+static void RollOffModelLight(vec3_t light, float knee)
+{
+    if (knee >= 1.f)
+    {
+        return;
+    }
+    for (int i = 0; i < 3; ++i)
+    {
+        light[i] = Render::Lighting::LightMood::RollOffHighlight(light[i], knee);
+    }
+}
 float BoneScale = 1.f;
 
 void BMD::ClaimSkinStamp() const
@@ -351,7 +584,7 @@ void BMD::ClaimSkinStamp() const
     // Reaching here means some OTHER BMD's TransformCheap() ran since this BMD's own last one --
     // this BMD's slice of the shared scratch arrays was evicted, and we're about to re-derive it
     // from our own stashed skin request (self-heal). This is a pre-existing sharing model (last
-    // Transform() wins), not new to DXP-20 inc4 -- but a consumer reaching this branch means it
+    // Transform() wins), not newly introduced by the lazy-skin change -- but a consumer reaching this branch means it
     // read/wrote the arrays OUTSIDE the Calc/Draw (or equivalent) bracket that owns this BMD's
     // data, which is worth knowing about if the soak turns up anything odd.
     g_ErrorReport.Write(
@@ -366,14 +599,14 @@ void BMD::ClaimSkinStamp() const
     }
 }
 
-void BMD::TransformCheap(float (*BoneMatrix)[3][4], vec3_t BoundingBoxMin, vec3_t BoundingBoxMax, OBB_t* OBB,
-                         bool Translate, float _Scale)
+void BMD::TransformCheap(float (*BoneMatrix)[3][4], const vec3_t BoundingBoxMin, const vec3_t BoundingBoxMax,
+                         OBB_t* OBB, bool Translate, float _Scale)
 {
     m_pCurrentBoneTransform = BoneMatrix;
     SetActiveBoneTransform(BoneMatrix);
     m_LastTranslate = Translate;        // persist for RenderMesh GPU skinning path
-    m_LastSkinScale = _Scale;           // DXP-20 inc4: stashed for EnsureCpuVertices()
-    m_LastBoneScale = BoneScale;        // DXP-20 inc4: snapshot of the global -- callers mutate it right
+    m_LastSkinScale = _Scale;           // stashed for EnsureCpuVertices()
+    m_LastBoneScale = BoneScale;        // snapshot of the global -- callers mutate it right
                                         // after Transform() returns (e.g. monster edge-scale resets),
                                         // so a deferred read of the live global would skin wrong.
     m_SkinStamp = ++g_SkinStampCounter; // this BMD now owns the shared scratch arrays
@@ -385,58 +618,81 @@ void BMD::TransformCheap(float (*BoneMatrix)[3][4], vec3_t BoundingBoxMin, vec3_
 
     if (LightEnable)
     {
-        vec3_t Position;
-
-        float Matrix[3][4];
-        if (HighLight)
-        {
-            Vector(1.3f, 0.f, 2.f, Position);
-        }
-        else if (gMapManager.InBattleCastle())
-        {
-            Vector(0.5f, -1.f, 1.f, Position);
-            Vector(0.f, 0.f, -45.f, ShadowAngle);
-        }
-        else
-        {
-            Vector(0.f, -1.5f, 0.f, Position);
-        }
-
-        AngleMatrix(ShadowAngle, Matrix);
-        VectorIRotate(Position, Matrix, m_LastLightPosition); // DXP-20: for RenderMesh's GPU-skinned in-shader lighting
+        // For RenderMesh's lighting, CPU and GPU-skinned: normals are world-oriented (the root bone
+        // carries the object's angle), so one world vector lights every model alike.
+        const glm::vec3 light = Render::Lighting::ModelLightVector(HighLight);
+        Vector(light.x, light.y, light.z, m_LastLightPosition);
     }
 
     // Release/gameplay OBB: from the caller-supplied bounding box args, not a vertex-loop-derived
     // one -- this is Transform()'s own "else" branch (EditFlag != 2), which is why TransformCheap()
-    // is only a valid substitute for Transform() in that same case (see header comment).
-    VectorCopy(BoundingBoxMin, OBB->StartPos);
-    OBB->XAxis[0] = (BoundingBoxMax[0] - BoundingBoxMin[0]);
-    OBB->YAxis[1] = (BoundingBoxMax[1] - BoundingBoxMin[1]);
-    OBB->ZAxis[2] = (BoundingBoxMax[2] - BoundingBoxMin[2]);
-    VectorAdd(OBB->StartPos, BodyOrigin, OBB->StartPos);
-    OBB->XAxis[1] = 0.f;
-    OBB->XAxis[2] = 0.f;
-    OBB->YAxis[0] = 0.f;
-    OBB->YAxis[2] = 0.f;
-    OBB->ZAxis[0] = 0.f;
-    OBB->ZAxis[1] = 0.f;
+    // is only a valid substitute for Transform() in that same case (see header comment). A draw passes
+    // no OBB: the update places the pick boxes.
+    if (OBB != nullptr)
+    {
+        VectorCopy(BoundingBoxMin, OBB->StartPos);
+        OBB->XAxis[0] = (BoundingBoxMax[0] - BoundingBoxMin[0]);
+        OBB->YAxis[1] = (BoundingBoxMax[1] - BoundingBoxMin[1]);
+        OBB->ZAxis[2] = (BoundingBoxMax[2] - BoundingBoxMin[2]);
+        VectorAdd(OBB->StartPos, BodyOrigin, OBB->StartPos);
+        OBB->XAxis[1] = 0.f;
+        OBB->XAxis[2] = 0.f;
+        OBB->YAxis[0] = 0.f;
+        OBB->YAxis[2] = 0.f;
+        OBB->ZAxis[0] = 0.f;
+        OBB->ZAxis[1] = 0.f;
+    }
     // NOTE: does not update fTransformedSize (left at its last value from a real Transform() call).
     // Its only consumer (ZzzCharacter.cpp's character-select pick-box fallback height) already
     // floors the result, and Models[] is shared-by-type mutable state already, so a stale value
     // here is no worse than the existing sharing model.
 }
 
+Render::ModelDrawing::ModelSkin BMD::CurrentSkin() const
+{
+    Render::ModelDrawing::ModelSkin skin{.bones = m_pCurrentBoneTransform,
+                                         .boneVersion = g_BoneTransformVersion,
+                                         .boneScale = m_LastBoneScale,
+                                         .restPoseScale = m_LastSkinScale,
+                                         .translate = m_LastTranslate};
+    VectorCopy(m_LastLightPosition, skin.lightDirection);
+    return skin;
+}
+
 void BMD::SkinVertex(int mesh, int vertexIndex, float (*BoneMatrix)[3][4], bool Translate, float _Scale,
                      vec3_t out) const
 {
-    const Vertex_t* v = &Meshs[mesh].Vertices[vertexIndex];
+    const Render::ModelDrawing::ModelSkin skin{
+        .bones = BoneMatrix, .boneScale = m_LastBoneScale, .restPoseScale = _Scale, .translate = Translate};
+    SkinVertex(mesh, vertexIndex, skin, BodyScale, BodyOrigin, out);
+}
 
-    // DXP-20 inc4: reads the BoneScale snapshotted at TransformCheap() time, not the live global --
+void BMD::SkinVertex(int mesh, int vertexIndex, const Render::ModelDrawing::ModelSkin& skin, float bodyScale,
+                     const float bodyOrigin[3], vec3_t out) const
+{
+    const Vertex_t* v = &Meshs[mesh].Vertices[vertexIndex];
+    const float (*BoneMatrix)[3][4] = skin.bones;
+    const bool Translate = skin.translate;
+    const float _Scale = skin.restPoseScale;
+
+    // A model from a glTF binary: up to four joints per vertex, same arithmetic per joint.
+    if (const auto* gltf = Render::Models::Gltf::SkinnedModelOf(*this))
+    {
+        gltf->SkinPosition(mesh, vertexIndex, BoneMatrix, skin.boneScale, _Scale, out);
+        if (Translate)
+        {
+            VectorScale(out, bodyScale, out);
+            VectorAdd(out, bodyOrigin, out);
+        }
+        return;
+    }
+
+    // Reads the BoneScale snapshotted at TransformCheap() time, not the live global --
     // this makes SkinVertex()/SkinVertices() safe to call from a deferred EnsureCpuVertices(), where
     // the global may already have been reset/reused by a later object. Behavior-identical for the
     // pre-inc4 callers (coin heap, skin-shell effect), which always run immediately after
     // TransformCheap() -- the stash and the global agree at that point.
-    if (m_LastBoneScale == 1.f)
+    if (skin.boneScale == 1.f)
     {
         if (_Scale)
         {
@@ -448,19 +704,19 @@ void BMD::SkinVertex(int mesh, int vertexIndex, float (*BoneMatrix)[3][4], bool 
         else
             VectorTransform(v->Position, BoneMatrix[v->Node], out);
         if (Translate)
-            VectorScale(out, BodyScale, out);
+            VectorScale(out, bodyScale, out);
     }
     else
     {
         VectorRotate(v->Position, BoneMatrix[v->Node], out);
-        out[0] = out[0] * m_LastBoneScale + BoneMatrix[v->Node][0][3];
-        out[1] = out[1] * m_LastBoneScale + BoneMatrix[v->Node][1][3];
-        out[2] = out[2] * m_LastBoneScale + BoneMatrix[v->Node][2][3];
+        out[0] = out[0] * skin.boneScale + BoneMatrix[v->Node][0][3];
+        out[1] = out[1] * skin.boneScale + BoneMatrix[v->Node][1][3];
+        out[2] = out[2] * skin.boneScale + BoneMatrix[v->Node][2][3];
         if (Translate)
-            VectorScale(out, BodyScale, out);
+            VectorScale(out, bodyScale, out);
     }
     if (Translate)
-        VectorAdd(out, BodyOrigin, out);
+        VectorAdd(out, bodyOrigin, out);
 }
 
 void BMD::SkinVertices(int mesh, float (*BoneMatrix)[3][4], bool Translate, float _Scale) const
@@ -507,14 +763,18 @@ void BMD::EnsureCpuNormals(int mesh) const
         return;
 
     const Mesh_t* m = &Meshs[mesh];
+    const auto* gltf = Render::Models::Gltf::SkinnedModelOf(*this);
     for (int j = 0; j < m->NumNormals; j++)
     {
         const Normal_t* sn = &m->Normals[j];
         float* tn = NormalTransform[mesh][j];
-        VectorRotate(sn->Normal, m_pCurrentBoneTransform[sn->Node], tn);
+        if (gltf)
+            gltf->SkinNormal(mesh, j, m_pCurrentBoneTransform, tn);
+        else
+            VectorRotate(sn->Normal, m_pCurrentBoneTransform[sn->Node], tn);
         if (LightEnable)
         {
-            float Luminosity = DotProduct(tn, m_LastLightPosition) * 0.8f + 0.4f;
+            float Luminosity = VectorDotProduct(tn, m_LastLightPosition) * 0.8f + 0.4f;
             if (Luminosity < 0.2f)
                 Luminosity = 0.2f;
             IntensityTransform[mesh][j] = Luminosity;
@@ -531,20 +791,20 @@ void BMD::MarkCpuVerticesExternallyWritten(int mesh) const
     m_CpuVertsReady[mesh] = true;
 }
 
-void BMD::Transform(float (*BoneMatrix)[3][4], vec3_t BoundingBoxMin, vec3_t BoundingBoxMax, OBB_t* OBB, bool Translate,
-                    float _Scale)
+void BMD::Transform(float (*BoneMatrix)[3][4], const vec3_t BoundingBoxMin, const vec3_t BoundingBoxMax, OBB_t* OBB,
+                    bool Translate, float _Scale)
 {
-    FRAME_PROFILE(Skinning); // DXP-20 increment 1 baseline measurement
+    FRAME_PROFILE(Skinning); // baseline measurement
     TransformCheap(BoneMatrix, BoundingBoxMin, BoundingBoxMax, OBB, Translate, _Scale);
 
-    // DXP-20 increment 4: with the lazy-skin gate on, ordinary (EditFlag != 2) bodies defer the
+    // With the lazy-skin gate on, ordinary (EditFlag != 2) bodies defer the
     // vertex/normal loops below to EnsureCpuVertices()/EnsureCpuNormals() at each consumer site
     // instead of running them here unconditionally -- TransformCheap() already stashed everything
     // those need. EditFlag == 2 (map editor) always takes the eager path below: it needs the
     // vertex-loop-derived OBB override further down, which EnsureCpu*() never computes (see
     // TransformCheap()'s header comment -- same restriction that already applied to it in
     // increment 2). fTransformedSize is intentionally left stale on the lazy path in both Debug
-    // and Release builds (see DXP-20-inc4-plan.md) -- its only consumer already floors the result.
+    // and Release builds -- its only consumer already floors the result.
     if (g_LazyCpuSkin && EditFlag != 2)
         return;
 
@@ -558,6 +818,7 @@ void BMD::Transform(float (*BoneMatrix)[3][4], vec3_t BoundingBoxMin, vec3_t Bou
         Vector(999999.f, 999999.f, 999999.f, BoundingMin);
         Vector(-999999.f, -999999.f, -999999.f, BoundingMax);
     }
+    const auto* gltf = Render::Models::Gltf::SkinnedModelOf(*this);
     for (int i = 0; i < NumMeshs; i++)
     {
         Mesh_t* m = &Meshs[i];
@@ -566,7 +827,13 @@ void BMD::Transform(float (*BoneMatrix)[3][4], vec3_t BoundingBoxMin, vec3_t Bou
             Vertex_t* v = &m->Vertices[j];
             float* vp = VertexTransform[i][j];
 
-            if (BoneScale == 1.f)
+            if (gltf)
+            {
+                gltf->SkinPosition(i, j, BoneMatrix, BoneScale, _Scale, vp);
+                if (Translate)
+                    VectorScale(vp, BodyScale, vp);
+            }
+            else if (BoneScale == 1.f)
             {
                 if (_Scale)
                 {
@@ -608,11 +875,14 @@ void BMD::Transform(float (*BoneMatrix)[3][4], vec3_t BoundingBoxMin, vec3_t Bou
         {
             Normal_t* sn = &m->Normals[j];
             float* tn = NormalTransform[i][j];
-            VectorRotate(sn->Normal, BoneMatrix[sn->Node], tn);
+            if (gltf)
+                gltf->SkinNormal(i, j, BoneMatrix, tn);
+            else
+                VectorRotate(sn->Normal, BoneMatrix[sn->Node], tn);
             if (LightEnable)
             {
                 float Luminosity;
-                Luminosity = DotProduct(tn, m_LastLightPosition) * 0.8f + 0.4f;
+                Luminosity = VectorDotProduct(tn, m_LastLightPosition) * 0.8f + 0.4f;
 
                 if (Luminosity < 0.2f) Luminosity = 0.2f;
                 IntensityTransform[i][j] = Luminosity;
@@ -623,17 +893,20 @@ void BMD::Transform(float (*BoneMatrix)[3][4], vec3_t BoundingBoxMin, vec3_t Bou
     {
         // Overrides TransformCheap()'s args-based OBB with the vertex-loop-derived bounds --
         // the map-editor-only accurate path.
-        VectorCopy(BoundingMin, OBB->StartPos);
-        OBB->XAxis[0] = (BoundingMax[0] - BoundingMin[0]);
-        OBB->YAxis[1] = (BoundingMax[1] - BoundingMin[1]);
-        OBB->ZAxis[2] = (BoundingMax[2] - BoundingMin[2]);
-        VectorAdd(OBB->StartPos, BodyOrigin, OBB->StartPos);
-        OBB->XAxis[1] = 0.f;
-        OBB->XAxis[2] = 0.f;
-        OBB->YAxis[0] = 0.f;
-        OBB->YAxis[2] = 0.f;
-        OBB->ZAxis[0] = 0.f;
-        OBB->ZAxis[1] = 0.f;
+        if (OBB != nullptr)
+        {
+            VectorCopy(BoundingMin, OBB->StartPos);
+            OBB->XAxis[0] = (BoundingMax[0] - BoundingMin[0]);
+            OBB->YAxis[1] = (BoundingMax[1] - BoundingMin[1]);
+            OBB->ZAxis[2] = (BoundingMax[2] - BoundingMin[2]);
+            VectorAdd(OBB->StartPos, BodyOrigin, OBB->StartPos);
+            OBB->XAxis[1] = 0.f;
+            OBB->XAxis[2] = 0.f;
+            OBB->YAxis[0] = 0.f;
+            OBB->YAxis[2] = 0.f;
+            OBB->ZAxis[0] = 0.f;
+            OBB->ZAxis[1] = 0.f;
+        }
     }
     fTransformedSize =
         std::max<float>(std::max<float>(BoundingMax[0] - BoundingMin[0], BoundingMax[1] - BoundingMin[1]),
@@ -737,6 +1010,7 @@ void BMD::RotationPosition(float(*Matrix)[4], vec3_t Position, vec3_t WorldPosit
 
 bool BMD::PlayAnimation(float* AnimationFrame, float* PriorAnimationFrame, unsigned short* PriorAction, float Speed, vec3_t Origin, vec3_t Angle)
 {
+    Diagnostics::DrawSpawnCheck::Note("play-animation");
     bool Loop = true;
 
     if (AnimationFrame == nullptr || PriorAnimationFrame == nullptr || PriorAction == nullptr || (NumActions > 0 && CurrentAction >= NumActions))
@@ -751,7 +1025,11 @@ bool BMD::PlayAnimation(float* AnimationFrame, float* PriorAnimationFrame, unsig
 
     const auto priorAnimationFrame = (int)*AnimationFrame;
     *AnimationFrame += Speed * FPS_ANIMATION_FACTOR;
-    if (priorAnimationFrame != (int)*AnimationFrame)
+    // A crossfade of a set length keeps the prior action until it has run (see SetCrossfadeLength).
+    const auto fade = *PriorAction != CurrentAction ? GltfCrossfadeKeyTime(*this, CurrentAction) : std::nullopt;
+    const bool crossfadeContinues =
+        fade && Render::Models::AnimationSampling::CrossfadeContinues(*AnimationFrame, *fade);
+    if (priorAnimationFrame != (int)*AnimationFrame && !crossfadeContinues)
     {
         *PriorAction = CurrentAction;
         *PriorAnimationFrame = (float)priorAnimationFrame;
@@ -839,6 +1117,7 @@ void BMD::AnimationTransformWithAttachHighModel_usingGlobalTM(OBJECT* oHighHiera
 
     Animation(arrBonesTMLocal, 0, 0, 0, Temp, Temp, false, false, nullptr, -1, NumBones);
 
+    s_boneTransformWrittenEnd = std::max<int>(s_boneTransformWrittenEnd, NumBones);
     for (int i_ = 0; i_ < NumBones; ++i_)
     {
         R_ConcatTransforms(tmBoneHierarchicalObject, arrBonesTMLocal[i_], BoneTransform[i_]);
@@ -1027,10 +1306,10 @@ void BMD::Chrome(float* pchrome, int bone, vec3_t normal)
         g_chromeage[bone] = g_smodels_total;
     }
 
-    n = DotProduct(normal, g_chromeright[bone]);
+    n = VectorDotProduct(normal, g_chromeright[bone]);
     pchrome[0] = (n + 1.f); // FIX: make this a float
 
-    n = DotProduct(normal, g_chromeup[bone]);
+    n = VectorDotProduct(normal, g_chromeup[bone]);
     pchrome[1] = (n + 1.f); // FIX: make this a float
 }
 
@@ -1040,7 +1319,7 @@ void BMD::Lighting(float* pLight, Light_t* lp, vec3_t Position, vec3_t Normal)
     VectorSubtract(lp->Position, Position, Light);
     float Length = sqrtf(Light[0] * Light[0] + Light[1] * Light[1] + Light[2] * Light[2]);
 
-    float LightCos = (DotProduct(Normal, Light) / Length) * 0.8f + 0.3f;
+    float LightCos = (VectorDotProduct(Normal, Light) / Length) * 0.8f + 0.3f;
     if (Length > lp->Range) LightCos -= (Length - lp->Range) * 0.01f;
     if (LightCos < 0.f) LightCos = 0.f;
     pLight[0] += LightCos * lp->Color[0];
@@ -1079,7 +1358,7 @@ void SmoothBitmap(int Width, int Height, unsigned char* Buffer)
 
 bool BMD::CollisionDetectLineToMesh(vec3_t Position, vec3_t Target, bool Collision, int Mesh, int Triangle)
 {
-    EnsureCpuVertices(-1); // DXP-20 inc4: mouse-picking/lightmap-bake reader, not in the original spec's consumer list
+    EnsureCpuVertices(-1); // mouse-picking/lightmap-bake reader, not in the original spec's consumer list
     int i, j;
     for (i = 0; i < NumMeshs; i++)
     {
@@ -1105,13 +1384,13 @@ bool BMD::CollisionDetectLineToMesh(vec3_t Position, vec3_t Target, bool Collisi
 
 void BMD::CreateLightMapSurface(Light_t* lp, Mesh_t* m, int i, int j, int MapWidth, int MapHeight, int MapWidthMax, int MapHeightMax, vec3_t BoundingMin, vec3_t BoundingMax, int Axis)
 {
-    EnsureCpuVertices(i); // DXP-20 inc4: lightmap bake reader, not in the original spec's consumer list
+    EnsureCpuVertices(i); // lightmap bake reader, not in the original spec's consumer list
     EnsureCpuNormals(i);
     int k, l;
     Triangle_t* tp = &m->Triangles[j];
     float* np = NormalTransform[i][tp->NormalIndex[0]];
     float* vp = VertexTransform[i][tp->VertexIndex[0]];
-    float d = -DotProduct(vp, np);
+    float d = -VectorDotProduct(vp, np);
 
     Bitmap_t* lmp = &LightMaps[NumLightMaps];
     if (lmp->Buffer == nullptr)
@@ -1219,12 +1498,12 @@ void BMD::ReleaseLightMaps()
     LightMapEnable = false;
 }
 
-void BMD::BeginRender(float Alpha)
+void BMD::BeginRender(float Alpha) const
 {
     mu::GetRenderer().PushMatrix();
 }
 
-void BMD::EndRender()
+void BMD::EndRender() const
 {
     mu::GetRenderer().PopMatrix();
 }
@@ -1253,6 +1532,11 @@ int BMD::AddToCoinHeap(int coinIndex, int target_vertex_index)
 
     Mesh_t* m = &Meshs[meshIndex];
 
+    // DXP-20 inc4: RenderZen's Transform() defers skinning, and VertexTransform is shared scratch.
+    // Without this the heap copies whatever mesh 0 another model left there, often the hero's after
+    // its shadow or a skill effect materialized it: an opaque gold plate over the character.
+    EnsureCpuVertices(meshIndex);
+
     for (int j = 0; j < m->NumTriangles; j++)
     {
         const auto triangle = &m->Triangles[j];
@@ -1263,7 +1547,7 @@ int BMD::AddToCoinHeap(int coinIndex, int target_vertex_index)
 
             VectorCopy(VertexTransform[meshIndex][source_vertex_index], vertices[target_vertex_index]);
 
-            Vector4(BodyLight[0], BodyLight[1], BodyLight[2], alpha, colors[target_vertex_index]);
+            Vector4Set(BodyLight[0], BodyLight[1], BodyLight[2], alpha, colors[target_vertex_index]);
 
             auto texco = m->TexCoords[triangle->TexCoordIndex[k]];
             texCoords[target_vertex_index][0] = texco.TexCoordU;
@@ -1292,47 +1576,231 @@ void BMD::EndRenderCoinHeap(int coinCount)
         muVerts[static_cast<std::size_t>(i)] =
             {vertices[i][0], vertices[i][1], vertices[i][2], 0.f, 0.f, 0.f, texCoords[i][0], texCoords[i][1], color};
     }
-    mu::GetRenderer().RenderTriangles(muVerts, 0u);
+    Render::EffectDrawing::ActiveEffectDrawer().DrawQuads({.vertices = muVerts, .triangles = true});
 }
 
 void BMD::RenderMesh(int meshIndex, int renderFlags, float alpha, int blendMeshIndex, float blendMeshAlpha, float blendMeshTextureCoordU, float blendMeshTextureCoordV, int explicitTextureIndex)
 {
-    if (meshIndex >= NumMeshs || meshIndex < 0) return;
+    Render::ModelDrawing::MeshDraw draw{.model = this,
+                                        .mesh = meshIndex,
+                                        .flags = renderFlags,
+                                        .alpha = alpha,
+                                        .blendMesh = blendMeshIndex,
+                                        .blendMeshAlpha = blendMeshAlpha,
+                                        .blendMeshU = blendMeshTextureCoordU,
+                                        .blendMeshV = blendMeshTextureCoordV,
+                                        .texture = explicitTextureIndex,
+                                        .bodyScale = BodyScale,
+                                        .lightEnable = LightEnable,
+                                        .hideSkin = HideSkin,
+                                        .streamMesh = StreamMesh,
+                                        .lod = ActiveLod,
+                                        .skin = CurrentSkin()};
+    // A faded bright or chrome pass dims the model's light, and the meshes drawn after it keep the dimmed light:
+    // the look depends on it.
+    if (DimsLight(draw))
+    {
+        VectorScale(BodyLight, alpha, BodyLight);
+    }
+    VectorCopy(BodyLight, draw.bodyLight);
+    VectorCopy(BodyOrigin, draw.bodyOrigin);
+    Render::ModelDrawing::ModelDrawer& drawer = Render::ModelDrawing::ActiveModelDrawer();
+    bool readsNormals = false;
+    if (drawer.DrawsLater() && DrawsOnCpu(draw, readsNormals))
+    {
+        // Drawn later, a mesh skinned on the CPU takes what it reads now: the scratch is shared by every model. It
+        // makes only what drawing it now would make, so a later pass finds the caches as drawing at once leaves them.
+        int textureIndex = 0;
+        BITMAP_t* texture = nullptr;
+        const Mesh_t* m = DrawnMesh(draw, textureIndex, texture);
+        EnsureCpuVertices(meshIndex);
+        draw.cpu = {.vertices = VertexTransform[meshIndex], .vertexCount = m->NumVertices};
+        if (readsNormals)
+        {
+            EnsureCpuNormals(meshIndex);
+            draw.cpu.normals = NormalTransform[meshIndex];
+            draw.cpu.intensities = IntensityTransform[meshIndex];
+            draw.cpu.normalCount = m->NumNormals;
+        }
+    }
+    drawer.DrawMesh(draw);
+}
 
-    Mesh_t* m = &Meshs[meshIndex];
-    if (m->NumTriangles == 0) return;
+namespace
+{
+bool IsChromePass(int renderFlags)
+{
+    if ((renderFlags & RENDER_COLOR) == RENDER_COLOR)
+    {
+        return false;
+    }
+    return (renderFlags & RENDER_CHROME) == RENDER_CHROME || (renderFlags & RENDER_CHROME2) == RENDER_CHROME2 ||
+           (renderFlags & RENDER_CHROME3) == RENDER_CHROME3 || (renderFlags & RENDER_CHROME4) == RENDER_CHROME4 ||
+           (renderFlags & RENDER_CHROME5) == RENDER_CHROME5 || (renderFlags & RENDER_CHROME6) == RENDER_CHROME6 ||
+           (renderFlags & RENDER_CHROME7) == RENDER_CHROME7 || (renderFlags & RENDER_METAL) == RENDER_METAL ||
+           (renderFlags & RENDER_OIL) == RENDER_OIL;
+}
+
+// A chrome pass that blends additively; faded, it dims the light.
+bool IsBrightChromePass(int renderFlags)
+{
+    return (renderFlags & RENDER_CHROME3) == RENDER_CHROME3 || (renderFlags & RENDER_CHROME4) == RENDER_CHROME4 ||
+           (renderFlags & RENDER_CHROME5) == RENDER_CHROME5 || (renderFlags & RENDER_CHROME7) == RENDER_CHROME7 ||
+           (renderFlags & RENDER_BRIGHT) == RENDER_BRIGHT;
+}
+
+bool SkipsChromePass(const Mesh_t& m)
+{
+    return (m.m_csTScript != nullptr && m.m_csTScript->getNoneBlendMesh()) || m.NoneBlendMesh;
+}
+} // namespace
+
+Mesh_t* BMD::DrawnMesh(const Render::ModelDrawing::MeshDraw& draw, int& textureIndex, BITMAP_t*& texture) const
+{
+    if (draw.mesh >= NumMeshs || draw.mesh < 0)
+        return nullptr;
+
+    Mesh_t* m = &Meshs[draw.mesh];
+    if (m->NumTriangles == 0)
+        return nullptr;
+
+    textureIndex = IndexTexture[m->Texture];
+    if (textureIndex == BITMAP_HIDE)
+        return nullptr;
+    if (textureIndex == BITMAP_WATER)
+        textureIndex = BITMAP_WATER + WaterTextureNumber;
+    if (draw.texture != -1)
+        textureIndex = draw.texture;
+
+    texture = Bitmaps.GetTexture(textureIndex);
+    if ((texture->IsSkin || texture->IsHair) && draw.hideSkin)
+        return nullptr;
+    return m;
+}
+
+bool BMD::DimsLight(const Render::ModelDrawing::MeshDraw& draw) const
+{
+    if (draw.alpha >= 0.99f || !IsChromePass(draw.flags) || !IsBrightChromePass(draw.flags))
+        return false;
+    int textureIndex = 0;
+    BITMAP_t* texture = nullptr;
+    const Mesh_t* m = DrawnMesh(draw, textureIndex, texture);
+    return m != nullptr && !SkipsChromePass(*m);
+}
+
+namespace
+{
+// How DrawMesh draws a mesh: the branch its render state comes from, or None when it draws nothing.
+enum class MeshMaterial
+{
+    None,
+    Color,
+    Chrome,
+    BlendMesh,
+    Texture,
+    Bright,
+    Plain,
+};
+
+// The material of a mesh draw and the flags its vertices are made with (finalRenderFlags).
+MeshMaterial ResolveMaterial(int renderFlags, int blendMeshIndex, Mesh_t* m, const BITMAP_t* texture,
+                             int& finalRenderFlags)
+{
+    if ((renderFlags & RENDER_COLOR) == RENDER_COLOR)
+    {
+        finalRenderFlags = RENDER_COLOR;
+        return MeshMaterial::Color;
+    }
+    if ((renderFlags & RENDER_CHROME) == RENDER_CHROME || (renderFlags & RENDER_CHROME2) == RENDER_CHROME2 ||
+        (renderFlags & RENDER_CHROME3) == RENDER_CHROME3 || (renderFlags & RENDER_CHROME4) == RENDER_CHROME4 ||
+        (renderFlags & RENDER_CHROME5) == RENDER_CHROME5 || (renderFlags & RENDER_CHROME6) == RENDER_CHROME6 ||
+        (renderFlags & RENDER_CHROME7) == RENDER_CHROME7 || (renderFlags & RENDER_METAL) == RENDER_METAL ||
+        (renderFlags & RENDER_OIL) == RENDER_OIL)
+    {
+        if ((m->m_csTScript != nullptr && m->m_csTScript->getNoneBlendMesh()) || m->NoneBlendMesh)
+            return MeshMaterial::None;
+        finalRenderFlags = RENDER_CHROME;
+        if ((renderFlags & RENDER_CHROME4) == RENDER_CHROME4)
+            finalRenderFlags = RENDER_CHROME4;
+        if ((renderFlags & RENDER_OIL) == RENDER_OIL)
+            finalRenderFlags = RENDER_OIL;
+        return MeshMaterial::Chrome;
+    }
+    if (blendMeshIndex <= -2 || m->Texture == blendMeshIndex)
+    {
+        finalRenderFlags = RENDER_TEXTURE;
+        return MeshMaterial::BlendMesh;
+    }
+    if ((renderFlags & RENDER_TEXTURE) == RENDER_TEXTURE)
+    {
+        finalRenderFlags = RENDER_TEXTURE;
+        return MeshMaterial::Texture;
+    }
+    if ((renderFlags & RENDER_BRIGHT) == RENDER_BRIGHT)
+    {
+        if (texture->Components == 4 || m->Texture == blendMeshIndex)
+            return MeshMaterial::None;
+        finalRenderFlags = RENDER_BRIGHT;
+        return MeshMaterial::Bright;
+    }
+    finalRenderFlags = RENDER_TEXTURE;
+    return MeshMaterial::Plain;
+}
+
+bool HasChromeFlags(int renderFlags)
+{
+    return (renderFlags & RENDER_CHROME) || (renderFlags & RENDER_CHROME2) || (renderFlags & RENDER_CHROME3) ||
+           (renderFlags & RENDER_CHROME4) || (renderFlags & RENDER_CHROME5) || (renderFlags & RENDER_CHROME6) ||
+           (renderFlags & RENDER_CHROME7) || (renderFlags & RENDER_OIL) || (renderFlags & RENDER_METAL);
+}
+
+// Whether the CPU path lights the mesh per vertex: a lit textured draw, not the stream mesh or a blend mesh.
+bool UsesCpuLighting(const Render::ModelDrawing::MeshDraw& draw, MeshMaterial material, int finalRenderFlags)
+{
+    return draw.lightEnable && draw.mesh != draw.streamMesh && material != MeshMaterial::BlendMesh &&
+           finalRenderFlags == RENDER_TEXTURE;
+}
+
+// Whether the CPU path reads the mesh's normals (EnsureCpuNormals): for its light, its chrome or its wave.
+bool ReadsCpuNormals(const Render::ModelDrawing::MeshDraw& draw, MeshMaterial material, int finalRenderFlags)
+{
+    return UsesCpuLighting(draw, material, finalRenderFlags) || HasChromeFlags(draw.flags) ||
+           (draw.flags & RENDER_WAVE);
+}
+} // namespace
+
+bool BMD::DrawsOnCpu(const Render::ModelDrawing::MeshDraw& draw, bool& readsNormals) const
+{
+    int textureIndex = 0;
+    BITMAP_t* texture = nullptr;
+    Mesh_t* m = DrawnMesh(draw, textureIndex, texture);
+    int finalRenderFlags = draw.flags;
+    const MeshMaterial material =
+        m != nullptr ? ResolveMaterial(draw.flags, draw.blendMesh, m, texture, finalRenderFlags) : MeshMaterial::None;
+    readsNormals = ReadsCpuNormals(draw, material, finalRenderFlags);
+    return material != MeshMaterial::None && !CanGpuSkinMesh(finalRenderFlags, draw.flags, draw.skin.bones);
+}
+
+void BMD::DrawMesh(const Render::ModelDrawing::MeshDraw& draw) const
+{
+    const int meshIndex = draw.mesh;
+    const int renderFlags = draw.flags;
+    const float alpha = draw.alpha;
+    const int blendMeshIndex = draw.blendMesh;
+    const float blendMeshAlpha = draw.blendMeshAlpha;
+    const float blendMeshTextureCoordU = draw.blendMeshU;
+    const float blendMeshTextureCoordV = draw.blendMeshV;
+    const int explicitTextureIndex = draw.texture;
+    int textureIndex = 0;
+    BITMAP_t* texture = nullptr;
+    Mesh_t* m = DrawnMesh(draw, textureIndex, texture);
+    if (m == nullptr)
+        return;
 
     float wave = static_cast<long>(WorldTime) % 10000 * 0.0001f;
 
-    int textureIndex = IndexTexture[m->Texture];
-    if (textureIndex == BITMAP_HIDE)
-    {
-        return;
-    }
-
-    if (textureIndex == BITMAP_WATER)
-    {
-        textureIndex = BITMAP_WATER + WaterTextureNumber;
-    }
-
-    if (explicitTextureIndex != -1)
-    {
-        textureIndex = explicitTextureIndex;
-    }
-
-    const auto texture = Bitmaps.GetTexture(textureIndex);
-    if (texture->IsSkin && HideSkin)
-    {
-        return;
-    }
-
-    if (texture->IsHair && HideSkin)
-    {
-        return;
-    }
-
     bool EnableWave = false;
-    int streamMesh = static_cast<u_char>(this->StreamMesh);
+    int streamMesh = static_cast<u_char>(draw.streamMesh);
     if (m->m_csTScript != nullptr)
     {
         if (m->m_csTScript->getStreamMesh())
@@ -1347,12 +1815,12 @@ void BMD::RenderMesh(int meshIndex, int renderFlags, float alpha, int blendMeshI
         EnableWave = true;
     }
 
-    bool enableLight = LightEnable;
-    if (meshIndex == StreamMesh)
+    bool enableLight = draw.lightEnable;
+    if (meshIndex == draw.streamMesh)
     {
         enableLight = false;
     }
-    // DXP-20 inc4 Step C: the LightTransform-materializing loop that used to run right here
+    // The LightTransform-materializing loop that used to run right here
     // unconditionally (even for meshes that end up on the GPU-skinned draw path, which computes
     // lighting in-shader and never reads LightTransform) has moved into the
     // materializeCpuLightingAndChrome() lambda below, called only from the CPU-fallback sub-paths
@@ -1360,9 +1828,14 @@ void BMD::RenderMesh(int meshIndex, int renderFlags, float alpha, int blendMeshI
 
     int finalRenderFlags = renderFlags;
     bool useBlendMeshColor = false;
-    if ((renderFlags & RENDER_COLOR) == RENDER_COLOR)
+    // A chrome pass reflects light off the surface and is no bloom source; held until the mesh is drawn.
+    std::optional<mu::ScopedBloomExclusion> chromePass;
+    const MeshMaterial material = ResolveMaterial(renderFlags, blendMeshIndex, m, texture, finalRenderFlags);
+    switch (material)
     {
-        finalRenderFlags = RENDER_COLOR;
+    case MeshMaterial::None:
+        return;
+    case MeshMaterial::Color:
         if ((renderFlags & RENDER_BRIGHT) == RENDER_BRIGHT)
         {
             EnableAlphaBlend();
@@ -1386,41 +1859,9 @@ void BMD::RenderMesh(int meshIndex, int renderFlags, float alpha, int blendMeshI
         {
             EnableAlphaTest();
         }
-    }
-    else if ((renderFlags & RENDER_CHROME) == RENDER_CHROME ||
-        (renderFlags & RENDER_CHROME2) == RENDER_CHROME2 ||
-        (renderFlags & RENDER_CHROME3) == RENDER_CHROME3 ||
-        (renderFlags & RENDER_CHROME4) == RENDER_CHROME4 ||
-        (renderFlags & RENDER_CHROME5) == RENDER_CHROME5 ||
-        (renderFlags & RENDER_CHROME6) == RENDER_CHROME6 ||
-        (renderFlags & RENDER_CHROME7) == RENDER_CHROME7 ||
-        (renderFlags & RENDER_METAL) == RENDER_METAL ||
-        (renderFlags & RENDER_OIL) == RENDER_OIL
-        )
-    {
-        if (m->m_csTScript != nullptr)
-        {
-            if (m->m_csTScript->getNoneBlendMesh()) return;
-        }
-
-        if (m->NoneBlendMesh)
-            return;
-
-        finalRenderFlags = RENDER_CHROME;
-        if ((renderFlags & RENDER_CHROME4) == RENDER_CHROME4)
-        {
-            finalRenderFlags = RENDER_CHROME4;
-        }
-        if ((renderFlags & RENDER_OIL) == RENDER_OIL)
-        {
-            finalRenderFlags = RENDER_OIL;
-        }
-
-        // DXP-20 inc4 Step C: the g_chrome-writing loop that used to run right here unconditionally
-        // (even for the plain-RENDER_CHROME case, which IS GPU-eligible and never reads g_chrome on
-        // that path) has moved into the materializeCpuLightingAndChrome() lambda below, called only
-        // from the CPU-fallback sub-paths that actually read it.
-
+        break;
+    case MeshMaterial::Chrome:
+        chromePass.emplace();
         if ((renderFlags & RENDER_CHROME3) == RENDER_CHROME3
             || (renderFlags & RENDER_CHROME4) == RENDER_CHROME4
             || (renderFlags & RENDER_CHROME5) == RENDER_CHROME5
@@ -1428,13 +1869,7 @@ void BMD::RenderMesh(int meshIndex, int renderFlags, float alpha, int blendMeshI
             || (renderFlags & RENDER_BRIGHT) == RENDER_BRIGHT
             )
         {
-            if (alpha < 0.99f)
-            {
-                BodyLight[0] *= alpha;
-                BodyLight[1] *= alpha;
-                BodyLight[2] *= alpha;
-            }
-
+            // Faded, the pass draws with the model's light dimmed (BMD::DimsLight).
             EnableAlphaBlend();
         }
         else if ((renderFlags & RENDER_DARK) == RENDER_DARK)
@@ -1486,10 +1921,8 @@ void BMD::RenderMesh(int meshIndex, int renderFlags, float alpha, int blendMeshI
         {
             BindTexture(textureIndex);
         }
-    }
-    else if (blendMeshIndex <= -2 || m->Texture == blendMeshIndex)
-    {
-        finalRenderFlags = RENDER_TEXTURE;
+        break;
+    case MeshMaterial::BlendMesh:
         BindTexture(textureIndex);
         if ((renderFlags & RENDER_DARK) == RENDER_DARK)
             EnableAlphaBlendMinus();
@@ -1503,10 +1936,8 @@ void BMD::RenderMesh(int meshIndex, int renderFlags, float alpha, int blendMeshI
 
         useBlendMeshColor = true;
         enableLight = false;
-    }
-    else if ((renderFlags & RENDER_TEXTURE) == RENDER_TEXTURE)
-    {
-        finalRenderFlags = RENDER_TEXTURE;
+        break;
+    case MeshMaterial::Texture:
         BindTexture(textureIndex);
         if ((renderFlags & RENDER_BRIGHT) == RENDER_BRIGHT)
         {
@@ -1529,15 +1960,8 @@ void BMD::RenderMesh(int meshIndex, int renderFlags, float alpha, int blendMeshI
         {
             DisableDepthTest();
         }
-    }
-    else if ((renderFlags & RENDER_BRIGHT) == RENDER_BRIGHT)
-    {
-        if (texture->Components == 4 || m->Texture == blendMeshIndex)
-        {
-            return;
-        }
-
-        finalRenderFlags = RENDER_BRIGHT;
+        break;
+    case MeshMaterial::Bright:
         EnableAlphaBlend();
         DisableTexture();
         DisableDepthMask();
@@ -1546,10 +1970,9 @@ void BMD::RenderMesh(int meshIndex, int renderFlags, float alpha, int blendMeshI
         {
             DisableDepthTest();
         }
-    }
-    else
-    {
-        finalRenderFlags = RENDER_TEXTURE;
+        break;
+    case MeshMaterial::Plain:
+        break;
     }
     if (renderFlags & RENDER_DOPPELGANGER)
     {
@@ -1559,29 +1982,40 @@ void BMD::RenderMesh(int meshIndex, int renderFlags, float alpha, int blendMeshI
             EnableDepthMask();
         }
     }
+    if (renderFlags & RENDER_TWOSIDED)
+    {
+        DisableCullFace();
+    }
 
     const bool shadowMap = (renderFlags & RENDER_SHADOWMAP) == RENDER_SHADOWMAP;
     const float colorScale = useBlendMeshColor ? blendMeshAlpha : 1.0f;
-    const float baseAlpha = (useBlendMeshColor || meshIndex == StreamMesh) ? 1.0f : alpha;
-    const bool useChrome = (renderFlags & RENDER_CHROME) || (renderFlags & RENDER_CHROME2) ||
-                           (renderFlags & RENDER_CHROME3) || (renderFlags & RENDER_CHROME4) ||
-                           (renderFlags & RENDER_CHROME5) || (renderFlags & RENDER_CHROME6) ||
-                           (renderFlags & RENDER_CHROME7) || (renderFlags & RENDER_OIL) || (renderFlags & RENDER_METAL);
-    const bool usesCpuLighting = enableLight && finalRenderFlags == RENDER_TEXTURE;
+    const float baseAlpha = (useBlendMeshColor || meshIndex == draw.streamMesh) ? 1.0f : alpha;
+    const bool useChrome = HasChromeFlags(renderFlags);
+    const bool usesCpuLighting = UsesCpuLighting(draw, material, finalRenderFlags);
 
+    // What the CPU path draws with: what the draw took when described, else the shared scratch.
+    const vec3_t* normals = draw.cpu.normals ? draw.cpu.normals : NormalTransform[meshIndex];
+    const float* intensities = draw.cpu.intensities ? draw.cpu.intensities : IntensityTransform[meshIndex];
     auto materializeCpuDerivedData = [&]()
     {
-        if (!usesCpuLighting && !useChrome && !(renderFlags & RENDER_WAVE))
+        if (!ReadsCpuNormals(draw, material, finalRenderFlags))
         {
             return;
         }
-        EnsureCpuNormals(meshIndex);
+        if (draw.cpu.normals == nullptr)
+            EnsureCpuNormals(meshIndex);
 
         if (usesCpuLighting)
         {
+            // Lit per vertex here, so the point lights the base light leaves out come back as a whole.
+            vec3_t light;
+            VectorCopy(draw.bodyLight, light);
+            AddVertexLitDynamicLight(draw.bodyOrigin[0], draw.bodyOrigin[1], light);
+            const float knee = Render::Lighting::LightMood::Active().highlightKnee;
             for (int j = 0; j < m->NumNormals; ++j)
             {
-                VectorScale(BodyLight, IntensityTransform[meshIndex][j], LightTransform[meshIndex][j]);
+                VectorScale(light, intensities[j], LightTransform[meshIndex][j]);
+                RollOffModelLight(LightTransform[meshIndex][j], knee);
             }
         }
 
@@ -1594,7 +2028,7 @@ void BMD::RenderMesh(int meshIndex, int renderFlags, float alpha, int blendMeshI
         vec3_t light = {static_cast<float>(cos(WorldTime * 0.001f)), static_cast<float>(sin(WorldTime * 0.002f)), 1.0f};
         for (int j = 0; j < m->NumNormals && j < MAX_VERTICES; ++j)
         {
-            const auto normal = NormalTransform[meshIndex][j];
+            const auto normal = normals[j];
             if ((renderFlags & RENDER_CHROME2) == RENDER_CHROME2)
             {
                 g_chrome[j][0] = (normal[2] + normal[0]) * 0.8f + wave2 * 2.0f;
@@ -1602,19 +2036,19 @@ void BMD::RenderMesh(int meshIndex, int renderFlags, float alpha, int blendMeshI
             }
             else if ((renderFlags & RENDER_CHROME3) == RENDER_CHROME3)
             {
-                g_chrome[j][0] = DotProduct(normal, LightVector);
+                g_chrome[j][0] = VectorDotProduct(normal, LightVector);
                 g_chrome[j][1] = 1.0f - g_chrome[j][0];
             }
             else if ((renderFlags & RENDER_CHROME4) == RENDER_CHROME4)
             {
-                g_chrome[j][0] = DotProduct(normal, light);
+                g_chrome[j][0] = VectorDotProduct(normal, light);
                 g_chrome[j][1] = 1.0f - g_chrome[j][0];
                 g_chrome[j][1] -= normal[2] * 0.5f + wave * 3.0f;
                 g_chrome[j][0] += normal[1] * 0.5f + light[1] * 3.0f;
             }
             else if ((renderFlags & RENDER_CHROME5) == RENDER_CHROME5)
             {
-                g_chrome[j][0] = DotProduct(normal, light);
+                g_chrome[j][0] = VectorDotProduct(normal, light);
                 g_chrome[j][1] = 1.0f - g_chrome[j][0];
                 g_chrome[j][1] -= normal[2] * 2.5f + wave;
                 g_chrome[j][0] += normal[1] * 3.0f + light[1] * 5.0f;
@@ -1648,63 +2082,114 @@ void BMD::RenderMesh(int meshIndex, int renderFlags, float alpha, int blendMeshI
     };
 
     const std::size_t maxVertexCount = static_cast<std::size_t>(m->NumTriangles) * 3;
-    const bool gpuSkinningEligible = CanGpuSkinMesh(finalRenderFlags, renderFlags, m_pCurrentBoneTransform);
+    const Render::Models::Gltf::SkinnedModel* gltfModel = Render::Models::Gltf::SkinnedModelOf(*this);
+    const bool gpuSkinningEligible = CanGpuSkinMesh(finalRenderFlags, renderFlags, draw.skin.bones);
     bool gpuSkinningSubmitted = false;
     if (gpuSkinningEligible)
     {
-        const auto textureCoordinates = GetSkinningTextureCoordinates(renderFlags);
-        auto skinnedVertices = GetRendererSkinnedVertexScratch(maxVertexCount);
-        std::size_t skinnedVertexCount = 0;
-        for (int j = 0; j < m->NumTriangles; ++j)
+        // A coarser LOD of a model file draws its own mesh, or nothing beyond its meshes.
+        bool absentFromLod = false;
+        const Render::Models::Gltf::LodMesh* lodMesh =
+            gltfModel ? gltfModel->LodMeshFor(draw.lod, meshIndex, absentFromLod) : nullptr;
+        if (absentFromLod)
         {
-            const auto* triangle = &m->Triangles[j];
-            for (int k = 0; k < triangle->Polygon; ++k)
+            return;
+        }
+        if (lodMesh && explicitTextureIndex == -1 && finalRenderFlags == RENDER_TEXTURE)
+        {
+            const unsigned int lodTexture = gltfModel->lodTextures[draw.lod - 1][meshIndex];
+            if (lodTexture != BITMAP_UNKNOWN)
             {
-                const int vertexIndex = triangle->VertexIndex[k];
-                const int normalIndex = triangle->NormalIndex[k];
-                const auto& vertex = m->Vertices[vertexIndex];
-                const auto& normal = m->Normals[normalIndex];
-                const auto& texCoord = m->TexCoords[triangle->TexCoordIndex[k]];
-                const bool useMeshTextureCoordinates = textureCoordinates == mu::SkinningTextureCoordinates::Mesh;
-                const float u =
-                    texCoord.TexCoordU + (useMeshTextureCoordinates && EnableWave ? blendMeshTextureCoordU : 0.0f);
-                const float v =
-                    texCoord.TexCoordV + (useMeshTextureCoordinates && EnableWave ? blendMeshTextureCoordV : 0.0f);
-                const std::uint32_t color = PackABGR(BodyLight[0] * colorScale, BodyLight[1] * colorScale,
-                                                     BodyLight[2] * colorScale, baseAlpha);
-                skinnedVertices[skinnedVertexCount++] = {vertex.Position[0],
-                                                         vertex.Position[1],
-                                                         vertex.Position[2],
-                                                         normal.Normal[0],
-                                                         normal.Normal[1],
-                                                         normal.Normal[2],
-                                                         u,
-                                                         v,
-                                                         color,
-                                                         vertex.Node,
-                                                         normal.Node};
+                BindTexture(static_cast<int>(lodTexture));
             }
         }
+        const auto textureCoordinates = GetSkinningTextureCoordinates(renderFlags);
+        const bool useMeshTextureCoordinates = textureCoordinates == mu::SkinningTextureCoordinates::Mesh;
+        // A scrolling texture bakes this frame's offset into the UVs, so only the other meshes are cached.
+        const bool waveTextureCoordinates = useMeshTextureCoordinates && EnableWave;
+        const float waveU = waveTextureCoordinates ? blendMeshTextureCoordU : 0.0f;
+        const float waveV = waveTextureCoordinates ? blendMeshTextureCoordV : 0.0f;
+        const std::uint32_t color = PackABGR(draw.bodyLight[0] * colorScale, draw.bodyLight[1] * colorScale,
+                                             draw.bodyLight[2] * colorScale, baseAlpha);
+        // A model file's mesh at this LOD is packed once (Render::Models::PackedWeightedMeshOf) and cached
+        // under its vertices' address; a BMD mesh is cached under the mesh.
+        const Render::Models::Gltf::PackedMesh* packedMesh =
+            gltfModel
+                ? &Render::Models::PackedWeightedMeshOf(*gltfModel, *m, meshIndex, lodMesh ? draw.lod : 0, lodMesh)
+                : nullptr;
+        const void* cacheKey = packedMesh && !packedMesh->vertices.empty()
+                                   ? static_cast<const void*>(packedMesh->vertices.data())
+                                   : static_cast<const void*>(m);
+        auto buildWeightedVertices = [&] { return WeightedCorners(*packedMesh, waveU, waveV); };
+        auto buildSkinnedVertices = [&]() -> std::span<const mu::SkinnedVertex3D>
+        {
+            auto skinnedVertices = GetRendererSkinnedVertexScratch(maxVertexCount);
+            std::size_t skinnedVertexCount = 0;
+            for (int j = 0; j < m->NumTriangles; ++j)
+            {
+                const auto* triangle = &m->Triangles[j];
+                for (int k = 0; k < triangle->Polygon; ++k)
+                {
+                    const auto& vertex = m->Vertices[triangle->VertexIndex[k]];
+                    const auto& normal = m->Normals[triangle->NormalIndex[k]];
+                    const auto& texCoord = m->TexCoords[triangle->TexCoordIndex[k]];
+                    skinnedVertices[skinnedVertexCount++] =
+                        Render::Models::PackBmdSkinnedVertex(vertex.Position, vertex.Node, normal.Normal, normal.Node,
+                                                             texCoord.TexCoordU + waveU, texCoord.TexCoordV + waveV);
+                }
+            }
+            return skinnedVertices.first(skinnedVertexCount);
+        };
 
+        const SkinPalette palette =
+            gltfModel ? CurrentWeightedSkinPalette(*gltfModel, draw.skin)
+                      : SkinPalette{{&draw.skin.bones[0][0][0], static_cast<std::size_t>(MAX_BONES) * 12u},
+                                    draw.skin.boneVersion};
         mu::SkinningParameters skinning{
-            .boneMatrices = {&m_pCurrentBoneTransform[0][0][0], MAX_BONES * 12u},
-            .paletteVersion = g_BoneTransformVersion,
-            .bodyOrigin = {BodyOrigin[0], BodyOrigin[1], BodyOrigin[2]},
-            .bodyScale = BodyScale,
-            .boneScale = m_LastBoneScale,
-            .restPoseScale = m_LastSkinScale,
-            .lightDirection = {m_LastLightPosition[0], m_LastLightPosition[1], m_LastLightPosition[2]},
+            .boneMatrices = palette.matrices,
+            .paletteVersion = palette.version,
+            .bodyOrigin = {draw.bodyOrigin[0], draw.bodyOrigin[1], draw.bodyOrigin[2]},
+            .bodyScale = draw.bodyScale,
+            .boneScale = draw.skin.boneScale,
+            .restPoseScale = draw.skin.restPoseScale,
+            .lightDirection = {draw.skin.lightDirection[0], draw.skin.lightDirection[1], draw.skin.lightDirection[2]},
+            .highlightKnee = Render::Lighting::LightMood::Active().highlightKnee,
             .textureCoordinateOffset = {blendMeshTextureCoordU, blendMeshTextureCoordV},
             .chromeWave = wave,
             .chromeWave2 = static_cast<int>(WorldTime) % 5000 * 0.00024f - 0.4f,
             .chromeLight = {static_cast<float>(cos(WorldTime * 0.001f)), static_cast<float>(sin(WorldTime * 0.002f))},
             .chromeTimeTerm = static_cast<float>(WorldTime) * 0.00006f,
             .textureCoordinates = textureCoordinates,
-            .translate = m_LastTranslate,
+            .translate = draw.skin.translate,
             .lightEnabled = usesCpuLighting,
+            .specularStrength = texture->IsSkin || texture->IsHair ? 0.0f : SpecularStrength,
         };
-        gpuSkinningSubmitted =
-            mu::GetRenderer().RenderSkinnedTriangles(skinnedVertices.first(skinnedVertexCount), 0u, skinning);
+        // A model file's normal map (Enhanced lighting only), for draws on the mesh's own coordinates.
+        if (gltfModel && useMeshTextureCoordinates)
+        {
+            const Render::Models::Gltf::NormalMapTexture normalMap =
+                gltfModel->NormalMapTextureFor(draw.lod, meshIndex);
+            skinning.normalTextureId = normalMap.texture;
+            skinning.normalMapScale = normalMap.scale;
+        }
+        auto& renderer = mu::GetRenderer();
+        const bool cached = !waveTextureCoordinates &&
+                            (renderer.IsSkinnedMeshCached(cacheKey) ||
+                             (packedMesh ? renderer.CacheWeightedSkinnedMesh(cacheKey, buildWeightedVertices())
+                                         : renderer.CacheSkinnedMesh(cacheKey, buildSkinnedVertices())));
+        if (cached)
+        {
+            gpuSkinningSubmitted = renderer.RenderCachedSkinnedMesh(cacheKey, color, 0u, skinning);
+        }
+        else if (packedMesh)
+        {
+            gpuSkinningSubmitted =
+                renderer.RenderWeightedSkinnedTriangles(buildWeightedVertices(), color, 0u, skinning);
+        }
+        else
+        {
+            gpuSkinningSubmitted = renderer.RenderSkinnedTriangles(buildSkinnedVertices(), color, 0u, skinning);
+        }
     }
 
     const Render::Models::GpuSkinningPath skinningPath =
@@ -1721,7 +2206,12 @@ void BMD::RenderMesh(int meshIndex, int renderFlags, float alpha, int blendMeshI
     }
 
     FrameProfiler::Count(FrameProfiler::Counter::CpuSkinningIneligible);
-    EnsureCpuVertices(meshIndex);
+    const vec3_t* vertices = draw.cpu.vertices;
+    if (vertices == nullptr)
+    {
+        EnsureCpuVertices(meshIndex);
+        vertices = VertexTransform[meshIndex];
+    }
     materializeCpuDerivedData();
     auto rendererVertices = GetRendererVertexScratch(maxVertexCount);
 
@@ -1737,12 +2227,10 @@ void BMD::RenderMesh(int meshIndex, int renderFlags, float alpha, int blendMeshI
             vec3_t position;
             vec4_t colorComponents;
             vec2_t texCoord;
-            VectorCopy(VertexTransform[meshIndex][source_vertex_index], position);
-            Vector4(shadowMap ? 0.0f : BodyLight[0] * colorScale,
-                    shadowMap ? 0.0f : BodyLight[1] * colorScale,
-                    shadowMap ? 0.0f : BodyLight[2] * colorScale,
-                    baseAlpha,
-                    colorComponents);
+            VectorCopy(vertices[source_vertex_index], position);
+            Vector4Set(shadowMap ? 0.0f : draw.bodyLight[0] * colorScale,
+                       shadowMap ? 0.0f : draw.bodyLight[1] * colorScale,
+                       shadowMap ? 0.0f : draw.bodyLight[2] * colorScale, baseAlpha, colorComponents);
 
             auto texco = m->TexCoords[triangle->TexCoordIndex[k]];
             texCoord[0] = texco.TexCoordU;
@@ -1763,7 +2251,7 @@ void BMD::RenderMesh(int meshIndex, int renderFlags, float alpha, int blendMeshI
                     if (enableLight)
                     {
                         auto light = LightTransform[meshIndex][normalIndex];
-                        Vector4(light[0], light[1], light[2], alpha, colorComponents);
+                        Vector4Set(light[0], light[1], light[2], alpha, colorComponents);
                     }
 
                     break;
@@ -1791,17 +2279,17 @@ void BMD::RenderMesh(int meshIndex, int renderFlags, float alpha, int blendMeshI
             if (shadowMap)
             {
                 vec3_t pos;
-                VectorSubtract(position, BodyOrigin, pos);
+                VectorSubtract(position, draw.bodyOrigin, pos);
 
                 pos[0] += pos[2] * (pos[0] + 2000.f) / (pos[2] - 4000.f);
                 pos[2] = 5.f;
 
-                VectorAdd(pos, BodyOrigin, pos);
+                VectorAdd(pos, draw.bodyOrigin, pos);
             }
             else if ((renderFlags & RENDER_WAVE) == RENDER_WAVE)
             {
                 float time_sin = sinf((float)((int)WorldTime + source_vertex_index * 931) * 0.007f) * 28.0f;
-                float* normal = NormalTransform[meshIndex][normalIndex];
+                const float* normal = normals[normalIndex];
                 for (int iCoord = 0; iCoord < 3; ++iCoord)
                 {
                     position[iCoord] += normal[iCoord] * time_sin;
@@ -1819,345 +2307,14 @@ void BMD::RenderMesh(int meshIndex, int renderFlags, float alpha, int blendMeshI
     mu::GetRenderer().RenderTriangles(rendererVertices.first(renderedVertexCount), 0u);
 }
 
-void BMD::RenderMeshAlternative(int iRndExtFlag, int iParam, int i, int RenderFlag, float Alpha, int BlendMesh, float BlendMeshLight, float BlendMeshTexCoordU, float BlendMeshTexCoordV, int MeshTexture)
-{
-    if (i >= NumMeshs || i < 0) return;
-
-    Mesh_t* m = &Meshs[i];
-    if (m->NumTriangles == 0) return;
-    float Wave = (int)WorldTime % 10000 * 0.0001f;
-
-    int Texture = IndexTexture[m->Texture];
-    if (Texture == BITMAP_HIDE)
-        return;
-    if (MeshTexture != -1)
-        Texture = MeshTexture;
-
-    BITMAP_t* pBitmap = Bitmaps.GetTexture(Texture);
-
-    bool EnableWave = false;
-    int streamMesh = StreamMesh;
-    if (m->m_csTScript != nullptr)
-    {
-        if (m->m_csTScript->getStreamMesh())
-        {
-            streamMesh = i;
-        }
-    }
-    if ((i == BlendMesh || i == streamMesh) && (BlendMeshTexCoordU != 0.f || BlendMeshTexCoordV != 0.f))
-    {
-        EnableWave = true;
-    }
-
-    bool EnableLight = LightEnable;
-    if (i == StreamMesh)
-    {
-        EnableLight = false;
-    }
-    else if (EnableLight)
-    {
-        for (int j = 0; j < m->NumNormals; j++)
-        {
-            VectorScale(BodyLight, IntensityTransform[i][j], LightTransform[i][j]);
-        }
-    }
-
-    int Render = RenderFlag;
-    bool useBlendMeshColor = false;
-    if ((RenderFlag & RENDER_COLOR) == RENDER_COLOR)
-    {
-        Render = RENDER_COLOR;
-        if ((RenderFlag & RENDER_BRIGHT) == RENDER_BRIGHT)
-            EnableAlphaBlend();
-        else if ((RenderFlag & RENDER_DARK) == RENDER_DARK)
-            EnableAlphaBlendMinus();
-        else
-            DisableAlphaBlend();
-
-        if ((RenderFlag & RENDER_NODEPTH) == RENDER_NODEPTH)
-        {
-            DisableDepthTest();
-        }
-
-        DisableTexture();
-        if (Alpha < 0.99f)
-        {
-            EnableAlphaTest();
-        }
-    }
-    else if ((RenderFlag & RENDER_CHROME) == RENDER_CHROME ||
-        (RenderFlag & RENDER_CHROME2) == RENDER_CHROME2 ||
-        (RenderFlag & RENDER_CHROME3) == RENDER_CHROME3 ||
-        (RenderFlag & RENDER_CHROME4) == RENDER_CHROME4 ||
-        (RenderFlag & RENDER_CHROME5) == RENDER_CHROME5 ||
-        (RenderFlag & RENDER_CHROME7) == RENDER_CHROME7 ||
-        (RenderFlag & RENDER_METAL) == RENDER_METAL ||
-        (RenderFlag & RENDER_OIL) == RENDER_OIL
-        )
-    {
-        if (m->m_csTScript != nullptr)
-        {
-            if (m->m_csTScript->getNoneBlendMesh()) return;
-        }
-        if (m->NoneBlendMesh)
-            return;
-        Render = RENDER_CHROME;
-        if ((RenderFlag & RENDER_CHROME4) == RENDER_CHROME4)
-        {
-            Render = RENDER_CHROME4;
-        }
-        float Wave2 = (int)WorldTime % 5000 * 0.00024f - 0.4f;
-
-        vec3_t L = { (float)(cos(WorldTime * 0.001f)), (float)(sin(WorldTime * 0.002f)), 1.f };
-        for (int j = 0; j < m->NumNormals; j++)
-        {
-            if (j > MAX_VERTICES) break;
-            float* Normal = NormalTransform[i][j];
-
-            if ((RenderFlag & RENDER_CHROME2) == RENDER_CHROME2)
-            {
-                g_chrome[j][0] = (Normal[2] + Normal[0]) * 0.8f + Wave2 * 2.f;
-                g_chrome[j][1] = (Normal[1] + Normal[0]) * 1.0f + Wave2 * 3.f;
-            }
-            else if ((RenderFlag & RENDER_CHROME3) == RENDER_CHROME3)
-            {
-                g_chrome[j][0] = DotProduct(Normal, LightVector);
-                g_chrome[j][1] = 1.f - DotProduct(Normal, LightVector);
-            }
-            else if ((RenderFlag & RENDER_CHROME4) == RENDER_CHROME4)
-            {
-                g_chrome[j][0] = DotProduct(Normal, L);
-                g_chrome[j][1] = 1.f - DotProduct(Normal, L);
-                g_chrome[j][1] -= Normal[2] * 0.5f + Wave * 3.f;
-                g_chrome[j][0] += Normal[1] * 0.5f + L[1] * 3.f;
-            }
-            else if ((RenderFlag & RENDER_CHROME5) == RENDER_CHROME5)
-            {
-                Vector(0.1f, -0.23f, 0.22f, LightVector2);
-
-                g_chrome[j][0] = (DotProduct(Normal, LightVector2) /*+ Normal[1] + LightVector2[1]*3.f */) / 1.08f;
-                g_chrome[j][1] = (1.f - DotProduct(Normal, LightVector2) /*- Normal[2]*0.5f + 3.f */) / 1.08f;
-            }
-            else if ((RenderFlag & RENDER_CHROME6) == RENDER_CHROME6)
-            {
-                g_chrome[j][0] = (Normal[2] + Normal[0]) * 0.8f + Wave2 * 2.f;
-                g_chrome[j][1] = (Normal[1] + Normal[0]) * 1.0f + Wave2 * 3.f;
-            }
-            else if ((RenderFlag & RENDER_CHROME7) == RENDER_CHROME7)
-            {
-                Vector(0.1f, -0.23f, 0.22f, LightVector2);
-
-                g_chrome[j][0] = (DotProduct(Normal, LightVector2)) / 1.08f;
-                g_chrome[j][1] = (1.f - DotProduct(Normal, LightVector2)) / 1.08f;
-            }
-            else if ((RenderFlag & RENDER_CHROME) == RENDER_CHROME)
-            {
-                g_chrome[j][0] = Normal[2] * 0.5f + Wave;
-                g_chrome[j][1] = Normal[1] * 0.5f + Wave * 2.f;
-            }
-            else
-            {
-                g_chrome[j][0] = Normal[2] * 0.5f + 0.2f;
-                g_chrome[j][1] = Normal[1] * 0.5f + 0.5f;
-            }
-        }
-
-        if ((RenderFlag & RENDER_CHROME3) == RENDER_CHROME3
-            || (RenderFlag & RENDER_CHROME4) == RENDER_CHROME4
-            || (RenderFlag & RENDER_CHROME5) == RENDER_CHROME5
-            || (RenderFlag & RENDER_CHROME7) == RENDER_CHROME7
-            )
-        {
-            if (Alpha < 0.99f)
-            {
-                BodyLight[0] *= Alpha; BodyLight[1] *= Alpha; BodyLight[2] *= Alpha;
-            }
-            EnableAlphaBlend();
-        }
-        else if ((RenderFlag & RENDER_BRIGHT) == RENDER_BRIGHT)
-        {
-            if (Alpha < 0.99f)
-            {
-                BodyLight[0] *= Alpha; BodyLight[1] *= Alpha; BodyLight[2] *= Alpha;
-            }
-            EnableAlphaBlend();
-        }
-        else if ((RenderFlag & RENDER_DARK) == RENDER_DARK)
-            EnableAlphaBlendMinus();
-        else if ((RenderFlag & RENDER_LIGHTMAP) == RENDER_LIGHTMAP)
-            EnableLightMap();
-        else if (Alpha >= 0.99f)
-        {
-            DisableAlphaBlend();
-        }
-        else
-        {
-            EnableAlphaTest();
-        }
-
-        if ((RenderFlag & RENDER_NODEPTH) == RENDER_NODEPTH)
-        {
-            DisableDepthTest();
-        }
-
-        if ((RenderFlag & RENDER_CHROME2) == RENDER_CHROME2 && MeshTexture == -1)
-        {
-            BindTexture(BITMAP_CHROME2);
-        }
-        else if ((RenderFlag & RENDER_CHROME3) == RENDER_CHROME3 && MeshTexture == -1)
-        {
-            BindTexture(BITMAP_CHROME2);
-        }
-        else if ((RenderFlag & RENDER_CHROME4) == RENDER_CHROME4 && MeshTexture == -1)
-        {
-            BindTexture(BITMAP_CHROME2);
-        }
-        else if ((RenderFlag & RENDER_CHROME) == RENDER_CHROME && MeshTexture == -1)
-            BindTexture(BITMAP_CHROME);
-        else if ((RenderFlag & RENDER_METAL) == RENDER_METAL && MeshTexture == -1)
-            BindTexture(BITMAP_SHINY);
-        else
-            BindTexture(Texture);
-    }
-    else if (BlendMesh <= -2 || m->Texture == BlendMesh)
-    {
-        Render = RENDER_TEXTURE;
-        BindTexture(Texture);
-        if ((RenderFlag & RENDER_DARK) == RENDER_DARK)
-            EnableAlphaBlendMinus();
-        else
-            EnableAlphaBlend();
-
-        if ((RenderFlag & RENDER_NODEPTH) == RENDER_NODEPTH)
-        {
-            DisableDepthTest();
-        }
-
-        useBlendMeshColor = true;
-        EnableLight = false;
-    }
-    else if ((RenderFlag & RENDER_TEXTURE) == RENDER_TEXTURE)
-    {
-        Render = RENDER_TEXTURE;
-        BindTexture(Texture);
-        if ((RenderFlag & RENDER_BRIGHT) == RENDER_BRIGHT)
-        {
-            EnableAlphaBlend();
-        }
-        else if ((RenderFlag & RENDER_DARK) == RENDER_DARK)
-        {
-            EnableAlphaBlendMinus();
-        }
-        else if (Alpha < 0.99f || pBitmap->Components == 4)
-        {
-            EnableAlphaTest();
-        }
-        else
-        {
-            DisableAlphaBlend();
-        }
-
-        if ((RenderFlag & RENDER_NODEPTH) == RENDER_NODEPTH)
-        {
-            DisableDepthTest();
-        }
-    }
-    else if ((RenderFlag & RENDER_BRIGHT) == RENDER_BRIGHT)
-    {
-        if (pBitmap->Components == 4 || m->Texture == BlendMesh)
-        {
-            return;
-        }
-        Render = RENDER_BRIGHT;
-        EnableAlphaBlend();
-        DisableTexture();
-        DisableDepthMask();
-
-        if ((RenderFlag & RENDER_NODEPTH) == RENDER_NODEPTH)
-        {
-            DisableDepthTest();
-        }
-    }
-    else
-    {
-        Render = RENDER_TEXTURE;
-    }
-
-    auto muVerts = GetRendererVertexScratch(static_cast<std::size_t>(m->NumTriangles) * 3);
-    std::size_t vertexIndex = 0;
-    for (int j = 0; j < m->NumTriangles; j++)
-    {
-        Triangle_t* tp = &m->Triangles[j];
-        for (int k = 0; k < tp->Polygon; k++)
-        {
-            int vi = tp->VertexIndex[k];
-            int ni = tp->NormalIndex[k];
-
-            float u = 0.f;
-            float v = 0.f;
-            const float colorScale = useBlendMeshColor ? BlendMeshLight : 1.0f;
-            const float baseAlpha = (useBlendMeshColor || i == StreamMesh) ? 1.0f : Alpha;
-            std::uint32_t color = PackABGR(BodyLight[0] * colorScale, BodyLight[1] * colorScale,
-                                           BodyLight[2] * colorScale, baseAlpha);
-
-            switch (Render)
-            {
-            case RENDER_TEXTURE:
-            {
-                TexCoord_t* texp = &m->TexCoords[tp->TexCoordIndex[k]];
-                u = EnableWave ? texp->TexCoordU + BlendMeshTexCoordU : texp->TexCoordU;
-                v = EnableWave ? texp->TexCoordV + BlendMeshTexCoordV : texp->TexCoordV;
-                if (EnableLight)
-                {
-                    float* Light = LightTransform[i][ni];
-                    color = (Alpha >= 0.99f) ? PackABGR(Light[0], Light[1], Light[2], 1.f)
-                                             : PackABGR(Light[0], Light[1], Light[2], Alpha);
-                }
-                break;
-            }
-            case RENDER_CHROME:
-            {
-                u = g_chrome[ni][0];
-                v = g_chrome[ni][1];
-                color = (Alpha >= 0.99f) ? PackABGR(BodyLight[0], BodyLight[1], BodyLight[2], 1.f)
-                                         : PackABGR(BodyLight[0], BodyLight[1], BodyLight[2], Alpha);
-                break;
-            }
-            }
-            float px;
-            float py;
-            float pz;
-            if ((iRndExtFlag & RNDEXT_WAVE))
-            {
-                float fParam = static_cast<float>(static_cast<int>(WorldTime) + vi * 931) * 0.007f;
-                float fSin = sinf(fParam);
-                float* Normal = NormalTransform[i][ni];
-                px = VertexTransform[i][vi][0] + Normal[0] * fSin * 28.0f;
-                py = VertexTransform[i][vi][1] + Normal[1] * fSin * 28.0f;
-                pz = VertexTransform[i][vi][2] + Normal[2] * fSin * 28.0f;
-            }
-            else
-            {
-                px = VertexTransform[i][vi][0];
-                py = VertexTransform[i][vi][1];
-                pz = VertexTransform[i][vi][2];
-            }
-
-            float* n = NormalTransform[i][ni];
-            muVerts[vertexIndex++] = {px, py, pz, n[0], n[1], n[2], u, v, color};
-        }
-    }
-    mu::GetRenderer().RenderTriangles(muVerts.first(vertexIndex), 0u);
-}
-
-void BMD::RenderMeshEffect(int i, int iType, int iSubType, vec3_t Angle, VOID* obj)
+void BMD::SpawnMeshEffects(int i, int iType, int iSubType, vec3_t Angle, VOID* obj)
 {
     if (i >= NumMeshs || i < 0) return;
 
     Mesh_t* m = &Meshs[i];
     if (m->NumTriangles <= 0) return;
 
-    EnsureCpuVertices(i); // DXP-20 inc4: spawn-position reads below (~20 sites) need mesh i materialized
+    EnsureCpuVertices(i); // spawn-position reads below (~20 sites) need mesh i materialized
 
     vec3_t angle, Light;
     int iEffectCount = 0;
@@ -2195,7 +2352,7 @@ void BMD::RenderMeshEffect(int i, int iType, int iSubType, vec3_t Angle, VOID* o
                 }
                 else if (iSubType == 3)
                 {
-                    CreateEffect(MODEL_STONE_COFFIN + rand() % 2, VertexTransform[i][vi], angle, Light, 4);
+                    CreateEffect(MODEL_STONE_COFFIN + Random::Rand() % 2, VertexTransform[i][vi], angle, Light, 4);
                 }
                 break;
             case MODEL_GATE:
@@ -2227,21 +2384,21 @@ void BMD::RenderMeshEffect(int i, int iType, int iSubType, vec3_t Angle, VOID* o
             case MODEL_BIG_STONE_PART1:
                 if (rand_fps_check(3))
                 {
-                    CreateEffect(MODEL_BIG_STONE_PART1 + rand() % 2, VertexTransform[i][vi], angle, Light, 1);
+                    CreateEffect(MODEL_BIG_STONE_PART1 + Random::Rand() % 2, VertexTransform[i][vi], angle, Light, 1);
                 }
                 break;
 
             case MODEL_BIG_STONE_PART2:
                 if (rand_fps_check(3))
                 {
-                    CreateEffect(MODEL_BIG_STONE_PART1 + rand() % 2, VertexTransform[i][vi], angle, Light);
+                    CreateEffect(MODEL_BIG_STONE_PART1 + Random::Rand() % 2, VertexTransform[i][vi], angle, Light);
                 }
                 break;
 
             case MODEL_WALL_PART1:
                 if (rand_fps_check(3))
                 {
-                    CreateEffect(MODEL_WALL_PART1 + rand() % 2, VertexTransform[i][vi], angle, Light);
+                    CreateEffect(MODEL_WALL_PART1 + Random::Rand() % 2, VertexTransform[i][vi], angle, Light);
                 }
                 break;
 
@@ -2290,11 +2447,11 @@ void BMD::RenderMeshEffect(int i, int iType, int iSubType, vec3_t Angle, VOID* o
                     Vector(1.f, 0.8f, 0.2f, Light);
                     if ((j % 22) == 0)
                     {
-                        auto* o = (OBJECT*)obj;
+                        auto* o = static_cast<OBJECT*>(obj);
 
-                        angle[0] = -(float)(rand() % 90);
+                        angle[0] = -(float)(Random::Rand() % 90);
                         angle[1] = 0.f;
-                        angle[2] = Angle[2] + (float)(rand() % 120 - 60);
+                        angle[2] = Angle[2] + (float)(Random::Rand() % 120 - 60);
                         CreateJoint(BITMAP_JOINT_SPIRIT, VertexTransform[i][vi], o->Position, angle, 13, o, 20.f, 0, 0);
                     }
                 }
@@ -2315,310 +2472,58 @@ void BMD::RenderBody(int Flag, float Alpha, int BlendMesh, float BlendMeshLight,
 {
     if (NumMeshs == 0) return;
 
-    int iBlendMesh = BlendMesh;
     BeginRender(Alpha);
-    (void)LightEnable;
     for (int i = 0; i < NumMeshs; i++)
     {
-        iBlendMesh = BlendMesh;
-
-        Mesh_t* m = &Meshs[i];
-        if (m->m_csTScript != nullptr)
+        if (!IsMeshHidden(i, HiddenMesh))
         {
-            if (m->m_csTScript->getHiddenMesh() == false && i != HiddenMesh)
-            {
-                if (m->m_csTScript->getBright())
-                {
-                    iBlendMesh = i;
-                }
-                RenderMesh(i, Flag, Alpha, iBlendMesh, BlendMeshLight, BlendMeshTexCoordU, BlendMeshTexCoordV, Texture);
-
-                BYTE shadowType = m->m_csTScript->getShadowMesh();
-                if (shadowType == SHADOW_RENDER_COLOR)
-                {
-                    DisableAlphaBlend();
-
-                    RenderMesh(i, RENDER_COLOR | RENDER_SHADOWMAP, Alpha, iBlendMesh, BlendMeshLight, BlendMeshTexCoordU, BlendMeshTexCoordV);
-                }
-                else if (shadowType == SHADOW_RENDER_TEXTURE)
-                {
-                    DisableAlphaBlend();
-
-                    RenderMesh(i, RENDER_TEXTURE | RENDER_SHADOWMAP, Alpha, iBlendMesh, BlendMeshLight, BlendMeshTexCoordU, BlendMeshTexCoordV);
-                }
-            }
-        }
-        else
-        {
-            if (i != HiddenMesh)
-            {
-                RenderMesh(i, Flag, Alpha, iBlendMesh, BlendMeshLight, BlendMeshTexCoordU, BlendMeshTexCoordV, Texture);
-            }
+            RenderScriptedMesh(i, Flag, Alpha, BlendMesh, BlendMeshLight, BlendMeshTexCoordU, BlendMeshTexCoordV,
+                               Texture);
         }
     }
     EndRender();
 }
 
-void BMD::RenderBodyAlternative(int iRndExtFlag, int iParam, int Flag, float Alpha, int BlendMesh, float BlendMeshLight, float BlendMeshTexCoordU, float BlendMeshTexCoordV, int HiddenMesh, int Texture)
+bool BMD::IsMeshHidden(int mesh, int hiddenMesh) const
 {
-    if (NumMeshs == 0) return;
-
-    BeginRender(Alpha);
-    (void)LightEnable;
-    for (int i = 0; i < NumMeshs; i++)
-    {
-        if (i != HiddenMesh)
-        {
-            RenderMeshAlternative(iRndExtFlag, iParam, i, Flag, Alpha, BlendMesh, BlendMeshLight, BlendMeshTexCoordU, BlendMeshTexCoordV, Texture);
-        }
-    }
-    EndRender();
+    TextureScript* script = Meshs[mesh].m_csTScript;
+    return mesh == hiddenMesh || (script != nullptr && script->getHiddenMesh());
 }
 
-void BMD::RenderMeshTranslate(int i, int RenderFlag, float Alpha, int BlendMesh, float BlendMeshLight, float BlendMeshTexCoordU, float BlendMeshTexCoordV, int MeshTexture)
+bool BMD::IsMeshGlowing(int mesh, int blendMesh) const
 {
-    if (i >= NumMeshs || i < 0) return;
+    TextureScript* script = Meshs[mesh].m_csTScript;
+    return mesh == blendMesh || (script != nullptr && script->getBright());
+}
 
-    Mesh_t* m = &Meshs[i];
-    if (m->NumTriangles == 0) return;
-    float Wave = (int)WorldTime % 10000 * 0.0001f;
-
-    int Texture = IndexTexture[m->Texture];
-    if (Texture == BITMAP_HIDE)
+void BMD::RenderScriptedMesh(int mesh, int renderFlag, float alpha, int blendMesh, float blendMeshLight,
+                             float blendMeshTexCoordU, float blendMeshTexCoordV, int texture)
+{
+    TextureScript* script = Meshs[mesh].m_csTScript;
+    const int ownBlendMesh = script != nullptr && script->getBright() ? mesh : blendMesh;
+    RenderMesh(mesh, renderFlag, alpha, ownBlendMesh, blendMeshLight, blendMeshTexCoordU, blendMeshTexCoordV, texture);
+    if (script == nullptr)
+    {
         return;
-    if (Texture == BITMAP_SKIN)
-    {
-        if (HideSkin) return;
-        Texture = BITMAP_SKIN + Skin;
     }
-    else if (Texture == BITMAP_WATER)
+    const BYTE shadowType = script->getShadowMesh();
+    if (shadowType == SHADOW_RENDER_COLOR)
     {
-        Texture = BITMAP_WATER + WaterTextureNumber;
+        DisableAlphaBlend();
+        RenderMesh(mesh, RENDER_COLOR | RENDER_SHADOWMAP, alpha, ownBlendMesh, blendMeshLight, blendMeshTexCoordU,
+                   blendMeshTexCoordV);
     }
-    if (MeshTexture != -1)
-        Texture = MeshTexture;
-
-    BITMAP_t* pBitmap = Bitmaps.GetTexture(Texture);
-
-    bool EnableWave = false;
-    int streamMesh = StreamMesh;
-    if (m->m_csTScript != nullptr)
+    else if (shadowType == SHADOW_RENDER_TEXTURE)
     {
-        if (m->m_csTScript->getStreamMesh())
-        {
-            streamMesh = i;
-        }
+        DisableAlphaBlend();
+        RenderMesh(mesh, RENDER_TEXTURE | RENDER_SHADOWMAP, alpha, ownBlendMesh, blendMeshLight, blendMeshTexCoordU,
+                   blendMeshTexCoordV);
     }
-    if ((i == BlendMesh || i == streamMesh) && (BlendMeshTexCoordU != 0.f || BlendMeshTexCoordV != 0.f))
-        EnableWave = true;
-
-    bool EnableLight = LightEnable;
-    if (i == StreamMesh)
-    {
-        EnableLight = false;
-    }
-    else if (EnableLight)
-    {
-        for (int j = 0; j < m->NumNormals; j++)
-        {
-            VectorScale(BodyLight, IntensityTransform[i][j], LightTransform[i][j]);
-        }
-    }
-
-    int Render = RenderFlag;
-    bool useBlendMeshColor = false;
-    if ((RenderFlag & RENDER_COLOR) == RENDER_COLOR)
-    {
-        Render = RENDER_COLOR;
-        if ((RenderFlag & RENDER_BRIGHT) == RENDER_BRIGHT)
-            EnableAlphaBlend();
-        else if ((RenderFlag & RENDER_DARK) == RENDER_DARK)
-            EnableAlphaBlendMinus();
-        else
-            DisableAlphaBlend();
-        DisableTexture();
-    }
-    else if ((RenderFlag & RENDER_CHROME) == RENDER_CHROME
-        || (RenderFlag & RENDER_METAL) == RENDER_METAL
-        || (RenderFlag & RENDER_CHROME2) == RENDER_CHROME2
-        || (RenderFlag & RENDER_CHROME6) == RENDER_CHROME6
-        )
-    {
-        if (m->m_csTScript != nullptr)
-        {
-            if (m->m_csTScript->getNoneBlendMesh()) return;
-        }
-        if (m->NoneBlendMesh)
-            return;
-        Render = RENDER_CHROME;
-
-        float Wave2 = (int)WorldTime % 5000 * 0.00024f - 0.4f;
-
-        for (int j = 0; j < m->NumNormals; j++)
-        {
-            //			Normal_t *np = &m->Normals[j];
-            if (j > MAX_VERTICES) break;
-            float* Normal = NormalTransform[i][j];
-
-            if ((RenderFlag & RENDER_CHROME2) == RENDER_CHROME2)
-            {
-                g_chrome[j][0] = (Normal[2] + Normal[0]) * 0.8f + Wave2 * 2.f;
-                g_chrome[j][1] = (Normal[1] + Normal[0]) * 1.0f + Wave2 * 3.f;
-            }
-            else if ((RenderFlag & RENDER_CHROME) == RENDER_CHROME)
-            {
-                g_chrome[j][0] = Normal[2] * 0.5f + Wave;
-                g_chrome[j][1] = Normal[1] * 0.5f + Wave * 2.f;
-            }
-            else if ((RenderFlag & RENDER_CHROME6) == RENDER_CHROME6)
-            {
-                g_chrome[j][0] = (Normal[2] + Normal[0]) * 0.8f + Wave2 * 2.f;
-                g_chrome[j][1] = (Normal[1] + Normal[0]) * 1.0f + Wave2 * 3.f;
-            }
-            else
-            {
-                g_chrome[j][0] = Normal[2] * 0.5f + 0.2f;
-                g_chrome[j][1] = Normal[1] * 0.5f + 0.5f;
-            }
-        }
-
-        if ((RenderFlag & RENDER_BRIGHT) == RENDER_BRIGHT)
-            EnableAlphaBlend();
-        else if ((RenderFlag & RENDER_DARK) == RENDER_DARK)
-            EnableAlphaBlendMinus();
-        else if ((RenderFlag & RENDER_LIGHTMAP) == RENDER_LIGHTMAP)
-            EnableLightMap();
-        else
-            DisableAlphaBlend();
-
-        if ((RenderFlag & RENDER_CHROME2) == RENDER_CHROME2 && MeshTexture == -1)
-        {
-            BindTexture(BITMAP_CHROME2);
-        }
-        else if ((RenderFlag & RENDER_CHROME) == RENDER_CHROME && MeshTexture == -1)
-            BindTexture(BITMAP_CHROME);
-        else if ((RenderFlag & RENDER_METAL) == RENDER_METAL && MeshTexture == -1)
-            BindTexture(BITMAP_SHINY);
-        else
-            BindTexture(Texture);
-    }
-    else if (BlendMesh <= -2 || m->Texture == BlendMesh)
-    {
-        Render = RENDER_TEXTURE;
-        BindTexture(Texture);
-        if ((RenderFlag & RENDER_DARK) == RENDER_DARK)
-            EnableAlphaBlendMinus();
-        else
-            EnableAlphaBlend();
-        useBlendMeshColor = true;
-        EnableLight = false;
-    }
-    else if ((RenderFlag & RENDER_TEXTURE) == RENDER_TEXTURE)
-    {
-        Render = RENDER_TEXTURE;
-        BindTexture(Texture);
-        if ((RenderFlag & RENDER_BRIGHT) == RENDER_BRIGHT)
-        {
-            EnableAlphaBlend();
-        }
-        else if ((RenderFlag & RENDER_DARK) == RENDER_DARK)
-        {
-            EnableAlphaBlendMinus();
-        }
-        else if (Alpha < 0.99f || pBitmap->Components == 4)
-        {
-            EnableAlphaTest();
-        }
-        else
-        {
-            DisableAlphaBlend();
-        }
-    }
-    else if ((RenderFlag & RENDER_BRIGHT) == RENDER_BRIGHT)
-    {
-        if (pBitmap->Components == 4 || m->Texture == BlendMesh)
-        {
-            return;
-        }
-        Render = RENDER_BRIGHT;
-        EnableAlphaBlend();
-        DisableTexture();
-        DisableDepthMask();
-    }
-    else
-    {
-        Render = RENDER_TEXTURE;
-    }
-
-    auto muVerts = GetRendererVertexScratch(static_cast<std::size_t>(m->NumTriangles) * 3);
-    std::size_t vertexIndex = 0;
-    for (int j = 0; j < m->NumTriangles; j++)
-    {
-        vec3_t  pos;
-        Triangle_t* tp = &m->Triangles[j];
-        for (int k = 0; k < tp->Polygon; k++)
-        {
-            int vi = tp->VertexIndex[k];
-            int ni = tp->NormalIndex[k];
-
-            float u = 0.f;
-            float v = 0.f;
-            const float colorScale = useBlendMeshColor ? BlendMeshLight : 1.0f;
-            const float baseAlpha = (useBlendMeshColor || i == StreamMesh) ? 1.0f : Alpha;
-            std::uint32_t color = PackABGR(BodyLight[0] * colorScale, BodyLight[1] * colorScale,
-                                           BodyLight[2] * colorScale, baseAlpha);
-
-            switch (Render)
-            {
-            case RENDER_TEXTURE:
-            {
-                TexCoord_t* texp = &m->TexCoords[tp->TexCoordIndex[k]];
-                u = EnableWave ? texp->TexCoordU + BlendMeshTexCoordU : texp->TexCoordU;
-                v = EnableWave ? texp->TexCoordV + BlendMeshTexCoordV : texp->TexCoordV;
-                if (EnableLight)
-                {
-                    float* Light = LightTransform[i][ni];
-                    color = (Alpha >= 0.99f) ? PackABGR(Light[0], Light[1], Light[2], 1.f)
-                                             : PackABGR(Light[0], Light[1], Light[2], Alpha);
-                }
-                break;
-            }
-            case RENDER_CHROME:
-            {
-                u = g_chrome[ni][0];
-                v = g_chrome[ni][1];
-                color = (Alpha >= 0.99f) ? PackABGR(BodyLight[0], BodyLight[1], BodyLight[2], 1.f)
-                                         : PackABGR(BodyLight[0], BodyLight[1], BodyLight[2], Alpha);
-                break;
-            }
-            }
-            VectorAdd(VertexTransform[i][vi], BodyOrigin, pos);
-
-            float* n = NormalTransform[i][ni];
-            muVerts[vertexIndex++] = {pos[0], pos[1], pos[2], n[0], n[1], n[2], u, v, color};
-        }
-    }
-    mu::GetRenderer().RenderTriangles(muVerts.first(vertexIndex), 0u);
 }
 
-void BMD::RenderBodyTranslate(int Flag, float Alpha, int BlendMesh, float BlendMeshLight, float BlendMeshTexCoordU, float BlendMeshTexCoordV, int HiddenMesh, int Texture)
+__forceinline void CalcShadowPosition(vec3_t* position, const mu::ShadowProjection& projection)
 {
-    if (NumMeshs == 0) return;
-
-    BeginRender(Alpha);
-    (void)LightEnable;
-    for (int i = 0; i < NumMeshs; i++)
-    {
-        if (i != HiddenMesh)
-        {
-            RenderMeshTranslate(i, Flag, Alpha, BlendMesh, BlendMeshLight, BlendMeshTexCoordU, BlendMeshTexCoordV, Texture);
-        }
-    }
-    EndRender();
-}
-
-__forceinline void CalcShadowPosition(vec3_t* position, const vec3_t origin, const float sx, const float sy)
-{
+    const float* origin = projection.origin;
     vec3_t result;
     VectorCopy(*position, result);
 
@@ -2626,8 +2531,12 @@ __forceinline void CalcShadowPosition(vec3_t* position, const vec3_t origin, con
     // The result is the relative coordinate of the vertex to the origin.
     VectorSubtract(result, origin, result)
 
-    // scale the shadow in the x direction
-    result[0] += result[2] * (result[0] + sx) / (result[2] - sy);
+        // shear the shadow along its axis (x in Classic, where axisAngle is 0)
+        const float axis[2] = {std::cos(projection.axisAngle), std::sin(projection.axisAngle)};
+    const float along = result[0] * axis[0] + result[1] * axis[1];
+    const float shift = result[2] * (along + projection.shearX) / (result[2] - projection.shearHeight);
+    result[0] += shift * axis[0];
+    result[1] += shift * axis[1];
 
     // Add the origin again, to get the absolute coordinate of the vertex again
     VectorAdd(result, origin, result);
@@ -2639,24 +2548,24 @@ __forceinline void CalcShadowPosition(vec3_t* position, const vec3_t origin, con
     VectorCopy(result, *position);
 }
 
-__forceinline void GetClothShadowPosition(vec3_t* target, CPhysicsCloth* pCloth, const int index, const vec3_t origin, const float sx, const float sy)
+__forceinline void GetClothShadowPosition(vec3_t* target, const Render::ModelDrawing::ClothShadow& cloth,
+                                          const int index, const mu::ShadowProjection& projection)
 {
-    pCloth->GetPosition(index, target);
-    CalcShadowPosition(target, origin, sx, sy);
+    VectorCopy(cloth.points[index], *target);
+    CalcShadowPosition(target, projection);
 }
 
-void BMD::AddClothesShadowTriangles(void* pClothes, const int clothesCount, const float sx, const float sy,
-    const std::uint32_t color) const
+void BMD::AddClothesShadowTriangles(std::span<const Render::ModelDrawing::ClothShadow> clothes,
+                                    const mu::ShadowProjection& projection, const std::uint32_t color) const
 {
     auto vertices = RenderArrayVertices;
     int target_vertex_index = -1;
-    
-    for (int i = 0; i < clothesCount; i++)
+
+    for (const Render::ModelDrawing::ClothShadow& cloth : clothes)
     {
-        auto* const pCloth = &static_cast<CPhysicsCloth*>(pClothes)[i];
-        auto const columns = pCloth->GetVerticalCount();
-        auto const rows = pCloth->GetHorizontalCount();
-        
+        auto const columns = cloth.columns;
+        auto const rows = cloth.rows;
+
         for (int col = 0; col < columns - 1; ++col)
         {
             for (int row = 0; row < rows - 1; ++row)
@@ -2670,10 +2579,10 @@ void BMD::AddClothesShadowTriangles(void* pClothes, const int clothesCount, cons
 
                 vec3_t posA, posB, posC, posD;
 
-                GetClothShadowPosition(&posA, pCloth, a, BodyOrigin, sx, sy);
-                GetClothShadowPosition(&posB, pCloth, b, BodyOrigin, sx, sy);
-                GetClothShadowPosition(&posC, pCloth, c, BodyOrigin, sx, sy);
-                GetClothShadowPosition(&posD, pCloth, d, BodyOrigin, sx, sy);
+                GetClothShadowPosition(&posA, cloth, a, projection);
+                GetClothShadowPosition(&posB, cloth, b, projection);
+                GetClothShadowPosition(&posC, cloth, c, projection);
+                GetClothShadowPosition(&posD, cloth, d, projection);
 
                 // A-Triangle:
                 target_vertex_index++;
@@ -2709,8 +2618,245 @@ void BMD::AddClothesShadowTriangles(void* pClothes, const int clothesCount, cons
     mu::GetRenderer().RenderTriangles(muVerts, 0u);
 }
 
-void BMD::AddMeshShadowTriangles(const int blendMesh, const int hiddenMesh, const int startMesh,
-    const int endMesh, const float sx, const float sy, const std::uint32_t color) const
+namespace
+{
+void ProjectOntoGround(float position[3], const void* context)
+{
+    CalcShadowPosition(reinterpret_cast<vec3_t*>(position), *static_cast<const mu::ShadowProjection*>(context));
+}
+
+// The body shadow's shear axis: Classic's, or with Enhanced dynamic lights the map's shadow direction
+// (dynamic.shadowAngle, where shadows fall; the shear axis points the other way).
+float BodyShadowAxisAngle()
+{
+    if (!Render::Lighting::SunlightActive())
+    {
+        return 0.f;
+    }
+    constexpr float RadiansPerDegree = 3.14159265358979f / 180.f;
+    return (Render::Look::Value(Data::Maps::LookValue::GroundShadowAngle) + 180.f) * RadiansPerDegree;
+}
+
+// The frame's light on a shadow: its fall under the sun, how dark the flat shadow is, what the point lights cast.
+void TakeShadowLight(Render::ModelDrawing::ShadowDraw& draw)
+{
+    draw.shearX = gMapManager.InBattleCastle() ? 2500.f : 2000.f;
+    draw.axisAngle = BodyShadowAxisAngle();
+    // The sun shadow map shadows the ground itself; only the flat shadow is drawn without it, as dark
+    // as the map lets it be (dynamic.flatSunShadow: none indoors), falling away from the sun.
+    const std::optional<Render::Lighting::FrameSunDirections> sun = Render::Lighting::FrameSun();
+    if (sun)
+    {
+        constexpr float MaxFlatShadowFall = 3.0f;
+        const Render::Lighting::FlatShadowCast cast = Render::Lighting::FlatShadowFromSun(sun->sun, MaxFlatShadowFall);
+        draw.axisAngle = cast.axisAngle;
+        draw.shearX = draw.shearHeight * cast.fallPerHeight;
+    }
+    const float flatSunShadow = sun ? Render::Look::Value(Data::Maps::LookValue::FlatSunShadow) : 1.f;
+    draw.flatStrength = Render::Lighting::FlatShadowStrength(flatSunShadow, Render::Lighting::SunShadowShare());
+    // The ground's strongest point lights cast one more shadow each, away from the light.
+    const Render::Lighting::WorldDynamicLights& worldLights = Render::Lighting::FrameWorldDynamicLights();
+    if (Render::Lighting::DynamicLightsActive() && worldLights.IsPinned())
+    {
+        static_assert(std::extent_v<decltype(draw.lightCasts)> == Render::Lighting::kMaxLightShadowCasters);
+        const auto maxCasters =
+            static_cast<std::size_t>(Render::Look::Value(Data::Maps::LookValue::GroundShadowLights));
+        const Render::Lighting::LightShadowCasters casters = Render::Lighting::SelectLightShadowCasters(
+            worldLights.Selection().uniform, {draw.bodyOrigin[0], draw.bodyOrigin[1], draw.bodyOrigin[2]}, maxCasters);
+        constexpr float HalfTurn = 3.14159265358979f;
+        for (std::size_t i = 0; i < casters.count; ++i)
+        {
+            draw.lightCasts[i] = {casters.casters[i].fallAngle + HalfTurn, casters.casters[i].strength};
+        }
+        draw.lightCastCount = static_cast<int>(casters.count);
+    }
+}
+
+// Where CalcShadowPosition and skinned_shadow.vert put a body shadow.
+mu::ShadowProjection BodyShadowProjection(const Render::ModelDrawing::ShadowDraw& draw)
+{
+    const float* origin = draw.bodyOrigin;
+    return {
+        .origin = {origin[0], origin[1], origin[2]},
+        .shearX = draw.shearX,
+        .shearHeight = draw.shearHeight,
+        .axisAngle = draw.axisAngle,
+        .specialHeight = g_fSpecialHeight,
+        .terrain = SceneFlag != SERVER_LIST_SCENE && SceneFlag != WEBZEN_SCENE && SceneFlag != LOADING_SCENE,
+    };
+}
+} // namespace
+
+void BMD::ProjectWeightedShadowMesh(const Render::ModelDrawing::ShadowDraw& draw, const int mesh,
+                                    const ShadowProjection project, const void* context,
+                                    std::vector<std::array<float, 3>>& vertices,
+                                    std::vector<std::uint32_t>& indices) const
+{
+    vertices.clear();
+    indices.clear();
+    const auto* gltf = Render::Models::Gltf::SkinnedModelOf(*this);
+    if (!gltf || mesh < 0 || mesh >= NumMeshs)
+    {
+        return;
+    }
+    bool absent = false;
+    const Render::Models::Gltf::LodMesh* lodMesh = gltf->LodMeshFor(draw.lod, mesh, absent);
+    if (absent)
+    {
+        return;
+    }
+
+    if (lodMesh)
+    {
+        vertices.resize(lodMesh->vertices.size());
+        for (std::size_t v = 0; v < lodMesh->vertices.size(); ++v)
+        {
+            float* position = vertices[v].data();
+            Render::Models::Gltf::SkinnedModel::SkinPosition(lodMesh->vertices[v], draw.skin.bones, draw.skin.boneScale,
+                                                             draw.skin.restPoseScale, position);
+            // As BMD::SkinVertex finishes a skinned position.
+            if (draw.skin.translate)
+            {
+                VectorScale(position, draw.bodyScale, position);
+                VectorAdd(position, draw.bodyOrigin, position);
+            }
+            project(position, context);
+        }
+        indices.reserve(lodMesh->triangles.size() * 3);
+        for (const auto& triangle : lodMesh->triangles)
+        {
+            for (const int vertex : triangle)
+            {
+                indices.push_back(static_cast<std::uint32_t>(vertex));
+            }
+        }
+        return;
+    }
+
+    const vec3_t* positions = ShadowVertices(draw, mesh);
+    const Mesh_t& m = Meshs[mesh];
+    vertices.resize(static_cast<std::size_t>(std::max<short>(m.NumVertices, 0)));
+    for (int v = 0; v < m.NumVertices; ++v)
+    {
+        float* position = vertices[static_cast<std::size_t>(v)].data();
+        VectorCopy(positions[v], position);
+        project(position, context);
+    }
+    indices.reserve(static_cast<std::size_t>(m.NumTriangles) * 3);
+    for (int t = 0; t < m.NumTriangles; ++t)
+    {
+        const Triangle_t& triangle = m.Triangles[t];
+        for (int k = 0; k < triangle.Polygon; ++k)
+        {
+            indices.push_back(static_cast<std::uint32_t>(triangle.VertexIndex[k]));
+        }
+    }
+}
+
+void BMD::AddWeightedMeshShadowTriangles(const Render::ModelDrawing::ShadowDraw& draw, const int startMesh,
+                                         const int endMesh, const mu::ShadowProjection& projection,
+                                         const std::uint32_t color) const
+{
+    constexpr std::size_t indexReach = std::size_t{std::numeric_limits<std::uint16_t>::max()} + 1;
+    static thread_local std::vector<std::array<float, 3>> meshVertices;
+    static thread_local std::vector<std::uint32_t> meshIndices;
+    static thread_local std::vector<mu::Vertex3D> batchVertices;
+    static thread_local std::vector<std::uint16_t> batchIndices;
+    batchVertices.clear();
+    batchIndices.clear();
+    const auto shadowVertex = [color](const std::array<float, 3>& position)
+    { return mu::Vertex3D{position[0], position[1], position[2], 0.f, 0.f, 0.f, 0.f, 0.f, color}; };
+    const auto flush = []
+    {
+        if (!batchIndices.empty())
+        {
+            mu::GetRenderer().RenderIndexedTriangles(batchVertices, batchIndices, 0u);
+        }
+        batchVertices.clear();
+        batchIndices.clear();
+    };
+
+    for (int i = startMesh; i < endMesh; i++)
+    {
+        if (i == draw.hiddenMesh)
+        {
+            continue;
+        }
+        const Mesh_t* mesh = &Meshs[i];
+        if (mesh->NumTriangles <= 0 || mesh->Texture == draw.blendMesh)
+        {
+            continue;
+        }
+
+        ProjectWeightedShadowMesh(draw, i, ProjectOntoGround, &projection, meshVertices, meshIndices);
+        if (meshIndices.empty())
+        {
+            continue;
+        }
+        if (meshVertices.size() > indexReach)
+        {
+            // Beyond 16-bit indices: this mesh's corners, drawn in their place in the order.
+            flush();
+            auto corners = GetRendererVertexScratch(meshIndices.size());
+            for (std::size_t c = 0; c < meshIndices.size(); ++c)
+            {
+                corners[c] = shadowVertex(meshVertices[meshIndices[c]]);
+            }
+            mu::GetRenderer().RenderTriangles(corners, 0u);
+            continue;
+        }
+        if (batchVertices.size() + meshVertices.size() > indexReach)
+        {
+            flush();
+        }
+        const auto base = static_cast<std::uint32_t>(batchVertices.size());
+        for (const auto& position : meshVertices)
+        {
+            batchVertices.push_back(shadowVertex(position));
+        }
+        for (const std::uint32_t index : meshIndices)
+        {
+            batchIndices.push_back(static_cast<std::uint16_t>(base + index));
+        }
+    }
+    flush();
+}
+
+bool BMD::OwnsCpuVertices(const int mesh) const
+{
+    return m_SkinStamp == g_SkinStampCounter && m_CpuVertsReady[mesh];
+}
+
+bool BMD::ShadowOwnsVertices(const Render::ModelDrawing::ShadowDraw& draw, const int mesh) const
+{
+    return draw.cpu.empty() ? OwnsCpuVertices(mesh) : draw.cpu[static_cast<std::size_t>(mesh)].ownVertices;
+}
+
+const vec3_t* BMD::ShadowVertices(const Render::ModelDrawing::ShadowDraw& draw, const int mesh) const
+{
+    if (!draw.cpu.empty())
+    {
+        return draw.cpu[static_cast<std::size_t>(mesh)].vertices;
+    }
+    if (OwnsCpuVertices(mesh) || draw.skin.bones == nullptr)
+    {
+        EnsureCpuVertices(mesh);
+        return VertexTransform[mesh];
+    }
+    // Skinned apart from the scratch, as the GPU shadow leaves it: a later pass finds the cache as before the shadow.
+    // Valid until the next call on this thread.
+    static thread_local std::vector<std::array<float, 3>> skinned;
+    skinned.resize(static_cast<std::size_t>(std::max<short>(Meshs[mesh].NumVertices, 0)));
+    for (int j = 0; j < Meshs[mesh].NumVertices; j++)
+    {
+        SkinVertex(mesh, j, draw.skin, draw.bodyScale, draw.bodyOrigin, skinned[static_cast<std::size_t>(j)].data());
+    }
+    return reinterpret_cast<const vec3_t*>(skinned.data());
+}
+
+void BMD::AddMeshShadowTriangles(const Render::ModelDrawing::ShadowDraw& draw, const int blendMesh,
+                                 const int hiddenMesh, const int startMesh, const int endMesh,
+                                 const mu::ShadowProjection& projection, const std::uint32_t color) const
 {
     auto vertices = RenderArrayVertices;
     int target_vertex_index = -1;
@@ -2728,8 +2874,7 @@ void BMD::AddMeshShadowTriangles(const int blendMesh, const int hiddenMesh, cons
             continue;
         }
 
-        EnsureCpuVertices(i);
-
+        const vec3_t* positions = ShadowVertices(draw, i);
         for (int j = 0; j < mesh->NumTriangles; j++)
         {
             const auto* tp = &mesh->Triangles[j];
@@ -2738,9 +2883,9 @@ void BMD::AddMeshShadowTriangles(const int blendMesh, const int hiddenMesh, cons
                 const int source_vertex_index = tp->VertexIndex[k];
                 target_vertex_index++;
 
-                VectorCopy(VertexTransform[i][source_vertex_index], vertices[target_vertex_index]);
+                VectorCopy(positions[source_vertex_index], vertices[target_vertex_index]);
 
-                CalcShadowPosition(&vertices[target_vertex_index], BodyOrigin, sx, sy);
+                CalcShadowPosition(&vertices[target_vertex_index], projection);
             }
         }
     }
@@ -2760,15 +2905,220 @@ void BMD::AddMeshShadowTriangles(const int blendMesh, const int hiddenMesh, cons
     mu::GetRenderer().RenderTriangles(muVerts, 0u);
 }
 
+bool BMD::RenderGpuMeshShadow(const Render::ModelDrawing::ShadowDraw& draw, const int startMesh, const int endMesh,
+                              const mu::ShadowProjection& projection, const std::uint32_t color) const
+{
+    if (!draw.skin.bones || startMesh < 0 || endMesh > NumMeshs || endMesh > MAX_MESH)
+    {
+        return false;
+    }
+
+    const auto drawn = [&](int i)
+    { return i != draw.hiddenMesh && Meshs[i].NumTriangles > 0 && Meshs[i].Texture != draw.blendMesh; };
+    for (int i = startMesh; i < endMesh; i++)
+    {
+        // Already skinned this frame, maybe at another BodyOrigin, or written by the cloth simulation: the CPU
+        // shadow draws those positions.
+        if (drawn(i) && ShadowOwnsVertices(draw, i))
+        {
+            return false;
+        }
+    }
+
+    auto& renderer = mu::GetRenderer();
+    if (!renderer.SetTerrainHeights({BackTerrainHeight, Render::kTerrainCells}, {TerrainWall, Render::kTerrainCells},
+                                    TerrainHeightVersion()))
+    {
+        return false;
+    }
+
+    const auto stream =
+        ShadowStreams()
+            .try_emplace({reinterpret_cast<std::uintptr_t>(this), startMesh, endMesh, draw.hiddenMesh, draw.blendMesh})
+            .first;
+    const void* key = &*stream;
+    if (!renderer.IsSkinnedMeshCached(key))
+    {
+        std::size_t vertexCount = 0;
+        for (int i = startMesh; i < endMesh; i++)
+        {
+            for (int j = 0; drawn(i) && j < Meshs[i].NumTriangles; j++)
+            {
+                vertexCount += static_cast<std::size_t>(Meshs[i].Triangles[j].Polygon);
+            }
+        }
+
+        auto vertices = GetRendererSkinnedVertexScratch(vertexCount);
+        std::size_t count = 0;
+        for (int i = startMesh; i < endMesh; i++)
+        {
+            const Mesh_t* mesh = &Meshs[i];
+            for (int j = 0; drawn(i) && j < mesh->NumTriangles; j++)
+            {
+                const auto* tp = &mesh->Triangles[j];
+                for (int k = 0; k < tp->Polygon; k++)
+                {
+                    const auto& vertex = mesh->Vertices[tp->VertexIndex[k]];
+                    vertices[count++] = {vertex.Position[0], vertex.Position[1], vertex.Position[2], 0.f, 0.f, 0.f,
+                                         0.f, 0.f, vertex.Node, -1};
+                }
+            }
+        }
+        if (!renderer.CacheSkinnedMesh(key, vertices.first(count)))
+        {
+            return false;
+        }
+    }
+
+    // What EnsureCpuVertices() would skin with now.
+    const mu::SkinningParameters skinning{
+        .boneMatrices = {&draw.skin.bones[0][0][0], MAX_BONES * 12u},
+        .paletteVersion = draw.skin.boneVersion,
+        .bodyOrigin = {draw.bodyOrigin[0], draw.bodyOrigin[1], draw.bodyOrigin[2]},
+        .bodyScale = draw.bodyScale,
+        .boneScale = draw.skin.boneScale,
+        .restPoseScale = draw.skin.restPoseScale,
+        .translate = draw.skin.translate,
+    };
+    return renderer.RenderCachedSkinnedShadow(key, color, skinning, projection);
+}
+
+void BMD::RenderWeightedMeshShadow(const Render::ModelDrawing::ShadowDraw& draw, const int startMesh, const int endMesh,
+                                   const mu::ShadowProjection& projection, const std::uint32_t color) const
+{
+    const auto* gltf = Render::Models::Gltf::SkinnedModelOf(*this);
+    auto& renderer = mu::GetRenderer();
+    if (!gltf || !draw.skin.bones || startMesh < 0 || endMesh > NumMeshs || endMesh > MAX_MESH ||
+        !renderer.SetTerrainHeights({BackTerrainHeight, Render::kTerrainCells}, {TerrainWall, Render::kTerrainCells},
+                                    TerrainHeightVersion()))
+    {
+        AddWeightedMeshShadowTriangles(draw, startMesh, endMesh, projection, color);
+        return;
+    }
+
+    // What the body draw skins with (BMD::RenderMesh).
+    const SkinPalette palette = CurrentWeightedSkinPalette(*gltf, draw.skin);
+    const mu::SkinningParameters skinning{
+        .boneMatrices = palette.matrices,
+        .paletteVersion = palette.version,
+        .bodyOrigin = {draw.bodyOrigin[0], draw.bodyOrigin[1], draw.bodyOrigin[2]},
+        .bodyScale = draw.bodyScale,
+        .boneScale = draw.skin.boneScale,
+        .restPoseScale = draw.skin.restPoseScale,
+        .translate = draw.skin.translate,
+    };
+    for (int i = startMesh; i < endMesh; i++)
+    {
+        if (i == draw.hiddenMesh || Meshs[i].NumTriangles <= 0 || Meshs[i].Texture == draw.blendMesh)
+        {
+            continue;
+        }
+        bool absent = false;
+        const Render::Models::Gltf::LodMesh* lodMesh = gltf->LodMeshFor(draw.lod, i, absent);
+        if (absent)
+        {
+            continue;
+        }
+        // As RenderGpuMeshShadow: CPU vertices already skinned this frame draw their own shadow.
+        if (!lodMesh && ShadowOwnsVertices(draw, i))
+        {
+            AddWeightedMeshShadowTriangles(draw, i, i + 1, projection, color);
+            continue;
+        }
+
+        const auto& packed = Render::Models::PackedWeightedMeshOf(*gltf, Meshs[i], i, lodMesh ? draw.lod : 0, lodMesh);
+        const void* key = packed.vertices.data();
+        const bool cached =
+            !packed.vertices.empty() && (renderer.IsSkinnedMeshCached(key) ||
+                                         renderer.CacheWeightedSkinnedMesh(key, WeightedCorners(packed, 0.f, 0.f)));
+        if (!cached || !renderer.RenderCachedSkinnedShadow(key, color, skinning, projection))
+        {
+            AddWeightedMeshShadowTriangles(draw, i, i + 1, projection, color);
+        }
+    }
+}
+
 void BMD::RenderBodyShadow(const int blendMesh, const int hiddenMesh, const int startMeshNumber,
     const int endMeshNumber, void* pClothes, const int clothesCount, const float alpha)
 {
-    if (!g_pOption->GetRenderAllEffects())
+    Render::ModelDrawing::ShadowDraw draw{.model = this,
+                                          .blendMesh = blendMesh,
+                                          .hiddenMesh = hiddenMesh,
+                                          .startMesh = startMeshNumber,
+                                          .endMesh = endMeshNumber,
+                                          .alpha = alpha,
+                                          .bodyScale = BodyScale,
+                                          .lod = ActiveLod,
+                                          .skin = CurrentSkin()};
+    VectorCopy(BodyOrigin, draw.bodyOrigin);
+    TakeShadowLight(draw);
+    // The cloth's points as plain data: the draw reads no simulation, and a drawer that draws later copies them.
+    static thread_local std::vector<Render::ModelDrawing::ClothShadow> clothes;
+    static thread_local std::vector<std::array<float, 3>> clothPoints;
+    if (clothesCount > 0)
+    {
+        auto* const cloths = static_cast<const CPhysicsCloth*>(pClothes);
+        std::size_t total = 0;
+        for (int i = 0; i < clothesCount; i++)
+            total += static_cast<std::size_t>(std::max(cloths[i].GetNumVertices(), 0));
+        clothPoints.resize(total);
+        clothes.clear();
+        std::size_t next = 0;
+        for (int i = 0; i < clothesCount; i++)
+        {
+            auto* const points = reinterpret_cast<float (*)[3]>(clothPoints.data() + next);
+            for (int j = 0; j < cloths[i].GetNumVertices(); j++)
+            {
+                cloths[i].GetPosition(j, &points[j]);
+            }
+            clothes.push_back(
+                {.points = points, .columns = cloths[i].GetVerticalCount(), .rows = cloths[i].GetHorizontalCount()});
+            next += static_cast<std::size_t>(std::max(cloths[i].GetNumVertices(), 0));
+        }
+        draw.clothes = clothes;
+    }
+    Render::ModelDrawing::ModelDrawer& drawer = Render::ModelDrawing::ActiveModelDrawer();
+    if (drawer.DrawsLater() && clothesCount == 0 && draw.skin.bones != nullptr)
+    {
+        // Drawn later, the shadow takes the vertices it casts now, as drawing it now would find them.
+        static thread_local std::vector<Render::ModelDrawing::CpuShadowMesh> meshes;
+        static thread_local std::vector<std::array<float, 3>> positions;
+        const auto [startMesh, endMesh] = ResolveMeshRange(NumMeshs, startMeshNumber, endMeshNumber);
+        const auto casts = [&](int i)
+        { return i != hiddenMesh && Meshs[i].NumTriangles > 0 && Meshs[i].Texture != blendMesh; };
+        std::size_t total = 0;
+        for (int i = startMesh; i < endMesh; i++)
+            total += casts(i) ? static_cast<std::size_t>(std::max<short>(Meshs[i].NumVertices, 0)) : 0u;
+        positions.resize(total);
+        meshes.assign(static_cast<std::size_t>(NumMeshs), {});
+        std::size_t next = 0;
+        for (int i = startMesh; i < endMesh; i++)
+        {
+            if (!casts(i))
+                continue;
+            auto* taken = reinterpret_cast<float (*)[3]>(positions.data() + next);
+            const vec3_t* cast = ShadowVertices(draw, i);
+            for (int j = 0; j < Meshs[i].NumVertices; j++)
+            {
+                VectorCopy(cast[j], taken[j]);
+            }
+            meshes[static_cast<std::size_t>(i)] = {
+                .vertices = taken, .vertexCount = Meshs[i].NumVertices, .ownVertices = OwnsCpuVertices(i)};
+            next += static_cast<std::size_t>(Meshs[i].NumVertices);
+        }
+        draw.cpu = meshes;
+    }
+    drawer.DrawShadow(draw);
+}
+
+void BMD::DrawShadow(const Render::ModelDrawing::ShadowDraw& draw) const
+{
+    if (!ModelShadowsEnabled())
     {
         return;
     }
 
-    if (NumMeshs == 0 && clothesCount == 0)
+    if (NumMeshs == 0 && draw.clothes.empty())
     {
         return;
     }
@@ -2779,19 +3129,38 @@ void BMD::RenderBodyShadow(const int blendMesh, const int hiddenMesh, const int 
     DisableDepthMask();
     BeginRender(1.f);
 
-    const auto [startMesh, endMesh] = ResolveMeshRange(NumMeshs, startMeshNumber, endMeshNumber);
+    const auto [startMesh, endMesh] = ResolveMeshRange(NumMeshs, draw.startMesh, draw.endMesh);
 
-    const float sx = gMapManager.InBattleCastle() ? 2500.f : 2000.f;
-    const float sy = 4000.f;
-    const std::uint32_t shadowColor = PackABGR(0.f, 0.f, 0.f, std::clamp(alpha, 0.f, 1.f));
-
-    if (clothesCount == 0)
+    mu::ShadowProjection projection = BodyShadowProjection(draw);
+    const auto drawShadow = [&](float shadowAlpha)
     {
-        AddMeshShadowTriangles(blendMesh, hiddenMesh, startMesh, endMesh, sx, sy, shadowColor);
+        const std::uint32_t shadowColor = PackABGR(0.f, 0.f, 0.f, std::clamp(shadowAlpha, 0.f, 1.f));
+        if (!draw.clothes.empty())
+        {
+            AddClothesShadowTriangles(draw.clothes, projection, shadowColor);
+        }
+        else if (Render::Models::Gltf::SkinnedModelOf(*this))
+        {
+            RenderWeightedMeshShadow(draw, startMesh, endMesh, projection, shadowColor);
+        }
+        else if (!RenderGpuMeshShadow(draw, startMesh, endMesh, projection, shadowColor))
+        {
+            AddMeshShadowTriangles(draw, draw.blendMesh, draw.hiddenMesh, startMesh, endMesh, projection, shadowColor);
+        }
+    };
+    if (draw.flatStrength > 0.f)
+    {
+        const mu::ScopedGroundShadow groundShadow;
+        drawShadow(draw.alpha * draw.flatStrength);
     }
-    else
+    if (draw.lightCastCount > 0)
     {
-        AddClothesShadowTriangles(pClothes, clothesCount, sx, sy, shadowColor);
+        const mu::ScopedGroundShadow lightShadow(mu::GroundShadowSource::PointLight);
+        for (int i = 0; i < draw.lightCastCount; ++i)
+        {
+            projection.axisAngle = draw.lightCasts[i].axisAngle;
+            drawShadow(draw.alpha * draw.lightCasts[i].strength);
+        }
     }
 
     EndRender();
@@ -2857,62 +3226,116 @@ void BMD::RenderObjectBoundingBox()
     DisableAlphaBlend();
 }
 
-void BMD::RenderBone(float(*BoneMatrix)[3][4])
+void BMD::ShareFrom(BMD& owner)
 {
-    DisableTexture();
-    mu::GetRenderer().SetDepthFunc(GL_ALWAYS);
-
-    constexpr std::uint32_t boneColor = 0xFF33CCCCu;
-    auto allLines = GetRendererVertexScratch(static_cast<std::size_t>(NumBones) * 6);
-    std::size_t vertexIndex = 0;
-
-    for (int i = 0; i < NumBones; i++)
+    if (&owner == this || owner.Meshs == nullptr)
     {
-        Bone_t* b = &Bones[i];
-        if (!b->Dummy)
-        {
-            BoneMatrix_t* bm = &b->BoneMatrixes[CurrentAction];
-            int Parent = b->Parent;
-            if (Parent > 0)
-            {
-                float Scale = 1.f;
-                float dx = bm->Position[CurrentAnimationFrame][0];
-                float dy = bm->Position[CurrentAnimationFrame][1];
-                float dz = bm->Position[CurrentAnimationFrame][2];
-                Scale = sqrtf(dx * dx + dy * dy + dz * dz) * 0.05f;
-                vec3_t Position[3];
-                Vector(0.f, 0.f, -Scale, Position[0]);
-                Vector(0.f, 0.f, Scale, Position[1]);
-                Vector(0.f, 0.f, 0.f, Position[2]);
-                vec3_t BoneVertices[3];
-                VectorTransform(Position[0], BoneMatrix[Parent], BoneVertices[0]);
-                VectorTransform(Position[1], BoneMatrix[Parent], BoneVertices[1]);
-                VectorTransform(Position[2], BoneMatrix[i], BoneVertices[2]);
-                for (auto& BoneVertice : BoneVertices)
-                {
-                    VectorMA(BodyOrigin, BodyScale, BoneVertice, BoneVertice);
-                }
-                auto MakeVtx = [&](const vec3_t& pos) -> mu::Vertex3D
-                { return {pos[0], pos[1], pos[2], 0.f, 0.f, 1.f, 0.f, 0.f, boneColor}; };
-                allLines[vertexIndex++] = MakeVtx(BoneVertices[0]);
-                allLines[vertexIndex++] = MakeVtx(BoneVertices[1]);
-                allLines[vertexIndex++] = MakeVtx(BoneVertices[1]);
-                allLines[vertexIndex++] = MakeVtx(BoneVertices[2]);
-                allLines[vertexIndex++] = MakeVtx(BoneVertices[2]);
-                allLines[vertexIndex++] = MakeVtx(BoneVertices[0]);
-            }
-        }
+        return;
     }
-    if (vertexIndex != 0)
+    Release();
+    if (!owner.m_sharedDataUsers)
     {
-        mu::GetRenderer().RenderLines(allLines.first(vertexIndex), 0u);
+        owner.m_sharedDataUsers = std::make_shared<char>();
     }
+    m_sharedDataUsers = owner.m_sharedDataUsers;
+    // What Open2 reads from the file; the rest is this slot's own.
+    memcpy(Name, owner.Name, sizeof(Name));
+    Version = owner.Version;
+    NumMeshs = owner.NumMeshs;
+    NumBones = owner.NumBones;
+    NumActions = owner.NumActions;
+    Meshs = owner.Meshs;
+    Bones = owner.Bones;
+    Actions = owner.Actions;
+    Textures = owner.Textures;
+    IndexTexture = owner.IndexTexture;
+    GltfModel = owner.GltfModel;
+    m_bSharedData = true;
+    // What Init sets for this slot; the bounding boxes of the bones are the owner's.
+    renderCount = 0;
+    BoneHead = -1;
+    StreamMesh = -1;
+    m_bCompletedAlloc = true;
+}
 
-    mu::GetRenderer().SetDepthFunc(GL_LEQUAL);
+void BMD::SwapData(BMD& other)
+{
+    if (&other == this)
+    {
+        return;
+    }
+    // They were built from the meshes each slot had.
+    ReleaseShadowStreams();
+    other.ReleaseShadowStreams();
+    std::swap(Name, other.Name);
+    std::swap(Version, other.Version);
+    std::swap(NumMeshs, other.NumMeshs);
+    std::swap(NumBones, other.NumBones);
+    std::swap(NumActions, other.NumActions);
+    std::swap(Meshs, other.Meshs);
+    std::swap(Bones, other.Bones);
+    std::swap(Actions, other.Actions);
+    std::swap(Textures, other.Textures);
+    std::swap(IndexTexture, other.IndexTexture);
+    std::swap(GltfModel, other.GltfModel);
+    m_boneLookup.clear();
+    m_boneLookupBones = nullptr;
+    m_boneLookupBoneCount = 0;
+    other.m_boneLookup.clear();
+    other.m_boneLookupBones = nullptr;
+    other.m_boneLookupBoneCount = 0;
+    std::swap(m_bSharedData, other.m_bSharedData);
+    std::swap(m_sharedDataUsers, other.m_sharedDataUsers);
+    std::swap(m_bCompletedAlloc, other.m_bCompletedAlloc);
+}
+
+long BMD::GetDataUserCount() const
+{
+    if (m_sharedDataUsers)
+    {
+        return m_sharedDataUsers.use_count();
+    }
+    return Meshs != nullptr ? 1 : 0;
+}
+
+void BMD::ReleaseShadowStreams()
+{
+    auto& shadowStreams = ShadowStreams();
+    const auto self = reinterpret_cast<std::uintptr_t>(this);
+    for (auto stream = shadowStreams.lower_bound({self, INT_MIN, INT_MIN, INT_MIN, INT_MIN});
+         stream != shadowStreams.end() && std::get<0>(stream->first) == self;)
+    {
+        mu::GetRenderer().ReleaseSkinnedMesh(&*stream);
+        stream = shadowStreams.erase(stream);
+    }
 }
 
 void BMD::Release()
 {
+    ReleaseShadowStreams();
+
+    const bool othersUseTheData = m_sharedDataUsers && m_sharedDataUsers.use_count() > 1;
+    m_sharedDataUsers.reset();
+    GltfModel.reset();
+    m_boneLookup.clear();
+    m_boneLookupBones = nullptr;
+    m_boneLookupBoneCount = 0;
+    if (othersUseTheData)
+    {
+        // The last slot that uses the data frees it.
+        Meshs = nullptr;
+        Bones = nullptr;
+        Actions = nullptr;
+        Textures = nullptr;
+        IndexTexture = nullptr;
+        NumBones = 0;
+        NumActions = 0;
+        NumMeshs = 0;
+        m_bSharedData = false;
+        m_bCompletedAlloc = false;
+        return;
+    }
+
     if (Bones)
     {
         for (int i = 0; i < NumBones; ++i)
@@ -2965,6 +3388,7 @@ void BMD::Release()
         {
             Mesh_t* m = &Meshs[i];
 
+            mu::GetRenderer().ReleaseSkinnedMesh(m);
             if (m->Vertices) { delete[] m->Vertices; m->Vertices = nullptr; }
             if (m->Normals) { delete[] m->Normals; m->Normals = nullptr; }
             if (m->TexCoords) { delete[] m->TexCoords; m->TexCoords = nullptr; }
@@ -2996,10 +3420,8 @@ void BMD::Release()
     NumBones = 0;
     NumActions = 0;
     NumMeshs = 0;
-
-#ifdef LDS_FIX_SETNULLALLOCVALUE_WHEN_BMDRELEASE
+    m_bSharedData = false;
     m_bCompletedAlloc = false;
-#endif
 }
 
 void BMD::FindNearTriangle()
@@ -3126,6 +3548,36 @@ static void ClampBoneIndicesToModel(Mesh_t& mesh, int numBones, const wchar_t* m
     }
 }
 
+namespace
+{
+// Decrypts the payload of a version 14 model, which follows the int32 payload size at ptr, in place.
+// On success, ptr points to the decrypted model data.
+bool DecryptModulusBody(unsigned char* fileData, int fileSize, int& ptr)
+{
+    std::int32_t payloadSize = 0;
+    if (fileSize - ptr < static_cast<int>(sizeof(payloadSize)))
+    {
+        return false;
+    }
+
+    std::memcpy(&payloadSize, fileData + ptr, sizeof(payloadSize));
+    const int payloadStart = ptr + static_cast<int>(sizeof(payloadSize));
+    if (payloadSize < 0 || payloadSize > fileSize - payloadStart)
+    {
+        return false;
+    }
+
+    if (!Render::Models::BmdModulusCipher::DecryptInPlace(fileData + payloadStart,
+                                                          static_cast<std::size_t>(payloadSize)))
+    {
+        return false;
+    }
+
+    ptr = payloadStart + static_cast<int>(Render::Models::BmdModulusCipher::BodyOffset);
+    return true;
+}
+} // namespace
+
 bool BMD::Open2(const wchar_t* DirName, const wchar_t* ModelFileName, bool bReAlloc)
 {
     if (m_bCompletedAlloc)
@@ -3158,13 +3610,15 @@ bool BMD::Open2(const wchar_t* DirName, const wchar_t* ModelFileName, bool bReAl
         return false;
     }
 
-    fread(fileData.get(), 1, dataSize, fp);
+    const size_t bytesRead = fread(fileData.get(), 1, dataSize, fp);
     fclose(fp);
 
-    // *** Check the "BMD" header ***
-    if (!(fileData[0] == 'B' && fileData[1] == 'M' && fileData[2] == 'D'))
+    // *** Check the "BMD" header *** (and its version byte); a file cut short has neither.
+    constexpr int HeaderSize = 4;
+    if (dataSize < HeaderSize || bytesRead != static_cast<size_t>(dataSize) ||
+        !(fileData[0] == 'B' && fileData[1] == 'M' && fileData[2] == 'D'))
     {
-        wprintf(L"[Open2] ERROR: Invalid file header (expected 'BMD') in file %.64s\n", ModelPath);
+        wprintf(L"[Open2] ERROR: Invalid file header (expected 'BMD') in file %.64ls\n", ModelPath);
         m_bCompletedAlloc = false;
         return false;
     }
@@ -3179,8 +3633,23 @@ bool BMD::Open2(const wchar_t* DirName, const wchar_t* ModelFileName, bool bReAl
         //// wprintf(L"[Open2] Version: %d\n", Version);
         // The on-disk size field is 32-bit; `long` is 8 bytes on LP64 (Linux
         // x64), which would read past the field and produce a garbage size.
-        std::int32_t encSize = *(std::int32_t*)(fileData.get() + ptr); ptr += sizeof(std::int32_t);
-        unsigned char* encData = fileData.get() + ptr;
+        std::int32_t encSize = 0;
+        // The size field and then no more than the bytes after it, as for version 14.
+        if (dataSize - ptr < static_cast<int>(sizeof(encSize)))
+        {
+            wprintf(L"[Open2] ERROR: Version 12 model without its size in %.64ls\n", ModelPath);
+            m_bCompletedAlloc = false;
+            return false;
+        }
+        std::memcpy(&encSize, &fileData[ptr], sizeof(encSize));
+        ptr += sizeof(std::int32_t);
+        if (encSize < 0 || encSize > dataSize - ptr)
+        {
+            wprintf(L"[Open2] ERROR: Invalid version 12 model size in %.64ls\n", ModelPath);
+            m_bCompletedAlloc = false;
+            return false;
+        }
+        unsigned char* encData = &fileData[ptr];
         //// wprintf(L"[Open2] Encrypted Size: %ld\n", encSize);
 
         long decSize = MapFileDecrypt(nullptr, encData, encSize);
@@ -3198,9 +3667,12 @@ bool BMD::Open2(const wchar_t* DirName, const wchar_t* ModelFileName, bool bReAl
     }
     else if (Version == 0xE)
     {
-        wprintf(L"[Open2] Version: %d\n, not yet supported. File: %.64s\n", Version, ModelPath);
-        // FIXME FOR NEW MAPS 
-        // DECRYPT KEY: webzen#@!01webzen#@!01webzen#@!0
+        if (!DecryptModulusBody(fileData.get(), dataSize, ptr))
+        {
+            wprintf(L"[Open2] ERROR: Invalid version 14 model data in %.64ls\n", ModelPath);
+            m_bCompletedAlloc = false;
+            return false;
+        }
     }
     else if (Version == 0xA)
     {
@@ -3209,7 +3681,7 @@ bool BMD::Open2(const wchar_t* DirName, const wchar_t* ModelFileName, bool bReAl
     }
     else
     {
-        wprintf(L"[Open2] Unknown BMD version: %ld\n in %.64s\n", Version, ModelPath);
+        wprintf(L"[Open2] Unknown BMD version: %d\n in %.64ls\n", static_cast<int>(Version), ModelPath);
         m_bCompletedAlloc = false;
         return false;
     }
@@ -3225,9 +3697,12 @@ bool BMD::Open2(const wchar_t* DirName, const wchar_t* ModelFileName, bool bReAl
         // wprintf(L"[Open2] WARNING: Invalid file extension: %.64hs in %.64s\n", Name, ModelPath);
     }
 
-    NumMeshs = *(short*)(data + ptr); ptr += sizeof(short);
-    NumBones = *(short*)(data + ptr); ptr += sizeof(short);
-    NumActions = *(short*)(data + ptr); ptr += sizeof(short);
+    NumMeshs = *reinterpret_cast<short*>(data + ptr);
+    ptr += sizeof(short);
+    NumBones = *reinterpret_cast<short*>(data + ptr);
+    ptr += sizeof(short);
+    NumActions = *reinterpret_cast<short*>(data + ptr);
+    ptr += sizeof(short);
 
     assert(NumBones <= MAX_BONES && "Bones 200");
     //// wprintf(L"[Open2] Model: %.32hs | Meshes: %d | Bones: %d | Actions: %d\n", Name, NumMeshs, NumBones, NumActions);
@@ -3252,11 +3727,16 @@ bool BMD::Open2(const wchar_t* DirName, const wchar_t* ModelFileName, bool bReAl
     for (int i = 0; i < NumMeshs; ++i)
     {
         Mesh_t& m = Meshs[i];
-        m.NumVertices = *(short*)(data + ptr); ptr += sizeof(short);
-        m.NumNormals = *(short*)(data + ptr); ptr += sizeof(short);
-        m.NumTexCoords = *(short*)(data + ptr); ptr += sizeof(short);
-        m.NumTriangles = *(short*)(data + ptr); ptr += sizeof(short);
-        m.Texture = *(short*)(data + ptr); ptr += sizeof(short);
+        m.NumVertices = *reinterpret_cast<short*>(data + ptr);
+        ptr += sizeof(short);
+        m.NumNormals = *reinterpret_cast<short*>(data + ptr);
+        ptr += sizeof(short);
+        m.NumTexCoords = *reinterpret_cast<short*>(data + ptr);
+        ptr += sizeof(short);
+        m.NumTriangles = *reinterpret_cast<short*>(data + ptr);
+        ptr += sizeof(short);
+        m.Texture = *reinterpret_cast<short*>(data + ptr);
+        ptr += sizeof(short);
         m.NoneBlendMesh = false;
 
         //// wprintf(L"[Open2] Mesh[%d] V:%d N:%d T:%d Tri:%d Tex:%d\n", i, m.NumVertices, m.NumNormals, m.NumTexCoords, m.NumTriangles, m.Texture);
@@ -3295,8 +3775,10 @@ bool BMD::Open2(const wchar_t* DirName, const wchar_t* ModelFileName, bool bReAl
     {
         Action_t& a = Actions[i];
         a.Loop = false;
-        a.NumAnimationKeys = *(short*)(data + ptr); ptr += sizeof(short);
-        a.LockPositions = *(bool*)(data + ptr);  ptr += sizeof(bool);
+        a.NumAnimationKeys = *reinterpret_cast<short*>(data + ptr);
+        ptr += sizeof(short);
+        a.LockPositions = *reinterpret_cast<bool*>(data + ptr);
+        ptr += sizeof(bool);
 
         //// wprintf(L"[Open2] Action[%d] Keys: %d Lock: %d\n", i, a.NumAnimationKeys, a.LockPositions);
 
@@ -3320,7 +3802,8 @@ bool BMD::Open2(const wchar_t* DirName, const wchar_t* ModelFileName, bool bReAl
         if (!b.Dummy)
         {
             memcpy(b.Name, data + ptr, 32); ptr += 32;
-            b.Parent = *(short*)(data + ptr); ptr += sizeof(short);
+            b.Parent = *reinterpret_cast<short*>(data + ptr);
+            ptr += sizeof(short);
 
             //// wprintf(L"[Open2] Bone[%d] Name: %.32hs Parent: %d\n", i, b.Name, b.Parent);
 
@@ -3507,6 +3990,61 @@ void BMD::Init(bool Dummy)
     BoneHead = -1;
     StreamMesh = -1;
     CreateBoundingBox();
+}
+
+BMD::BoneLookupEntry& BMD::LookupBone(std::string_view name) const
+{
+    if (m_boneLookupBones != Bones || m_boneLookupBoneCount != NumBones)
+    {
+        m_boneLookup.clear();
+        m_boneLookupBones = Bones;
+        m_boneLookupBoneCount = NumBones;
+    }
+    for (BoneLookupEntry& entry : m_boneLookup)
+    {
+        if (entry.name == name)
+        {
+            return entry;
+        }
+    }
+
+    int found = -1;
+    for (int i = 0; i < NumBones && Bones != nullptr; ++i)
+    {
+        const Bone_t& bone = Bones[i];
+        if (bone.Dummy)
+        {
+            continue;
+        }
+        const std::string_view boneName(bone.Name, strnlen(bone.Name, sizeof(bone.Name)));
+        if (boneName == name)
+        {
+            found = i;
+            break;
+        }
+    }
+    return m_boneLookup.emplace_back(BoneLookupEntry{std::string(name), found, false});
+}
+
+int BMD::FindBone(std::string_view name) const
+{
+    return LookupBone(name).index;
+}
+
+int BMD::FindBoneOrRoot(std::string_view name) const
+{
+    BoneLookupEntry& entry = LookupBone(name);
+    if (entry.index >= 0)
+    {
+        return entry.index;
+    }
+    if (!entry.missLogged)
+    {
+        entry.missLogged = true;
+        MU_LOG_WARN(mu::log::Get("render"), "Model {} has no bone \"{}\"; the root bone stands in for it.",
+                    std::string_view(Name, strnlen(Name, sizeof(Name))), name);
+    }
+    return 0;
 }
 
 void BMD::CreateBoundingBox()

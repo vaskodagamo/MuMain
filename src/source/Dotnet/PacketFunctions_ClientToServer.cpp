@@ -18,7 +18,7 @@
 #include "PacketBindings_ClientToServer.h"
 
 
-void PacketFunctions_ClientToServer::SendPing(uint32_t tickCount, uint16_t attackSpeed)
+void PacketFunctions_ClientToServer::SendPing(uint32_t tickCount, uint16_t attackSpeed, uint16_t magicSpeed)
 {
     static const auto dotnet_SendPing = LoadManagedSymbol<::SendPing>("SendPing");
     if (!dotnet_SendPing)
@@ -26,7 +26,7 @@ void PacketFunctions_ClientToServer::SendPing(uint32_t tickCount, uint16_t attac
         return;
     }
 
-    dotnet_SendPing(this->GetHandle(), tickCount, attackSpeed);
+    dotnet_SendPing(this->GetHandle(), tickCount, attackSpeed, magicSpeed);
 }
 
 void PacketFunctions_ClientToServer::SendChecksumResponse(uint32_t checksum)
@@ -192,6 +192,17 @@ void PacketFunctions_ClientToServer::SendPlayerShopCloseOther(uint16_t playerId,
     }
 
     dotnet_SendPlayerShopCloseOther(this->GetHandle(), playerId, playerName);
+}
+
+void PacketFunctions_ClientToServer::SendPlayerShopSetItemPriceExtended(uint32_t moneyPrice, uint16_t priceItemType, uint16_t requiredItemAmount, BYTE itemSlot)
+{
+    static const auto dotnet_SendPlayerShopSetItemPriceExtended = LoadManagedSymbol<::SendPlayerShopSetItemPriceExtended>("SendPlayerShopSetItemPriceExtended");
+    if (!dotnet_SendPlayerShopSetItemPriceExtended)
+    {
+        return;
+    }
+
+    dotnet_SendPlayerShopSetItemPriceExtended(this->GetHandle(), moneyPrice, priceItemType, requiredItemAmount, itemSlot);
 }
 
 void PacketFunctions_ClientToServer::SendPickupItemRequest(uint16_t itemId)
@@ -480,7 +491,7 @@ void PacketFunctions_ClientToServer::SendCastleSiegeTaxInfoRequest()
     dotnet_SendCastleSiegeTaxInfoRequest(this->GetHandle());
 }
 
-void PacketFunctions_ClientToServer::SendCastleSiegeTaxChangeRequest(BYTE taxType, uint32_t taxRate)
+void PacketFunctions_ClientToServer::SendCastleSiegeTaxChangeRequest(CastleSiegeTaxType taxType, uint32_t taxValue)
 {
     static const auto dotnet_SendCastleSiegeTaxChangeRequest = LoadManagedSymbol<::SendCastleSiegeTaxChangeRequest>("SendCastleSiegeTaxChangeRequest");
     if (!dotnet_SendCastleSiegeTaxChangeRequest)
@@ -488,7 +499,7 @@ void PacketFunctions_ClientToServer::SendCastleSiegeTaxChangeRequest(BYTE taxTyp
         return;
     }
 
-    dotnet_SendCastleSiegeTaxChangeRequest(this->GetHandle(), taxType, taxRate);
+    dotnet_SendCastleSiegeTaxChangeRequest(this->GetHandle(), taxType, taxValue);
 }
 
 void PacketFunctions_ClientToServer::SendCastleSiegeTaxMoneyWithdraw(uint32_t amount)
@@ -502,7 +513,7 @@ void PacketFunctions_ClientToServer::SendCastleSiegeTaxMoneyWithdraw(uint32_t am
     dotnet_SendCastleSiegeTaxMoneyWithdraw(this->GetHandle(), amount);
 }
 
-void PacketFunctions_ClientToServer::SendToggleCastleGateRequest(BYTE closeState, uint16_t gateId)
+void PacketFunctions_ClientToServer::SendToggleCastleGateRequest(BYTE isOpen, uint16_t gateId)
 {
     static const auto dotnet_SendToggleCastleGateRequest = LoadManagedSymbol<::SendToggleCastleGateRequest>("SendToggleCastleGateRequest");
     if (!dotnet_SendToggleCastleGateRequest)
@@ -510,10 +521,10 @@ void PacketFunctions_ClientToServer::SendToggleCastleGateRequest(BYTE closeState
         return;
     }
 
-    dotnet_SendToggleCastleGateRequest(this->GetHandle(), closeState, gateId);
+    dotnet_SendToggleCastleGateRequest(this->GetHandle(), isOpen, gateId);
 }
 
-void PacketFunctions_ClientToServer::SendCastleGuildCommand(BYTE team, BYTE positionX, BYTE positionY, BYTE command)
+void PacketFunctions_ClientToServer::SendCastleGuildCommand(BYTE team, BYTE positionX, BYTE positionY, CastleSiegeGuildCommandType command)
 {
     static const auto dotnet_SendCastleGuildCommand = LoadManagedSymbol<::SendCastleGuildCommand>("SendCastleGuildCommand");
     if (!dotnet_SendCastleGuildCommand)
@@ -843,7 +854,7 @@ void PacketFunctions_ClientToServer::SendCashShopEventItemListRequest(uint32_t c
     dotnet_SendCashShopEventItemListRequest(this->GetHandle(), categoryIndex);
 }
 
-void PacketFunctions_ClientToServer::SendUnlockVault(uint16_t pin)
+void PacketFunctions_ClientToServer::SendUnlockVault(uint16_t pin, const char16_t* password)
 {
     static const auto dotnet_SendUnlockVault = LoadManagedSymbol<::SendUnlockVault>("SendUnlockVault");
     if (!dotnet_SendUnlockVault)
@@ -851,7 +862,7 @@ void PacketFunctions_ClientToServer::SendUnlockVault(uint16_t pin)
         return;
     }
 
-    dotnet_SendUnlockVault(this->GetHandle(), pin);
+    dotnet_SendUnlockVault(this->GetHandle(), pin, password);
 }
 
 void PacketFunctions_ClientToServer::SendSetVaultPin(uint16_t pin, const char16_t* password)
@@ -1503,7 +1514,7 @@ void PacketFunctions_ClientToServer::SendPingResponse()
     dotnet_SendPingResponse(this->GetHandle());
 }
 
-void PacketFunctions_ClientToServer::SendItemRepair(BYTE inventoryItemSlot)
+void PacketFunctions_ClientToServer::SendItemRepair(BYTE inventoryItemSlot, BYTE isSelfRepair)
 {
     static const auto dotnet_SendItemRepair = LoadManagedSymbol<::SendItemRepair>("SendItemRepair");
     if (!dotnet_SendItemRepair)
@@ -1511,7 +1522,7 @@ void PacketFunctions_ClientToServer::SendItemRepair(BYTE inventoryItemSlot)
         return;
     }
 
-    dotnet_SendItemRepair(this->GetHandle(), inventoryItemSlot);
+    dotnet_SendItemRepair(this->GetHandle(), inventoryItemSlot, isSelfRepair);
 }
 
 void PacketFunctions_ClientToServer::SendChaosMachineMixRequest(ChaosMachineMixType mixType, BYTE socketSlot)
@@ -1668,7 +1679,7 @@ void PacketFunctions_ClientToServer::SendIllusionTempleEnterRequest(BYTE mapNumb
     dotnet_SendIllusionTempleEnterRequest(this->GetHandle(), mapNumber, itemSlot);
 }
 
-void PacketFunctions_ClientToServer::SendIllusionTempleSkillRequest(uint16_t skillNumber, BYTE targetObjectIndex, BYTE distance)
+void PacketFunctions_ClientToServer::SendIllusionTempleSkillRequest(uint16_t skillNumber, uint16_t targetObjectIndex, BYTE distance)
 {
     static const auto dotnet_SendIllusionTempleSkillRequest = LoadManagedSymbol<::SendIllusionTempleSkillRequest>("SendIllusionTempleSkillRequest");
     if (!dotnet_SendIllusionTempleSkillRequest)
@@ -2108,7 +2119,7 @@ void PacketFunctions_ClientToServer::SendDuelChannelJoinRequest(BYTE channelId)
     dotnet_SendDuelChannelJoinRequest(this->GetHandle(), channelId);
 }
 
-void PacketFunctions_ClientToServer::SendDuelChannelQuitRequest()
+void PacketFunctions_ClientToServer::SendDuelChannelQuitRequest(BYTE channelId)
 {
     static const auto dotnet_SendDuelChannelQuitRequest = LoadManagedSymbol<::SendDuelChannelQuitRequest>("SendDuelChannelQuitRequest");
     if (!dotnet_SendDuelChannelQuitRequest)
@@ -2116,7 +2127,7 @@ void PacketFunctions_ClientToServer::SendDuelChannelQuitRequest()
         return;
     }
 
-    dotnet_SendDuelChannelQuitRequest(this->GetHandle());
+    dotnet_SendDuelChannelQuitRequest(this->GetHandle(), channelId);
 }
 
 void PacketFunctions_ClientToServer::SendChatCommandListRequest()
@@ -2128,4 +2139,92 @@ void PacketFunctions_ClientToServer::SendChatCommandListRequest()
     }
 
     dotnet_SendChatCommandListRequest(this->GetHandle());
+}
+
+void PacketFunctions_ClientToServer::SendDiscordIntegrationInfoRequest()
+{
+    static const auto dotnet_SendDiscordIntegrationInfoRequest = LoadManagedSymbol<::SendDiscordIntegrationInfoRequest>("SendDiscordIntegrationInfoRequest");
+    if (!dotnet_SendDiscordIntegrationInfoRequest)
+    {
+        return;
+    }
+
+    dotnet_SendDiscordIntegrationInfoRequest(this->GetHandle());
+}
+
+void PacketFunctions_ClientToServer::SendDiscordLinkCodeRequest()
+{
+    static const auto dotnet_SendDiscordLinkCodeRequest = LoadManagedSymbol<::SendDiscordLinkCodeRequest>("SendDiscordLinkCodeRequest");
+    if (!dotnet_SendDiscordLinkCodeRequest)
+    {
+        return;
+    }
+
+    dotnet_SendDiscordLinkCodeRequest(this->GetHandle());
+}
+
+void PacketFunctions_ClientToServer::SendDiscordUnlinkRequest()
+{
+    static const auto dotnet_SendDiscordUnlinkRequest = LoadManagedSymbol<::SendDiscordUnlinkRequest>("SendDiscordUnlinkRequest");
+    if (!dotnet_SendDiscordUnlinkRequest)
+    {
+        return;
+    }
+
+    dotnet_SendDiscordUnlinkRequest(this->GetHandle());
+}
+
+void PacketFunctions_ClientToServer::SendCharacterRenameRequest(const char16_t* oldName, const char16_t* newName)
+{
+    static const auto dotnet_SendCharacterRenameRequest = LoadManagedSymbol<::SendCharacterRenameRequest>("SendCharacterRenameRequest");
+    if (!dotnet_SendCharacterRenameRequest)
+    {
+        return;
+    }
+
+    dotnet_SendCharacterRenameRequest(this->GetHandle(), oldName, newName);
+}
+
+void PacketFunctions_ClientToServer::SendInventoryItemEquipRequest(BYTE inventorySlot, BYTE value)
+{
+    static const auto dotnet_SendInventoryItemEquipRequest = LoadManagedSymbol<::SendInventoryItemEquipRequest>("SendInventoryItemEquipRequest");
+    if (!dotnet_SendInventoryItemEquipRequest)
+    {
+        return;
+    }
+
+    dotnet_SendInventoryItemEquipRequest(this->GetHandle(), inventorySlot, value);
+}
+
+void PacketFunctions_ClientToServer::SendRequestD000()
+{
+    static const auto dotnet_SendRequestD000 = LoadManagedSymbol<::SendRequestD000>("SendRequestD000");
+    if (!dotnet_SendRequestD000)
+    {
+        return;
+    }
+
+    dotnet_SendRequestD000(this->GetHandle());
+}
+
+void PacketFunctions_ClientToServer::SendGameServerChannelRequest(BYTE value)
+{
+    static const auto dotnet_SendGameServerChannelRequest = LoadManagedSymbol<::SendGameServerChannelRequest>("SendGameServerChannelRequest");
+    if (!dotnet_SendGameServerChannelRequest)
+    {
+        return;
+    }
+
+    dotnet_SendGameServerChannelRequest(this->GetHandle(), value);
+}
+
+void PacketFunctions_ClientToServer::SendGameGuardAuthResponse(const BYTE* data, uint32_t dataByteLength)
+{
+    static const auto dotnet_SendGameGuardAuthResponse = LoadManagedSymbol<::SendGameGuardAuthResponse>("SendGameGuardAuthResponse");
+    if (!dotnet_SendGameGuardAuthResponse)
+    {
+        return;
+    }
+
+    dotnet_SendGameGuardAuthResponse(this->GetHandle(), data, dataByteLength);
 }

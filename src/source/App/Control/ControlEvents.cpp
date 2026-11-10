@@ -67,8 +67,8 @@ std::string UtcTimestamp()
     return stamp;
 }
 
-// {id, name, kind} for an object the client knows, or a placeholder for one
-// it does not (out of view, already deleted, or no resolver installed).
+// {id, name, kind, monster} for an object the client knows, or a placeholder
+// for one it does not (out of view, already deleted, or no resolver installed).
 json DescribeObject(int key)
 {
     App::Control::Events::ObjectDescription description;
@@ -85,6 +85,7 @@ json DescribeObject(int key)
     described["id"] = description.id;
     described["name"] = description.name;
     described["kind"] = description.kind;
+    described["monster"] = description.monster ? json(*description.monster) : json(nullptr);
     if (description.known)
     {
         described["position"] = json::array({description.x, description.y});
@@ -334,6 +335,72 @@ void RecordParty(std::string_view change, const wchar_t* name)
     fields["change"] = change;
     fields["name"] = Core::Text::ToUtf8(name);
     Push("party", fields);
+}
+
+void RecordPartyResult(std::string_view result)
+{
+    if (!IsEnabled())
+    {
+        return;
+    }
+
+    json fields;
+    fields["change"] = "result";
+    fields["result"] = result;
+    Push("party", fields);
+}
+
+void RecordQuestChange(int quest, std::string_view state)
+{
+    if (!IsEnabled())
+    {
+        return;
+    }
+
+    json fields;
+    fields["change"] = "state";
+    fields["quest"] = quest;
+    fields["state"] = state;
+    Push("quest", fields);
+}
+
+void RecordQuestReward(std::string_view name, std::string_view reward, std::optional<int> amount, int characterClass)
+{
+    if (!IsEnabled())
+    {
+        return;
+    }
+
+    json fields;
+    fields["change"] = "reward";
+    fields["name"] = name;
+    fields["reward"] = reward;
+    if (amount)
+    {
+        fields["amount"] = *amount;
+    }
+    fields["class"] = characterClass;
+    Push("quest", fields);
+}
+
+void RecordTrade(std::string_view change, std::string_view name, std::string_view detail)
+{
+    if (!IsEnabled())
+    {
+        return;
+    }
+
+    json fields;
+    fields["change"] = change;
+    if (!name.empty())
+    {
+        fields["name"] = name;
+    }
+    if (!detail.empty())
+    {
+        fields[change == "closed" ? "result" : "state"] = detail;
+    }
+    Push("trade", fields);
 }
 
 void RecordDisconnect(std::string_view reason)

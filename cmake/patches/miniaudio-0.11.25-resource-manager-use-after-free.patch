@@ -37,26 +37,3 @@ index c6d493e..8a94444 100644
      if (ppDataBufferNode != NULL) {
          *ppDataBufferNode = pDataBufferNode;
      }
-@@ -73262,6 +73264,14 @@ done:
-     /* We can only change the status away from MA_BUSY. If it's set to anything else it means an error has occurred somewhere or the uninitialization process has started (most likely). */
-     ma_atomic_compare_and_swap_i32(&pDataStream->result, MA_BUSY, result);
- 
-+    /*
-+    MuMain patch: advance the execution pointer BEFORE signalling. A caller waiting in
-+    ma_resource_manager_data_stream_init_ex() returns as soon as the notification fires and,
-+    when initialization failed, frees the data stream right away, so pDataStream must not be
-+    touched after the signal.
-+    */
-+    ma_atomic_fetch_add_32(&pDataStream->executionPointer, 1);
-+
-     /* Only signal the other threads after the result has been set just for cleanliness sake. */
-     if (pJob->data.resourceManager.loadDataStream.pInitNotification != NULL) {
-         ma_async_notification_signal(pJob->data.resourceManager.loadDataStream.pInitNotification);
-@@ -73270,7 +73280,6 @@ done:
-         ma_fence_release(pJob->data.resourceManager.loadDataStream.pInitFence);
-     }
- 
--    ma_atomic_fetch_add_32(&pDataStream->executionPointer, 1);
-     return result;
- }
- 

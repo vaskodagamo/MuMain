@@ -91,7 +91,7 @@ void CSWaterTerrain::Render(void)
     for (int j = 0; j < m_iTriangleListNum; ++j)
     {
         const int offset = m_iTriangleList[j];
-        const float alpha = 1.f - DotProduct(m_Normals[offset], m_vLightVector);
+        const float alpha = 1.f - VectorDotProduct(m_Normals[offset], m_vLightVector);
         vertices[static_cast<std::size_t>(j)] = {
             m_Vertices[offset][0], m_Vertices[offset][1], m_Vertices[offset][2], 0.f, 0.f, 1.f,
             g_chrome[offset][1], g_chrome[offset][0], mu::PackABGR(alpha, alpha * 2.5f, alpha * 3.f, 1.f),
@@ -263,9 +263,9 @@ void    CSWaterTerrain::calcBaseWave(void)
     /*
         if ( rand_fps_check(10) )
         {
-            m_iSelectWaveX = rand()%WATER_TERRAIN_SIZE;
-            m_iSelectWaveY = rand()%WATER_TERRAIN_SIZE;
-            m_iAddHeight   = rand()%20+10;
+            m_iSelectWaveX = Random::Rand()%WATER_TERRAIN_SIZE;
+            m_iSelectWaveY = Random::Rand()%WATER_TERRAIN_SIZE;
+            m_iAddHeight   = Random::Rand()%20+10;
         }
     */
     int MaxHeight;

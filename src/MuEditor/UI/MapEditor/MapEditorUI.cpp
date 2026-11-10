@@ -3,6 +3,9 @@
 #ifdef _EDITOR
 
 #include "MapEditorUI.h"
+#include "UI/Common/MuEditorWindowIds.h"
+#include "UI/Common/MuEditorLayout.h"
+#include "../MuEditor/Core/MuEditorPlatformWindows.h"
 #include "MapEditorSave.h"
 #include "MapAttributeSave.h"
 #include "MapHeightSave.h"
@@ -19,6 +22,7 @@
 #include "MapAssetReview.h"
 #include "MapOutliner.h"
 #include "RegenRequestDialog.h"
+#include "MapSoundsTab.h"
 #include "ObjectThumbnail.h"
 
 #include "Render/Textures/ZzzOpenglUtil.h"  // CollisionPosition (world hit point)
@@ -31,10 +35,12 @@
 #include "MapMinimapCapture.h"
 
 #include "imgui.h"
+#include "I18N/All.h"
 #include "Core/Globals/_define.h"          // EDIT_MAPPING / EDIT_NONE
 #include "Core/Globals/_TextureIndex.h"    // BITMAP_MAPTILE
 #include "Render/Sprites/GlobalBitmap.h"   // Bitmaps[]
 #include "Render/Renderer/MuRenderer.h"    // mu::GetRenderer().GetTexturePointer
+#include "Render/RmlUi/RmlUiRuntime.h"     // a game text field being typed in
 #include "Render/Terrain/ZzzLodTerrain.h"  // CurrentLayer
 #include "World/MapInfra/MapManager.h"     // gMapManager.WorldActive
 #include "Core/MuEditorCore.h"             // hover flag for input blocking
@@ -49,6 +55,7 @@
 #include "Render/Terrain/TerrainBrushOutline.h" // the round brushes' outline
 #include "Render/Terrain/TerrainGroundRects.h"  // the Gates tab's areas
 #include "Assets/EditorText.h"                  // EqualIgnoringCase (tab names)
+#include "../MuEditor/UI/Common/KeyboardSelection.h"
 
 #include <cstring>
 #include <filesystem>
@@ -123,8 +130,11 @@ namespace
     constexpr const char* TAB_MINIMAP = "Minimap";
     constexpr const char* TAB_OBJECT_BROWSER = "O. Browse";
     constexpr const char* TAB_ASSETS = "Assets";
-    constexpr const char* TAB_NAMES[] = {TAB_TEXTURE,         TAB_OBJECTS, TAB_HEIGHT,         TAB_ATTRIBUTE, TAB_LIGHT,
-                                         TAB_GATES, TAB_TEXTURE_BROWSER, TAB_MINIMAP, TAB_OBJECT_BROWSER, TAB_ASSETS};
+    // Upstream's tab of the map's object sounds; its title follows the editor's language.
+    constexpr const char* TAB_SOUNDS = "Sounds";
+    constexpr const char* TAB_NAMES[] = {TAB_TEXTURE, TAB_OBJECTS,         TAB_HEIGHT,  TAB_ATTRIBUTE,
+                                         TAB_LIGHT,   TAB_GATES,           TAB_TEXTURE_BROWSER,
+                                         TAB_MINIMAP, TAB_OBJECT_BROWSER,  TAB_ASSETS,  TAB_SOUNDS};
 
     // Brush half-size clamp. The painted square is (BrushSize*2 + 1) tiles wide.
     constexpr int MAX_BRUSH_HALF = 10;
@@ -151,6 +161,19 @@ namespace
     {
         g_MapEditHistory.Push(stroke.Finish());
     }
+}
+
+bool CMapEditorUI::Shortcut(ImGuiKeyChord keyChord)
+{
+    if (g_MuEditorCore.IsKeyboardWithEditor())
+    {
+        return ImGui::Shortcut(keyChord);
+    }
+    if (RmlUiRuntime::Instance().IsTextInputActive())
+    {
+        return false;
+    }
+    return ImGui::Shortcut(keyChord, ImGuiInputFlags_RouteGlobal);
 }
 
 CMapEditorUI& CMapEditorUI::GetInstance()
@@ -184,6 +207,39 @@ void CMapEditorUI::RestoreGameMode()
     m_bEditActive = false;
 }
 
+void CMapEditorUI::EndMinimapMode()
+{
+    if (!m_bMinimapMode)
+    {
+        return;
+    }
+    m_bMinimapMode = false;
+    // As "Back to game camera": FreeFly flies again when it is next used.
+    CameraManager& cameras = CameraManager::Instance();
+    ICamera* camera = cameras.GetActiveCamera();
+    if (camera && strcmp(camera->GetName(), "FreeFly") == 0)
+        static_cast<FreeFlyCamera*>(camera)->ClearTopDown();
+    if (cameras.GetCurrentMode() == CameraMode::FreeFly)
+        cameras.SetCameraMode(CameraMode::Default);
+}
+
+void CMapEditorUI::ReleaseWorld()
+{
+    // The next frame drops the top-down flags (m_topdownWasActive in UpdateTopDownRenderFlags).
+    EndMinimapMode();
+    g_bMapEditorAttrOverlay = false;     // no panel -> no overlay
+    g_bMapEditorBrushHighlight = false;  // no panel -> no brush cursor
+    Render::Terrain::BrushOutline::Hide();
+    Render::Terrain::GroundRects::Hide();    // no panel -> no gate areas
+    g_MapObjectEditor.PublishOutline(false); // no panel -> no selection outline
+    g_MapEditorHoveredObject = nullptr;  // no panel -> no hover outline
+    g_MapEditorPlacementPreviewActive = false; // no panel -> no placement preview
+    g_MapAssetReview.ClearHighlight();         // no panel -> no "Highlight all" outlines
+    FinishStrokes();
+    g_MapObjectEditor.EndFrame();
+    RestoreGameMode();
+}
+
 void CMapEditorUI::Render(bool* p_open)
 {
     const bool show = (p_open != nullptr && *p_open);
@@ -195,17 +251,7 @@ void CMapEditorUI::Render(bool* p_open)
 
     if (!show)
     {
-        g_bMapEditorAttrOverlay = false;     // no panel -> no overlay
-        g_bMapEditorBrushHighlight = false;  // no panel -> no brush cursor
-        Render::Terrain::BrushOutline::Hide();
-        Render::Terrain::GroundRects::Hide();    // no panel -> no gate areas
-        g_MapObjectEditor.PublishOutline(false); // no panel -> no selection outline
-        g_MapEditorHoveredObject = nullptr;  // no panel -> no hover outline
-        g_MapEditorPlacementPreviewActive = false; // no panel -> no placement preview
-        g_MapAssetReview.ClearHighlight();         // no panel -> no "Highlight all" outlines
-        FinishStrokes();
-        g_MapObjectEditor.EndFrame();
-        RestoreGameMode();
+        ReleaseWorld();
         return;
     }
 
@@ -219,11 +265,35 @@ void CMapEditorUI::Render(bool* p_open)
     ImGui::SetNextWindowSize(ImVec2(480, 640), ImGuiCond_FirstUseEver);
     ImGui::SetNextWindowSizeConstraints(ImVec2(MIN_PANEL_WIDTH * g_MuEditorCore.GetUIScale(), 0.0f),
                                         ImVec2(FLT_MAX, FLT_MAX));
-    if (!ImGui::Begin("Map Editor", p_open))
+    MuEditor::Layout::PrepareToolWindow();
+    if (m_focusPanel)
+    {
+        // A scripted tab or gate request (the control socket) brings the panel's tab to the front.
+        ImGui::SetNextWindowFocus();
+        m_focusPanel = false;
+    }
+    const bool panelDrawn = ImGui::Begin(MuEditor::WindowIds::MapEditor, p_open,
+                                         MuEditor::Layout::ToolWindowBarFlags(MuEditor::WindowIds::MapEditor));
+    if (panelDrawn)
+    {
+        MuEditor::Layout::RenderToolWindowBar();
+    }
+    // Docked behind another tab or in a minimized editor window, the panel is
+    // out of sight as if closed; it takes the world again when it shows. Not
+    // drawn for a frame while its dock node gets its window: keep edit mode
+    // as-is.
+    const bool behindAnotherTab = !panelDrawn && ImGui::IsWindowDocked();
+    const bool inMinimizedWindow = MuEditor::PlatformWindows::IsMinimized(ImGui::GetWindowViewport());
+    if (behindAnotherTab || inMinimizedWindow)
+    {
+        ImGui::End();
+        ReleaseWorld();
+        return;
+    }
+    if (!panelDrawn)
     {
         ImGui::End();
         g_MapObjectEditor.EndFrame();
-        // Collapsed but still open: keep edit mode as-is.
         return;
     }
 
@@ -339,10 +409,18 @@ void CMapEditorUI::RenderTabs()
     const ImGuiTabItemFlags assetsTabFlags =
         m_selectAssetsTab ? ImGuiTabItemFlags_SetSelected : static_cast<ImGuiTabItemFlags>(TabFlags(TAB_ASSETS));
     m_selectAssetsTab = false;
+    const ImGuiTabItemFlags soundsTabFlags = static_cast<ImGuiTabItemFlags>(TabFlags(TAB_SOUNDS));
     m_selectTab.clear();
     if (ImGui::BeginTabItem(TAB_ASSETS, nullptr, assetsTabFlags))
     {
         RenderAssetsTab();
+        ImGui::EndTabItem();
+    }
+    // The shown title follows the editor's language; the tab's id and its scripted name stay.
+    const std::string soundsTitle = std::string(I18N::Editor::Sounds) + "###" + TAB_SOUNDS;
+    if (ImGui::BeginTabItem(soundsTitle.c_str(), nullptr, soundsTabFlags))
+    {
+        RenderSoundsTab();
         ImGui::EndTabItem();
     }
     ImGui::EndTabBar();
@@ -362,6 +440,7 @@ bool CMapEditorUI::ShowTab(const std::string& name)
         g_MuEditorCore.SetEnabled(true);
         g_MuEditorCore.ShowMapEditor();
         m_selectTab = tab;
+        m_focusPanel = true;
         return true;
     }
     return false;
@@ -398,6 +477,24 @@ void CMapEditorUI::RenderAssetsTab()
     m_objMode = OBJECT_MODE_SELECT;
 }
 
+void CMapEditorUI::RenderSoundsTab()
+{
+    if (g_MapSoundsTab.IsPicking())
+    {
+        // The object tool's picking: the mouse is ray-cast onto the world, the
+        // hovered object outlined, and the click kept from the hero.
+        m_desiredEditFlag = EDIT_OBJECT;
+        OBJECT* hovered = g_MuEditorCore.IsHoveringUI() ? nullptr : Editor::ObjectPlace::PickUnderCursor();
+        g_MapEditorHoveredObject = hovered;
+        if (m_PaintLDown && !m_soundPickWasDown && hovered != nullptr)
+        {
+            g_MapSoundsTab.Picked(hovered->Type);
+        }
+    }
+    m_soundPickWasDown = m_PaintLDown;
+    g_MapSoundsTab.Render(gMapManager.GetServerMap(), gMapManager.GetServerStage(), ResolveWorldNumber());
+}
+
 // While the minimap top-down view is active (and still on FreeFly), render the
 // whole map: full-terrain bounds + g_Camera.TopViewEnable, which the engine
 // itself uses for minimap capture to bypass per-tile terrain AND object
@@ -416,11 +513,9 @@ void CMapEditorUI::UpdateTopDownRenderFlags(bool show)
     // clicked "Back to game camera" -- otherwise TopViewEnable/full-terrain
     // stay stuck true and MainScene's TopViewEnable early-return permanently
     // freezes normal gameplay input/UI processing.
-    if (!show && m_bMinimapMode)
+    if (!show)
     {
-        m_bMinimapMode = false;
-        if (CameraManager::Instance().GetCurrentMode() == CameraMode::FreeFly)
-            CameraManager::Instance().SetCameraMode(CameraMode::Default);
+        EndMinimapMode();
     }
 
     const bool topdown = m_bMinimapMode && (CameraManager::Instance().GetCurrentMode() == CameraMode::FreeFly);
@@ -534,7 +629,7 @@ void CMapEditorUI::RenderTextureTab()
 
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip("%d: %s", slot, Editor::MapInspect::TileSlotName(slot).c_str());
-        if (clicked)
+        if (clicked || MuEditor::KeyboardSelection::MovedOnto())
             SelectMapping = slot;
 
         ImGui::PopID();
@@ -766,7 +861,7 @@ void CMapEditorUI::RenderObjectsTab()
 void CMapEditorUI::RenderAttributeTab()
 {
     const int world = ResolveWorldNumber();
-    const int serverMap = (m_serverMapOverride >= 0) ? m_serverMapOverride : gMapManager.WorldActive;
+    const int serverMap = (m_serverMapOverride >= 0) ? m_serverMapOverride : gMapManager.GetServerMap();
 
     // Must run before anything reads m_attrBaseline / m_attrEdited below.
     EnsureAttrBaseline(world);
@@ -807,11 +902,12 @@ void CMapEditorUI::RenderAttributeTab()
 
     ImGui::Spacing();
     ImGui::TextColored(ImVec4(0.9f, 0.9f, 0.6f, 1.0f), "2) Server file (OpenMU)");
-    // The server keys maps by the world ENUM (Arena = 6); the client folder is
+    // The server keys maps by its own number: the world ENUM (Arena = 6), but 32 for
+    // Devil Square 5-7, which loads world 9. The client folder is
     // World{enum+1} (World7). Show both so they're never confused.
     bool autoServer = (m_serverMapOverride < 0);
     if (ImGui::Checkbox("Auto server map number", &autoServer))
-        m_serverMapOverride = autoServer ? -1 : gMapManager.WorldActive;
+        m_serverMapOverride = autoServer ? -1 : gMapManager.GetServerMap();
     if (!autoServer)
     {
         ImGui::SameLine();
@@ -1024,6 +1120,7 @@ void CMapEditorUI::PaintWalls(const Editor::Editing::BrushCircle& circle, unsign
                                                m_attrEdited[idx] = true;
                                        });
     m_attrCountDirty = true;
+    MarkTerrainHeightsChanged();
 }
 
 void CMapEditorUI::RenderOfflineWorldBar()
@@ -1283,7 +1380,7 @@ void CMapEditorUI::RenderModelPalette()
             ImGui::PopStyleColor();
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip("%d: %ls", m.type, m.file.c_str());
-        if (clicked)
+        if (clicked || MuEditor::KeyboardSelection::MovedOnto())
             m_selectedModelType = m.type;
         ImGui::PopID();
     }
@@ -1413,6 +1510,7 @@ void CMapEditorUI::ShowGate(int number)
     g_MuEditorCore.SetEnabled(true);
     g_MuEditorCore.ShowMapEditor();
     m_selectTab = TAB_GATES;
+    m_focusPanel = true;
     m_gatesTab.Select(number);
 }
 

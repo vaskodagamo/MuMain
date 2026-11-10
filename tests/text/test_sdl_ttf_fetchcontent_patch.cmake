@@ -21,9 +21,28 @@ file(READ "${gpu_text_source}" gpu_text)
 file(READ "${MU_PROPERTY_HEADER}" property_header)
 file(READ "${MU_PATCH}" patch)
 
-string(FIND "${root_cmake}" "GIT_TAG        ${expected_revision}" revision_position)
-if(revision_position EQUAL -1)
-    message(FATAL_ERROR "SDL3_ttf must use exact revision ${expected_revision}")
+# SDL_ttf's release archive names the commit it was made from. A git clone given as FETCHCONTENT_SOURCE_DIR_SDL3_TTF,
+# e.g. the sources of a build folder from before the archive, knows its own.
+if(EXISTS "${SDL3_TTF_SOURCE}/.git-hash")
+    file(STRINGS "${SDL3_TTF_SOURCE}/.git-hash" source_revision LIMIT_COUNT 1)
+elseif(EXISTS "${SDL3_TTF_SOURCE}/.git")
+    find_package(Git REQUIRED)
+    execute_process(
+        COMMAND "${GIT_EXECUTABLE}" -C "${SDL3_TTF_SOURCE}" rev-parse HEAD
+        RESULT_VARIABLE git_result
+        OUTPUT_VARIABLE source_revision
+        ERROR_VARIABLE git_error
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+    if(NOT git_result EQUAL 0)
+        message(FATAL_ERROR "git rev-parse HEAD failed in ${SDL3_TTF_SOURCE}: ${git_error}")
+    endif()
+else()
+    message(FATAL_ERROR
+        "${SDL3_TTF_SOURCE} names its revision neither in .git-hash (SDL_ttf's release archive) nor as a git clone")
+endif()
+if(NOT source_revision STREQUAL expected_revision)
+    message(FATAL_ERROR "SDL3_ttf must use exact revision ${expected_revision}; its sources are ${source_revision}")
 endif()
 
 string(FIND "${root_cmake}" "PATCH_COMMAND" patch_command_position)
@@ -49,3 +68,10 @@ foreach(source_name gpu_text property_header patch)
         message(FATAL_ERROR "${source_name} must contain upload property ${upload_property}")
     endif()
 endforeach()
+
+# Fallback glyphs are placed at the primary font's ascent, so they share its baseline.
+file(READ "${SDL3_TTF_SOURCE}/src/SDL_ttf.c" ttf_source)
+string(FIND "${ttf_source}" "pos->y = y + F26Dot6(font->ascent) - pos->y_offset;" baseline_position)
+if(baseline_position EQUAL -1)
+    message(FATAL_ERROR "SDL_ttf.c must place fallback glyphs at the primary font's ascent")
+endif()

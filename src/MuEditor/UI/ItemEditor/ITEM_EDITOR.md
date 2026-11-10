@@ -3,8 +3,8 @@
 Every item the client knows, in three tabs: **Browse** (a list or thumbnail grid you filter by class,
 family, tier and status, sorted from basic to rare, with a live 3D preview and the facts of the
 selected item, an **A/B compare** of its current, original and new versions, its concept images, your
-verdict on it and **Ask Codex...**), **Stats table** (every field of
-`Data/Local/<lang>/Item_<lang>.bmd`, edited in place and saved into the game's own file) and
+verdict on it and **Ask Codex...**), **Item data** (the way into upstream's item tools, which edit
+the names, stats, requirements, rules and models in `Data/Items/*.json`, and **Save Items**) and
 **Requests** (every item request you filed for the art builder, with its status, and your withdraw /
 accept / reject). It exists only in editor builds (`ENABLE_EDITOR`), so the normal game is unaffected.
 The quick start is for the Mac; everything after it is reference. The Map Editor's guide,
@@ -21,7 +21,8 @@ The quick start is for the Mac; everything after it is reference. The Map Editor
    (`out/build/macos-arm64-mueditor/src/Release/`).
 2. **Start it:** double-click `MU Item Editor.app` in Finder. It starts the client offline (no server,
    no login) in the Item Editor's **studio**: no map, a plain dark backdrop, and the Item Editor
-   filling the window under the MU Editor toolbar. From a terminal the same is
+   filling the game window; the MU Editor window with the other tools opens beside it. From a
+   terminal the same is
    ```sh
    cd out/build/macos-arm64-mueditor/src/Release/Main.app/Contents/MacOS && ./Main --editor --items
    ```
@@ -42,22 +43,31 @@ The quick start is for the Mac; everything after it is reference. The Map Editor
    *Blade Knight*, *Blade Master*) to see only what that character can equip, a family (swords,
    helms, wings-2, ...), and click an item: its 3D preview and facts open in the item's own window. See
    [Browse](#browse) and [Preview](#preview).
-6. **Edit stats:** the **Stats table** tab is the table of every field; an item picked in Browse is
-   selected and scrolled to there, and the other way round. See [Stats table](#stats-table).
+6. **Edit stats:** the **Item data** tab opens upstream's item tools (Basics, Requirements, Rules,
+   Categories, Model, Translations) on the item picked in Browse; an item picked there is selected
+   in Browse. See [Item data](#item-data).
 7. **Ask Codex:** under the preview, **Ask Codex...** files a request for the art builder to upscale,
    repaint, remodel or redesign the item, with clean captures of the preview; commit and push the
    folder it writes. The **Requests** tab follows it from there. See [Ask Codex](#ask-codex).
 8. **Compare versions:** under the preview, **A/B compare** switches the item between what the build
    installed, your checkout, the originals and new versions (a Codex delivery, the style pilot's A and
    B), and **Side by side** shows two versions next to each other. See [A/B compare](#ab-compare).
-9. **Screen:** **Full screen** on the toolbar (or **Cmd+Ctrl+F**; **F11** on Windows and Linux) fills
-   the display, **Window** goes back. **- 125% +** sets the size of all editor text and buttons. Untick
-   **Console** to hide the editor and game consoles at the bottom and give the Item Editor their room.
-   All three are remembered for the next start (`MuEditor/MuEditor.ini`); the first start on a display at least
-   1440 points high (a 1440p or 5K screen) uses 125%, else 100%.
+9. **Screen:** **Windows > Studio full screen** in the MU Editor window's menu bar (or
+   **Cmd+Ctrl+F**; **F11** on Windows and Linux) fills the display with the studio, the same again
+   goes back. **- 125% +** in that menu bar sets the size of all editor text and buttons, and
+   **Windows > Console** shows or hides the console. All three are remembered for the next start
+   (`MuEditor/MuEditor.ini`); the first start on a display at least 1440 points high (a 1440p or 5K
+   screen) uses 125%, else 100%.
 
-The other editors stay on the toolbar. Opening the **Map Editor** from the studio shows the map
-(Lorencia) and turns the Item Editor into a normal window; closing the Map Editor brings the studio
+**The editor's windows (since the upstream merge of 2026-11):** the editor is a window of its own
+beside the game window, with a **Windows** menu instead of the old toolbar; its tool windows are tabs
+you can drag out, also over the game window. The selected item's window ("Item: ...") opens over the
+right of the game window, or as its own window when it does not fit. `MU_EDITOR_IN_GAME_WINDOW=1`
+in the environment keeps every editor window inside the game window, as before the merge (then a
+frame capture of the game window shows them too).
+
+The other editors are in the **Windows** menu. Opening the **Map Editor** from the studio shows the map
+(Lorencia) and turns the Item Editor into a normal tool window; closing the Map Editor brings the studio
 back.
 
 ### Starting options
@@ -67,10 +77,10 @@ back.
 | `MU Item Editor.app`, or `./Main --editor --items` | The studio: no map drawn, the Item Editor fills the window. |
 | `./Main --editor --items --world N` | Map N (Data folder number, 1 = Lorencia) offline behind a floating Item Editor. |
 | `./Main --editor --world N` | Map N offline with the Map Editor (unchanged). |
-| **F12** in a game session | The editor over the running game; the toolbar's **Item Editor** button shows the window. |
+| **F12** in a game session | The editor beside the running game; **Windows > Item Editor** shows the window. |
 
 **Why the studio still loads a map:** it skips drawing (terrain, objects, sky, weather, effects,
-fog), not loading. The Map Editor on the toolbar edits and saves the loaded map, so it needs one, and
+fog), not loading. The Map Editor (Windows menu) edits and saves the loaded map, so it needs one, and
 the preview's dropped item and dressed character stand on that map's ground and light (at the start
 point, where the hidden hero waits).
 World1 is loaded once at start (about a second) and not drawn while the Item Editor fills the window.
@@ -468,7 +478,7 @@ The third tab lists every folder under `assets-work/Items/requests/`: request, i
 (open, claimed, delivered, accepted, rejected, withdrawn), your verdict on the delivery, when it was
 filed, the worker branch and whether a `delivery/` folder is there. It follows the folders by itself (a
 check every second and a half, reading only file times); **Refresh** reads them at once. Clicking a
-row selects its item, as in Browse and the Stats table; **Show in Browse** goes there.
+row selects its item, as in Browse and the item tools; **Show in Browse** goes there.
 
 For the selected request:
 
@@ -483,31 +493,37 @@ For the selected request:
 
 A request folder whose `request.json` cannot be read is listed as "unreadable".
 
-## Stats table
+## Item data
 
-The table of every item field:
+Since the upstream merge of 2026-11 the game reads its items from JSON (`Data/Items/Group*.json`,
+the models in `Data/Items/Models/`; [docs/item-data.md](../../../../docs/item-data.md)) and no longer
+from `Item_<lang>.bmd`. The old **Stats table** (one table of every field of that file) is gone with
+it: upstream replaced it by item tools, one per kind of field, which share one selected item.
 
-1. **Find an item:** type in **Search** (part of the name, any letter case, also outside A-Z).
-   **Columns** picks which fields are shown; the choice is kept in `MuEditor/MuEditor.ini`. **Freeze
-   Index/Name** keeps those two columns in view while you scroll sideways.
-2. **Edit:** click a cell and type. The change is live at once (the running game uses the same
-   table) and is logged in the Editor Console. A name holds at most 29 bytes (letters outside
-   A-Z take two or more); the cell stops there. Browse shows the edit the next time you switch to it.
-3. **Save:** **Save Items** writes the game's file and your checkout's
-   `src/bin/Data/Local/Eng/item_eng.bmd`, and first copies the file it replaces to
-   `out/editor-backups/<time>/`. The lines under the buttons list the paths; the Editor Console lists
-   every changed field. Nothing edited means nothing is written.
-4. **Commit or undo** like code: `git status` shows `src/bin/Data/Local/Eng/item_eng.bmd` modified;
-   `git add` + `git commit` keeps it, `git checkout -- src/bin/Data/Local/Eng/item_eng.bmd` throws the
-   edit away. The game's copy keeps the edit until the next build copies `src/bin/Data` over it
-   again (the quick start's build command), so rebuild before you start the client again.
-5. **Copy a row:** select it (click any of its cells), then **Cmd+C** (Ctrl+C on Windows) copies it as
-   `Field = value` text plus a CSV line, for pasting into a note or a request.
+1. **Open a tool:** the tab's buttons (**Item Browser**, **Basics**, **Requirements**, **Rules**,
+   **Categories**, **Model**, **Translations**) open the tool in the MU Editor window on the item
+   selected in Browse. The same tools are under **Windows > Items**.
+2. **One selection:** the item picked in Browse is the item the tools show, and an item picked in
+   one of them (their browser, an item number in another tool) is selected in Browse.
+3. **Edit:** changes are live at once and have undo and redo (the menu bar's **Undo** / **Redo**).
+   Names are whole in every language; the 29-byte limit of the old table file is gone. The item
+   browser's search finds a part of a name in any letter case, also outside A-Z.
+4. **Save:** **Save Items** (here, in the item browser and in the other item tools) writes the
+   changed files in `Data/Items` (and `Data/Effects/GlowColors.json`, `RenderStyles.json`) next to
+   the game, then copies every file that save wrote into your checkout's `src/bin/Data`, after
+   copying the file it replaces to `out/editor-backups/<time>/`. The Editor Console lists them.
+   Nothing edited means nothing is written.
+5. **Commit or undo** like code: `git status` shows the changed `src/bin/Data/Items/*.json`;
+   `git add` + `git commit` keeps them, `git checkout -- src/bin/Data/Items` throws the edit away.
+   The game's copy keeps the edit until the next build copies `src/bin/Data` over it again.
+6. **Legacy files:** the item browser's **Import from bmd** / **Export as bmd** / **Export as S6E3** /
+   **Export as CSV** read and write the old formats for other tools.
 
 **Stats and names are only half of it:** the server (OpenMU) sends just group and number for each
 item. Size, class and requirements must match the server's item definitions, or the game shows items
 it cannot place or equip; names, damage and prices on the client are display only. A change you want
-to keep in play must be made in OpenMU too (admin panel, Items).
+to keep in play must be made in OpenMU too (admin panel, Items); upstream's **Item Sync** tool
+compares the two.
 
 ### Files
 
@@ -522,37 +538,25 @@ to keep in play must be made in OpenMU too (admin panel, Items).
 | Original item files (A/B) | `out/ab/original/Data/...`, `out/ab/original/items-manifest.json` | Built by `materialize_variant.py original --items`; not in git. |
 | A/B sheets | `out/item-ab/<key>-<YYYYMMDD-HHMMSS>/` | **Capture A/B sheet**; not in git. |
 | Model files (status) | `src/bin/Data/Item/...`, `src/bin/Data/Player/...` in the checkout | Hashed and compared with the catalog's originals. |
-| Item table the game loads | `Data/Local/<lang>/Item_<lang>.bmd` next to the executable | `<lang>` is `LanguageSelection` in `config.ini` (`Eng`). On disk the file is `item_eng.bmd`; the editor saves under that spelling. |
-| Repository copy | `src/bin/Data/Local/Eng/item_eng.bmd` | Written on every save; this is the file git tracks. |
-| Backup of the repo file | `out/editor-backups/<YYYYMMDD-HHMMSS>/Data/Local/Eng/item_eng.bmd` | Taken before the repo file is replaced; `out/` is not in git. |
-| Backups next to the game's file | `Data/Local/Eng/item_eng.bmd_N01_Y....bak` | The data layer's own last-ten backups, inside the build output only. |
-| **Export as S6E3** | `Data/Local/<lang>/Item_S6E3.bmd`, copy in `out/editor-exports/` | The table in the legacy S6E3 layout for other tools; the game does not read it. |
-| **Export as CSV** | `Data/Local/<lang>/Item.csv`, copy in `out/editor-exports/` | UTF-8 with BOM, one row per named item, field names as in the code. |
-| Column choice | `MuEditor/MuEditor.ini`, section `[ColumnVisibility]` | Next to the executable. |
+| Item data the game loads | `Data/Items/Group*.json`, `Data/Items/Models/*.json` next to the executable | Edited by the item tools; see [docs/item-data.md](../../../../docs/item-data.md). |
+| Repository copy | `src/bin/Data/Items/...` | Every file a **Save Items** wrote is copied here; these are the files git tracks. |
+| Backup of the repo file | `out/editor-backups/<YYYYMMDD-HHMMSS>/Data/Items/...` | Taken before the repo file is replaced; `out/` is not in git. |
 | UI size, full screen | `MuEditor/MuEditor.ini`, `[General]` `UIScale`, `StudioFullscreen` | Written when you press - / + or switch full screen. |
 | Concept batches | `out/item-concepts/<batch>/`, reference renders in `out/item-concepts/refs/` | Not in git. |
 | Logs | `MuError.log`, `MuEditor/MuEditor_YYYYMMDD.log` | The start (`[Editor] Opened the Item Editor studio ...`), the save's paths and the changed fields. |
 
 Without a checkout above the game folder (a copied `Main.app`), a save keeps a copy next to the
-executable instead (`Local/Eng/item_eng.bmd`) and Browse has no catalog;
+executable instead and nothing of an item save is copied; Browse has no catalog;
 `MU_EDITOR_REPO_ROOT=/path/to/repo` points the editor at a checkout. See
 [Where saves go](../MapEditor/MAP_EDITOR.md#where-saves-go).
 
 ### Gotchas
 
-- **The file format is kept as loaded.** The shipped tables use the old S6E3 layout (84-byte records,
-  30-byte names), detected by the file size. A save writes the same layout back, and every item you
-  did not change keeps its exact bytes, so saving without an edit reproduces the file byte for byte
-  and a one-name edit changes only that record and the checksum. (A save used to convert the file to
-  the newer 50-byte-name layout.)
-- **Three ticket names are longer than the old layout allows** ("Open Access Ticket to Chaos
-  Castle", "... Doppelganger", "... Varka Map 7"): in the shipped file they run into the fields
-  behind the name, so those tickets' Two-Hand and Level values are really letters. The cell shows the
-  first 29 bytes; they only change when you edit them.
-- **The Index column moves an item:** typing a free index there moves the whole row to that slot
-  (the group is `index / 512`). An index already in use is refused.
-- **Only the running language's table is edited.** `Por` and `Spn` have their own
-  `item_por.bmd` / `item_spn.bmd`, and `Data/Local/Item.bmd` is an older table the game does not load.
+- **The item tools' generated files:** `catalog.json` and `tools/item_editor/item_models.json` are
+  built from the JSON item data now (`build_item_catalog.py`, `gen_item_models.py`).
+  `render-facts.json` (**Drawn**, the request's must-keep lines) is still the one generated before
+  the upstream merge: `render_facts.py` read how items are drawn from C++ that upstream turned into
+  data (`renderStyle`, `glow`, `itemEffect` in `Data/Items/Models`), and has not been ported yet.
 - **Browse reads the catalog once per start.** After rebuilding `catalog.json`, restart the editor
   (requests and verdicts are read live);
   **Rescan files** only hashes the model files again.

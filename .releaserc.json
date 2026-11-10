@@ -28,8 +28,8 @@
         ]
       }
     }],
-    ["@semantic-release/changelog", {
-      "changelogFile": "CHANGELOG.md"
+    ["@semantic-release/exec", {
+      "prepareCmd": "bash scripts/stamp_release_version.sh ${nextRelease.gitTag} MuMain-windows-native-x64-release-editor-off-no-data.tar.gz MuMain-linux-native-x64-release-editor-off-no-data.tar.gz MuMain-macos-native-arm64-release-editor-off-no-data.tar.gz"
     }],
     ["@semantic-release/github", {
       "successCommentCondition": false,
@@ -50,10 +50,6 @@
           "label": "MuMain (macOS native arm64 Release, editor OFF; requires separate data release)"
         }
       ]
-    }],
-    ["@semantic-release/git", {
-      "assets": ["CHANGELOG.md"],
-      "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
     }]
   ]
 }

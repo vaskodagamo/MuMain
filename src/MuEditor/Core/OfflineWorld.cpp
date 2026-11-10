@@ -20,7 +20,7 @@
 #include "Render/Terrain/ZzzLodTerrain.h" // RequestTerrainHeight
 #include "Scenes/SceneCommon.h"           // InitMainScene, EnableMainRender
 #include "Scenes/SceneCore.h"             // SceneFlag
-#include "UI/Legacy/UIMng.h"
+#include "UI/Core/SceneUICoordinator.h"
 #include "World/MapInfra/MapManager.h"
 #include "World/MapInfra/MapNumbers.h"
 
@@ -159,7 +159,7 @@ void StartMainSceneWithoutServer()
     EnableMainRender = true;
     CurrentProtocolState = RECEIVE_JOIN_MAP_SERVER;
     LoadingWorld = 0;
-    CUIMng::Instance().CreateMainScene();
+    CSceneUICoordinator::Instance().CreateMainScene();
 }
 
 // Hero always points at a character slot, and falling leaves, birds and

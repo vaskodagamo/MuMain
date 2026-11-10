@@ -10,6 +10,7 @@
 #include "Engine/Object/ZzzInfomation.h"
 #include "Engine/Object/ZzzObject.h"
 #include "Core/Utilities/BaseCls.h"
+#include "Core/Utilities/Fnv1aHash.h"
 
 #define PVS_NORMAL (0x00)
 #define PVS_FIXEDPOS (0x01)
@@ -38,7 +39,9 @@ public:
     void Move(float fTime);
 
 public:
-    void GetPosition(vec3_t* pPos);
+    void GetPosition(vec3_t* pPos) const;
+    // Adds what the next step reads (force, velocity, position, state, the pending move) to a fingerprint.
+    void AddStateTo(Fnv1aHash& hash) const;
     float GetDistance(CPhysicsVertex* pVertex2, vec3_t* pDistance);
 
 protected:
@@ -85,6 +88,8 @@ public:
     void GetCenter(vec3_t vCenter);
     void GetCenterBeforeTransform(vec3_t vCenter);
     virtual void ProcessCollision(CPhysicsVertex* pVertex);
+    // Adds the collider's definition to a fingerprint; its center is rebuilt every step.
+    virtual void AddStateTo(Fnv1aHash& hash) const;
 };
 
 class CPhysicsColSphere : public CPhysicsCollision
@@ -99,13 +104,14 @@ protected:
     float m_fRadius;
 
 public:
-    virtual int GetType(void)
+    int GetType(void) override
     {
         return (CLT_SPHERE);
     }
 
     void Init(float fXPos, float fYPos, float fZPos, float fRadius, int iBone);
-    virtual void ProcessCollision(CPhysicsVertex* pVertex);
+    void ProcessCollision(CPhysicsVertex* pVertex) override;
+    void AddStateTo(Fnv1aHash& hash) const override;
     float GetRadius(void)
     {
         return (m_fRadius);
@@ -208,7 +214,14 @@ protected:
 public:
     BOOL Move2(float fTime, int iCount);
     BOOL Move(float fTime);
-    void GetPosition(int index, vec3_t* pPos);
+    void GetPosition(int index, vec3_t* pPos) const;
+    int GetNumVertices() const
+    {
+        return m_iNumVertices;
+    }
+    // Adds what the next simulation step reads to a fingerprint: the settings, wind limits, vertices, links and
+    // colliders.
+    virtual void AddStateTo(Fnv1aHash& hash) const;
     int GetVerticesCount() const
     {
         return m_iNumVertices;
@@ -228,6 +241,8 @@ protected:
     BOOL PreventFromStretching(void);
 
 public:
+    // A glowing cloth's lights on its simulated vertices; the update spawns them after stepping it.
+    void SpawnLights();
     virtual void Render(vec3_t* pvColor = NULL, int iLevel = 0);
 
 protected:
@@ -253,11 +268,11 @@ public:
     CPhysicsClothMesh();
     virtual ~CPhysicsClothMesh();
     virtual void Clear(void);
+    void AddStateTo(Fnv1aHash& hash) const override;
 
 protected:
-    int m_iMesh;
-    int m_iBoneForFixed;
-    int m_iBMDType;
+    int m_iMesh = -1;
+    int m_iBMDType = -1;
 
 public:
     virtual BOOL Create(OBJECT* o, int iMesh, int iBone, DWORD dwType = 0, int iBMDType = -1);
@@ -265,15 +280,25 @@ public:
                         int iNumVer, float fWidth, float fHeight, int iTexFront, int TexBack, DWORD dwType = 0,
                         int iBMDType = -1);
 
+    // Whether the model is loaded and has the mesh; for the cloth that moves
+    // the mesh's own vertices. Create fails when it has not.
+    static bool CanCreate(int iBMDType, int iMesh);
+    // Whether the mesh can become a cloth grid of iNumHor x iNumVer points:
+    // the grid rebuild and the moving cloth write a vertex and a texture
+    // coordinate for every point and two triangles for every grid cell, all
+    // without checks. Many item models come from the item model files, so a
+    // model may be missing or be another model. Create fails when it cannot.
+    static bool CanCreate(int iBMDType, int iMesh, int iNumHor, int iNumVer);
+
 protected:
     int FindMatchVertex(Mesh_t* pMesh, int iV1, int iV2, int iV3);
     BOOL FindInLink(int iCount, int iV1, int iV2);
-    virtual void SetFixedVertices(float Matrix[3][4]);
-    virtual void NotifyVertexPos(int iVertex, vec3_t vPos);
-    virtual void InitForces(void);
+    void SetFixedVertices(float Matrix[3][4]) override;
+    void NotifyVertexPos(int iVertex, vec3_t vPos) override;
+    void InitForces(void) override;
 
 public:
-    virtual void Render(vec3_t* pvColor = NULL, int iLevel = 0);
+    void Render(vec3_t* pvColor = NULL, int iLevel = 0) override;
 };
 
 class CPhysicsManager

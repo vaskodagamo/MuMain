@@ -4,7 +4,7 @@
 
 #include "MapEditorShortcuts.h"
 
-#include "UI/Legacy/UIControls.h" // CUITextInputBox: a game text box (chat) has focus
+#include "Render/RmlUi/RmlUiRuntime.h" // a game text field (chat) being typed in
 
 #include "imgui.h"
 
@@ -12,7 +12,7 @@ namespace Editor::Shortcuts
 {
 bool IsTypingText()
 {
-    return ImGui::GetIO().WantTextInput || CUITextInputBox::IsAnyInputBoxFocused();
+    return ImGui::GetIO().WantTextInput || RmlUiRuntime::Instance().IsTextInputActive();
 }
 
 bool UndoPressed()

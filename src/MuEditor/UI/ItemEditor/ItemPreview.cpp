@@ -13,7 +13,7 @@
 #include "Engine/Object/ZzzCharacter.h"  // WaitCharactersAnimation
 #include "Engine/Object/ZzzInfomation.h" // ItemAttribute
 #include "Render/Renderer/MuRenderer.h"
-#include "UI/NewUI/NewUISystem.h" // g_pOption
+#include "UI/Core/WindowSystem.h" // g_pOption
 
 #include <algorithm>
 

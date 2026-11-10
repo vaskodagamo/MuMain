@@ -7,6 +7,26 @@ about *this fork's* goal and state. **Append a dated entry to
 [`WORKLOG.md`](WORKLOG.md) at the end of every session** and update this page when the
 state changes.
 
+## Upstream merge — 2026-11-10
+
+Branch `merge/upstream-2026-11` merges `sven-n/MuMain` main (4183 commits) into the fork. What every
+agent should know before touching the code again:
+
+- **Items are data.** `Data/Items/*.json` and `Data/Items/Models/*.json` replace `Item_<lang>.bmd`
+  and the item loads in `ZzzOpenData.cpp` ([docs/item-data.md](../item-data.md)); monsters, effects,
+  sounds and maps' object sounds are data too. The fork's item tools read that data now; only
+  `render_facts.py` is still to be ported (see `ITEM_EDITOR_PLAN.md`, Status).
+- **The game UI is RmlUi** with themes (`[UI] RmlTheme`, Options > Interface): the native option
+  window and the three-band bottom HUD are gone, and with them the fork's **Classic bottom HUD**
+  option. `RmlTheme=classic` is upstream's classic interface.
+- **The editor is a window of its own** with a **Windows** menu (upstream's item, monster, sound,
+  style and data-check tools are there); `MU_EDITOR_IN_GAME_WINDOW=1` keeps it in the game window.
+  See [MAP_EDITOR.md](../../src/MuEditor/UI/MapEditor/MAP_EDITOR.md) and
+  [ITEM_EDITOR.md](../../src/MuEditor/UI/ItemEditor/ITEM_EDITOR.md).
+- **Known on this Mac, also in an unchanged upstream build:** the login scene's buttons and the
+  game cursor draw as noise (OZT sprites). Not caused by the merge; not investigated further.
+- Details, what was verified and what is open: the 2026-11-10 entry of [WORKLOG.md](WORKLOG.md).
+
 ## Current Lorencia correction — 2026-09-23
 
 PR #12 merged into owner-fork main at c40d0b0d. It contains 22 accepted Lorencia

@@ -20,8 +20,8 @@
 #include "Render/Renderer/MuRenderer.h"
 #include "Render/Terrain/ZzzLodTerrain.h"
 #include "Render/Textures/ZzzOpenglUtil.h"
-#include "UI/NewUI/Inventory/NewUIInventoryCtrl.h"
-#include "UI/NewUI/NewUISystem.h" // g_pOption
+#include "UI/Inventory/InventoryCtrl.h"
+#include "UI/Core/WindowSystem.h" // g_pOption
 
 #include <algorithm>
 #include <cmath>
@@ -234,7 +234,6 @@ void DrawGroundPatch(const vec3_t spot)
 // where nothing else makes any, the particles too.
 void DrawEffects()
 {
-    CheckSprites();
     BeginSprite();
     RenderSprites();
     if (Editor::ItemStudio::ShowsBackdropOnly())
@@ -371,7 +370,7 @@ void CItemPreviewScene::DrawTurntable(const PreviewSubject& subject)
 void CItemPreviewScene::DrawInventory(const PreviewSubject& subject, int targetSize, bool pointerInSlot)
 {
     const ITEM_ATTRIBUTE& attribute = ItemAttribute[subject.itemType];
-    const Preview::InventoryMetrics metrics{static_cast<float>(SEASON3B::INVENTORY_SQUARE_WIDTH),
+    const Preview::InventoryMetrics metrics{static_cast<float>(mu::ui::window::INVENTORY_SQUARE_WIDTH),
                                             static_cast<float>(REFERENCE_HEIGHT), INVENTORY_FOV_DEGREES};
     const Preview::SlotProjection slot =
         Preview::SlotInTarget(targetSize, targetSize, attribute.Width, attribute.Height, metrics);

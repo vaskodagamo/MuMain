@@ -8,98 +8,58 @@
 #include "ConceptRefineDialog.h"
 #include "ConceptsPanel.h"
 #include "ItemBrowseTab.h"
-#include "ItemEditorTable.h"
+#include "ItemEditorActions.h"
+#include "ItemEditorPopups.h"
 #include "ItemRequestDialog.h"
 #include "ItemRequestWatch.h"
 #include "ItemRequestsTab.h"
-#include "ItemEditorActions.h"
-#include "ItemEditorPopups.h"
-#include "Data/GameData/ItemData/ItemFieldMetadata.h"
-#include "../MuEditor/Config/MuEditorConfig.h"
 #include "../MuEditor/Core/ItemStudio.h"
 #include "../MuEditor/Core/MuEditorCore.h"
-#include "../MuEditor/UI/Common/MuEditorUI.h"
+#include "../MuEditor/UI/Common/MuEditorLayout.h"
+#include "../MuEditor/UI/Common/MuEditorToolWindows.h"
+#include "../MuEditor/UI/Common/MuEditorWindowIds.h"
+#include "../MuEditor/UI/ItemTools/ItemSelection.h"
+#include "../MuEditor/UI/ItemTools/ItemToolWindow.h"
 #include "I18N/All.h"
-#include "Assets/EditorText.h"
 #include "imgui.h"
-#include <algorithm>
-#include <fstream>
-#ifdef _WIN32
-#include <direct.h>
-#endif
-#include <filesystem>
-
-#include "imgui_internal.h"
-#include "../MuEditor/UI/Console/MuEditorConsoleUI.h"
 
 namespace
 {
-// The floating window's size (first use, and when it leaves the studio's full-window layout).
+// The tool window's size the first time it floats.
 constexpr float FLOATING_WIDTH = 1500.0f;
 constexpr float FLOATING_HEIGHT = 760.0f;
-constexpr float FLOATING_MARGIN = 20.0f;
-constexpr float MIN_WIDTH = 400.0f;
-constexpr float MIN_HEIGHT = 300.0f;
+constexpr int NO_ITEM = -1;
+
+struct ItemToolButton
+{
+    const char* label;
+    bool MuEditor::ToolWindows::* open;
+};
+
+// The item tools the Item data tab opens, in the order of Windows > Items.
+const ItemToolButton ITEM_TOOL_BUTTONS[] = {
+    {"Item Browser", &MuEditor::ToolWindows::itemBrowser},
+    {"Basics", &MuEditor::ToolWindows::itemBasics},
+    {"Requirements", &MuEditor::ToolWindows::itemRequirements},
+    {"Rules", &MuEditor::ToolWindows::itemRules},
+    {"Categories", &MuEditor::ToolWindows::itemCategories},
+    {"Model", &MuEditor::ToolWindows::itemModel},
+    {"Translations", &MuEditor::ToolWindows::itemTranslations},
+};
 } // namespace
 
 CMuItemEditorUI::CMuItemEditorUI()
-    : m_selectedRow(-1)
+    : m_selectedRow(NO_ITEM)
+    , m_itemToolsSerial(g_ItemSelection.GetSerial())
+    , m_sharedSelection(NO_ITEM)
     , m_activeTab(Tab::None)
     , m_showBrowse(false)
-    , m_wasDocked(false)
-    , m_bFreezeColumns(false)
-    , m_pTable(nullptr)
     , m_pBrowse(std::make_unique<CItemBrowseTab>())
     , m_pRequests(std::make_unique<CItemRequestsTab>())
 {
-    memset(m_szItemSearchBuffer, 0, sizeof(m_szItemSearchBuffer));
-    m_pTable = new CItemEditorTable();
-
-    // Initialize column visibility - AUTO-GENERATED from metadata
-    m_columnVisibility["Index"] = true;  // Special column (not in metadata)
-
-    // Get all fields from metadata and set default visibility
-    const ItemFieldDescriptor* fields = GetFieldDescriptors(); const int fieldCount = GetFieldCount();
-    for (int i = 0; i < fieldCount; ++i)
-    {
-        // Default commonly used columns to visible, rest to hidden
-        bool defaultVisible = false;
-
-        // Check for commonly used fields
-        if (strcmp(fields[i].name, "Name") == 0 ||
-            strcmp(fields[i].name, "Level") == 0 ||
-            strcmp(fields[i].name, "DamageMin") == 0 ||
-            strcmp(fields[i].name, "DamageMax") == 0 ||
-            strcmp(fields[i].name, "Defense") == 0 ||
-            strcmp(fields[i].name, "WeaponSpeed") == 0 ||
-            strcmp(fields[i].name, "Durability") == 0 ||
-            strcmp(fields[i].name, "RequireStrength") == 0 ||
-            strcmp(fields[i].name, "RequireDexterity") == 0 ||
-            strcmp(fields[i].name, "RequireEnergy") == 0 ||
-            strcmp(fields[i].name, "RequireVitality") == 0 ||
-            strcmp(fields[i].name, "RequireCharisma") == 0)
-        {
-            defaultVisible = true;
-        }
-
-        m_columnVisibility[fields[i].name] = defaultVisible;
-    }
-
-    // Load column preferences from file (will override defaults if file exists)
-    LoadColumnPreferences();
 }
 
-CMuItemEditorUI::~CMuItemEditorUI()
-{
-    // Save column preferences when destroying
-    SaveColumnPreferences();
-
-    if (m_pTable)
-    {
-        delete m_pTable;
-        m_pTable = nullptr;
-    }
-}
+CMuItemEditorUI::~CMuItemEditorUI() = default;
 
 CMuItemEditorUI& CMuItemEditorUI::GetInstance()
 {
@@ -115,12 +75,8 @@ void CMuItemEditorUI::Render(bool& showEditor)
         return;
 
     const bool docked = Editor::ItemStudio::DocksItemEditor();
-    const ImGuiWindowFlags flags = PlaceWindow(docked);
-    if (ImGui::Begin(I18N::Editor::ItemEditor, &showEditor, flags))
+    if (BeginWindow(docked, showEditor))
     {
-        if (!docked)
-            KeepWindowBetweenToolbarAndConsole();
-
         // Check if hovering this window OR any popup
         bool isHovering = ImGui::IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows | ImGuiHoveredFlags_AllowWhenBlockedByPopup) ||
                          ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) ||
@@ -133,62 +89,77 @@ void CMuItemEditorUI::Render(bool& showEditor)
 
         g_ItemRequestWatch.Update();
         g_ConceptLibrary.Update();
+        FollowItemToolsSelection();
         RenderTabs();
+        ShareSelectionWithItemTools();
         // After the tabs: a running capture reads the preview Browse drew this frame.
         g_ItemRequestDialog.Render();
         g_ConceptsPanel.RenderPopups();
         g_ConceptGenerateDialog.Render();
         g_ConceptRefineDialog.Render();
 
-        // Render all popups
+        // The popups of the item tools' save and export buttons (Item data tab)
         CItemEditorPopups::RenderAll();
     }
     ImGui::End();
 }
 
-int CMuItemEditorUI::PlaceWindow(bool docked)
+bool CMuItemEditorUI::BeginWindow(bool docked, bool& showEditor)
 {
-    ImGuiIO& io = ImGui::GetIO();
-    const float top = g_MuEditorUI.ToolbarHeight();
-    const float consoleHeight = g_MuEditorCore.IsShowingConsole() ? CMuEditorConsoleUI::HEIGHT : 0.0f;
-    const float bottom = io.DisplaySize.y - consoleHeight;
-    const bool leftStudio = m_wasDocked && !docked;
-    m_wasDocked = docked;
+    char title[MuEditor::WindowIds::TitleCapacity];
+    MuEditor::WindowIds::Title(title, I18N::Editor::ItemEditor, MuEditor::WindowIds::ItemStudio);
 
     if (docked)
     {
-        // Fills the client area under the toolbar and follows window resizes; the
-        // other editors' windows open on top of it.
-        ImGui::SetNextWindowPos(ImVec2(0.0f, top), ImGuiCond_Always);
-        ImGui::SetNextWindowSize(ImVec2(io.DisplaySize.x, bottom - top), ImGuiCond_Always);
-        return ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse |
-               ImGuiWindowFlags_NoBringToFrontOnFocus;
+        // The studio: fills the game window and follows its resizes; the editor
+        // window with the other tools is beside it. With the editor's windows as OS
+        // windows of their own, ImGui places windows on the desktop, so the game
+        // window's place comes from its viewport.
+        const ImGuiViewport* game = ImGui::GetMainViewport();
+        ImGui::SetNextWindowViewport(game->ID);
+        ImGui::SetNextWindowPos(game->Pos, ImGuiCond_Always);
+        ImGui::SetNextWindowSize(game->Size, ImGuiCond_Always);
+        return ImGui::Begin(title, &showEditor,
+                            ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse |
+                                ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoBringToFrontOnFocus);
     }
 
-    // A window the map shows around: the first time, and when the Map Editor opens in the studio.
-    const ImGuiCond placement = leftStudio ? ImGuiCond_Always : ImGuiCond_FirstUseEver;
-    ImGui::SetNextWindowPos(ImVec2(FLOATING_MARGIN, top + FLOATING_MARGIN), placement);
-    ImGui::SetNextWindowSize(ImVec2(FLOATING_WIDTH, FLOATING_HEIGHT), placement);
-    ImGui::SetNextWindowSizeConstraints(ImVec2(MIN_WIDTH, MIN_HEIGHT), ImVec2(io.DisplaySize.x, bottom - top));
-    return ImGuiWindowFlags_NoCollapse;
+    // A tool window like upstream's: a tab beside the item tools the first time,
+    // then wherever it was left (imgui.ini).
+    ImGui::SetNextWindowSize(ImVec2(FLOATING_WIDTH, FLOATING_HEIGHT), ImGuiCond_FirstUseEver);
+    MuEditor::Layout::DockBesideItemTools(MuEditor::WindowIds::ItemStudio);
+    MuEditor::Layout::PrepareToolWindow();
+    const bool drawn = ImGui::Begin(title, &showEditor,
+                                    ImGuiWindowFlags_NoCollapse |
+                                        MuEditor::Layout::ToolWindowBarFlags(MuEditor::WindowIds::ItemStudio));
+    if (drawn)
+        MuEditor::Layout::RenderToolWindowBar();
+    return drawn;
 }
 
-void CMuItemEditorUI::KeepWindowBetweenToolbarAndConsole()
+void CMuItemEditorUI::FollowItemToolsSelection()
 {
-    ImGuiIO& io = ImGui::GetIO();
-    const float availableTop = g_MuEditorUI.ToolbarHeight();
-    const float availableBottom = io.DisplaySize.y - CMuEditorConsoleUI::HEIGHT;
-    const ImVec2 windowPos = ImGui::GetWindowPos();
-    const ImVec2 windowSize = ImGui::GetWindowSize();
+    // An item picked in one of the item tools (their browser, a number in another
+    // tool) is selected here too, unless it is the one this window gave them.
+    if (g_ItemSelection.GetSerial() == m_itemToolsSerial)
+        return;
+    m_itemToolsSerial = g_ItemSelection.GetSerial();
+    const int picked = g_ItemSelection.GetItemType();
+    if (picked == MuEditor::Items::ItemSelection::NoItem || picked == m_selectedRow)
+        return;
+    m_selectedRow = picked;
+    m_sharedSelection = picked;
+}
 
-    if (windowPos.y < availableTop)
-        ImGui::SetWindowPos(ImVec2(windowPos.x, availableTop));
-    if (windowPos.y + windowSize.y > availableBottom)
-        ImGui::SetWindowPos(ImVec2(windowPos.x, availableBottom - windowSize.y));
-    if (windowPos.x < 0)
-        ImGui::SetWindowPos(ImVec2(0, windowPos.y));
-    if (windowPos.x + windowSize.x > io.DisplaySize.x)
-        ImGui::SetWindowPos(ImVec2(io.DisplaySize.x - windowSize.x, windowPos.y));
+void CMuItemEditorUI::ShareSelectionWithItemTools()
+{
+    if (m_selectedRow == m_sharedSelection)
+        return;
+    m_sharedSelection = m_selectedRow;
+    if (m_selectedRow < 0 || m_selectedRow == g_ItemSelection.GetItemType())
+        return;
+    g_ItemSelection.Select(m_selectedRow);
+    m_itemToolsSerial = g_ItemSelection.GetSerial();
 }
 
 void CMuItemEditorUI::RenderTabs()
@@ -205,12 +176,10 @@ void CMuItemEditorUI::RenderTabs()
         m_pBrowse->Render(m_selectedRow);
         ImGui::EndTabItem();
     }
-    if (ImGui::BeginTabItem("Stats table"))
+    if (ImGui::BeginTabItem("Item data"))
     {
-        if (m_activeTab != Tab::StatsTable && m_selectedRow >= 0)
-            CItemEditorTable::RequestScrollToIndex(m_selectedRow); // the item picked in Browse
-        m_activeTab = Tab::StatsTable;
-        RenderStatsTable();
+        m_activeTab = Tab::ItemData;
+        RenderItemDataTab();
         ImGui::EndTabItem();
     }
     if (ImGui::BeginTabItem("Requests"))
@@ -222,124 +191,40 @@ void CMuItemEditorUI::RenderTabs()
     ImGui::EndTabBar();
 }
 
-void CMuItemEditorUI::RenderStatsTable()
+void CMuItemEditorUI::RenderItemDataTab()
 {
-    // Render action buttons (Save, Export S6E3, Export CSV)
-    CItemEditorActions::RenderAllButtons();
-    ImGui::Separator();
+    ImGui::TextWrapped("Names, stats, requirements, rules and models are item data in Data/Items (JSON), edited in "
+                       "the item tools of the editor window (Windows > Items). They show the item selected here, "
+                       "and an item picked there is selected here.");
+    ImGui::Spacing();
+    MuEditor::Items::ToolWindow::RenderSelectedItem(m_selectedRow);
+    ImGui::Spacing();
 
-    RenderSearchBar();
-    ImGui::SameLine();
-    RenderColumnVisibilityMenu();
-    ImGui::SameLine();
-    ImGui::Checkbox(I18N::Editor::FreezeIndexName, &m_bFreezeColumns);
-    ImGui::Separator();
-
-    // Any letter case, also outside A-Z (Editor::Text::FoldCase).
-    const std::string searchFolded = Editor::Text::FoldCase(m_szItemSearchBuffer);
-    if (m_pTable)
+    MuEditor::ToolWindows& windows = g_MuEditorCore.GetToolWindows();
+    bool first = true;
+    for (const ItemToolButton& tool : ITEM_TOOL_BUTTONS)
     {
-        m_pTable->Render(searchFolded, m_columnVisibility, m_selectedRow, m_bFreezeColumns);
-    }
-}
-
-void CMuItemEditorUI::RenderSearchBar()
-{
-    // Search bar
-    ImGui::Text(I18N::Editor::Search);
-    ImGui::SameLine();
-    ImGui::SetNextItemWidth(300);
-    ImGui::InputText("##ItemSearch", m_szItemSearchBuffer, sizeof(m_szItemSearchBuffer));
-}
-
-void CMuItemEditorUI::RenderColumnVisibilityMenu()
-{
-    if (ImGui::Button(I18N::Editor::Columns))
-    {
-        ImGui::OpenPopup("ColumnVisibility");
-    }
-
-    // Track if popup was open in previous frame
-    static bool wasPopupOpen = false;
-    bool isPopupOpen = ImGui::IsPopupOpen("ColumnVisibility");
-
-    if (ImGui::BeginPopup("ColumnVisibility"))
-    {
-        ImGui::Text(I18N::Editor::ToggleColumnVisibility);
-        ImGui::Separator();
-
-        // Select All / Unselect All buttons
-        if (ImGui::Button(I18N::Editor::SelectAll))
+        if (!first)
+            ImGui::SameLine();
+        first = false;
+        if (ImGui::Button(tool.label))
         {
-            for (auto& col : m_columnVisibility)
+            windows.*(tool.open) = true;
+            if (m_selectedRow >= 0)
             {
-                col.second = true;
+                // Selecting it again makes the tools show it (scroll to it, clear a filter).
+                g_ItemSelection.Select(m_selectedRow);
+                m_itemToolsSerial = g_ItemSelection.GetSerial();
             }
-            SaveColumnPreferences();
-        }
-        ImGui::SameLine();
-        if (ImGui::Button(I18N::Editor::UnselectAll))
-        {
-            for (auto& col : m_columnVisibility)
-            {
-                col.second = false;
-            }
-            SaveColumnPreferences();
-        }
-        ImGui::Separator();
-
-        // METADATA-DRIVEN: Render all columns using metadata with translations
-        bool changed = false;
-
-        // Index column (special case, not in metadata)
-        changed |= ImGui::Checkbox(I18N::Editor::Index, &m_columnVisibility["Index"]);
-
-        // Get all fields from metadata and render checkboxes
-        const ItemFieldDescriptor* fields = GetFieldDescriptors(); const int fieldCount = GetFieldCount();
-        for (int i = 0; i < fieldCount; ++i)
-        {
-            const char* displayName = GetFieldDisplayName(fields[i]);
-            changed |= ImGui::Checkbox(displayName, &m_columnVisibility[fields[i].name]);
-        }
-
-        // Save immediately when any checkbox changes
-        if (changed)
-        {
-            SaveColumnPreferences();
-        }
-
-        ImGui::EndPopup();
-        wasPopupOpen = true;
-    }
-    else if (wasPopupOpen)
-    {
-        // Popup just closed - save one final time
-        SaveColumnPreferences();
-        wasPopupOpen = false;
-    }
-}
-
-void CMuItemEditorUI::SaveColumnPreferences()
-{
-    // Save to unified config system
-    g_MuEditorConfig.SetAllColumnVisibility(m_columnVisibility);
-    g_MuEditorConfig.Save();
-}
-
-void CMuItemEditorUI::LoadColumnPreferences()
-{
-    // Load from unified config system
-    const auto& savedVisibility = g_MuEditorConfig.GetAllColumnVisibility();
-
-    // Only update columns that exist in saved config
-    for (const auto& col : savedVisibility)
-    {
-        // Only update if the column exists in our default map
-        if (m_columnVisibility.find(col.first) != m_columnVisibility.end())
-        {
-            m_columnVisibility[col.first] = col.second;
         }
     }
+    if (ImGui::IsItemHovered())
+        ImGui::SetTooltip("Opens the item tool in the editor window, on the selected item");
+
+    ImGui::Separator();
+    ImGui::TextWrapped("Save Items writes the item data next to the game and copies every file it changed into the "
+                       "checkout (src/bin/Data), with a backup of what it replaces in out/editor-backups.");
+    CItemEditorActions::RenderSaveButton();
 }
 
 #endif // _EDITOR

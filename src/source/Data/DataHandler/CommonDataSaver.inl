@@ -144,10 +144,6 @@ std::unique_ptr<BYTE[]> ConvertToFileFormatAndTrackChanges(
 
         // Convert runtime to file format
         config.convertToFile(fileStruct, config.runtimeData[i]);
-        if (config.keepLoadedBytes)
-        {
-            config.keepLoadedBytes(i, config.runtimeData[i], reinterpret_cast<BYTE*>(&fileStruct));
-        }
 
         // Track changes if comparison is enabled
         if (originalData && config.compareItems)
@@ -302,7 +298,7 @@ bool CommonDataSaver::SaveData(const SaveConfig<TRuntime, TFile>& config)
     {
         if (config.outChangeLog)
         {
-            *config.outChangeLog = "No changes detected.\n";
+            *config.outChangeLog = NoChangesMessage;
         }
         return false;
     }

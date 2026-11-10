@@ -8,7 +8,7 @@ change performance behavior by OS.
 |----|----------------|--------------------|
 | macOS | Metal | Identical |
 | Linux | Vulkan | Identical |
-| Windows | D3D12 | Identical |
+| Windows | Vulkan (D3D12 via `[Render] Backend`) | Identical |
 
 Native drivers, GPUs, and font rasterizers can still expose platform-specific
 driver defects. Runtime parity therefore requires measurements on each target;
@@ -22,6 +22,44 @@ a successful build or a macOS run is not evidence for Linux or Windows.
 - GPU skinning shaders and pipelines are required. An eligible submission
   failure is counted and rejected; it does not silently switch to CPU skinning.
 
+## Bitmap upload staging and upscaled textures
+
+Bitmap uploads go through three persistent 4 MiB RGBA8 slots (12 MiB requested
+staging, before driver overhead), sized for the 1024 × 1024 limit of original
+images. Upscaled art (`Render/Textures/UpscaleMarker.h`) is accepted up to its
+marked scale times that limit, at most 4096 × 4096. A level larger than one slot
+is staged in bands of rows, one submission per slot, so the staging allocation
+stays fixed whatever the image size: a 4096 px image takes 16 bands of 256 rows.
+Smaller mip levels share a slot. Growing the slots would only cut the number of
+submissions; measure load times with the real asset pack before changing them.
+
+## RmlUi multisampling
+
+RmlUi UI layers default to one sample (`RMLUI_SDL_GPU_NUM_MSAA_SAMPLES=1`)
+on every SDL GPU driver. This disables UI MSAA and avoids the multisampled
+layer/resolve path implicated in reported NVIDIA/Vulkan device loss shortly
+after startup. The reported failure occurs on the first UI frames, with Windows
+event 153 from `nvlddmkm` and subsequent texture-upload failures ending in
+`LoadBitmap Failed`. The same build with one sample runs successfully.
+
+This is a compatibility mitigation. The underlying driver, SDL, or RmlUi
+backend fault remains unisolated; it is independent of the swapchain-format
+issue. UI layers, clipping, and filters remain enabled, but UI edges no longer
+receive multisample anti-aliasing.
+
+For diagnostic builds, opt into MSAA through CMake, for example:
+
+```powershell
+cmake --preset windows-x64 -DRMLUI_SDL_GPU_NUM_MSAA_SAMPLES=2
+cmake --build --preset windows-x64-release
+```
+
+Supported requests are `1`, `2`, `4`, and `8`. For multisampled requests the
+backend chooses a supported sample count for both color and stencil, preferring
+more samples when the exact count is unavailable. Restore `1` and rebuild to
+return to the default behavior. Record the sample-count setting alongside the
+inputs below when comparing native runs.
+
 ## Packaged font roles
 
 Release builds resolve every text role from files beside the executable:
@@ -32,15 +70,33 @@ Release builds resolve every text role from files beside the executable:
 | Bold | Selected family bold file |
 | Big bold | Selected family bold file |
 | Fixed | `fonts/Cousine-Regular.ttf` |
-| Missing glyph fallback | `fonts/NanumGothic-Regular.ttf` |
+| Missing glyph fallbacks | `fonts/DejaVuSans*.ttf`, `fonts/NotoSansTC-*.otf`, `fonts/NanumGothic-Regular.ttf`, `fonts/NotoSansSC-*.otf` |
 
-Selectable families are DejaVu Sans and Liberation Sans. Empty or unknown
-configuration selects DejaVu Sans. SDL_ttf, Windows GDI, and the non-Windows
-GDI shim use the same registry.
+Selectable families are DejaVu Sans, Liberation Sans, Noto Sans TC and Noto Sans SC. Empty
+or unknown configuration selects DejaVu Sans. SDL_ttf, Windows GDI, and the
+non-Windows GDI shim use the same registry.
 
-SDL_ttf attaches Nanum Gothic to every role at startup. This preserves the
-selected Latin family while rendering Hangul labels instead of missing-glyph
-boxes; bold roles use SDL_ttf's synthetic bold style for the fallback face.
+SDL_ttf attaches four fallbacks to every role at startup, tried in this order:
+
+1. DejaVu Sans: Latin, Greek and Cyrillic letters the selected family or
+   Cousine lack.
+2. Noto Sans TC: Traditional Chinese (`zh-TW`), kana and CJK punctuation.
+   Bold roles use its bold file.
+3. Nanum Gothic: Hangul. Bold roles use SDL_ttf's synthetic bold style.
+4. Noto Sans SC: Simplified Chinese characters missing from the earlier faces.
+   Bold roles use its bold file.
+
+A fallback that is the role's own font file is skipped. This keeps the
+selected family for the text it covers and draws the rest instead of
+missing-glyph boxes. A test checks that every character of every translation
+has a glyph with each selectable family. Japanese (`ja`) is the known
+exception: some Japanese kanji forms need Noto Sans JP. Select Noto Sans SC
+for Simplified Chinese regional glyph forms; other families try Noto Sans TC
+first for shared Chinese characters.
+
+Characters from a fallback font sit on the same baseline as the rest of the
+line. With Noto Sans TC or Noto Sans SC as the UI font, text is drawn at the height DejaVu
+Sans text would have, so it does not sit lower in its boxes.
 
 Missing or corrupt packaged roles abort Release renderer startup. Windows also
 requires private GDI registration of every packaged role; partial registration
@@ -53,7 +109,8 @@ documented platform-dependent font exception. Release packages may not use it.
 ## SDL_ttf patch policy
 
 SDL_ttf is pinned to revision
-`a1ce3670aec736ecbf0936c43f2f0cc53aa61e5b` from the 3.2.2 line. Upstream
+`a1ce3670aec736ecbf0936c43f2f0cc53aa61e5b` from the 3.2.2 line (the
+`release-3.2.2` archive, checked by its SHA-256). Upstream
 `main` was checked at `a42434b8c96daaf7650dbd0befe480c090d1c2eb`; it did
 not contain equivalent missing-glyph upload batching.
 
@@ -63,6 +120,11 @@ update's missing glyphs into one copy pass and command submission. It exposes
 the upload count through the custom text property
 `MuMain.SDL_ttf.gpu_text.uploaded_glyphs`. The client consumes that property
 once and reports it as `GlyphUploads`.
+
+The patch `cmake/patches/sdl_ttf-3.2.2-fallback-baseline.patch` places glyphs
+from a fallback font at the ascent of the font they back instead of their own,
+so they share its baseline. Without it, Han characters from Noto Sans TC
+(ascent 1.16 em) sat 3 to 4 px below DejaVu Sans text (0.93 em).
 
 ## Capture procedure
 
