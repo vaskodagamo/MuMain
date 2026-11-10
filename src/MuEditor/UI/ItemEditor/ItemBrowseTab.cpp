@@ -32,6 +32,7 @@ constexpr float FILTER_PANEL_WIDTH = 235.0f;
 // The selected item's own window, sized for a big 3D preview; the user can resize it.
 constexpr float DETAILS_WINDOW_WIDTH = 640.0f;
 constexpr float DETAILS_WINDOW_HEIGHT = 900.0f;
+constexpr float DETAILS_WINDOW_MARGIN = 40.0f; // from the game window's top right corner, the first time
 constexpr float SIDE_BY_SIDE_FACTOR = 2.0f; // A/B side by side: two previews, each as big as one
 constexpr const char* DETAILS_WINDOW_ID = "###ItemDetails"; // one window, whatever item it shows
 constexpr const char* NO_ITEM_NAME = "(no name)";
@@ -288,6 +289,12 @@ void CItemBrowseTab::RenderDetailsWindow(int selectedType)
         return;
     FitDetailsToSideBySide();
     ImGui::SetNextWindowSize(ImVec2(Scaled(DETAILS_WINDOW_WIDTH), Scaled(DETAILS_WINDOW_HEIGHT)), ImGuiCond_FirstUseEver);
+    // The first time over the right of the game window (its viewport's place: ImGui's
+    // coordinates are the desktop's while the editor's windows are OS windows of their own).
+    const ImGuiViewport* game = ImGui::GetMainViewport();
+    ImGui::SetNextWindowPos(ImVec2(game->Pos.x + game->Size.x - Scaled(DETAILS_WINDOW_MARGIN),
+                                   game->Pos.y + Scaled(DETAILS_WINDOW_MARGIN)),
+                            ImGuiCond_FirstUseEver, ImVec2(1.0f, 0.0f));
     const BrowseRow* row = RowOfType(selectedType);
     const std::string name = row != nullptr && !row->name.empty() ? row->name : NO_ITEM_NAME;
     const std::string title = "Item: " + name + DETAILS_WINDOW_ID;

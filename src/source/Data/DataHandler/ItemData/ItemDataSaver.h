@@ -2,23 +2,17 @@
 
 #ifdef _EDITOR
 
-#include <cstddef>
 #include <string>
+
+#include "Data/GameData/ItemData/ItemStructs.h"
 
 // Item Data Saving Operations
 class ItemDataSaver
 {
 public:
-    // Writes the table in the record layout it was loaded from (see
-    // ItemFileSnapshot); items nobody edited keep their loaded bytes.
-    static bool Save(wchar_t* fileName, std::string* outChangeLog = nullptr);
-
-    // The UTF-8 bytes of a name (without its terminator) the file Save writes can
-    // hold: 29 in the legacy layout, 49 in the current one.
-    static size_t MaxNameBytes();
-
-private:
-    template <typename TFile> static bool SaveAs(wchar_t* fileName, std::string* outChangeLog);
+    // Writes MAX_ITEM records from `items` to an item.bmd file (50-byte
+    // names), keeping backups of the old file.
+    static bool Save(const wchar_t* fileName, const ITEM_ATTRIBUTE* items, std::string* outChangeLog = nullptr);
 };
 
 #endif // _EDITOR

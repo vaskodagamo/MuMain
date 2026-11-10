@@ -3,6 +3,7 @@
 
 #include "App/Control/ControlEvents.h"
 #include "App/Control/ControlObjects.h"
+#include "App/Control/ControlTargets.h"
 #include "Core/Text/Utf8.h"
 #include "Engine/Object/ZzzCharacter.h"
 #include "Engine/Object/ZzzInterface.h"
@@ -15,11 +16,12 @@
 #include "GameLogic/Automation/Pickup.h"
 #include "GameLogic/Automation/Skill.h"
 #include "GameLogic/Items/InventoryUtils.h"
+#include "UI/Inventory/InventoryContents.h"
 #include "GameLogic/Skills/SkillManager.h"
 #include "Network/Server/WSclient.h"
 #include "Scenes/SceneCore.h"
-#include "UI/NewUI/Dialogs/NewUIMessageBox.h"
-#include "UI/NewUI/NewUISystem.h"
+#include "UI/Dialogs/ConfirmRequest.h"
+#include "UI/Core/WindowSystem.h"
 #include "World/MapInfra/MapManager.h"
 
 #include "json.hpp"
@@ -40,6 +42,9 @@ namespace
 using App::Control::Act;
 using App::Control::ErrorCode;
 using App::Control::Request;
+using App::Control::Targets::ResolveTarget;
+using App::Control::Targets::TargetError;
+using App::Control::Targets::TargetLookup;
 using nlohmann::json;
 namespace Automation = GameLogic::Automation;
 
@@ -100,14 +105,6 @@ bool ParseMapIndex(const std::string& text, int& map)
     return true;
 }
 
-// True while the character is still walking a planned path. Re-issuing a
-// move before it ends restarts the walk from the current tile, so an act
-// that walks into range would crawl.
-bool WalkInProgress()
-{
-    return Hero != nullptr && Hero->Path.PathNum > 0 && Hero->Path.CurrentPath < Hero->Path.PathNum - 1;
-}
-
 // True when the next step of a per-frame act is due, remembering when the
 // previous one was taken.
 bool StepIsDue(std::chrono::steady_clock::time_point& last, std::chrono::milliseconds interval = PrimitiveInterval)
@@ -147,78 +144,6 @@ void StopWalking()
     Hero->Path.CurrentPath = 0;
     Hero->Path.CurrentPathFloat = 0;
     Hero->Path.Lock.unlock();
-}
-
-// What a `target` field turned out to be. A malformed one is a different
-// answer from one the client simply does not see, and the commands say so.
-enum class TargetLookup : std::uint8_t
-{
-    Missing,
-    Malformed,
-    NotInView,
-    Found,
-};
-
-// Server-assigned id of the object a command names, by id or by character
-// name.
-TargetLookup ResolveTarget(const Request& request, int& key)
-{
-    key = -1;
-    if (!request.Has("target"))
-    {
-        return TargetLookup::Missing;
-    }
-
-    int id = 0;
-    if (request.GetInt("target", id))
-    {
-        if (FindCharacterIndex(id) >= MAX_CHARACTERS_CLIENT)
-        {
-            return TargetLookup::NotInView;
-        }
-        key = id;
-        return TargetLookup::Found;
-    }
-
-    std::string name;
-    if (!request.GetString("target", name) || name.empty())
-    {
-        return TargetLookup::Malformed;
-    }
-
-    const std::wstring wanted = Core::Text::FromUtf8(name);
-    for (int index = 0; index < MAX_CHARACTERS_CLIENT; ++index)
-    {
-        const CHARACTER& character = CharactersClient[index];
-        if (character.Object.Live && wcscmp(character.ID, wanted.c_str()) == 0)
-        {
-            key = character.Key;
-            return TargetLookup::Found;
-        }
-    }
-    return TargetLookup::NotInView;
-}
-
-// The error a lookup that did not find an object deserves, or an empty
-// string when it did. `required` says whether the command needs one.
-std::string TargetError(const Request& request, TargetLookup lookup, std::string_view command, bool required)
-{
-    switch (lookup)
-    {
-    case TargetLookup::Found:
-        return {};
-    case TargetLookup::Missing:
-        return required ? App::Control::EncodeError(request.EncodedId(), App::Control::ErrorCode::BadRequest,
-                                                    "`" + std::string(command) + "` needs a `target`")
-                        : std::string{};
-    case TargetLookup::Malformed:
-        return App::Control::EncodeError(request.EncodedId(), App::Control::ErrorCode::BadRequest,
-                                         "`target` is an object id or a character name");
-    case TargetLookup::NotInView:
-        break;
-    }
-    return App::Control::EncodeError(request.EncodedId(), App::Control::ErrorCode::NotInView,
-                                     "the client does not see that object");
 }
 
 // Sends one chat line the way the chat box does.
@@ -263,24 +188,15 @@ public:
 
     [[nodiscard]] Status Tick(std::string& response) override
     {
-        if (Hero == nullptr)
+        // Logical arrival precedes the end of the visible movement segment.
+        if (Hero == nullptr || Automation::IsWalkInProgress())
         {
             return Status::Running;
         }
 
         if (std::abs(Hero->PositionX - m_tileX) <= ArrivalTiles && std::abs(Hero->PositionY - m_tileY) <= ArrivalTiles)
         {
-            json result;
-            result["position"] = PositionObject();
-            response = App::Control::EncodeResult(EncodedId(), result.dump());
-            return Status::Finished;
-        }
-
-        // Let the planned path play out before planning the next one:
-        // re-planning every frame would restart the walk mid-step.
-        if (WalkInProgress())
-        {
-            return Status::Running;
+            return FinishArrival(response);
         }
 
         // Pace the walk packets like a player's clicks; the server treats a
@@ -300,16 +216,21 @@ public:
 
         if (result == Automation::MoveResult::Arrived)
         {
-            json arrived;
-            arrived["position"] = PositionObject();
-            response = App::Control::EncodeResult(EncodedId(), arrived.dump());
-            return Status::Finished;
+            return FinishArrival(response);
         }
 
         return Status::Running;
     }
 
 private:
+    Status FinishArrival(std::string& response) const
+    {
+        json result;
+        result["position"] = PositionObject();
+        response = App::Control::EncodeResult(EncodedId(), result.dump());
+        return Status::Finished;
+    }
+
     int m_tileX;
     int m_tileY;
     std::chrono::steady_clock::time_point m_lastWalkAt{};
@@ -359,7 +280,7 @@ public:
             return Status::Running;
         }
 
-        if (WalkInProgress() || !StepIsDue(m_lastStep))
+        if (Automation::IsWalkInProgress() || !StepIsDue(m_lastStep))
         {
             return Status::Running;
         }
@@ -456,7 +377,7 @@ public:
 
     [[nodiscard]] Status Tick(std::string& response) override
     {
-        if (WalkInProgress() || !StepIsDue(m_lastStep))
+        if (Automation::IsWalkInProgress() || !StepIsDue(m_lastStep))
         {
             return Status::Running;
         }
@@ -549,7 +470,7 @@ public:
             return Status::Finished;
         }
 
-        if (WalkInProgress() || !StepIsDue(m_lastStep))
+        if (Automation::IsWalkInProgress() || !StepIsDue(m_lastStep))
         {
             return Status::Running;
         }
@@ -969,7 +890,7 @@ std::string UseItem(const Request& request, std::unique_ptr<Act>&)
         return EncodeError(request.EncodedId(), ErrorCode::BadRequest, "`use` needs an inventory slot");
     }
 
-    const ITEM* item = FindInventoryItemBySlot(slot);
+    const ITEM* item = UI::Inventory::FindPlayerItem(slot);
     // `-1` is the client's empty marker; type 0 is a real item.
     if (item == nullptr || item->Type < 0)
     {
@@ -1010,7 +931,7 @@ std::string EquipItem(const Request& request, std::unique_ptr<Act>&)
                            "`equip` needs an inventory slot and a target slot");
     }
 
-    const ITEM* item = FindInventoryItemBySlot(fromSlot);
+    const ITEM* item = UI::Inventory::FindPlayerItem(fromSlot);
     if (item == nullptr || item->Type < 0)
     {
         return EncodeError(request.EncodedId(), ErrorCode::EmptySlot,
@@ -1037,7 +958,7 @@ std::string EquipItem(const Request& request, std::unique_ptr<Act>&)
     // The extension slots live in their own control, and the main inventory
     // does not know them: the item is taken from whichever holds the slot.
     const bool inExtension = !IsMainInventorySlot(fromSlot);
-    SEASON3B::CNewUIInventoryCtrl* inventory = nullptr;
+    mu::ui::window::CInventoryCtrl* inventory = nullptr;
     ITEM* moving = nullptr;
     if (inExtension)
     {
@@ -1056,7 +977,7 @@ std::string EquipItem(const Request& request, std::unique_ptr<Act>&)
         return EncodeError(request.EncodedId(), ErrorCode::Failed, "the inventory is not available");
     }
 
-    if (SEASON3B::CNewUIInventoryCtrl::GetPickedItem() != nullptr)
+    if (mu::ui::window::CInventoryCtrl::GetPickedItem() != nullptr)
     {
         return EncodeError(request.EncodedId(), ErrorCode::Busy, "an item is already being moved");
     }
@@ -1088,19 +1009,19 @@ std::string EquipItem(const Request& request, std::unique_ptr<Act>&)
     // while it still occupies its own squares, a move that overlaps them
     // would be refused for colliding with itself.
 
-    if (!SEASON3B::CNewUIInventoryCtrl::CreatePickedItem(inventory, moving, true))
+    if (!mu::ui::window::CInventoryCtrl::CreatePickedItem(inventory, moving, true))
     {
         // CreatePickedItem has already new-ed the picked-item singleton by
         // the time Create() can fail (NewUIInventoryCtrl.cpp), so a bare
         // return would leave it non-null: every later move — ours and the
         // player's own picking — would answer "an item is already being
         // moved" for the rest of the session.
-        SEASON3B::CNewUIInventoryCtrl::DeletePickedItem();
+        mu::ui::window::CInventoryCtrl::DeletePickedItem();
         return EncodeError(request.EncodedId(), ErrorCode::Failed, "the item could not be picked up");
     }
     inventory->RemoveItem(moving);
 
-    SEASON3B::CNewUIPickedItem* picked = SEASON3B::CNewUIInventoryCtrl::GetPickedItem();
+    mu::ui::window::CPickedItem* picked = mu::ui::window::CInventoryCtrl::GetPickedItem();
     ITEM* lifted = picked != nullptr ? picked->GetItem() : nullptr;
 
     // Asked now, not before: the item has left its own squares, so a move
@@ -1109,7 +1030,7 @@ std::string EquipItem(const Request& request, std::unique_ptr<Act>&)
     // NewUIInventoryActionController.cpp:123).
     if (toSlot >= MAX_EQUIPMENT_INDEX)
     {
-        SEASON3B::CNewUIInventoryCtrl* destination =
+        mu::ui::window::CInventoryCtrl* destination =
             IsMainInventorySlot(toSlot)
                 ? (g_pMyInventory != nullptr ? g_pMyInventory->GetInventoryCtrl() : nullptr)
                 : (g_pMyInventoryExt != nullptr ? g_pMyInventoryExt->TryGetExtensionByInventoryIndex(toSlot) : nullptr);
@@ -1119,7 +1040,7 @@ std::string EquipItem(const Request& request, std::unique_ptr<Act>&)
             {
                 inventory->AddItem(lifted->x, lifted->y, lifted);
             }
-            SEASON3B::CNewUIInventoryCtrl::DeletePickedItem();
+            mu::ui::window::CInventoryCtrl::DeletePickedItem();
             return EncodeError(request.EncodedId(), ErrorCode::NotAllowed, "the item does not fit in that slot");
         }
     }
@@ -1134,7 +1055,7 @@ std::string EquipItem(const Request& request, std::unique_ptr<Act>&)
         {
             inventory->AddItem(lifted->x, lifted->y, lifted);
         }
-        SEASON3B::CNewUIInventoryCtrl::DeletePickedItem();
+        mu::ui::window::CInventoryCtrl::DeletePickedItem();
         return EncodeError(request.EncodedId(), ErrorCode::Busy, "another item move has not been answered yet");
     }
 
@@ -1234,15 +1155,13 @@ std::string Party(const Request& request, std::unique_ptr<Act>&)
             return EncodeError(request.EncodedId(), ErrorCode::Failed, "no party invitation is pending");
         }
 
-        SocketClient->ToGameServer()->SendPartyInviteResponse(action == "accept" ? 1 : 0,
-                                                              static_cast<uint16_t>(PartyKey));
-        // The invitation dialog would stay on screen otherwise: the button
-        // handler sends the answer and closes the box in one go.
-        if (!g_MessageBox->IsEmpty())
-        {
-            g_MessageBox->PopMessageBox();
-        }
+        // Through the invitation dialog, as its buttons answer: that sends the answer and closes it.
         result["requester"] = PartyKey;
+        if (!UI::Dialogs::AnswerConfirm("party-invite", action == "accept"))
+        {
+            SocketClient->ToGameServer()->SendPartyInviteResponse(action == "accept" ? 1 : 0,
+                                                                  static_cast<uint16_t>(PartyKey));
+        }
         PartyKey = 0;
         return EncodeResult(request.EncodedId(), result.dump());
     }

@@ -58,9 +58,12 @@ bool CMapOutliner::Render(bool* open, int world)
     m_selected = false;
     if (open == nullptr || !*open)
         return false;
-    const ImGuiIO& io = ImGui::GetIO();
+    // Over the game window's right side the first time (its viewport's place: ImGui's
+    // coordinates are the desktop's while the editor's windows are OS windows).
+    const ImGuiViewport* game = ImGui::GetMainViewport();
     ImGui::SetNextWindowSize(FIRST_USE_SIZE, ImGuiCond_FirstUseEver);
-    ImGui::SetNextWindowPos(ImVec2(io.DisplaySize.x - FIRST_USE_RIGHT_MARGIN, FIRST_USE_TOP), ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowPos(ImVec2(game->Pos.x + game->Size.x - FIRST_USE_RIGHT_MARGIN, game->Pos.y + FIRST_USE_TOP),
+                            ImGuiCond_FirstUseEver);
     const bool visible = ImGui::Begin("Outliner", open);
     // Clicks on the window must not reach the world (see CMuEditorCore).
     if (ImGui::IsWindowHovered(ImGuiHoveredFlags_ChildWindows | ImGuiHoveredFlags_AllowWhenBlockedByActiveItem))

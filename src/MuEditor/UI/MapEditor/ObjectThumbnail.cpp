@@ -6,6 +6,8 @@
 
 #include "Render/Models/ZzzBMD.h"        // BMD / Models[] / BoneTransform / RENDER_TEXTURE / OBB_t
 #include "Render/Renderer/MuRenderer.h"  // mu::GetRenderer()
+#include "UI/Common/LookAt.h"
+#include "UI/Common/ScopedOffscreenCapture.h"
 #include "UI/Console/MuEditorConsoleUI.h"
 #include "Core/ModelPose.h"
 #include "Core/ScopedOffscreenCapture.h"
@@ -182,7 +184,7 @@ unsigned int CObjectThumbnail::RenderNow(int type, Editor::Thumbnail::Framing fr
         g_MuEditorConsoleUI.LogEditor(msg);
         return 0;
     }
-    const ScopedOffscreenCapture endCaptureOnReturn; // EndOffscreenCapture() on every exit path below
+    const MuEditor::ScopedOffscreenCapture endCaptureOnReturn; // EndOffscreenCapture() on every exit path below
 
     glMatrixMode(GL_PROJECTION); glPushMatrix();
     glMatrixMode(GL_MODELVIEW);  glPushMatrix();

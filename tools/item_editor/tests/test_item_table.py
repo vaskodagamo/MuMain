@@ -59,7 +59,8 @@ class Layouts(unittest.TestCase):
         text = FIELD_DEFS.read_text(encoding='utf-8')
         simple = text.split('#define ITEM_FIELDS_SIMPLE(X)')[1].split('#define')[0]
         declared = re.findall(r'^\s*X\((\w+),\s*(\w+),', simple, re.M)
-        codes = {'Bool': '?', 'Byte': 'B', 'Word': 'H', 'Int': 'i'}
+        # ByteInFile: two bytes in the game, one in the .bmd item files this module decodes.
+        codes = {'Bool': '?', 'Byte': 'B', 'Word': 'H', 'Int': 'i', 'ByteInFile': 'B'}
         self.assertEqual([(name, codes[kind]) for name, kind in declared], list(item_table.SIMPLE_FIELDS))
 
     def test_round_trip_in_both_layouts(self):

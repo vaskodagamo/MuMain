@@ -4,9 +4,9 @@
 #include "Character/CharacterManager.h" // gCharacterManager
 #include "Camera/CameraProjection.h" // CameraProjection
 
-// Includes mirror ZzzInterface.cpp, the unit these were extracted from.
+// Includes mirror ZzzInterface.cpp.
 #include "Core/Platform/Imm.h"
-#include "UI/Legacy/UIManager.h"
+#include "UI/Core/UIManager.h"
 #include "Render/Textures/ZzzOpenglUtil.h"
 #include "Render/Models/ZzzBMD.h"
 #include "Render/Terrain/ZzzLodTerrain.h"
@@ -35,20 +35,20 @@
 #include "GameLogic/NPCs/npcBreeder.h"
 #include "GameLogic/Pets/GIPetManager.h"
 #include "Character/CSParts.h"
-#include "UI/Legacy/UIMapName.h"	// rozy
+#include "UI/HUD/UIMapName.h"	// rozy
 #include "GameLogic/Events/Cinematic/CDirection.h"
 #include "World/MapInfra/MapManager.h"
 #include "GameLogic/Events/Event.h"
-#include "UI/NewUI/NewUISystem.h"
+#include "UI/Core/WindowSystem.h"
 #include "GameLogic/Events/w_CursedTemple.h"
-#include "UI/Legacy/UIControls.h"
 #include "GameLogic/Social/PartyManager.h"
-#include "UI/NewUI/Dialogs/NewUICommonMessageBox.h"
+#include "UI/Dialogs/CommonMessageBox.h"
 #include "GameLogic/Skills/SummonSystem.h"
 #include "GameLogic/Skills/SkillManager.h"
 #include "World/MapInfra/w_MapHeaders.h"
 #include "GameLogic/Combat/DuelMgr.h"
 #include "Core/Text/WideString.h"
+#include "Render/Text/CUIRenderText.h"
 
 namespace UI::Chat
 {
@@ -221,10 +221,10 @@ void RenderBoolean(int x, int y, CHAT* c)
             switch (c->Owner->m_byGensInfluence)
             {
             case 1:
-                g_pNewUIGensRanking->RanderMark(tempX, y, (SEASON3B::CNewUIGensRanking::GENS_TYPE)c->Owner->m_byGensInfluence, c->Owner->GensRanking, SEASON3B::CNewUIGensRanking::MARK_BOOLEAN, (float)RenderPos.y);
+                g_pNewUIGensRanking->RanderMark(tempX, y, (mu::ui::window::CGensRanking::GENS_TYPE)c->Owner->m_byGensInfluence, c->Owner->GensRanking, mu::ui::window::CGensRanking::MARK_BOOLEAN, (float)RenderPos.y);
                 return;
             case 2:
-                g_pNewUIGensRanking->RanderMark(tempX, y, (SEASON3B::CNewUIGensRanking::GENS_TYPE)c->Owner->m_byGensInfluence, c->Owner->GensRanking, SEASON3B::CNewUIGensRanking::MARK_BOOLEAN, (float)RenderPos.y);
+                g_pNewUIGensRanking->RanderMark(tempX, y, (mu::ui::window::CGensRanking::GENS_TYPE)c->Owner->m_byGensInfluence, c->Owner->GensRanking, mu::ui::window::CGensRanking::MARK_BOOLEAN, (float)RenderPos.y);
                 return;
             default:
                 break;
@@ -257,12 +257,12 @@ void RenderBoolean(int x, int y, CHAT* c)
         g_pRenderText->SetTextColor(GetGuildRelationShipTextColor(c->Owner->GuildRelationShip));
     }
 
-    if (c->Union && c->Union[0])
+    if (c->Union[0])
     {
         g_pRenderText->RenderText(RenderPos.x, RenderPos.y, c->Union, RenderBoxSize.cx, iLineHeight, RT3_SORT_LEFT);
         RenderPos.y += iLineHeight;
     }
-    if (c->Guild && c->Guild[0])
+    if (c->Guild[0])
     {
         g_pRenderText->RenderText(RenderPos.x, RenderPos.y, c->Guild, RenderBoxSize.cx, iLineHeight, RT3_SORT_LEFT);
         RenderPos.y += iLineHeight;
@@ -351,9 +351,9 @@ void RenderBoolean(int x, int y, CHAT* c)
             RenderPos.y -= iLineHeight;
 
         if (1 == c->Owner->m_byGensInfluence)
-            g_pNewUIGensRanking->RanderMark(x, y, (SEASON3B::CNewUIGensRanking::GENS_TYPE)c->Owner->m_byGensInfluence, c->Owner->GensRanking, SEASON3B::CNewUIGensRanking::MARK_BOOLEAN, (float)RenderPos.y);
+            g_pNewUIGensRanking->RanderMark(x, y, (mu::ui::window::CGensRanking::GENS_TYPE)c->Owner->m_byGensInfluence, c->Owner->GensRanking, mu::ui::window::CGensRanking::MARK_BOOLEAN, (float)RenderPos.y);
         else if (2 == c->Owner->m_byGensInfluence)
-            g_pNewUIGensRanking->RanderMark(x, y, (SEASON3B::CNewUIGensRanking::GENS_TYPE)c->Owner->m_byGensInfluence, c->Owner->GensRanking, SEASON3B::CNewUIGensRanking::MARK_BOOLEAN, (float)RenderPos.y);
+            g_pNewUIGensRanking->RanderMark(x, y, (mu::ui::window::CGensRanking::GENS_TYPE)c->Owner->m_byGensInfluence, c->Owner->GensRanking, mu::ui::window::CGensRanking::MARK_BOOLEAN, (float)RenderPos.y);
     }
 }
 void AddChat(CHAT* c, const wchar_t* chat_text, int flag)
@@ -367,7 +367,7 @@ void AddChat(CHAT* c, const wchar_t* chat_text, int flag)
         break;
     case 1:
         Time = 1000;
-        g_pChatListBox->AddText(c->ID, chat_text, SEASON3B::TYPE_CHAT_MESSAGE);
+        g_pChatListBox->AddText(c->ID, chat_text, mu::ui::window::TYPE_CHAT_MESSAGE);
         break;
     }
 
@@ -615,7 +615,7 @@ void RenderBooleans()
             int ScreenX, ScreenY;
             if (ci->Owner != NULL)
             {
-                OBJECT* o = &ci->Owner->Object;
+                const OBJECT* o = &ci->Owner->Object;
                 Vector(o->Position[0], o->Position[1], o->Position[2] + o->BoundingBoxMax[2] + 60.f, Position);
 
                 if (o->Type >= MODEL_LITTLESANTA && o->Type <= MODEL_LITTLESANTA_END)

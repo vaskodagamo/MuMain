@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 
+#include "imgui.h"
 #include "MapObjectPlace.h"  // Editor::ObjectPlace::ModelEntry
 #include "MapBrushControls.h"
 #include "MapGatesTab.h"
@@ -71,6 +72,13 @@ public:
     bool ShowTab(const std::string& name);
     // The tab names, in the order the panel shows them.
     static std::vector<std::string> TabNames();
+    // The Map Editor's Ctrl+Z and Delete: while its window has the focus, and
+    // while the game window has the keyboard, as after a click into the world
+    // (it leaves no editor window focused). Not while a text field of the
+    // game's is typed in; a text field of the editor's keeps its own keys.
+    // While the game has the keyboard the item tools take no Ctrl+Z, also one
+    // that still looks focused (after Alt+Tab), so the map edit is undone.
+    static bool Shortcut(ImGuiKeyChord keyChord);
 
 private:
     CMapEditorUI() = default;
@@ -114,6 +122,9 @@ private:
     // "Load server base .att...": same two-step pattern as RenderMinimapTgaConvert.
     void RenderServerBaseLoad(int world);
     void LoadServerBaseFile(const std::filesystem::path& file, int world);
+    // The Sounds tab (MapSoundsTab.h), and taking an object in the world for
+    // it as the Objects tab picks one.
+    void RenderSoundsTab();
     // Paints TerrainWall[] with the selected attribute under the cursor.
     void PaintAttribute();
     // Sets the walkability of the tiles inside `circle` to `value`.
@@ -158,6 +169,11 @@ private:
     void EnterEditMode(int editFlag);
     // Returns the game to normal play (EDIT_NONE) if this panel had taken it.
     void RestoreGameMode();
+    // No panel in sight: no overlay, outline or preview in the world, no
+    // top-down minimap view, and the game back to normal play.
+    void ReleaseWorld();
+    // Ends the top-down minimap view, back to the game's camera.
+    void EndMinimapMode();
 
     // Resolves which World{N}/EncTerrain{N} the live map maps to. -1 = auto from
     // the active world; a user override wins when >= 0.
@@ -175,6 +191,8 @@ private:
 
     // Mouse state captured before the game consumes it (see CaptureInputForPainting).
     bool m_PaintLDown = false;
+    // The left button as the Sounds tab's picking saw it the frame before.
+    bool m_soundPickWasDown = false;
     bool m_PaintRDown = false;
     Editor::Editing::TerrainStroke m_textureStroke; // the paint stroke held now (one undo step)
 
@@ -196,6 +214,7 @@ private:
     bool  m_objWasDown = false;        // rising-edge guard so one click = one object
     bool  m_selectAssetsTab = false;   // "Show in Assets tab" was clicked: switch tabs next frame
     std::string m_selectTab;           // gate-show, map-tab: the tab to switch to next frame (empty: none)
+    bool  m_focusPanel = false;        // gate-show, map-tab: bring the panel's dock tab to the front next frame
     bool m_showOutliner = false;       // the Outliner window is open
     unsigned int m_objectListGeneration = 0; // ObjectListGeneration() the selection and undo belong to
     int   m_modelsWorld = -1;          // world the cached model list is for
@@ -228,7 +247,7 @@ private:
     int  m_attrBrushValue = 4;        // TW_* value the brush writes (0 = walkable)
     float m_attrRadius = 1.0f;        // brush radius (tiles), hard edge
     Editor::Editing::TerrainStroke m_attrStroke;
-    int  m_serverMapOverride = -1;    // -1 = auto (gMapManager.WorldActive)
+    int  m_serverMapOverride = -1;    // -1 = auto (gMapManager.GetServerMap())
     std::string m_attrStatus;
 
     // Server export is a MERGE onto the server's current TerrainData, because the two

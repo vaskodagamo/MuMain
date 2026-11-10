@@ -16,17 +16,40 @@ struct BundledFont
     const char* bold;
 };
 
+// Chinese faces are selectable so each locale can use its own glyph forms.
+inline constexpr BundledFont kNotoSansTcFont{"Noto Sans TC", "fonts/NotoSansTC-Regular.otf",
+                                             "fonts/NotoSansTC-Bold.otf"};
+inline constexpr BundledFont kNotoSansScFont{"Noto Sans SC", "fonts/NotoSansSC-Regular.otf",
+                                             "fonts/NotoSansSC-Bold.otf"};
+
+inline constexpr BundledFont kDejaVuSansFont{"DejaVu Sans", "fonts/DejaVuSans.ttf", "fonts/DejaVuSans-Bold.ttf"};
+
 inline constexpr BundledFont kBundledFonts[] = {
-    { "Liberation Sans", "fonts/LiberationSans-Regular.ttf", "fonts/LiberationSans-Bold.ttf" },
-    { "DejaVu Sans",     "fonts/DejaVuSans.ttf",             "fonts/DejaVuSans-Bold.ttf" },
+    {"Liberation Sans", "fonts/LiberationSans-Regular.ttf", "fonts/LiberationSans-Bold.ttf"},
+    kDejaVuSansFont,
+    kNotoSansTcFont,
+    kNotoSansScFont,
 };
 
 inline constexpr std::string_view kDefaultBundledFontFamily = "DejaVu Sans";
 inline constexpr BundledFont kBundledFixedFont{
     "Cousine", "fonts/Cousine-Regular.ttf", "fonts/Cousine-Regular.ttf"};
+// Missing-glyph fallbacks behind every SDL_ttf role, in the order SDL_ttf tries
+// them; it takes a glyph from the first one that has it.
+// - DejaVu Sans: the Latin, Greek and Cyrillic letters Liberation Sans, Noto
+//   Sans TC and Cousine lack. It has no CJK, so it takes nothing from the others.
+// - Noto Sans TC: Han, kana and CJK punctuation. It comes before Nanum Gothic so
+//   that Chinese text keeps its centered punctuation (，。「」) instead of the
+//   Korean forms. It also has the Hangul jamo (ㅋ), but no Hangul syllables.
+// - Nanum Gothic: Hangul syllables.
+// - Noto Sans SC: Simplified Chinese characters missing from the earlier faces.
 // ponytail: one Hangul face; SDL_ttf synthesizes bold, bundle NanumGothic-Bold if metric parity requires it.
-inline constexpr BundledFont kBundledFallbackFont{"Nanum Gothic", "fonts/NanumGothic-Regular.ttf",
-                                                  "fonts/NanumGothic-Regular.ttf"};
+inline constexpr BundledFont kBundledFallbackFonts[] = {
+    kDejaVuSansFont,
+    kNotoSansTcFont,
+    {"Nanum Gothic", "fonts/NanumGothic-Regular.ttf", "fonts/NanumGothic-Regular.ttf"},
+    kNotoSansScFont,
+};
 
 [[nodiscard]] inline std::filesystem::path ResolveBundledFontPath(const std::filesystem::path& relativePath)
 {

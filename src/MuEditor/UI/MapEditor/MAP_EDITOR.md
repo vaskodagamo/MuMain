@@ -21,6 +21,12 @@ the Mac; everything after it is reference.
    ```
    Over the editor's panels (and their gaps, previews and lists) you see the normal Mac pointer;
    over the 3D world the game's own cursor.
+   Since the upstream merge of 2026-11 the editor is a window of its own beside the game window
+   (**MU Editor**, with a **Windows** menu instead of the old toolbar), and the Map Editor is a tab
+   in it; drag the tab out to float it, also over the game window. While its tab is behind another
+   one, or the editor window is minimized, the Map Editor lets go of the world (no brush, no
+   outlines) until it shows again. `MU_EDITOR_IN_GAME_WINDOW=1` in the environment keeps every
+   editor window inside the game window, as before the merge.
 3. **Fly:** arrow keys, **PgUp/PgDn** up and down (**fn+Up/fn+Down** on a laptop), hold **Shift** to go
    faster, **right-drag** to look around (only while no tool is ticked). **Reset view** goes back.
 4. **Objects:** Objects tab, tick **Enable object editing**, choose **Select & edit**, click an object
@@ -283,7 +289,7 @@ All under `src/MuEditor/UI/MapEditor/`:
 
 | File | Responsibility |
 |---|---|
-| `MapEditorUI.h/.cpp` | The panel + all tabs (Texture, Objects, Height, Attribute, Light, Gates, T. Browse, Minimap, O. Browse, Assets). Owns UI state, edit-mode selection, input capture and the texture and walkability strokes; draws the Undo/Redo bar. |
+| `MapEditorUI.h/.cpp` | The panel + all tabs (Texture, Objects, Height, Attribute, Light, Gates, T. Browse, Minimap, O. Browse, Assets, and upstream's Sounds). Owns UI state, edit-mode selection, input capture and the texture and walkability strokes; draws the Undo/Redo bar. |
 | `MapBrushControls.h/.cpp` | `Editor::BrushControls` — what the round brushes share: the cursor on the ground (`TerrainBrushInput`), the Radius and Strength sliders, the **[** **]** keys, the brush circle and its outline on the ground. |
 | `MapHeightTool.h/.cpp` | `CMapHeightTool` — the Height tab's brush (raise/lower, flatten, smooth, set height) and its stroke. |
 | `MapGroundFollowers.h/.cpp` | `CMapGroundFollowers` — "Objects follow terrain": moves the objects standing on sculpted ground with it and hands their moves to the stroke's undo step (without selecting them). |
@@ -380,7 +386,7 @@ is open and until the click that closes it is released (`test_popup_mouse_guard.
 | File | Change |
 |---|---|
 | `MuEditor/Core/MuEditorCore.h/.cpp` | Added `m_bShowMapEditor`; render the panel each frame; call `CaptureInputForPainting()` in `Update()` (before the game consumes input). While an ImGui popup is open, and until the click that closes it is released, the mouse counts as over the editor (`Editor::Editing::PopupMouseGuard`, unit-tested), and Esc closes open menus and lists (not dialogs). Shows the OS pointer, and not the game cursor (drawn under ImGui), while the mouse is over any editor window or editor UI owns it; over the world the game cursor. Leaves the overlay and the game cursor out of a view-capture frame. Runs the Assets tab's model reloads at the start of a frame. Draws ImGui with the renderer's overlay pipeline (`mu::GetEditorOverlayPipeline()`). |
-| `MuEditor/UI/Common/MuEditorUI.h/.cpp` | Toolbar **Map Editor** button + param. |
+| `MuEditor/UI/Common/MuEditorUI.h/.cpp` | **Map Editor** item in the editor window's **Windows** menu + param. |
 | `Render/Sprites/GlobalBitmap.h/.cpp` | `RefreshCacheEntry(index)` — invalidate one quick-cache slot (see gotcha #4). Editor only: `ReloadImage(index, file)` reads a texture from disk into the same index, keeping the other models' references (A/B compare). |
 | `Camera/DefaultCamera.cpp`, `Camera/OrbitalCamera.cpp` | Their editor-only on-screen camera text is left out of a view-capture frame. |
 | `src/CMakeLists.txt` | Editor build only: `src/ThirdParty` on the include path for nlohmann's `json.hpp` (catalog and request files). |
@@ -408,7 +414,6 @@ is open and until the click that closes it is released (`test_popup_mouse_guard.
 | `Scenes/SceneManager.cpp` | Offline: no "connection lost" check. |
 | `World/GameMaps/GMBattleCastle.cpp` | Offline: skip the castle-owner request to the server while World31 loads. |
 | `Render/Renderer/MuRendererSDLGpu.cpp` | Editor-only offscreen capture for thumbnails, rendered in the swapchain's colour format. Editor only: builds the ImGui overlay pipeline at start-up and hands it out through `mu::GetEditorOverlayPipeline()`. `k_DepthFormat` names the main pass's depth format (player build too, same value). |
-| `Render/Renderer/SdlGpuEditorOverlayPipeline.h/.cpp` | Editor only: ImGui's own SDL GPU pipeline built again for the engine's main render pass, which has a D32 depth attachment; depth test and write are off. Without it Metal API validation stops the client at the first ImGui draw, and on some maps the panels drew empty. A copy of `imgui_impl_sdlgpu3.cpp`'s pipeline (see gotcha 15). |
 | `App/Platform/Windows/Winmain.cpp` | `--editor`, `--world N` (with `--editor`) and `--enable-taskpool` are read from the portable command line, so they work on every platform. |
 
 ---
@@ -973,6 +978,16 @@ and no file is changed.
 
 ---
 
+### Sounds
+- The object sounds of the map shown (`Data/Maps/ObjectSounds.json`): which object
+  types play which sound while they are drawn ([docs/map-data.md](../../../../docs/map-data.md)).
+- **Add a sound to an object type**, then the entry's objects (**Add a type**, or
+  **Pick an object in the world**: the next click on an object takes its type), file
+  (**Play**), channels, plays and maps; **Remove**.
+- Edits play at once; **Save** writes the file after its checks, **Revert** reads it
+  again. Data Checks lists its problems under **Map sounds**. The control socket's `map-tab`
+  knows the tab as `Sounds`.
+
 ## 4. On-disk formats & save encryption
 
 Files live in `Data\World{N}\`. **World folder = world enum value + 1**
@@ -1075,14 +1090,10 @@ model + its textures live in `Data\Object{N}\`.
     `GameMapTerrain` does `ReadTerrainData(terrainData.AsSpan(3))`. Upload
     `terrain_map{E}_server.att` (from **Save server .att**) instead: it is written in exactly
     the server's layout.
-15. **Updating the imgui submodule? Check the overlay pipeline.** ImGui draws inside the engine's
-    main render pass with `SdlGpuEditorOverlayPipeline.cpp`, a copy of the pipeline that
-    `src/ThirdParty/imgui/backends/imgui_impl_sdlgpu3.cpp` builds (its shaders from
-    `imgui_impl_sdlgpu3_shaders.h`, the `ImDrawVert` layout, blend and raster state) plus the
-    pass's depth format. No test compares the two. After an update, compare them and carry any
-    change over. If the copy no longer matches, ImGui draws wrongly, or the client logs
-    `editor overlay pipeline creation failed` and falls back to ImGui's own pipeline, which brings
-    back the Metal validation stop and the empty panels on Devil Square.
+15. **ImGui is drawn in a pass of its own.** Since the upstream merge of 2026-11 the renderer draws
+    the editor after RmlUi in a colour-only pass (`RenderEditorOverlayPass`), which ImGui's own
+    pipeline fits. The fork's copy of that pipeline with a depth attachment
+    (`SdlGpuEditorOverlayPipeline`) is gone with the main pass it was made for.
 16. **Drawing lines and overlays on the ground.** The SDL GPU renderer only draws triangles.
     `mu::GetRenderer().RenderLines` turns each segment into a 1-unit ribbon widened along a world
     axis: edge-on (invisible) from straight above and about a pixel wide at the game's angle; it

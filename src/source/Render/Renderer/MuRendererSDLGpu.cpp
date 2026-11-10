@@ -1,6 +1,4 @@
 // MuRendererSDLGpu.cpp: SDL_gpu backend implementation of IMuRenderer.
-// Story 4.3.1 — Flow Code: VS1-RENDER-SDLGPU-BACKEND
-// Story 4.3.2 — Flow Code: VS1-RENDER-SHADERS (shader loading, fog UBO, pipeline fixes)
 //
 // MuRendererSDLGpu replaces the OpenGL immediate-mode backend (MuRendererGL)
 // with SDL_gpu — selecting Metal on macOS, Vulkan on Linux, D3D12 on Windows.
@@ -13,15 +11,16 @@
 //   - BeginFrame() / EndFrame() are instance methods called from MuMain.cpp game loop.
 //   - Real HLSL shaders loaded from MU_SHADER_DIR blobs (set by CMake).
 //   - Fog uniform buffer (s_fogUniformBuf) is created in Init() and updated in SetFog().
-//   - Separate 2D/3D pipeline sets: s_pipelines2D / s_pipelines3D (AC-8 fix).
+//   - Separate 2D/3D pipeline sets: s_pipelines2D / the world sets (WorldPipelineSets()).
 //   - Deferred draw command recording: vertices collected during frame, copied to GPU
-//     in EndFrame() BEFORE the render pass, then draw commands replayed (AC-7 fix).
+//     in EndFrame() BEFORE the render pass, then draw commands replayed.
 //
 // GUARD STRUCTURE:
-//   Story 7.9.3: SDL_gpu is the only renderer backend (MuRenderer.cpp deleted).
+//   SDL_gpu is the only renderer backend (MuRenderer.cpp deleted).
 
 // Include SDL3 GPU header only in this file — not exposed to game logic.
 // SDL3 is a required project dependency, so these includes are unconditional.
+#include <optional>
 #include <SDL3/SDL_gpu.h>
 #include <SDL3/SDL.h>
 #if __has_include(<SDL3_ttf/SDL_ttf.h>)
@@ -31,21 +30,33 @@
 #define MU_HAS_SDL_TTF 0
 #endif
 
+#include "Antialiasing.h"
+#include "BitmapUpload.h"
 #include "D3D12Diagnostics.h"
 #include "DrawCommandHistory.h"
 #include "HiddenWindowTarget.h"
 #include "MuRenderer.h"
 #include "QuadTopology.h"
 #include "ScreenLineRibbons.h"
+#include "RangeAllocator.h"
 #include "SdlGpuPixelFormat.h"
+#include "SdlGpuAmbientOcclusion.h"
+#include "ShadowPassSelection.h"
+#include "SdlGpuSunShadowMap.h"
+#include "SdlGpuPostProcessing.h"
 #include "SdlGpuReplayState.h"
 #include "SdlGpuValidation.h"
-#include "Core/Platform/BundledFonts.h"
+#include "SingleSampleTwins.h"
+#include "WorldPipelineSet.h"
 #include "Core/Utilities/FrameProfiler.h"
 #include "Core/Utilities/Log/MuLogger.h"
+#include "Render/PostProcessing/BloomSource.h"
+#include "Render/PostProcessing/SceneBoundary.h"
+#include "Render/Lighting/SunShadow.h"
+#include "Render/Terrain/TerrainHeightGrid.h"
+#include "Render/Text/SdlTtfFontSet.h"
 #ifdef _EDITOR
 #include "Core/MuEditorCore.h"
-#include "SdlGpuEditorOverlayPipeline.h"
 #endif
 
 #include <algorithm>
@@ -61,6 +72,9 @@
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
+
+#include "Render/Renderer/ReorderableDrawRuns.h"
+#include "Render/Renderer/SkinnedBonePalette.h"
 #include <utility>
 #include <vector>
 
@@ -87,11 +101,7 @@ constexpr Uint32 k_InitialBoneBufferSize = 64u * 1024u;
 constexpr int k_PipelineCount = 9;
 // Pipeline index for "blend disabled".
 constexpr int k_PipelineDisabled = 8;
-// Depth buffer format of the main pass (and of editor offscreen captures). Every
-// pipeline drawn into those passes must declare the same format.
-constexpr SDL_GPUTextureFormat k_DepthFormat = SDL_GPU_TEXTUREFORMAT_D32_FLOAT;
-
-// Story 7.9.7 (AC-7): Vertex uniform layout matching cbuffer Transform in HLSL.
+// Vertex uniform layout matching cbuffer Transform in HLSL.
 // Contains MVP matrix + fog params, pushed per-draw via SDL_PushGPUVertexUniformData.
 struct VertexUniforms
 {
@@ -112,9 +122,45 @@ struct SkinningVertexUniforms
     float fogParameters[4]{};
     std::uint32_t textureCoordinates[4]{};
     float chromeParameters[4]{};
-    float textureCoordinateParameters[4]{};
+    float textureCoordinateParameters[4]{}; // offset u, v; chrome time term; normal map scale (0: none)
+    float eyePositionAndSpecular[4]{};
+    // Enhanced lighting: rows of the affine transform from this draw's vertex space to world space.
+    float vertexToWorldRows[3][4]{};
 };
-static_assert(sizeof(SkinningVertexUniforms) == 192, "SkinningVertexUniforms must be 192 bytes");
+static_assert(sizeof(SkinningVertexUniforms) == 256, "SkinningVertexUniforms must be 256 bytes");
+static_assert(offsetof(SkinningVertexUniforms, eyePositionAndSpecular) == 192,
+              "eyePositionAndSpecular must follow textureCoordinateParameters (HLSL cbuffer Skinning)");
+static_assert(offsetof(SkinningVertexUniforms, vertexToWorldRows) == 208,
+              "vertexToWorldRows must follow eyePositionAndSpecular (HLSL cbuffer Skinning)");
+
+// Slot 1 (t1, s1 in space2): skinned_lit.frag's normal map, bound for every draw with that shader, or
+// world_lit.frag's ground shadow mask.
+constexpr Uint32 k_FragmentSamplerSlotNormalMap = 1u;
+// Slot 2 (t2, s2 in space2): the sun shadow map of both lit shaders, bound once per pass (BindLitSamplers).
+constexpr Uint32 k_FragmentSamplerSlotSunShadow = 2u;
+// The flat tangent-space normal (0, 0, 1) as RGBA8: the normal map of draws without one.
+constexpr Uint32 k_FlatNormalPixel = 0xFFFF8080u; // R = G = 128, B = A = 255 (little-endian RGBA)
+
+// Skinning cbuffer palette.w: how skinned_textured.vert.hlsl lights the vertex colour.
+constexpr std::uint32_t k_SkinningLightingNone = 0u;
+constexpr std::uint32_t k_SkinningLightingClassic = 1u;
+constexpr std::uint32_t k_SkinningLightingEnhanced = 2u;        // lit per pixel by skinned_lit.frag
+constexpr std::uint32_t k_SkinningLightingEnhancedDynamic = 3u; // and by the frame's point lights
+
+// Fragment uniform slots (cbuffer register bN, space3).
+constexpr Uint32 k_FragmentUniformSlotFog = 0u;
+constexpr Uint32 k_FragmentUniformSlotSceneLighting = 1u;
+constexpr Uint32 k_FragmentUniformSlotDynamicLights = 2u;
+
+using WorldPipelines = Render::WorldPipelineSet<SDL_GPUGraphicsPipeline, k_PipelineCount>;
+
+// skinned_shadow.vert's Shadow cbuffer.
+struct ShadowVertexUniforms
+{
+    float origin[4]{};     // xyz: BodyOrigin, w: height of TW_HEIGHT cells
+    float projection[4]{}; // x, y: sx, sy; z: 1 when the scene has terrain; w: the shear's axis angle
+};
+static_assert(sizeof(ShadowVertexUniforms) == 32, "ShadowVertexUniforms must be 32 bytes");
 
 } // anonymous namespace
 
@@ -122,7 +168,7 @@ namespace mu
 {
 
 // ---------------------------------------------------------------------------
-// Story 4.3.2 (AC-10): Fog uniform buffer struct — in mu:: namespace so that
+// Fog uniform buffer struct — in mu:: namespace so that
 // test_shaderprograms.cpp can forward-declare and verify layout via static_assert.
 // Mirrors the FogUniforms cbuffer declared in basic_textured.frag.hlsl (std140).
 // HLSL cbuffer layout: uint4 register, float2 + padding register, float4 register.
@@ -133,7 +179,7 @@ struct FogUniform
     uint32_t fogEnabled;           // offset  0
     uint32_t alphaDiscardEnabled;  // offset  4
     float alphaThreshold;          // offset  8
-    float pad0;                    // offset 12
+    uint32_t alphaToCoverage;      // offset 12 (1: shader sharpens alpha for coverage)
     float fogStart;                // offset 16
     float fogEnd;                  // offset 20
     float fogPadding[2];           // offset 24
@@ -143,7 +189,7 @@ struct FogUniform
 static_assert(offsetof(FogUniform, fogEnabled) == 0, "FogUniform std140 layout");
 static_assert(offsetof(FogUniform, alphaDiscardEnabled) == 4, "FogUniform std140 layout");
 static_assert(offsetof(FogUniform, alphaThreshold) == 8, "FogUniform std140 layout");
-static_assert(offsetof(FogUniform, pad0) == 12, "FogUniform std140 layout");
+static_assert(offsetof(FogUniform, alphaToCoverage) == 12, "FogUniform std140 layout");
 static_assert(offsetof(FogUniform, fogStart) == 16, "FogUniform std140 layout");
 static_assert(offsetof(FogUniform, fogEnd) == 20, "FogUniform std140 layout");
 static_assert(offsetof(FogUniform, fogPadding) == 24, "FogUniform HLSL cbuffer layout");
@@ -151,7 +197,6 @@ static_assert(offsetof(FogUniform, fogColor) == 32, "FogUniform HLSL float4 regi
 static_assert(sizeof(FogUniform) == 48, "FogUniform must be 48 bytes (HLSL cbuffer)");
 
 // ---------------------------------------------------------------------------
-// Story 4.3.2 (AC-6): GetShaderBlobPath
 // Returns the absolute path to a compiled shader blob given GPU driver name,
 // shader stage, and shader base name. Uses MU_SHADER_DIR (CMake compile def).
 // driver: "vulkan" | "direct3d12" | "metal"
@@ -190,7 +235,6 @@ static_assert(sizeof(FogUniform) == 48, "FogUniform must be 48 bytes (HLSL cbuff
 }
 
 // ---------------------------------------------------------------------------
-// Story 4.3.2 (AC-6): GetShaderFormat
 // Returns the SDL_GPUShaderFormat constant name for the given driver.
 // Only used internally — returns the correct enum value for SDL_CreateGPUShader.
 // ---------------------------------------------------------------------------
@@ -208,7 +252,6 @@ static_assert(sizeof(FogUniform) == 48, "FogUniform must be 48 bytes (HLSL cbuff
 }
 
 // ---------------------------------------------------------------------------
-// Story 4.3.2 (AC-6): LoadShaderBlob
 // Loads a compiled shader blob from disk into a byte vector.
 // Returns empty vector on failure (caller logs via mu::log).
 // ---------------------------------------------------------------------------
@@ -243,14 +286,67 @@ static_assert(sizeof(FogUniform) == 48, "FogUniform must be 48 bytes (HLSL cbuff
 // ---------------------------------------------------------------------------
 
 static SDL_GPUDevice* s_device = nullptr;
+static Render::Renderer::BitmapGpuResources s_bitmapGpuResources;
 static SDL_Window* s_window = nullptr;
+
+// Uncapped present mode for VSync off: IMMEDIATE when the window supports it, otherwise
+// MAILBOX (also not tied to the display refresh). Vulkan only guarantees VSYNC (FIFO), and
+// Wayland compositors without tearing support do not offer IMMEDIATE, so asking for it
+// alone left VSync on there.
+[[nodiscard]] static SDL_GPUPresentMode PickUncappedPresentMode()
+{
+    if (SDL_WindowSupportsGPUPresentMode(s_device, s_window, SDL_GPU_PRESENTMODE_IMMEDIATE))
+    {
+        return SDL_GPU_PRESENTMODE_IMMEDIATE;
+    }
+
+    if (SDL_WindowSupportsGPUPresentMode(s_device, s_window, SDL_GPU_PRESENTMODE_MAILBOX))
+    {
+        mu::log::Get("render")->info("SDL_gpu -- immediate present mode not supported, using mailbox");
+        return SDL_GPU_PRESENTMODE_MAILBOX;
+    }
+
+    return SDL_GPU_PRESENTMODE_IMMEDIATE;
+}
+
+[[nodiscard]] static const char* PresentModeName(SDL_GPUPresentMode mode)
+{
+    switch (mode)
+    {
+    case SDL_GPU_PRESENTMODE_VSYNC:
+        return "VSync";
+    case SDL_GPU_PRESENTMODE_MAILBOX:
+        return "mailbox";
+    default:
+        return "immediate";
+    }
+}
+
+// RmlUi port: see SetPreSubmitCallback's own comment (MuRenderer.h) for what this is and why.
+static std::function<void()> s_preSubmitCallback;
+
+// RmlUi port: see SetPostRmlUiCallback's own comment (MuRenderer.h). Fires after RmlUi's own
+// render pass has closed, for content that must sit visually on top of RmlUi (the game cursor,
+// legacy CUITextInputBox text) -- see EndFrame()'s own comment at the call site for why this
+// needs its own small render pass rather than just calling RenderQuad2D-style functions from
+// inside s_preSubmitCallback itself.
+static std::function<void()> s_postRmlUiCallback;
+static std::function<void()> s_offscreenRenderCallback;
+
+// The texture every pass of this frame renders into: the main pass, FlushRenderCommands'
+// mid-frame passes, and the UI seams (RmlUi's pre-submit callback, the post-RmlUi pass). Normally
+// the swapchain texture; on a frame that captures its pixels (screenshot readback, reconnect
+// capture) it is that frame's substitute colour target, chosen once in BeginFrame() so the
+// capture includes everything the player sees. nullptr means the
+// swapchain (GetFrameGpuContext() falls back to it); reset at the end of EndFrame().
+static SDL_GPUTexture* s_frameColorTarget = nullptr;
 
 // Per-frame command buffer and render pass handles (valid between BeginFrame/EndFrame).
 static SDL_GPUCommandBuffer* s_cmdBuf = nullptr;
 static SDL_GPURenderPass* s_renderPass = nullptr;
 static SDL_GPUTexture* s_swapchainTexture = nullptr;
 
-// Swapchain dimensions in physical pixels (from SDL_AcquireGPUSwapchainTexture).
+// Swapchain dimensions in physical pixels (from SDL_WaitAndAcquireGPUSwapchainTexture).
 // Used for viewport calculations — distinct from logical window size on HiDPI/Retina.
 static Uint32 s_swapW = 0u;
 static Uint32 s_swapH = 0u;
@@ -265,6 +361,9 @@ static bool s_frameOffscreen = false;
 static std::uint32_t s_pendingFrameCaptureTextureId = 0u;
 static FrameReadbackState s_frameReadbackState;
 static SDL_GPUTexture* s_frameReadbackTexture = nullptr;
+// Resolved in BeginFrame() from the requests pending at that point (see ResolveFrameColorTarget).
+static SDL_GPUTextureFormat s_frameReadbackFormat = SDL_GPU_TEXTUREFORMAT_INVALID;
+static SDL_GPUTexture* s_reconnectCaptureTexture = nullptr;
 
 constexpr Uint32 FrameReadbackBytesPerPixel = 4u;
 constexpr Uint32 FrameReadbackRowAlignment = 256u;
@@ -407,7 +506,11 @@ enum class PixelDownloadResult
         return PixelDownloadResult::NotSubmitted;
     }
 
-    SDL_GPUFence* fence = SDL_SubmitGPUCommandBufferAndAcquireFence(commandBuffer);
+    SDL_GPUFence* fence = nullptr;
+    {
+        FRAME_PROFILE(RendererSubmit);
+        fence = SDL_SubmitGPUCommandBufferAndAcquireFence(commandBuffer);
+    }
     if (!fence)
     {
         mu::log::Get("render")->warn("SDL_gpu -- frame readback fence acquisition failed: {}", SDL_GetError());
@@ -497,11 +600,6 @@ static std::chrono::steady_clock::time_point s_frameBeginTime;
 static std::chrono::steady_clock::time_point s_renderReplayBeginTime;
 static std::chrono::steady_clock::time_point s_submitTime;
 
-[[nodiscard]] static bool IsFrameTimingEnabled()
-{
-    return s_frameTimingEnabled || s_statsEnabled;
-}
-
 static void ConfigureD3D12Diagnostics(const char* driverName)
 {
     s_disableD3D12Culling = Render::D3D12DiagnosticEnabled(driverName, std::getenv("MU_D3D12_DISABLE_CULLING"));
@@ -518,32 +616,185 @@ static void ConfigureD3D12Diagnostics(const char* driverName)
     }
 }
 
-// Story 4.3.2 (AC-8): Separate pipeline sets for 2D (Vertex2D) and 3D (Vertex3D) geometry.
-// Story 7.9.7: Added DepthReadOnly variants (depth test ON, depth write OFF) for particles.
+// Pipeline sets, one pipeline per blend mode: the index matches BlendMode cast to int; index 8 =
+// disabled (no-blend).
 // s_pipelines2D: depth ON (test+write), Vertex2D layout (pitch=20).
 // s_pipelines2DDepthOff: depth OFF, Vertex2D layout.
-// s_pipelines3D: depth ON (test+write), Vertex3D layout (pitch=40).
-// s_pipelines3DDepthOff: depth OFF, Vertex3D layout.
-// s_pipelines3DDepthReadOnly: depth test ON, write OFF — for transparent/additive particles.
-// Index matches BlendMode enum cast to int; index 8 = disabled (no-blend).
 static SDL_GPUGraphicsPipeline* s_pipelines2D[k_PipelineCount] = {};
 static SDL_GPUGraphicsPipeline* s_pipelines2DDepthOff[k_PipelineCount] = {};
-static SDL_GPUGraphicsPipeline* s_pipelines3D[k_PipelineCount] = {};
-static SDL_GPUGraphicsPipeline* s_pipelines3DNoCull[k_PipelineCount] = {};
-static SDL_GPUGraphicsPipeline* s_pipelines3DDepthOff[k_PipelineCount] = {};
-static SDL_GPUGraphicsPipeline* s_pipelines3DDepthReadOnly[k_PipelineCount] = {};
-static SDL_GPUGraphicsPipeline* s_pipelinesSkinned[k_PipelineCount] = {};
-static SDL_GPUGraphicsPipeline* s_pipelinesSkinnedNoCull[k_PipelineCount] = {};
-static SDL_GPUGraphicsPipeline* s_pipelinesSkinnedDepthOff[k_PipelineCount] = {};
-static SDL_GPUGraphicsPipeline* s_pipelinesSkinnedDepthReadOnly[k_PipelineCount] = {};
+// Body shadows (skinned_shadow.vert): the depth states RenderBodyShadow() draws with.
+static SDL_GPUGraphicsPipeline* s_pipelinesSkinnedShadow[k_PipelineCount] = {};
+static SDL_GPUGraphicsPipeline* s_pipelinesSkinnedShadowDepthOff[k_PipelineCount] = {};
+// The same two for SkinnedWeightedVertex3D (skinned_weighted_shadow.vert).
+static SDL_GPUGraphicsPipeline* s_pipelinesSkinnedWeightedShadow[k_PipelineCount] = {};
+static SDL_GPUGraphicsPipeline* s_pipelinesSkinnedWeightedShadowDepthOff[k_PipelineCount] = {};
 
-// Story 4.3.2 (AC-7): Single pre-frame vertex upload.
+// The world sets: 3D (Vertex3D, pitch=40) and GPU-skinned geometry in the four depth/cull states,
+// depth-read-only for transparent and additive draws such as particles. Every world set is listed
+// once in WorldPipelineSets(), from which they are built, released and enumerated.
+static WorldPipelines s_pipelines3D;
+static WorldPipelines s_pipelinesSkinned;
+// Enhanced lighting: per-pixel exponential fog for 3D and unlit skinned draws, per-pixel lighting
+// for lit skinned draws. Optional — when any is incomplete, Enhanced lighting stays unavailable and
+// every draw keeps the Classic sets above.
+static WorldPipelines s_pipelines3DEnhancedFog;
+static WorldPipelines s_pipelinesSkinnedEnhancedFog;
+static WorldPipelines s_pipelinesSkinnedLit;
+// The same three for SkinnedWeightedVertex3D (glTF models).
+static WorldPipelines s_pipelinesSkinnedWeighted;
+static WorldPipelines s_pipelinesSkinnedWeightedEnhancedFog;
+static WorldPipelines s_pipelinesSkinnedWeightedLit;
+// The ground lit per pixel by the frame's first point lights (BeginWorldLitGeometry).
+static WorldPipelines s_pipelinesWorldLit;
+static bool s_enhancedLightingAvailable = false;
+static bool s_enhancedLightingEnabled = false;
+// The frame's scene lighting, pushed once per render pass to fragment uniform slot 1.
+static mu::SceneLightingUniform s_sceneLightingUniform = mu::PackSceneLightingUniform({}, {});
+// The frame's point lights (none until SetDynamicLights), pushed with it to fragment uniform slot 2.
+static mu::DynamicLightsUniform s_dynamicLightsUniform{};
+
+// Post-processing of the 3D scene: with it on, a frame whose scene marked its end
+// (EndSceneGeometry) is replayed in separate scene, bloom and UI passes, see EndFrame.
+static mu::SdlGpuPostProcessing s_postProcessing;
+static bool s_postProcessingEnabled = false;
+static mu::PostProcessingLook s_postProcessingLook{};
+static mu::PostProcessingView s_postProcessingView = mu::PostProcessingView::Scene;
+static Render::PostProcessing::SceneBoundary s_sceneBoundary;
+static int s_bloomExclusionDepth = 0;
+static int s_worldLitGeometryDepth = 0;
+static int s_groundShadowDepth = 0;
+// Draws recorded inside a ScopedCharacterDraws: the characters, apart from the world's objects.
+static int s_characterDrawDepth = 0;
+// Draws recorded inside a ScopedNoSunCasters cast no sun shadow.
+static int s_noSunCasterDepth = 0;
+static int s_lightShadowDepth = 0;
+// Ground shadows (BeginGroundShadow) are drawn into a coverage mask the world-lit ground samples, in
+// a frame that recorded world-lit draws; until the mask holds the frame's shadows they draw as before.
+static bool s_frameHasWorldLit = false;
+static bool s_groundShadowMaskReady = false;
+// Per pixel, 1 minus the darkest shadow alpha drawn there; single-sample, at the frame's size.
+static SDL_GPUTexture* s_groundShadowMask = nullptr;
+// The terrain's direct sunlight per cell (SetTerrainSunLight), which clouds dim; null until the first one.
+static SDL_GPUTexture* s_terrainSunLight = nullptr;
+static constexpr Uint32 kTerrainSunLightSize = 256;
+static Uint32 s_groundShadowMaskW = 0;
+static Uint32 s_groundShadowMaskH = 0;
+// The mask's pipelines, [point light][skinned]: GPU-skinned shadows, and the CPU and cloth shadows
+// in the 3D layout. Sun shadows write the red channel, point-light shadows the green one.
+static SDL_GPUGraphicsPipeline* s_groundShadowMaskPipelines[2][3]{};
+
+// Alpha-to-coverage variants of the depth-writing world pipelines (each world set's culled and
+// no-cull states), used while anti-aliasing is on by alpha-tested cutout draws (foliage, hair,
+// fences) instead of their alpha test with blending: see ChooseAlphaCoverage. Each variant
+// replaces its state's blending-off and Alpha-blend pipelines; they exist only multisampled.
+struct AlphaCoveragePipeline
+{
+    SDL_GPUGraphicsPipeline** opaque;
+    SDL_GPUGraphicsPipeline** alphaBlend;
+    SDL_GPUGraphicsPipeline* variant;
+};
+constexpr int k_PipelineAlpha = static_cast<int>(mu::BlendMode::Alpha);
+static std::vector<AlphaCoveragePipeline> s_alphaCoveragePipelines;
+
+// Single pre-frame vertex upload.
 // Draws accumulate in growable CPU memory before one GPU upload.
 static SDL_GPUTransferBuffer* s_vtxTransferBuf = nullptr;
 static SDL_GPUBuffer* s_vtxGpuBuf = nullptr;
 static Uint32 s_vtxCapacity = 0u;
 static Uint32 s_vtxOffset = 0u;
 static std::vector<Uint8> s_vtxScratch;
+
+// How much of a per-frame scratch buffer is already on its GPU buffer this frame (StageDeferredGpuData).
+struct StagedRange
+{
+    SDL_GPUBuffer* buffer = nullptr;
+    Uint32 bytes = 0u;
+};
+static StagedRange s_stagedVertices;
+static StagedRange s_stagedBones;
+static StagedRange s_stagedStripIndices;
+
+struct BufferUpload
+{
+    SDL_GPUTransferBuffer* transfer;
+    SDL_GPUBuffer* buffer;
+    Uint32 offset;
+    Uint32 size;
+    bool cycle;
+    Uint32 transferOffset = 0u;
+};
+
+// Copies the part of `scratch` not yet staged into `transfer` and queues its upload. The frame's first upload
+// cycles the buffer (the GPU may still read last frame's) and so sends everything; a later one sends only the
+// appended tail into that same instance, which this frame's earlier passes read. False if the map failed.
+static bool StageAppended(SDL_GPUTransferBuffer* transfer, SDL_GPUBuffer* buffer, const void* scratch, Uint32 totalBytes,
+                          StagedRange& staged, std::vector<BufferUpload>& uploads)
+{
+    // A different buffer means a regrow since the last call, which kept none of the staged data.
+    const Uint32 start = staged.buffer == buffer ? staged.bytes : 0u;
+    if (totalBytes <= start)
+    {
+        return true;
+    }
+    void* mapped = SDL_MapGPUTransferBuffer(s_device, transfer, true);
+    if (!mapped)
+    {
+        return false;
+    }
+    std::memcpy(mapped, static_cast<const Uint8*>(scratch) + start, totalBytes - start);
+    SDL_UnmapGPUTransferBuffer(s_device, transfer);
+    uploads.push_back({transfer, buffer, start, totalBytes - start, start == 0u});
+    staged = {buffer, totalBytes};
+    return true;
+}
+
+// Rest-pose vertices of cached skinned meshes (CacheSkinnedMesh, CacheWeightedSkinnedMesh), sub-allocated from a few
+// large vertex buffers in units that both vertex sizes fill exactly. A draw then uploads only its colour.
+constexpr Uint32 k_SkinnedMeshUnitBytes = 8u;
+static_assert(sizeof(mu::SkinnedVertex3D) % k_SkinnedMeshUnitBytes == 0 &&
+              sizeof(mu::SkinnedWeightedVertex3D) % k_SkinnedMeshUnitBytes == 0);
+constexpr Uint32 k_SkinnedMeshBlockUnits = 4u * 1024u * 1024u / k_SkinnedMeshUnitBytes;
+// A released range stays untouched until no frame still in flight can read it.
+constexpr std::uint64_t k_SkinnedMeshFreeDelayFrames = 3u;
+
+struct SkinnedMeshBlock
+{
+    SDL_GPUBuffer* buffer;
+    Render::RangeAllocator ranges;
+};
+
+struct CachedSkinnedMesh
+{
+    Uint32 block;
+    Uint32 firstUnit;
+    Uint32 unitCount;
+    Uint32 vertexCount;
+    Uint32 stride; // sizeof(SkinnedVertex3D) or sizeof(SkinnedWeightedVertex3D)
+    // One past the highest bone the vertices index; 0 when unknown.
+    Uint32 bonesUsed = 0u;
+};
+
+struct PendingSkinnedMeshUpload
+{
+    CachedSkinnedMesh range;
+    std::size_t stagingFirst; // byte offset into s_skinnedMeshStaging
+};
+
+struct DeferredSkinnedMeshFree
+{
+    CachedSkinnedMesh range;
+    std::uint64_t releasedAtFrame;
+};
+
+static std::vector<SkinnedMeshBlock> s_skinnedMeshBlocks;
+static std::unordered_map<const void*, CachedSkinnedMesh> s_skinnedMeshes;
+// Meshes cached since the last StageDeferredGpuData, waiting for its copy pass.
+static std::vector<std::byte> s_skinnedMeshStaging;
+static std::vector<PendingSkinnedMeshUpload> s_pendingSkinnedMeshUploads;
+static std::vector<DeferredSkinnedMeshFree> s_deferredSkinnedMeshFrees;
+static SDL_GPUTransferBuffer* s_skinnedMeshTransferBuf = nullptr;
+static Uint32 s_skinnedMeshTransferCapacity = 0u;
+static std::uint64_t s_submittedFrames = 0u;
 
 // Per-frame packed float4 bone rows. Three rows represent one affine 3x4 bone transform.
 static SDL_GPUTransferBuffer* s_boneTransferBuf = nullptr;
@@ -554,6 +805,16 @@ static const float* s_lastBonePalette = nullptr;
 static std::size_t s_lastBonePaletteSize = 0u;
 static std::uint32_t s_lastBonePaletteVersion = 0u;
 static Uint32 s_lastBonePaletteRowOffset = 0u;
+// Bones of the last palette uploaded; a draw indexing more uploads it again, longer.
+static Uint32 s_lastBonePaletteBones = 0u;
+// The skinned draw keys seen this frame, for the DistinctSkinnedDraws counter.
+static std::unordered_set<std::uint64_t> s_skinnedDrawKeys;
+
+// The Render::TerrainHeightGrid that ground-following shaders read (SetTerrainHeights).
+static SDL_GPUTransferBuffer* s_terrainHeightTransferBuf = nullptr;
+static SDL_GPUBuffer* s_terrainHeightGpuBuf = nullptr;
+static std::optional<std::uint32_t> s_terrainHeightVersion;
+static bool s_terrainHeightUploadPending = false;
 
 // Static quad index buffer (pre-generated [0,1,2, 0,2,3] pattern × k_MaxQuads).
 static SDL_GPUBuffer* s_quadIdxBuf = nullptr;
@@ -575,14 +836,11 @@ enum class RenderCmdType : uint8_t
 {
     SetViewport,
     SetScissor, // pixel-level rect clip — Vulkan/Metal/D3D12 viewport alone doesn't clip
-#ifdef _EDITOR
-    EditorOverlay,
-#endif
     DrawTriangles, // non-indexed 3D (Vertex3D)
     DrawSkinnedTriangles,
     DrawIndexedQuads, // indexed 2D or 3D with static quad index buffer
     DrawIndexedStrip, // indexed 3D with per-frame strip indices (Vertex3D)
-    DrawTriangles2D,  // Story 7.9.8: non-indexed 2D triangles (Vertex2D) for text atlas
+    DrawTriangles2D,  // non-indexed 2D triangles (Vertex2D) for text atlas
 };
 
 struct RenderCmd
@@ -591,12 +849,22 @@ struct RenderCmd
     SDL_GPUGraphicsPipeline* pipeline;
     SDL_GPUTexture* texture;
     SDL_GPUSampler* sampler;
-    Uint32 vtxOffset;
+    // skinned_lit.frag's second texture (the normal map, or the flat default); null for other draws.
+    SDL_GPUTexture* normalTexture = nullptr;
+    SDL_GPUSampler* normalSampler = nullptr;
+    SDL_GPUBuffer* vtxBuffer = nullptr; // null: the frame's s_vtxGpuBuf
+    Uint32 vtxOffset;      // in bytes, a multiple of vtxStride
+    Uint32 vtxStride;
+    Uint32 colorOffset = 0u; // DrawSkinnedTriangles' colour, in bytes into s_vtxGpuBuf
     Uint32 vtxCount;       // for DrawTriangles
     Uint32 idxCount;       // for DrawIndexed*
     Uint32 stripIdxOffset; // byte offset into strip index scratch buffer
+    // DrawTriangles / DrawSkinnedTriangles drawn through idxCount indices of the
+    // strip index scratch at stripIdxOffset (RenderIndexed*Triangles).
+    bool trianglesIndexed{};
     VertexUniforms vu;
-    SkinningVertexUniforms skinningVu{};
+    Uint32 skinningIndex = 0u; // into s_skinningUniforms, for DrawSkinnedTriangles
+    Uint32 shadowIndex = ~0u;  // into s_shadowUniforms when a DrawSkinnedTriangles is a body shadow
     FogUniform fogUniform;
     SDL_GPUViewport viewport; // for SetViewport only
     SDL_Rect scissor;         // for SetScissor only
@@ -605,37 +873,33 @@ struct RenderCmd
     bool depthTestEnabled{};
     bool depthMaskEnabled{};
     bool cullFaceEnabled{};
-#ifdef _EDITOR
-    // Set once this command has been replayed into an editor offscreen capture
-    // (see BeginOffscreenCapture/EndOffscreenCapture); the main frame's replay
-    // pass then skips it instead of drawing it a second time into the swapchain.
+    bool bloomExcluded{}; // recorded inside a ScopedBloomExclusion: never a bloom source
+    bool groundShadow{};  // recorded inside a ScopedGroundShadow
+    bool worldLit{};      // recorded inside BeginWorldLitGeometry: slot 1 is the ground shadow mask
+    bool lightShadow{};   // a point light's (GroundShadowSource::PointLight)
+    bool characterDraw{}; // recorded inside a ScopedCharacterDraws
+    bool noSunCaster{};   // recorded inside a ScopedNoSunCasters
+    bool translucentVertices{}; // below full alpha before the texture
+    // Set once this command has been replayed into an offscreen capture (see
+    // BeginOffscreenCapture/EndOffscreenCapture); the main frame's replay pass then
+    // skips it instead of drawing it a second time into the frame.
     bool consumedByOffscreenCapture = false;
-#endif
 };
 
 static std::vector<RenderCmd> s_renderCmds;
+// Kept apart from RenderCmd: only skinned draws carry them, and they would nearly double every command.
+static std::vector<SkinningVertexUniforms> s_skinningUniforms;
+static std::vector<ShadowVertexUniforms> s_shadowUniforms;
 static constexpr std::size_t kNoDrawCommand = std::numeric_limits<std::size_t>::max();
 static Render::DrawCommandHistory s_previousDrawCommands;
 
 [[nodiscard]] static bool IsDrawCommand(RenderCmdType type)
 {
-#ifdef _EDITOR
-    if (type == RenderCmdType::EditorOverlay)
-    {
-        return true;
-    }
-#endif
     return type != RenderCmdType::SetViewport && type != RenderCmdType::SetScissor;
 }
 
 [[nodiscard]] static bool IsUnsafeInvalidatedDrawCommand(RenderCmdType type)
 {
-#ifdef _EDITOR
-    if (type == RenderCmdType::EditorOverlay)
-    {
-        return false;
-    }
-#endif
     return IsDrawCommand(type);
 }
 
@@ -649,7 +913,10 @@ static Render::DrawCommandHistory s_previousDrawCommands;
     {
         return Counter::BatchBreakTexture;
     }
-    if (previous.blendEnabled != command.blendEnabled || previous.blendMode != command.blendMode)
+    if (previous.blendEnabled != command.blendEnabled || previous.blendMode != command.blendMode ||
+        previous.bloomExcluded != command.bloomExcluded || previous.groundShadow != command.groundShadow ||
+        previous.lightShadow != command.lightShadow || previous.characterDraw != command.characterDraw ||
+        previous.noSunCaster != command.noSunCaster || previous.translucentVertices != command.translucentVertices)
     {
         return Counter::BatchBreakBlend;
     }
@@ -736,7 +1003,20 @@ static Render::DrawCommandHistory s_previousDrawCommands;
 // True between BeginFrame/EndFrame — replaces s_renderPass as the "frame active" guard
 // during the collection phase (render pass is only opened in EndFrame now).
 static bool s_frameActive = false;
+
+// RmlUi-behind-3D-icons seam (FlushRenderCommands): lets a caller open a real render pass
+// mid-recording instead of waiting for EndFrame's single one. s_replayedCmdCount is how far
+// into s_renderCmds the swapchain/depth targets already reflect; s_mainColorPassOpenedThisFrame
+// is whether any such pass (a flush, or EndFrame's own) has opened yet this frame -- the first
+// one CLEARs, every one after LOADs. Both reset only in BeginFrame, so multiple flushes (and
+// EndFrame's own final one) each pick up exactly the range recorded since the last one.
+static std::size_t s_replayedCmdCount = 0u;
+static bool s_mainColorPassOpenedThisFrame = false;
 #ifdef _EDITOR
+// The editor's ImGui frame waits to be drawn over this frame: after RmlUi, in a pass of its own
+// (RenderEditorOverlayPass, from EndFrame), so the editor's windows sit on top of the game's UI.
+static bool s_editorDrawPending = false;
+
 void QueueEditorRenderCommand()
 {
     if (!s_frameActive)
@@ -744,44 +1024,62 @@ void QueueEditorRenderCommand()
         return;
     }
 
-    RenderCmd command{};
-    command.type = RenderCmdType::EditorOverlay;
-    s_renderCmds.push_back(command);
+    s_editorDrawPending = true;
 }
 
-static void PreparePendingEditorDrawData(SDL_GPUCommandBuffer* commandBuffer)
+// Uploads and draws the editor's draw data onto the frame's colour target. Runs once RmlUi's
+// passes have closed (PrepareDrawData opens a copy pass) and before the post-RmlUi pass, so the
+// game cursor still goes over the editor. Colour only: the ImGui pipeline has no depth target.
+static void RenderEditorOverlayPass(SDL_GPUCommandBuffer* commandBuffer, SDL_GPUTexture* colorTexture)
 {
-    const bool editorRenderPending = std::any_of(s_renderCmds.begin(), s_renderCmds.end(), [](const RenderCmd& command)
-                                                 { return command.type == RenderCmdType::EditorOverlay; });
-    if (!editorRenderPending)
+    if (!s_editorDrawPending)
+    {
+        return;
+    }
+    s_editorDrawPending = false;
+    if (!commandBuffer || !colorTexture)
     {
         return;
     }
 
     g_MuEditorCore.PrepareDrawData(commandBuffer);
+
+    SDL_GPUColorTargetInfo colorTarget{};
+    colorTarget.texture = colorTexture;
+    colorTarget.load_op = SDL_GPU_LOADOP_LOAD;
+    colorTarget.store_op = SDL_GPU_STOREOP_STORE;
+    SDL_GPURenderPass* pass = SDL_BeginGPURenderPass(commandBuffer, &colorTarget, 1, nullptr);
+    if (!pass)
+    {
+        return;
+    }
+    g_MuEditorCore.RenderDrawData(commandBuffer, pass);
+    SDL_EndGPURenderPass(pass);
 }
 #endif
 
-static bool BindReplayPipeline(const RenderCmd& command, Render::SdlGpuReplayState& state, const SDL_Rect& scissor)
+static bool BindReplayPipeline(SDL_GPUGraphicsPipeline* pipeline, Render::SdlGpuReplayState& state,
+                               const SDL_Rect& scissor)
 {
-    if (!command.pipeline)
+    if (!pipeline)
         return false;
-    if (!state.SelectPipeline(command.pipeline))
+    if (!state.SelectPipeline(pipeline))
         return true;
 
-    SDL_BindGPUGraphicsPipeline(s_renderPass, command.pipeline);
+    SDL_BindGPUGraphicsPipeline(s_renderPass, pipeline);
     SDL_SetGPUScissor(s_renderPass, &scissor);
     ++s_dbgPipelineBindsThisFrame;
+    FrameProfiler::Count(FrameProfiler::Counter::PipelineBinds);
     return true;
 }
 
-static void PushReplayVertexUniforms(const void* data, std::size_t size, Render::SdlGpuReplayState& state)
+static void PushReplayVertexUniforms(Uint32 slot, const void* data, std::size_t size, Render::SdlGpuReplayState& state)
 {
     const auto* bytes = static_cast<const std::byte*>(data);
-    if (!state.SelectVertexUniforms({bytes, size}))
+    if (!state.SelectVertexUniforms(slot, {bytes, size}))
         return;
 
-    SDL_PushGPUVertexUniformData(s_cmdBuf, 0, data, static_cast<Uint32>(size));
+    SDL_PushGPUVertexUniformData(s_cmdBuf, slot, data, static_cast<Uint32>(size));
     ++s_dbgVertexUniformPushesThisFrame;
 }
 
@@ -791,18 +1089,50 @@ static void PushReplayFragmentUniforms(const FogUniform& uniforms, Render::SdlGp
     if (!state.SelectFragmentUniforms(bytes))
         return;
 
-    SDL_PushGPUFragmentUniformData(s_cmdBuf, 0, &uniforms, sizeof(uniforms));
+    SDL_PushGPUFragmentUniformData(s_cmdBuf, k_FragmentUniformSlotFog, &uniforms, sizeof(uniforms));
     ++s_dbgFragmentUniformPushesThisFrame;
 }
 
+// Classic fragment shaders declare one uniform buffer and never read slots 1 and 2; only the
+// skinned_lit and world_lit fragment shaders read slot 2.
+static void PushSceneLightingUniforms()
+{
+    SDL_PushGPUFragmentUniformData(s_cmdBuf, k_FragmentUniformSlotSceneLighting, &s_sceneLightingUniform,
+                                   sizeof(s_sceneLightingUniform));
+    SDL_PushGPUFragmentUniformData(s_cmdBuf, k_FragmentUniformSlotDynamicLights, &s_dynamicLightsUniform,
+                                   sizeof(s_dynamicLightsUniform));
+    s_dbgFragmentUniformPushesThisFrame += 2;
+}
+
+// The world-lit ground's slot 1: this frame's shadow mask once it holds its shadows, otherwise white,
+// which leaves the ground unshadowed.
+static SDL_GPUTextureSamplerBinding GroundShadowMaskBinding();
+
 static void BindReplayFragmentSampler(const RenderCmd& command, Render::SdlGpuReplayState& state)
 {
+    // Slot 1 changes meaning with the shader (normal map or shadow mask), so it is bound per draw.
+    if (!command.normalTexture && command.worldLit)
+    {
+        const SDL_GPUTextureSamplerBinding maskBinding = GroundShadowMaskBinding();
+        if (state.SelectNormalMapSampler(maskBinding.texture, maskBinding.sampler))
+        {
+            SDL_BindGPUFragmentSamplers(s_renderPass, k_FragmentSamplerSlotNormalMap, &maskBinding, 1);
+            ++s_dbgSamplerBindsThisFrame;
+        }
+    }
+    if (command.normalTexture && state.SelectNormalMapSampler(command.normalTexture, command.normalSampler))
+    {
+        const SDL_GPUTextureSamplerBinding normalBinding{command.normalTexture, command.normalSampler};
+        SDL_BindGPUFragmentSamplers(s_renderPass, k_FragmentSamplerSlotNormalMap, &normalBinding, 1);
+        ++s_dbgSamplerBindsThisFrame;
+    }
     if (!state.SelectFragmentSampler(command.texture, command.sampler))
         return;
 
     const SDL_GPUTextureSamplerBinding samplerBinding{command.texture, command.sampler};
     SDL_BindGPUFragmentSamplers(s_renderPass, 0, &samplerBinding, 1);
     ++s_dbgSamplerBindsThisFrame;
+    FrameProfiler::Count(FrameProfiler::Counter::SamplerBinds);
 }
 
 static void BindReplayIndexBuffer(SDL_GPUBuffer* buffer, Uint32 offset, SDL_GPUIndexElementSize elementSize,
@@ -815,42 +1145,157 @@ static void BindReplayIndexBuffer(SDL_GPUBuffer* buffer, Uint32 offset, SDL_GPUI
     SDL_BindGPUIndexBuffer(s_renderPass, &indexBinding, elementSize);
 }
 
-static void ReplayDrawCommand(const RenderCmd& command, bool boneDataReady, const SDL_Rect& scissor,
-                              Render::SdlGpuReplayState& state)
+// Passes outside the frame's main pass draw with one sample even while anti-aliasing is on: the
+// offscreen captures and render targets, the post-RmlUi pass and FlushRenderCommands render into
+// single-sample textures. Each multisampled pipeline maps to its single-sample twin, built with
+// it (an alpha-to-coverage variant maps to its blending-off pipeline's twin); empty with one
+// sample. s_singleSamplePass makes ReplayDrawCommand use the twins.
+static std::unordered_map<SDL_GPUGraphicsPipeline*, SDL_GPUGraphicsPipeline*> s_singleSamplePipelines;
+static bool s_singleSamplePass = false;
+// The HDR scene: with post-processing, the scene and bloom-source passes draw into float textures
+// (kHdrSceneFormat), so additive light stacks above 1 and the composite rolls it off. Each pipeline
+// those passes use maps to its twin built for that format; s_hdrScenePass makes ReplayDrawCommand
+// use them. Empty when the device cannot render the format at the frame's sample count.
+static constexpr SDL_GPUTextureFormat kHdrSceneFormat = SDL_GPU_TEXTUREFORMAT_R16G16B16A16_FLOAT;
+static std::unordered_map<SDL_GPUGraphicsPipeline*, SDL_GPUGraphicsPipeline*> s_hdrScenePipelines;
+static bool s_hdrScenePass = false;
+// The colour format CreatePipelines builds for instead of the swapchain's (INVALID: the swapchain's).
+static SDL_GPUTextureFormat s_pipelineFormatOverride = SDL_GPU_TEXTUREFORMAT_INVALID;
+// Whether the built pipelines are multisampled; set by CreatePipelinesForSampleCount.
+static bool s_pipelinesMultisampled = false;
+
+// Enhanced sun shadows: while s_sunShadowPass replays the scene into the shadow map, each draw's recorded
+// scene matrix is turned into the sun's by s_sunFromScene.
+static bool s_sunShadowPass = false;
+// While the scene's solid draws are replayed depth-only into a single-sample depth (RenderSceneDepth).
+static bool s_sceneDepthPass = false;
+static glm::mat4 s_sunFromScene{1.0f};
+
+// What the sun shadow and scene depth passes read of a recorded draw.
+[[nodiscard]] static Render::ShadowPass::DrawTraits ShadowPassTraits(const RenderCmd& command)
 {
     const bool skinned = command.type == RenderCmdType::DrawSkinnedTriangles;
+    Render::ShadowPass::DrawTraits traits;
+    // Models drawn for the UI (their own view, Enhanced without the point lights) are left out.
+    traits.worldGeometry =
+        skinned ? s_skinningUniforms[command.skinningIndex].palette[3] != k_SkinningLightingEnhanced
+                : command.type != RenderCmdType::DrawTriangles2D && command.vtxStride == sizeof(Vertex3D);
+    traits.groundShadow = command.groundShadow;
+    traits.depthTest = command.depthTestEnabled;
+    traits.depthWrite = command.depthMaskEnabled;
+    traits.blended = command.blendEnabled;
+    traits.blendMode = command.blendMode;
+    traits.alphaTest = command.fogUniform.alphaDiscardEnabled != 0u;
+    traits.alphaToCoverage = command.fogUniform.alphaToCoverage != 0u;
+    traits.translucentVertices = command.translucentVertices;
+    traits.characterPart = command.characterDraw && skinned;
+    traits.noSunCaster = command.noSunCaster;
+    return traits;
+}
+
+// A draw's vertex uniforms in the sun shadow pass: its own, with the sun's matrix.
+static void PushSunShadowVertexUniforms(const RenderCmd& command, bool skinned, Render::SdlGpuReplayState& state)
+{
+    if (skinned)
+    {
+        SkinningVertexUniforms uniforms = s_skinningUniforms[command.skinningIndex];
+        uniforms.mvp = s_sunFromScene * uniforms.mvp;
+        PushReplayVertexUniforms(0, &uniforms, sizeof(uniforms), state);
+        return;
+    }
+    VertexUniforms uniforms = command.vu;
+    uniforms.mvp = s_sunFromScene * uniforms.mvp;
+    PushReplayVertexUniforms(0, &uniforms, sizeof(uniforms), state);
+}
+
+// Replays a recorded draw with `pipeline`: its own, or a variant of it for another pass.
+static void ReplayDrawCommand(const RenderCmd& command, SDL_GPUGraphicsPipeline* pipeline, bool boneDataReady,
+                              const SDL_Rect& scissor, Render::SdlGpuReplayState& state)
+{
+    // With one sample the frame's own pipelines already match; with more, a pass outside the
+    // main one draws only through a twin (CreateSingleSamplePipelines guarantees a complete set,
+    // or turns anti-aliasing off).
+    if (s_singleSamplePass && s_pipelinesMultisampled)
+    {
+        const auto twin = s_singleSamplePipelines.find(pipeline);
+        pipeline = twin != s_singleSamplePipelines.end() ? twin->second : nullptr;
+    }
+    else if (s_hdrScenePass)
+    {
+        const auto twin = s_hdrScenePipelines.find(pipeline);
+        pipeline = twin != s_hdrScenePipelines.end() ? twin->second : nullptr;
+    }
+    const bool skinned = command.type == RenderCmdType::DrawSkinnedTriangles;
+    const bool shadow = skinned && command.shadowIndex != ~0u;
     if (!command.texture || !command.sampler || (skinned && (!boneDataReady || !s_boneGpuBuf)) ||
-        !BindReplayPipeline(command, state, scissor))
+        (shadow && !s_terrainHeightGpuBuf) || !BindReplayPipeline(pipeline, state, scissor))
     {
         return;
     }
 
-    if (skinned)
-        PushReplayVertexUniforms(&command.skinningVu, sizeof(command.skinningVu), state);
+    if (s_sunShadowPass)
+        PushSunShadowVertexUniforms(command, skinned, state);
+    else if (skinned)
+        PushReplayVertexUniforms(0, &s_skinningUniforms[command.skinningIndex], sizeof(SkinningVertexUniforms), state);
     else
-        PushReplayVertexUniforms(&command.vu, sizeof(command.vu), state);
+        PushReplayVertexUniforms(0, &command.vu, sizeof(command.vu), state);
+    if (shadow)
+        PushReplayVertexUniforms(1, &s_shadowUniforms[command.shadowIndex], sizeof(ShadowVertexUniforms), state);
 
-    const SDL_GPUBufferBinding vertexBinding{s_vtxGpuBuf, command.vtxOffset};
-    SDL_BindGPUVertexBuffers(s_renderPass, 0, &vertexBinding, 1);
-
-    if (skinned && state.SelectVertexStorageBuffer(s_boneGpuBuf))
+    // Bound again only when the buffer or the vertex size changes; draws in between say where their vertices start.
+    SDL_GPUBuffer* const vertexBuffer = command.vtxBuffer ? command.vtxBuffer : s_vtxGpuBuf;
+    if (state.SelectVertexBuffer(vertexBuffer, command.vtxStride, command.vtxOffset))
     {
-        SDL_GPUBuffer* boneBuffer = s_boneGpuBuf;
-        SDL_BindGPUVertexStorageBuffers(s_renderPass, 0, &boneBuffer, 1);
+        const SDL_GPUBufferBinding vertexBinding{vertexBuffer, state.VertexBufferOffset()};
+        SDL_BindGPUVertexBuffers(s_renderPass, 0, &vertexBinding, 1);
+    }
+    const Uint32 firstVertex = (command.vtxOffset - state.VertexBufferOffset()) / command.vtxStride;
+    // A skinned draw's one colour is a per-instance attribute: its single instance starts at it.
+    Uint32 firstInstance = 0u;
+    if (skinned)
+    {
+        if (state.SelectInstanceBuffer(s_vtxGpuBuf))
+        {
+            const SDL_GPUBufferBinding colorBinding{s_vtxGpuBuf, 0u};
+            SDL_BindGPUVertexBuffers(s_renderPass, 1, &colorBinding, 1);
+        }
+        firstInstance = command.colorOffset / sizeof(Uint32);
     }
 
+    if (skinned)
+    {
+        SDL_GPUBuffer* const storageBuffers[] = {s_boneGpuBuf, s_terrainHeightGpuBuf};
+        const std::span<SDL_GPUBuffer* const> bound{storageBuffers, shadow ? 2u : 1u};
+        if (state.SelectVertexStorageBuffers(bound))
+            SDL_BindGPUVertexStorageBuffers(s_renderPass, 0, bound.data(), static_cast<Uint32>(bound.size()));
+    }
+
+    Uint32 firstIndex = 0u;
     if (command.type == RenderCmdType::DrawIndexedQuads)
         BindReplayIndexBuffer(s_quadIdxBuf, 0, SDL_GPU_INDEXELEMENTSIZE_16BIT, state);
-    else if (command.type == RenderCmdType::DrawIndexedStrip)
-        BindReplayIndexBuffer(s_stripIdxBuf, command.stripIdxOffset, SDL_GPU_INDEXELEMENTSIZE_16BIT, state);
+    else if (command.type == RenderCmdType::DrawIndexedStrip || command.trianglesIndexed)
+    {
+        BindReplayIndexBuffer(s_stripIdxBuf, 0, SDL_GPU_INDEXELEMENTSIZE_16BIT, state);
+        firstIndex = command.stripIdxOffset / sizeof(Uint16);
+    }
 
     BindReplayFragmentSampler(command, state);
-    PushReplayFragmentUniforms(command.fogUniform, state);
-
-    if (command.type == RenderCmdType::DrawIndexedQuads || command.type == RenderCmdType::DrawIndexedStrip)
-        SDL_DrawGPUIndexedPrimitives(s_renderPass, command.idxCount, 1, 0, 0, 0);
+    if (s_sunShadowPass || s_sceneDepthPass)
+    {
+        // sun_depth.frag reads fogEnabled's slot as its coverage mode.
+        FogUniform coverage = command.fogUniform;
+        coverage.fogEnabled =
+            static_cast<std::uint32_t>(Render::ShadowPass::CoverageOf(ShadowPassTraits(command))) - 1u;
+        PushReplayFragmentUniforms(coverage, state);
+    }
     else
-        SDL_DrawGPUPrimitives(s_renderPass, command.vtxCount, 1, 0, 0);
+        PushReplayFragmentUniforms(command.fogUniform, state);
+
+    if (command.type == RenderCmdType::DrawIndexedQuads || command.type == RenderCmdType::DrawIndexedStrip ||
+        command.trianglesIndexed)
+        SDL_DrawGPUIndexedPrimitives(s_renderPass, command.idxCount, 1, firstIndex, static_cast<Sint32>(firstVertex), 0);
+    else
+        SDL_DrawGPUPrimitives(s_renderPass, command.vtxCount, 1, firstVertex, firstInstance);
     ++s_dbgGpuDrawCallsThisFrame;
 }
 
@@ -881,6 +1326,13 @@ static std::vector<TextureUpdateCmd> s_textureUpdates;
 // Default white 1×1 texture used for textureId==0 and unknown IDs.
 static SDL_GPUTexture* s_whiteTexture = nullptr;
 
+static SDL_GPUTextureSamplerBinding GroundShadowMaskBinding()
+{
+    return {s_groundShadowMaskReady ? s_groundShadowMask : s_whiteTexture, s_defaultSampler};
+}
+// 1×1 flat normal map (k_FlatNormalPixel) bound to skinned_lit.frag for draws without a map.
+static SDL_GPUTexture* s_flatNormalTexture = nullptr;
+
 // Shader handles for basic_textured (2D path) and basic_colored — released after pipeline creation.
 static SDL_GPUShader* s_vertShader2D = nullptr;      // basic_textured.vert
 static SDL_GPUShader* s_fragShaderTex = nullptr;     // basic_textured.frag
@@ -888,20 +1340,72 @@ static SDL_GPUShader* s_vertShader2DCol = nullptr;   // basic_colored.vert
 static SDL_GPUShader* s_fragShaderCol = nullptr;     // basic_colored.frag
 static SDL_GPUShader* s_vertShaderShadow = nullptr;  // shadow_volume.vert
 static SDL_GPUShader* s_vertShaderSkinned = nullptr; // skinned_textured.vert
+static SDL_GPUShader* s_vertShaderSkinnedWeighted = nullptr; // skinned_weighted.vert
+static SDL_GPUShader* s_vertShaderSkinnedShadow = nullptr; // skinned_shadow.vert
+static SDL_GPUShader* s_vertShaderSkinnedWeightedShadow = nullptr; // skinned_weighted_shadow.vert
+static SDL_GPUShader* s_fragShaderTexFog = nullptr;  // basic_textured_fog.frag (Enhanced, optional)
+static SDL_GPUShader* s_fragShaderLit = nullptr;     // skinned_lit.frag (Enhanced, optional)
+static SDL_GPUShader* s_vertShaderWorldLit = nullptr;   // world_lit.vert (Enhanced, optional)
+static SDL_GPUShader* s_fragShaderWorldLit = nullptr;   // world_lit.frag (Enhanced, optional)
+static SDL_GPUShader* s_fragShaderShadowMask = nullptr; // shadow_mask.frag (optional)
+// Post-processing (optional): without them post-processing is unavailable.
+static SDL_GPUShader* s_vertShaderPostFullscreen = nullptr; // post_fullscreen.vert
+static SDL_GPUShader* s_fragShaderBloomDown = nullptr;      // post_bloom_down.frag
+static SDL_GPUShader* s_fragShaderBloomUp = nullptr;        // post_bloom_up.frag
+static SDL_GPUShader* s_fragShaderComposite = nullptr;      // post_composite.frag
+static SDL_GPUShader* s_fragShaderAmbientOcclusion = nullptr;     // post_ao.frag
+static SDL_GPUShader* s_fragShaderAmbientOcclusionBlur = nullptr; // post_ao_blur.frag
+// The scene's ambient occlusion (one sample only), and the scene's projection it reconstructs from.
+static mu::SdlGpuAmbientOcclusion s_ambientOcclusion;
+static float s_sceneProjection[16]{};
+// Enhanced sun shadows (one sample): the shadow map's pipelines for 3D, skinned and glTF draws, and its
+// textures.
+static SDL_GPUGraphicsPipeline* s_sunShadowPipelines[3]{}; // [ShadowPassLayout]
+// The same draws, unbiased, into the scene's single-sample depth (RenderSceneDepth).
+static SDL_GPUGraphicsPipeline* s_sceneDepthPipelines[3]{}; // [ShadowPassLayout]
+static SDL_GPUShader* s_fragShaderSunDepth = nullptr;       // sun_depth.frag
+static mu::SdlGpuSunShadowMap s_sunShadowMap;
 
-// Story 7.9.7 (AC-3): Depth buffer texture for correct 3D depth testing.
+// Depth buffer texture for correct 3D depth testing.
 // Created in Init() at swapchain dimensions, recreated on window resize.
 static SDL_GPUTexture* s_depthTexture = nullptr;
 static Uint32 s_depthW = 0u;
 static Uint32 s_depthH = 0u;
+static int s_depthSampleCount = Render::Antialiasing::OffSampleCount;
+// Ordinary frames render here rather than into the swapchain: SDL creates swapchain textures
+// without SAMPLER usage, so they can't be a blit source, and the RmlUi backend reads the frame
+// back to composite over it. Blitted to the swapchain at the end of EndFrame().
+static SDL_GPUTexture* s_mainColorTarget = nullptr;
+static Uint32 s_mainColorW = 0u;
+static Uint32 s_mainColorH = 0u;
+static SDL_GPUTextureFormat s_mainColorFormat = SDL_GPU_TEXTUREFORMAT_INVALID;
 static SDL_FColor s_clearColor{0.0f, 0.0f, 0.0f, 1.0f};
 
-#ifdef _EDITOR
-// Editor-only isolated offscreen render captures (e.g. the Map Editor's object
-// preview thumbnails). A capture batches a sub-range of s_renderCmds - recorded
-// between BeginOffscreenCapture()/EndOffscreenCapture() - to be replayed into a
-// dedicated texture instead of the main swapchain. Never used on the normal
-// gameplay rendering path.
+// Multisample anti-aliasing. s_sampleCount is what the pipelines, the depth
+// buffer and the multisampled colour target are built for; the setting
+// (s_requestedSampleCount) is applied between frames, at BeginFrame, by
+// rebuilding them. With one sample nothing multisampled exists and the frame
+// renders exactly as before.
+static int s_requestedSampleCount = Render::Antialiasing::OffSampleCount;
+static int s_sampleCount = Render::Antialiasing::OffSampleCount;
+static bool s_sampleCountChangePending = false;
+// Logs the first alpha-to-coverage draw after each sample-count change.
+static bool s_alphaCoverageDrawLogged = false;
+static Render::Antialiasing::SupportedSampleCounts s_supportedSampleCounts{};
+static SDL_GPUTexture* s_multisampleColorTexture = nullptr;
+static SDL_GPUTextureCreateInfo s_multisampleColorInfo{};
+// The HDR scene's multisampled colour target (kHdrSceneFormat), while anti-aliasing is on.
+static SDL_GPUTexture* s_hdrMultisampleColorTexture = nullptr;
+static SDL_GPUTextureCreateInfo s_hdrMultisampleColorInfo{};
+// The depth of a single-sample pass at the frame's size while the frame's own depth is multisampled.
+static SDL_GPUTexture* s_singleSampleDepthTexture = nullptr;
+static Uint32 s_singleSampleDepthW = 0u;
+static Uint32 s_singleSampleDepthH = 0u;
+
+// Isolated offscreen render captures. A capture batches a sub-range of s_renderCmds -
+// recorded between BeginOffscreenCapture()/EndOffscreenCapture() - to be replayed into a
+// dedicated texture instead of the frame: the Map Editor's object thumbnails, and render
+// targets (CreateRenderTarget()) an RmlUi document shows.
 struct PendingOffscreenCapture
 {
     std::size_t startCmd;
@@ -911,12 +1415,25 @@ struct PendingOffscreenCapture
     Uint32 height;
 };
 static std::vector<PendingOffscreenCapture> s_pendingOffscreenCaptures;
+
+static bool s_drawReorderingEnabled = true;
+// What a reorderable block must not span: a flush, or an offscreen capture's start or end.
+struct ReorderableDrawsMark
+{
+    std::size_t firstCommand = 0u;
+    std::size_t replayedCommands = 0u;
+    std::size_t pendingCaptures = 0u;
+    std::uint32_t captureTexture = 0u;
+};
+static ReorderableDrawsMark s_reorderableDraws;
 static std::size_t s_offscreenCaptureStart = 0u;
 static std::uint32_t s_offscreenCaptureTextureId = 0u;
+// SetOffscreen2DRect()'s projection for the open capture's 2D draws.
+static std::optional<glm::mat4> s_offscreen2DProjection;
 static Uint32 s_offscreenCaptureWidth = 0u;
 static Uint32 s_offscreenCaptureHeight = 0u;
 
-// Shared depth buffer for offscreen captures, resized on demand. Captures are
+// Shared depth buffer for one-shot captures, resized on demand. Captures are
 // processed strictly one at a time (never concurrently), so one is enough.
 static SDL_GPUTexture* s_offscreenDepthTexture = nullptr;
 static Uint32 s_offscreenDepthW = 0u;
@@ -927,146 +1444,38 @@ static Uint32 s_offscreenDepthH = 0u;
 static FrameReadbackState s_textureReadbackState;
 static std::uint32_t s_textureReadbackId = 0u;
 
-// Dear ImGui's pipeline rebuilt for the main pass's colour and depth formats (see
-// CreateEditorOverlayPipeline). nullptr lets ImGui fall back to its own pipeline.
-static SDL_GPUGraphicsPipeline* s_editorOverlayPipeline = nullptr;
-#endif
+// A render target's own depth buffer, sized to it. Several are captured every frame at
+// different sizes, which the shared one above would recreate for each.
+static std::unordered_map<std::uint32_t, SDL_GPUTexture*> s_renderTargetDepth;
+// Drained at the start of the next frame: releasing an owned texture mid-frame sets
+// s_texturesInvalidated, which drops that whole frame's replay.
+static std::vector<std::uint32_t> s_pendingRenderTargetReleases;
 
-// Story 4.3.2 (AC-10): Fog uniform buffer and transfer buffer.
+// Fog uniform buffer and transfer buffer.
 static SDL_GPUBuffer* s_fogUniformBuf = nullptr;
 static SDL_GPUTransferBuffer* s_fogTransferBuf = nullptr;
 static bool s_fogDirty = true; // upload on first draw if SetFog not called
 
-// Story 7.9.8 (AC-2): SDL_ttf GPU text engine and font variants.
+// SDL_ttf GPU text engine and font variants.
 // s_textEngine: atlas-based text engine created after SDL_GPUDevice.
-// s_ttfFont*: pre-loaded fonts for UI text rendering (normal, bold, big, fixed).
+// s_ttfFonts: pre-loaded fonts for UI text rendering (normal, bold, big, fixed).
 static TTF_TextEngine* s_textEngine = nullptr;
-static TTF_Font* s_ttfFont = nullptr;      // normal (default)
-static TTF_Font* s_ttfFontBold = nullptr;  // bold weight
-static TTF_Font* s_ttfFontBig = nullptr;   // larger size, bold
-static TTF_Font* s_ttfFontFixed = nullptr; // monospace
-static TTF_Font* s_ttfFallback = nullptr;
-static TTF_Font* s_ttfFallbackBold = nullptr;
-static TTF_Font* s_ttfFallbackBig = nullptr;
-static TTF_Font* s_ttfFallbackFixed = nullptr;
-
-#ifdef NDEBUG
-inline constexpr bool kAllowSystemFontFallback = false;
-#else
-inline constexpr bool kAllowSystemFontFallback = true;
-#endif
+static Render::Text::SdlTtfFontSet s_ttfFonts;
 
 // F-7 fix: Cached window dimensions, updated once per frame in BeginFrame().
 static int s_cachedWinW = 0;
 static int s_cachedWinH = 0;
 
 #if MU_HAS_SDL_TTF
-[[nodiscard]] static std::string BundledFontPath(const char* relativePath)
-{
-    return ResolveBundledFontPath(relativePath).string();
-}
-
-[[nodiscard]] static std::string FindDeveloperFontPath()
-{
-#ifndef NDEBUG
-    static const char* const k_SystemFontPaths[] = {
-#ifdef __APPLE__
-        "/System/Library/Fonts/Supplemental/Arial.ttf",
-        "/System/Library/Fonts/Helvetica.ttc",
-        "/Library/Fonts/Arial Unicode.ttf",
-#elif defined(__linux__)
-        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
-        "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf",
-        "/usr/share/fonts/TTF/DejaVuSans.ttf",
-#else // Windows
-        "C:\\Windows\\Fonts\\arial.ttf",
-        "C:\\Windows\\Fonts\\segoeui.ttf",
-#endif
-    };
-
-    for (const char* path : k_SystemFontPaths)
-    {
-        if (std::filesystem::exists(path))
-        {
-            return path;
-        }
-    }
-#endif
-
-    return {};
-}
-
-static void CloseTtfFont(TTF_Font*& font)
-{
-    if (!font)
-        return;
-    TTF_CloseFont(font);
-    font = nullptr;
-}
-
-[[nodiscard]] static TTF_Font* OpenTtfFontRole(std::string_view family, std::string_view role, const char* relativePath,
-                                               float pointSize)
-{
-    const std::string packagedPath = BundledFontPath(relativePath);
-    if (TTF_Font* font = TTF_OpenFont(packagedPath.c_str(), pointSize))
-    {
-        mu::log::Get("render")->info("SDL_ttf -- bundled family='{}' role='{}' path='{}'", family, role, packagedPath);
-        return font;
-    }
-
-    mu::log::Get("render")->error("SDL_ttf -- bundled family='{}' role='{}' path='{}' failed: {}", family, role,
-                                  packagedPath, SDL_GetError());
-    if (!kAllowSystemFontFallback)
-        return nullptr;
-
-    const std::string fallbackPath = FindDeveloperFontPath();
-    if (fallbackPath.empty())
-        return nullptr;
-
-    mu::log::Get("render")->warn("SDL_ttf -- NON-PARITY developer font fallback family='{}' role='{}' path='{}'",
-                                 family, role, fallbackPath);
-    TTF_Font* fallback = TTF_OpenFont(fallbackPath.c_str(), pointSize);
-    if (!fallback)
-    {
-        mu::log::Get("render")->error(
-            "SDL_ttf -- NON-PARITY developer font fallback family='{}' role='{}' path='{}' failed: {}", family, role,
-            fallbackPath, SDL_GetError());
-    }
-    return fallback;
-}
-
-[[nodiscard]] static TTF_Font* OpenTtfFallbackRole(std::string_view role, float pointSize)
-{
-    const std::string packagedPath = BundledFontPath(kBundledFallbackFont.regular);
-    TTF_Font* font = TTF_OpenFont(packagedPath.c_str(), pointSize);
-    if (font)
-    {
-        mu::log::Get("render")->info("SDL_ttf -- bundled fallback family='{}' role='{}' path='{}'",
-                                     kBundledFallbackFont.family, role, packagedPath);
-        return font;
-    }
-
-    mu::log::Get("render")->error("SDL_ttf -- bundled fallback family='{}' role='{}' path='{}' failed: {}",
-                                  kBundledFallbackFont.family, role, packagedPath, SDL_GetError());
-    return nullptr;
-}
-
-[[nodiscard]] static bool AttachTtfFallback(TTF_Font* font, TTF_Font* fallback, std::string_view role)
-{
-    if (TTF_AddFallbackFont(font, fallback))
-        return true;
-
-    mu::log::Get("render")->error("SDL_ttf -- fallback attach failed for role='{}': {}", role, SDL_GetError());
-    return false;
-}
-
 static void WarmTtfFonts()
 {
     static constexpr const char* k_WarmupGlyphs = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
                                                   "0123456789 !@#$%^&*()-_=+[]{}|;:',.<>?/~`\"\\한글";
-    TTF_Font* fonts[] = {s_ttfFont, s_ttfFontBold, s_ttfFontBig, s_ttfFontFixed};
-    for (TTF_Font* font : fonts)
+    using Render::Text::SdlTtfFontRole;
+    for (SdlTtfFontRole role :
+         {SdlTtfFontRole::Normal, SdlTtfFontRole::Bold, SdlTtfFontRole::Big, SdlTtfFontRole::Fixed})
     {
+        TTF_Font* font = s_ttfFonts.Get(role);
         TTF_Text* warmup = TTF_CreateText(s_textEngine, font, k_WarmupGlyphs, 0);
         if (!warmup)
             continue;
@@ -1078,51 +1487,9 @@ static void WarmTtfFonts()
 [[nodiscard]] static bool LoadTtfFonts(std::string_view configuredFamily, float normalPointSize, float bigPointSize,
                                        float fixedPointSize)
 {
-    const BundledFont& family = ResolveBundledFont(configuredFamily);
-    TTF_Font* normal = OpenTtfFontRole(family.family, "normal", family.regular, normalPointSize);
-    TTF_Font* bold = OpenTtfFontRole(family.family, "bold", family.bold, normalPointSize);
-    TTF_Font* big = OpenTtfFontRole(family.family, "big-bold", family.bold, bigPointSize);
-    TTF_Font* fixed =
-        OpenTtfFontRole(kBundledFixedFont.family, "fixed", kBundledFixedFont.regular, fixedPointSize);
-    TTF_Font* fallback = OpenTtfFallbackRole("normal", normalPointSize);
-    TTF_Font* fallbackBold = OpenTtfFallbackRole("bold", normalPointSize);
-    TTF_Font* fallbackBig = OpenTtfFallbackRole("big-bold", bigPointSize);
-    TTF_Font* fallbackFixed = OpenTtfFallbackRole("fixed", fixedPointSize);
-    if (fallbackBold)
-        TTF_SetFontStyle(fallbackBold, TTF_STYLE_BOLD);
-    if (fallbackBig)
-        TTF_SetFontStyle(fallbackBig, TTF_STYLE_BOLD);
-    if (!normal || !bold || !big || !fixed || !fallback || !fallbackBold || !fallbackBig || !fallbackFixed ||
-        !AttachTtfFallback(normal, fallback, "normal") || !AttachTtfFallback(bold, fallbackBold, "bold") ||
-        !AttachTtfFallback(big, fallbackBig, "big-bold") || !AttachTtfFallback(fixed, fallbackFixed, "fixed"))
-    {
-        CloseTtfFont(fixed);
-        CloseTtfFont(big);
-        CloseTtfFont(bold);
-        CloseTtfFont(normal);
-        CloseTtfFont(fallbackFixed);
-        CloseTtfFont(fallbackBig);
-        CloseTtfFont(fallbackBold);
-        CloseTtfFont(fallback);
+    if (!s_ttfFonts.Load(configuredFamily, normalPointSize, bigPointSize, fixedPointSize))
         return false;
-    }
 
-    CloseTtfFont(s_ttfFontFixed);
-    CloseTtfFont(s_ttfFontBig);
-    CloseTtfFont(s_ttfFontBold);
-    CloseTtfFont(s_ttfFont);
-    CloseTtfFont(s_ttfFallbackFixed);
-    CloseTtfFont(s_ttfFallbackBig);
-    CloseTtfFont(s_ttfFallbackBold);
-    CloseTtfFont(s_ttfFallback);
-    s_ttfFont = normal;
-    s_ttfFontBold = bold;
-    s_ttfFontBig = big;
-    s_ttfFontFixed = fixed;
-    s_ttfFallback = fallback;
-    s_ttfFallbackBold = fallbackBold;
-    s_ttfFallbackBig = fallbackBig;
-    s_ttfFallbackFixed = fallbackFixed;
     WarmTtfFonts();
     return true;
 }
@@ -1134,6 +1501,55 @@ static void WarmTtfFonts()
 // ---------------------------------------------------------------------------
 static std::unordered_map<std::uint32_t, void*> s_textureMap;
 static std::unordered_map<std::uint32_t, std::pair<std::uint32_t, std::uint32_t>> s_textureSizes;
+
+[[nodiscard]] static SDL_GPUTexture* FrameColorTexture()
+{
+    return s_frameColorTarget ? s_frameColorTarget : s_swapchainTexture;
+}
+
+// Called by BeginFrame() once the swapchain texture is known: a screenshot readback or a
+// reconnect capture requested before this frame claims the whole frame's colour target, so
+// every pass renders into the capture texture and nothing has to be replayed after the fact.
+static void ResolveFrameColorTarget()
+{
+    s_frameColorTarget = nullptr;
+    s_reconnectCaptureTexture = nullptr;
+    s_frameReadbackFormat = SDL_GPU_TEXTUREFORMAT_INVALID;
+
+    if (s_frameReadbackState.IsPending())
+    {
+        s_frameReadbackFormat = SDL_GetGPUSwapchainTextureFormat(s_device, s_window);
+        if (CreateFrameReadbackTexture(s_frameReadbackFormat))
+        {
+            s_frameColorTarget = s_frameReadbackTexture;
+        }
+        else
+        {
+            FailPendingFrameReadback();
+        }
+    }
+
+    if (s_pendingFrameCaptureTextureId != 0u)
+    {
+        const auto texture = s_textureMap.find(s_pendingFrameCaptureTextureId);
+        const auto size = s_textureSizes.find(s_pendingFrameCaptureTextureId);
+        if (texture != s_textureMap.end() && size != s_textureSizes.end() && size->second.first == s_swapW &&
+            size->second.second == s_swapH)
+        {
+            s_reconnectCaptureTexture = static_cast<SDL_GPUTexture*>(texture->second);
+            if (!s_frameColorTarget)
+            {
+                s_frameColorTarget = s_reconnectCaptureTexture;
+            }
+        }
+        s_pendingFrameCaptureTextureId = 0u;
+    }
+
+    if (!s_frameColorTarget)
+    {
+        s_frameColorTarget = s_mainColorTarget;
+    }
+}
 static std::unordered_set<std::uint32_t> s_ownedTextureIds;
 static std::uint32_t s_cachedTextureId = 0u;
 static void* s_cachedTexture = nullptr;
@@ -1235,6 +1651,14 @@ static bool ReleaseOwnedTextureById(std::uint32_t id)
 
     s_textureSizes.erase(id);
     s_ownedTextureIds.erase(owned);
+    if (const auto depth = s_renderTargetDepth.find(id); depth != s_renderTargetDepth.end())
+    {
+        if (s_device && depth->second)
+        {
+            SDL_ReleaseGPUTexture(s_device, depth->second);
+        }
+        s_renderTargetDepth.erase(depth);
+    }
     s_texturesInvalidated = true;
     return true;
 }
@@ -1302,7 +1726,7 @@ void ClearTextureRegistry()
 }
 
 // ---------------------------------------------------------------------------
-// Story 4.4.1 (AC-4, Task 6): SamplerRegistry — parallel to TextureRegistry.
+// SamplerRegistry — parallel to TextureRegistry.
 // Maps caller-provided uint32_t ids to SDL_GPUSampler* (stored as void* for test linkage).
 // RegisterSampler / LookupSampler / UnregisterSampler follow the same pattern as the texture registry.
 // Sampler binding in draw calls uses LookupSampler(textureId) instead of the hardcoded s_defaultSampler.
@@ -1333,22 +1757,145 @@ static bool s_samplerCacheValid = false;
     return s_cachedSampler;
 }
 
+// ---------------------------------------------------------------------------
+// Enhanced texture filtering: world draws of a texture that has a filtered
+// sampler (mip chain, trilinear, anisotropy) use it instead of the Classic one
+// above, unless they are screen-space (2D quads, UI item previews). A texture
+// that is eligible but still lacks its mip chain is "pending": its first world
+// draw records a request (and still draws Classic) so the texture owner can
+// build the chain between frames.
+// ---------------------------------------------------------------------------
+static std::unordered_map<std::uint32_t, void*> s_filteredSamplerMap;
+static std::unordered_set<std::uint32_t> s_filteredSamplerPending;
+static std::vector<std::uint32_t> s_filteredSamplerRequests;
+// Textures updated after creation (QueueTextureUpdate): never filtered.
+static std::unordered_set<std::uint32_t> s_updatedTextureIds;
+static bool s_textureFilteringEnabled = false;
+static int s_screenSpaceSamplingDepth = 0;
+static std::uint32_t s_cachedWorldSamplerId = 0u;
+static void* s_cachedWorldSampler = nullptr;
+static bool s_worldSamplerCacheValid = false;
+
+static void InvalidateSamplerLookupCaches()
+{
+    s_samplerCacheValid = false;
+    s_worldSamplerCacheValid = false;
+}
+
+// True when LookupWorldSampler gives this texture its Enhanced (mipmapped,
+// linearly filtered) sampler rather than the Classic one.
+[[nodiscard]] static bool UsesEnhancedSampler(std::uint32_t id)
+{
+    return s_textureFilteringEnabled && s_screenSpaceSamplingDepth == 0 &&
+           s_filteredSamplerMap.find(id) != s_filteredSamplerMap.end();
+}
+
+[[nodiscard]] static void* LookupWorldSampler(std::uint32_t id)
+{
+    if (!s_textureFilteringEnabled || s_screenSpaceSamplingDepth > 0)
+    {
+        return LookupSampler(id);
+    }
+    if (s_worldSamplerCacheValid && s_cachedWorldSamplerId == id)
+    {
+        return s_cachedWorldSampler;
+    }
+
+    void* sampler = nullptr;
+    auto filtered = s_filteredSamplerMap.find(id);
+    if (filtered != s_filteredSamplerMap.end())
+    {
+        sampler = filtered->second;
+    }
+    else
+    {
+        if (s_filteredSamplerPending.erase(id) > 0u)
+        {
+            s_filteredSamplerRequests.push_back(id);
+        }
+        sampler = LookupSampler(id);
+    }
+
+    s_cachedWorldSamplerId = id;
+    s_cachedWorldSampler = sampler;
+    s_worldSamplerCacheValid = true;
+    return sampler;
+}
+
 void RegisterSampler(std::uint32_t id, void* pSampler)
 {
     s_samplerMap[id] = pSampler;
-    s_samplerCacheValid = false;
+    InvalidateSamplerLookupCaches();
 }
 
 void UnregisterSampler(std::uint32_t id)
 {
     s_samplerMap.erase(id);
-    s_samplerCacheValid = false;
+    s_filteredSamplerMap.erase(id);
+    s_filteredSamplerPending.erase(id);
+    s_updatedTextureIds.erase(id);
+    InvalidateSamplerLookupCaches();
 }
 
 void ClearSamplerRegistry()
 {
     s_samplerMap.clear();
-    s_samplerCacheValid = false;
+    s_filteredSamplerMap.clear();
+    s_filteredSamplerPending.clear();
+    s_filteredSamplerRequests.clear();
+    s_updatedTextureIds.clear();
+    InvalidateSamplerLookupCaches();
+}
+
+void RegisterFilteredSampler(std::uint32_t id, void* pSampler)
+{
+    s_filteredSamplerPending.erase(id);
+    if (pSampler && !s_updatedTextureIds.contains(id))
+    {
+        s_filteredSamplerMap[id] = pSampler;
+    }
+    else
+    {
+        s_filteredSamplerMap.erase(id);
+    }
+    InvalidateSamplerLookupCaches();
+}
+
+void MarkFilteredSamplerPending(std::uint32_t id)
+{
+    if (!s_filteredSamplerMap.contains(id) && !s_updatedTextureIds.contains(id))
+    {
+        s_filteredSamplerPending.insert(id);
+        InvalidateSamplerLookupCaches();
+    }
+}
+
+void TakeFilteredSamplerRequests(std::vector<std::uint32_t>& requests)
+{
+    requests.insert(requests.end(), s_filteredSamplerRequests.begin(), s_filteredSamplerRequests.end());
+    s_filteredSamplerRequests.clear();
+}
+
+void SetTextureFilteringEnabled(bool enabled)
+{
+    if (s_textureFilteringEnabled != enabled)
+    {
+        s_textureFilteringEnabled = enabled;
+        s_filteredSamplerRequests.clear();
+        InvalidateSamplerLookupCaches();
+    }
+}
+
+// A texture whose pixels change after creation updates level 0 only, so it
+// keeps sampling level 0 through its Classic sampler until it is unloaded.
+static void MarkTextureUpdatedAfterCreation(std::uint32_t id)
+{
+    if (s_updatedTextureIds.insert(id).second)
+    {
+        s_filteredSamplerMap.erase(id);
+        s_filteredSamplerPending.erase(id);
+        InvalidateSamplerLookupCaches();
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -1410,7 +1957,8 @@ public:
     // Init: Create GPU device, claim window, initialize pipelines and buffers.
     // Called once after window creation, before the game loop.
     // -----------------------------------------------------------------------
-    [[nodiscard]] static bool Init(void* pNativeWindow, std::string_view fontFamily, float normalPointSize,
+    [[nodiscard]] static bool Init(void* pNativeWindow, std::string_view fontFamily,
+                                   std::string_view renderBackend, float normalPointSize,
                                    float bigPointSize, float fixedPointSize)
     {
         s_window = static_cast<SDL_Window*>(pNativeWindow);
@@ -1420,14 +1968,43 @@ public:
             return false;
         }
 
-        // Create GPU device with all supported shader formats.
-        // SDL_gpu selects the platform backend automatically:
-        //   Metal on macOS, Vulkan on Linux, D3D12 on Windows.
-        mu::log::Get("render")->info("SDL_gpu -- validation: {}",
-                                     Render::kGpuValidationEnabled ? "enabled" : "disabled");
+        // "default" (or empty) means this app's own platform-aware pick; Windows prefers Vulkan
+        // (SDL's own default D3D12 pick doesn't vsync-cap FPS correctly -- see the
+        // FPS_ANIMATION_FACTOR/CCreditWin fix commits), other platforms pass straight through to
+        // SDL's own auto-pick. Any other value forces that specific SDL_gpu driver name
+        // ("vulkan"/"direct3d12"/"metal") on any platform. config.ini's [Render] Backend key
+        // (GameConfig::GetRenderBackend()) is the source of this value; GameConfigValidation
+        // already normalized case/whitespace/the "d3d12" alias.
+        std::string requestedBackend(renderBackend);
+        if (requestedBackend.empty() || requestedBackend == "default")
+        {
+#ifdef _WIN32
+            requestedBackend = "vulkan";
+#else
+            requestedBackend.clear();
+#endif
+        }
+        const char* requestedDriverName = requestedBackend.empty() ? nullptr : requestedBackend.c_str();
+
+        // SDL_CreateGPUDevice() with a specific driver name has no built-in fallback (fails
+        // outright if that driver isn't available), so retry with nullptr (SDL's own auto-pick)
+        // if the requested one fails -- still works on a machine without it, just loses whatever
+        // benefit the requested backend had until that's addressed directly.
+        mu::log::Get("render")->info("SDL_gpu -- validation: {}, requested backend: {}",
+                                     Render::kGpuValidationEnabled ? "enabled" : "disabled",
+                                     requestedDriverName ? requestedDriverName : "(SDL auto-pick)");
         s_device =
             SDL_CreateGPUDevice(SDL_GPU_SHADERFORMAT_SPIRV | SDL_GPU_SHADERFORMAT_DXIL | SDL_GPU_SHADERFORMAT_MSL,
-                                Render::kGpuValidationEnabled, nullptr);
+                                Render::kGpuValidationEnabled, requestedDriverName);
+
+        if (!s_device && requestedDriverName != nullptr)
+        {
+            mu::log::Get("render")->warn("SDL_gpu -- '{}' device creation failed ({}), falling back to "
+                                         "SDL's own auto-picked driver", requestedDriverName, SDL_GetError());
+            s_device = SDL_CreateGPUDevice(
+                SDL_GPU_SHADERFORMAT_SPIRV | SDL_GPU_SHADERFORMAT_DXIL | SDL_GPU_SHADERFORMAT_MSL,
+                Render::kGpuValidationEnabled, nullptr);
+        }
 
         if (!s_device)
         {
@@ -1449,7 +2026,7 @@ public:
             return false;
         }
 
-        // Story 4.3.2: Load real HLSL shader blobs from MU_SHADER_DIR.
+        // Load real HLSL shader blobs from MU_SHADER_DIR.
         // Driver name used to select the correct blob format (SPIR-V/DXIL/MSL).
         if (!LoadShaders(driverName))
         {
@@ -1460,9 +2037,15 @@ public:
             return false;
         }
 
+        // Anti-aliasing: the sample count the pipelines and frame targets start with.
+        s_supportedSampleCounts = QuerySupportedSampleCounts();
+        s_sampleCount = SelectFrameSampleCount();
+        s_sampleCountChangePending = false;
+        LogSampleCount("at start-up");
+
         // Build nine blend variants for five required core sets, plus the unused
         // 2D depth-on set and any skinned sets whose optional shader loaded.
-        if (!CreatePipelines())
+        if (!CreatePipelinesForSampleCount())
         {
             mu::log::Get("render")->error("SDL_gpu -- pipeline creation failed during Init");
             DestroyPipelines();
@@ -1475,9 +2058,6 @@ public:
 
         // Shaders are no longer needed after pipelines are created.
         ReleaseShaders();
-#ifdef _EDITOR
-        CreateEditorOverlayPipeline();
-#endif
 
         // Allocate per-frame vertex scratch buffers.
         if (!CreateVertexBuffers())
@@ -1540,7 +2120,7 @@ public:
             return false;
         }
 
-        // Story 4.3.2 (AC-10): Create fog uniform GPU buffer and transfer buffer.
+        // Create fog uniform GPU buffer and transfer buffer.
         if (!CreateFogUniformBuffers())
         {
             mu::log::Get("render")->error("SDL_gpu -- fog uniform buffer creation failed");
@@ -1548,6 +2128,11 @@ public:
             {
                 SDL_ReleaseGPUTexture(s_device, s_whiteTexture);
                 s_whiteTexture = nullptr;
+            }
+            if (s_flatNormalTexture)
+            {
+                SDL_ReleaseGPUTexture(s_device, s_flatNormalTexture);
+                s_flatNormalTexture = nullptr;
             }
             SDL_ReleaseGPUSampler(s_device, s_defaultSampler);
             s_defaultSampler = nullptr;
@@ -1560,7 +2145,7 @@ public:
             return false;
         }
 
-        // Story 7.9.7 (AC-3): Create initial depth texture at window size.
+        // Create initial depth texture at window size.
         // BeginFrame() will recreate it if the swapchain dimensions differ.
         {
             int winW = 0;
@@ -1594,6 +2179,15 @@ public:
         }
 #endif
 
+        if (!s_bitmapGpuResources.Initialize(s_device))
+        {
+            mu::log::Get("render")->error("SDL_gpu -- bitmap uploader initialization failed at {}: {} (driver {})",
+                                          s_bitmapGpuResources.LastStage(), s_bitmapGpuResources.LastError(),
+                                          SDL_GetGPUDeviceDriver(s_device));
+            Shutdown();
+            return false;
+        }
+
         mu::log::Get("render")->info("SDL_gpu -- Init complete");
         return true;
     }
@@ -1615,16 +2209,8 @@ public:
         s_frameReadbackState.Reset();
 
 #if MU_HAS_SDL_TTF
-        // Story 7.9.8 (AC-2): Destroy SDL_ttf resources before the GPU device.
-        // Close font variants first, then default font, then engine.
-        CloseTtfFont(s_ttfFontFixed);
-        CloseTtfFont(s_ttfFontBig);
-        CloseTtfFont(s_ttfFontBold);
-        CloseTtfFont(s_ttfFont);
-        CloseTtfFont(s_ttfFallbackFixed);
-        CloseTtfFont(s_ttfFallbackBig);
-        CloseTtfFont(s_ttfFallbackBold);
-        CloseTtfFont(s_ttfFallback);
+        // Destroy SDL_ttf resources before the GPU device: the fonts first, then the engine.
+        s_ttfFonts.Close();
         if (s_textEngine)
         {
             TTF_DestroyGPUTextEngine(s_textEngine);
@@ -1636,12 +2222,30 @@ public:
         s_textureUpdates.clear();
         ReleaseOwnedTextures();
         ClearTextureRegistry();
+        ClearSamplerRegistry();
+        if (!s_bitmapGpuResources.Shutdown())
+        {
+            mu::log::Get("render")->error("SDL_gpu -- bitmap uploader shutdown failed at {}: {}",
+                                          s_bitmapGpuResources.LastStage(), s_bitmapGpuResources.LastError());
+        }
+
+        ReleaseSunShadowResources();
+        if (s_terrainSunLight)
+        {
+            SDL_ReleaseGPUTexture(s_device, s_terrainSunLight);
+            s_terrainSunLight = nullptr;
+        }
 
         // Release the independently owned white fallback texture.
         if (s_whiteTexture)
         {
             SDL_ReleaseGPUTexture(s_device, s_whiteTexture);
             s_whiteTexture = nullptr;
+        }
+        if (s_flatNormalTexture)
+        {
+            SDL_ReleaseGPUTexture(s_device, s_flatNormalTexture);
+            s_flatNormalTexture = nullptr;
         }
 
         if (s_defaultSampler)
@@ -1650,7 +2254,9 @@ public:
             s_defaultSampler = nullptr;
         }
 
-        // Story 7.9.7 (AC-3): Release depth texture.
+        ReleaseMultisampleColorTexture();
+
+        // Release depth texture.
         if (s_depthTexture)
         {
             SDL_ReleaseGPUTexture(s_device, s_depthTexture);
@@ -1662,8 +2268,23 @@ public:
         Render::HiddenWindow::FinishFrames(s_device);
         Render::HiddenWindow::Release(s_device);
 #endif
+        if (s_mainColorTarget)
+        {
+            SDL_ReleaseGPUTexture(s_device, s_mainColorTarget);
+            s_mainColorTarget = nullptr;
+            s_mainColorW = 0u;
+            s_mainColorH = 0u;
+            s_mainColorFormat = SDL_GPU_TEXTUREFORMAT_INVALID;
+        }
+        if (s_offscreenDepthTexture)
+        {
+            SDL_ReleaseGPUTexture(s_device, s_offscreenDepthTexture);
+            s_offscreenDepthTexture = nullptr;
+            s_offscreenDepthW = 0u;
+            s_offscreenDepthH = 0u;
+        }
 
-        // Story 4.3.2 (AC-10): Release fog uniform buffers.
+        // Release fog uniform buffers.
         if (s_fogUniformBuf)
         {
             SDL_ReleaseGPUBuffer(s_device, s_fogUniformBuf);
@@ -1678,8 +2299,13 @@ public:
         DestroyQuadIndexBuffer();
         DestroyVertexBuffers();
         DestroyBoneBuffers();
+        DestroyTerrainHeightBuffers();
+        DestroySkinnedMeshCache();
         DestroyPipelines();
         ReleaseShaders();
+        ReleaseGroundShadowMask();
+        s_ambientOcclusion.Release();
+        s_postProcessing.Release();
 
         SDL_ReleaseWindowFromGPUDevice(s_device, s_window);
         SDL_DestroyGPUDevice(s_device);
@@ -1689,6 +2315,26 @@ public:
         s_disableD3D12TriangleMerging = false;
 
         mu::log::Get("render")->info("SDL_gpu -- Shutdown complete");
+    }
+
+    // Waits on the same frame-in-flight fence as BeginFrame's acquire, so the acquire after it returns at once.
+    void WaitForSwapchain() override
+    {
+        if (!s_device || !s_window)
+        {
+            return;
+        }
+#if MU_ENABLE_CONTROL_SOCKET
+        // A window nobody can see hands out no swapchain image to wait for (HiddenWindowTarget.h).
+        if (Render::HiddenWindow::ShouldBypassWindow(s_window))
+        {
+            return;
+        }
+#endif
+        if (!SDL_WaitForGPUSwapchain(s_device, s_window))
+        {
+            mu::log::Get("render")->error("SDL_gpu -- SDL_WaitForGPUSwapchain failed: {}", SDL_GetError());
+        }
     }
 
     // -----------------------------------------------------------------------
@@ -1708,10 +2354,10 @@ public:
             s_frameTimingEnabled = std::getenv("MU_RENDER_TIMING") != nullptr;
             s_frameTimingInitialized = true;
         }
-        if (IsFrameTimingEnabled())
-        {
-            s_frameBeginTime = std::chrono::steady_clock::now();
-        }
+        s_frameBeginTime = std::chrono::steady_clock::now();
+
+        // Between frames: no draw has recorded a pipeline of the old sample count yet.
+        ApplyPendingSampleCount();
 
         s_cmdBuf = SDL_AcquireGPUCommandBuffer(s_device);
         if (!s_cmdBuf)
@@ -1728,15 +2374,54 @@ public:
         // Texture uploads may be queued by legacy asset loading before BeginFrame,
         // so keep s_textureUpdates until EndFrame has submitted them.
         s_vtxOffset = 0u;
+        s_stagedVertices = {};
+        s_stagedBones = {};
+        s_stagedStripIndices = {};
         s_renderCmds.clear();
+        s_skinningUniforms.clear();
+        s_shadowUniforms.clear();
         s_previousDrawCommands.fill(kNoDrawCommand);
+        s_sceneBoundary.Reset();
+        if (s_bloomExclusionDepth != 0)
+        {
+            mu::log::Get("render")->warn("SDL_gpu -- {} bloom exclusion scope(s) left open; reset",
+                                         s_bloomExclusionDepth);
+            s_bloomExclusionDepth = 0;
+        }
+        s_worldLitGeometryDepth = 0;
+        s_groundShadowDepth = 0;
+        s_characterDrawDepth = 0;
+        s_noSunCasterDepth = 0;
+        s_lightShadowDepth = 0;
+        s_frameHasWorldLit = false;
+        s_groundShadowMaskReady = false;
+
+        s_replayedCmdCount = 0u;
+        s_mainColorPassOpenedThisFrame = false;
+#ifdef _EDITOR
+        s_editorDrawPending = false;
+#endif
         s_stripIdxScratch.clear();
         s_boneRowScratch.clear();
         s_lastBonePalette = nullptr;
         s_lastBonePaletteSize = 0u;
         s_lastBonePaletteVersion = 0u;
         s_lastBonePaletteRowOffset = 0u;
+        s_lastBonePaletteBones = 0u;
+        // Before the reset below, so these invalidate nothing this frame records.
+        for (const std::uint32_t textureId : s_pendingRenderTargetReleases)
+        {
+            ReleaseOwnedTextureById(textureId);
+        }
+        s_pendingRenderTargetReleases.clear();
         s_texturesInvalidated = false; // Reset per-frame texture invalidation flag
+        if (s_screenSpaceSamplingDepth != 0)
+        {
+            mu::log::Get("render")->warn("SDL_gpu -- {} screen-space sampling scope(s) left open; reset",
+                                         s_screenSpaceSamplingDepth);
+            s_screenSpaceSamplingDepth = 0;
+            InvalidateSamplerLookupCaches();
+        }
         s_dbgDrawCallsThisFrame = 0u;
         s_dbgVtxBytesThisFrame = 0u;
         s_dbgFallbackTextureThisFrame = 0u;
@@ -1751,51 +2436,75 @@ public:
         s_dbgRealTextureDrawsThisFrame = 0u;
         s_dbgPipelineBindsThisFrame = 0u;
         s_dbgSamplerBindsThisFrame = 0u;
+        s_skinnedDrawKeys.clear();
         s_dbgVertexUniformPushesThisFrame = 0u;
         s_dbgFragmentUniformPushesThisFrame = 0u;
         ++s_dbgFrameCount;
-        s_vtxScratch.clear();
 
         s_swapW = 0u;
         s_swapH = 0u;
         s_swapchainTexture = nullptr;
 
 #if MU_ENABLE_CONTROL_SOCKET
-        if (BeginFrameWithoutWindow())
-        {
-            return;
-        }
+        // A window nobody can see is not waited for: the frame goes to an offscreen target.
+        const bool frameWithoutWindow = BeginFrameWithoutWindow();
+#else
+        const bool frameWithoutWindow = false;
 #endif
 
-        if (!SDL_AcquireGPUSwapchainTexture(s_cmdBuf, s_window, &s_swapchainTexture, &s_swapW, &s_swapH))
+        // Waits until a swapchain texture is free: with VSync on and no lower FPS cap, that wait is what holds the
+        // game loop to the display's refresh rate. SDL_AcquireGPUSwapchainTexture returns no texture instead while
+        // the frames in flight are full, and the loop ran on without drawing, several times per displayed frame on
+        // Vulkan and Direct3D 12 alike. The game loop already waited in WaitForSwapchain, before reading input, so
+        // this returns at once there; it still paces the frames drawn outside it (the title and loading screens).
+        if (!frameWithoutWindow &&
+            !SDL_WaitAndAcquireGPUSwapchainTexture(s_cmdBuf, s_window, &s_swapchainTexture, &s_swapW, &s_swapH))
         {
-            mu::log::Get("render")->error("SDL_gpu -- SDL_AcquireGPUSwapchainTexture failed: {}", SDL_GetError());
+            mu::log::Get("render")->error("SDL_gpu -- SDL_WaitAndAcquireGPUSwapchainTexture failed: {}",
+                                          SDL_GetError());
             SDL_CancelGPUCommandBuffer(s_cmdBuf);
             s_cmdBuf = nullptr;
             FailPendingFrameReadback();
             return;
         }
 
-        // If swapchain texture is null, window is minimized/occluded — skip frame.
+        // If swapchain texture is null, skip the frame: a hidden window, or on Vulkan a minimized one whose
+        // surface the driver reports as 0x0 (Direct3D 12 keeps rendering a minimized window).
         if (!s_swapchainTexture)
         {
-            // Debug-level only — this happens normally when window is minimized.
+            // A requested readback stays pending for the next frame that renders;
+            // its consumer decides how long to wait.
             SDL_CancelGPUCommandBuffer(s_cmdBuf);
             s_cmdBuf = nullptr;
-            FailPendingFrameReadback();
             return;
         }
 
-        // Story 7.9.7: Fog/alpha uniform is now pushed per-draw-call via
+        // Fog/alpha uniform is now pushed per-draw-call via
         // SDL_PushGPUFragmentUniformData — no copy pass needed here.
 
-        // Story 7.9.7 (AC-3): Ensure depth texture matches swapchain dimensions.
+        // Ensure depth texture matches swapchain dimensions.
         // Recreates on first frame or when window is resized.
         CreateOrResizeDepthTexture(s_swapW, s_swapH);
 #if MU_ENABLE_CONTROL_SOCKET
-        s_lastWindowW = s_swapW;
-        s_lastWindowH = s_swapH;
+        if (!frameWithoutWindow)
+        {
+            s_lastWindowW = s_swapW;
+            s_lastWindowH = s_swapH;
+        }
 #endif
+        if (s_sampleCount != Render::Antialiasing::OffSampleCount && !EnsureMultisampleColorTexture())
+        {
+            // Without its colour target the frame cannot use multisampled
+            // pipelines: drop to one sample before anything is recorded.
+            mu::log::Get("render")->error("SDL_gpu -- anti-aliasing turned off: the multisampled target is missing");
+            s_requestedSampleCount = Render::Antialiasing::OffSampleCount;
+            RebuildForSampleCount(Render::Antialiasing::OffSampleCount);
+            CreateOrResizeDepthTexture(s_swapW, s_swapH);
+        }
+
+        CreateOrResizeMainColorTarget(s_swapW, s_swapH);
+
+        ResolveFrameColorTarget();
 
         // Deferred rendering: do NOT begin the render pass here.
         // Draw calls record RenderCmds into s_renderCmds during the frame.
@@ -1803,92 +2512,672 @@ public:
         s_frameActive = true;
     }
 
+    // Where the replayed draws are placed and clipped; carried from one pass to the next.
+    struct ReplayView
+    {
+        SDL_GPUViewport viewport;
+        SDL_Rect scissor;
+    };
+
+    enum class ReplaySelection : std::uint8_t
+    {
+        AllCommands,
+        BloomSources,
+        GroundShadows,    // the ground shadows, into the ground shadow mask
+        SunShadowCasters, // solid world draws, into the sun shadow map
+        SceneDepth,       // the scene's solid draws, into a single-sample depth
+    };
+
+    [[nodiscard]] static ReplayView FullFrameView()
+    {
+        return {{0.0f, 0.0f, static_cast<float>(s_swapW), static_cast<float>(s_swapH), 0.0f, 1.0f},
+                {0, 0, static_cast<int>(s_swapW), static_cast<int>(s_swapH)}};
+    }
+
+    [[nodiscard]] static bool IsMultisampled()
+    {
+        return s_sampleCount != Render::Antialiasing::OffSampleCount;
+    }
+
+    [[nodiscard]] static bool IsPostProcessingActive()
+    {
+        return s_postProcessingEnabled && s_postProcessing.IsAvailable();
+    }
+
+    // The pipeline a bloom source replays with into the bloom pass, or null for
+    // a draw that is none. A draw that wrote depth uses the read-only variant of
+    // its set: the scene depth already holds its own surface, which the writing
+    // variant's strict test would reject.
+    [[nodiscard]] static SDL_GPUGraphicsPipeline* GetBloomSourcePipeline(const RenderCmd& command)
+    {
+        if (!Render::PostProcessing::IsBloomSource(command.blendEnabled, command.blendMode, command.bloomExcluded))
+        {
+            return nullptr;
+        }
+        if (!command.depthTestEnabled || !command.depthMaskEnabled)
+        {
+            return command.pipeline;
+        }
+
+        const auto index = static_cast<std::size_t>(command.blendMode);
+        for (const WorldPipelineSetSpec& spec : WorldPipelineSets())
+        {
+            if (SDL_GPUGraphicsPipeline* readOnly = spec.set->DepthReadOnlyFor(command.pipeline, index))
+            {
+                return readOnly;
+            }
+        }
+        return nullptr;
+    }
+
+    // The vertex layout a shadow pass replays `command` with: 0 3D, 1 skinned, 2 weighted skinned (glTF).
+    [[nodiscard]] static int ShadowPassLayout(const RenderCmd& command)
+    {
+        return command.type != RenderCmdType::DrawSkinnedTriangles        ? 0
+               : command.vtxStride == sizeof(mu::SkinnedWeightedVertex3D) ? 2
+                                                                          : 1;
+    }
+
+    [[nodiscard]] static SDL_GPUGraphicsPipeline* GetGroundShadowMaskPipeline(const RenderCmd& command)
+    {
+        return s_groundShadowMaskPipelines[command.lightShadow ? 1 : 0][ShadowPassLayout(command)];
+    }
+
+    // The pipeline `command` replays with in a pass of `selection`, or null when it is not drawn there.
+    // Once the mask holds the ground shadows, the other passes leave them out.
+    [[nodiscard]] static SDL_GPUGraphicsPipeline* GetReplayPipeline(const RenderCmd& command, ReplaySelection selection)
+    {
+        if (selection == ReplaySelection::GroundShadows)
+        {
+            return command.groundShadow ? GetGroundShadowMaskPipeline(command) : nullptr;
+        }
+        if (selection == ReplaySelection::SceneDepth)
+        {
+            return Render::ShadowPass::WritesSceneDepth(ShadowPassTraits(command))
+                       ? s_sceneDepthPipelines[ShadowPassLayout(command)]
+                       : nullptr;
+        }
+        if (selection == ReplaySelection::SunShadowCasters)
+        {
+            return Render::ShadowPass::CastsSunShadow(ShadowPassTraits(command))
+                       ? s_sunShadowPipelines[ShadowPassLayout(command)]
+                       : nullptr;
+        }
+        if (command.lightShadow || (command.groundShadow && s_groundShadowMaskReady))
+        {
+            return nullptr;
+        }
+        return selection == ReplaySelection::BloomSources ? GetBloomSourcePipeline(command) : command.pipeline;
+    }
+
+    // Replays commands [begin, end) into s_renderPass, starting from `view`;
+    // `view` ends as the last replayed command left it.
+    static void ReplayCommands(std::size_t begin, std::size_t end, bool boneDataReady, ReplaySelection selection,
+                               ReplayView& view)
+    {
+        // Track explicit state. Pipeline changes re-apply the active scissor because
+        // SDL GPU backends may discard it while binding a new pipeline.
+        Render::SdlGpuReplayState replayState;
+        if (replayState.SelectViewport(view.viewport))
+            SDL_SetGPUViewport(s_renderPass, &view.viewport);
+        if (replayState.SelectScissor(view.scissor))
+            SDL_SetGPUScissor(s_renderPass, &view.scissor);
+
+        const bool allCommands = selection == ReplaySelection::AllCommands;
+        // The shadow map keeps its own viewport and scissor.
+        const bool ownView = selection == ReplaySelection::SunShadowCasters;
+        for (std::size_t index = begin; index < end; ++index)
+        {
+            const RenderCmd& cmd = s_renderCmds[index];
+            // Replay state and editor commands after texture invalidation, but skip
+            // game draws because their deferred texture pointers may be dangling.
+            if (s_texturesInvalidated && IsUnsafeInvalidatedDrawCommand(cmd.type))
+            {
+                continue;
+            }
+            if (cmd.consumedByOffscreenCapture)
+            {
+                continue; // already drawn into its own offscreen texture above
+            }
+            if (allCommands)
+            {
+                ++s_dbgRenderCmdsReplayedThisFrame;
+            }
+            if (ownView && !IsDrawCommand(cmd.type))
+            {
+                continue;
+            }
+
+            switch (cmd.type)
+            {
+            case RenderCmdType::SetViewport:
+            {
+                view.viewport = cmd.viewport;
+                if (replayState.SelectViewport(view.viewport))
+                    SDL_SetGPUViewport(s_renderPass, &view.viewport);
+                break;
+            }
+
+            case RenderCmdType::SetScissor:
+            {
+                view.scissor = cmd.scissor;
+                if (replayState.SelectScissor(view.scissor))
+                    SDL_SetGPUScissor(s_renderPass, &view.scissor);
+                break;
+            }
+
+
+            case RenderCmdType::DrawTriangles:
+            case RenderCmdType::DrawSkinnedTriangles:
+            case RenderCmdType::DrawIndexedQuads:
+            case RenderCmdType::DrawIndexedStrip:
+            case RenderCmdType::DrawTriangles2D:
+            {
+                SDL_GPUGraphicsPipeline* pipeline = GetReplayPipeline(cmd, selection);
+                if (pipeline)
+                {
+                    ReplayDrawCommand(cmd, pipeline, boneDataReady, view.scissor, replayState);
+                }
+                break;
+            }
+            } // switch
+        }
+    }
+
+    [[nodiscard]] static SDL_GPUDepthStencilTargetInfo MakeDepthTarget(SDL_GPULoadOp loadOp, SDL_GPUStoreOp storeOp)
+    {
+        SDL_GPUDepthStencilTargetInfo depthTarget{};
+        depthTarget.texture = s_depthTexture;
+        depthTarget.clear_depth = 1.0f;
+        depthTarget.load_op = loadOp;
+        depthTarget.store_op = storeOp;
+        depthTarget.stencil_load_op = SDL_GPU_LOADOP_DONT_CARE;
+        depthTarget.stencil_store_op = SDL_GPU_STOREOP_DONT_CARE;
+        // A cleared depth buffer may be swapped for a fresh one instead of waiting
+        // for an earlier frame. A loaded one must not: outside debug mode SDL
+        // would cycle it anyway and the pass would load undefined depth.
+        depthTarget.cycle = loadOp != SDL_GPU_LOADOP_LOAD;
+        return depthTarget;
+    }
+
+    // A frame-private target is replaced by a fresh one instead of waiting for an
+    // earlier frame still reading it; its old content is not loaded anyway.
+    [[nodiscard]] static SDL_GPUColorTargetInfo CycledTarget(SDL_GPUColorTargetInfo target)
+    {
+        if (target.store_op == SDL_GPU_STOREOP_RESOLVE)
+        {
+            target.cycle_resolve_texture = true;
+        }
+        else
+        {
+            target.cycle = target.load_op != SDL_GPU_LOADOP_LOAD;
+        }
+        return target;
+    }
+
+    [[nodiscard]] static bool BeginReplayPass(const SDL_GPUColorTargetInfo& colorTarget,
+                                              const SDL_GPUDepthStencilTargetInfo& depthTarget)
+    {
+        s_renderPass = SDL_BeginGPURenderPass(s_cmdBuf, &colorTarget, 1, s_depthTexture ? &depthTarget : nullptr);
+        if (!s_renderPass)
+        {
+            return false;
+        }
+        PushSceneLightingUniforms();
+        BindLitSamplers();
+        return true;
+    }
+
+    // The Enhanced-lit shaders' slot 2, the sun shadow map: this frame's once drawn, otherwise the far
+    // 1x1 map. Slot 1 is bound per draw (BindReplayFragmentSampler).
+    static void BindLitSamplers()
+    {
+        SDL_GPUTexture* const sunShadow = s_sunShadowMap.Bound();
+        SDL_GPUSampler* const sunShadowSampler = s_sunShadowMap.Sampler();
+        // Slot 3, the terrain's direct sunlight (world_lit reads it only while lightingParameters.y is 1).
+        SDL_GPUTexture* const terrainSun = s_terrainSunLight ? s_terrainSunLight : s_whiteTexture;
+        const SDL_GPUTextureSamplerBinding terrainSunBinding{terrainSun, s_defaultSampler};
+        if (sunShadow && sunShadowSampler)
+        {
+            const SDL_GPUTextureSamplerBinding bindings[] = {{sunShadow, sunShadowSampler}, terrainSunBinding};
+            SDL_BindGPUFragmentSamplers(s_renderPass, k_FragmentSamplerSlotSunShadow, bindings, 2);
+        }
+        else
+        {
+            SDL_BindGPUFragmentSamplers(s_renderPass, k_FragmentSamplerSlotSunShadow + 1, &terrainSunBinding, 1);
+        }
+    }
+
+    // The ground shadow mask at the frame's size, recreated when that changed. Null when it fails.
+    [[nodiscard]] static SDL_GPUTexture* EnsureGroundShadowMask()
+    {
+        if (s_groundShadowMask && s_groundShadowMaskW == s_swapW && s_groundShadowMaskH == s_swapH)
+        {
+            return s_groundShadowMask;
+        }
+        ReleaseGroundShadowMask();
+        SDL_GPUTextureCreateInfo maskInfo{};
+        maskInfo.type = SDL_GPU_TEXTURETYPE_2D;
+        maskInfo.format = SDL_GPU_TEXTUREFORMAT_R8G8_UNORM;
+        maskInfo.width = s_swapW;
+        maskInfo.height = s_swapH;
+        maskInfo.layer_count_or_depth = 1;
+        maskInfo.num_levels = 1;
+        maskInfo.sample_count = SDL_GPU_SAMPLECOUNT_1;
+        maskInfo.usage = SDL_GPU_TEXTUREUSAGE_COLOR_TARGET | SDL_GPU_TEXTUREUSAGE_SAMPLER;
+        s_groundShadowMask = SDL_CreateGPUTexture(s_device, &maskInfo);
+        if (!s_groundShadowMask)
+        {
+            mu::log::Get("render")->error("SDL_gpu -- ground shadow mask creation failed ({}x{}): {}", s_swapW, s_swapH,
+                                          SDL_GetError());
+            return nullptr;
+        }
+        s_groundShadowMaskW = s_swapW;
+        s_groundShadowMaskH = s_swapH;
+        return s_groundShadowMask;
+    }
+
+    static void ReleaseGroundShadowMask()
+    {
+        if (s_groundShadowMask)
+        {
+            SDL_ReleaseGPUTexture(s_device, s_groundShadowMask);
+            s_groundShadowMask = nullptr;
+        }
+        s_groundShadowMaskW = 0u;
+        s_groundShadowMaskH = 0u;
+    }
+
+    // In a frame with world-lit ground, its shadows [0, end) into the ground shadow mask, after which
+    // the other passes leave them out.
+    static void RenderGroundShadowMask(std::size_t end, bool boneDataReady)
+    {
+        if (!s_frameHasWorldLit || !s_groundShadowMaskPipelines[0][0] || !EnsureGroundShadowMask())
+        {
+            return;
+        }
+        SDL_GPUColorTargetInfo maskTarget{};
+        maskTarget.texture = s_groundShadowMask;
+        maskTarget.clear_color = {1.0f, 1.0f, 1.0f, 1.0f};
+        maskTarget.load_op = SDL_GPU_LOADOP_CLEAR;
+        maskTarget.store_op = SDL_GPU_STOREOP_STORE;
+        maskTarget.cycle = true;
+        s_renderPass = SDL_BeginGPURenderPass(s_cmdBuf, &maskTarget, 1, nullptr);
+        if (!s_renderPass)
+        {
+            return;
+        }
+        ReplayView view = FullFrameView();
+        ReplayCommands(0u, end, boneDataReady, ReplaySelection::GroundShadows, view);
+        EndReplayPass();
+        s_groundShadowMaskReady = true;
+    }
+
+    // A depth-only pass into `depth`, cleared to the far plane. Null when it cannot begin.
+    [[nodiscard]] static SDL_GPURenderPass* BeginDepthOnlyPass(SDL_GPUTexture* depth)
+    {
+        SDL_GPUDepthStencilTargetInfo target{};
+        target.texture = depth;
+        target.clear_depth = 1.0f;
+        target.load_op = SDL_GPU_LOADOP_CLEAR;
+        target.store_op = SDL_GPU_STOREOP_STORE;
+        target.stencil_load_op = SDL_GPU_LOADOP_DONT_CARE;
+        target.stencil_store_op = SDL_GPU_STOREOP_DONT_CARE;
+        target.cycle = true;
+        return SDL_BeginGPURenderPass(s_cmdBuf, nullptr, 0, &target);
+    }
+
+    // The frame's sun shadow map: the scene's solid draws [0, end) seen from the sun. Without a request
+    // (SetSceneLighting) the map is released and the lit shaders read the far 1x1 one.
+    // shortcut: every solid draw is drawn again each frame, the map's still parts too; cache them
+    // apart from the characters if the pass shows up in the profile.
+    static void RenderSunShadowMap(std::size_t end, bool boneDataReady)
+    {
+        FRAME_PROFILE(SunShadow);
+        if (SDL_GPUTexture* const fallback = s_sunShadowMap.FallbackToClear())
+        {
+            if ((s_renderPass = BeginDepthOnlyPass(fallback)) != nullptr)
+            {
+                EndReplayPass();
+                s_sunShadowMap.MarkFallbackCleared();
+            }
+        }
+        SDL_GPUTexture* const map = s_sunShadowMap.PrepareMap();
+        if (!map || (s_renderPass = BeginDepthOnlyPass(map)) == nullptr)
+        {
+            return;
+        }
+        const int texels = static_cast<int>(s_sunShadowMap.Resolution());
+        const float size = static_cast<float>(texels);
+        ReplayView view{{0.0f, 0.0f, size, size, 0.0f, 1.0f}, {0, 0, texels, texels}};
+        s_sunShadowPass = true;
+        ReplayCommands(0u, end, boneDataReady, ReplaySelection::SunShadowCasters, view);
+        s_sunShadowPass = false;
+        EndReplayPass();
+        s_sunShadowMap.MarkReady();
+    }
+
+    // The scene's depth for ambient occlusion: the frame's own with one sample; multisampled, which
+    // cannot be read, its solid draws [0, end) again into the single-sample pass depth. Null without.
+    [[nodiscard]] static SDL_GPUTexture* RenderSceneDepth(std::size_t end, bool boneDataReady)
+    {
+        if (!IsMultisampled())
+        {
+            return s_depthTexture;
+        }
+        FRAME_PROFILE(SceneDepth);
+        SDL_GPUTexture* const depth = SingleSamplePassDepth();
+        if (!depth || !s_sceneDepthPipelines[0] || !s_sceneDepthPipelines[1] ||
+            (s_renderPass = BeginDepthOnlyPass(depth)) == nullptr)
+        {
+            return nullptr;
+        }
+        ReplayView view = FullFrameView();
+        s_sceneDepthPass = true;
+        ReplayCommands(0u, end, boneDataReady, ReplaySelection::SceneDepth, view);
+        s_sceneDepthPass = false;
+        EndReplayPass();
+        return depth;
+    }
+
+    static void EndReplayPass()
+    {
+        SDL_EndGPURenderPass(s_renderPass);
+        s_renderPass = nullptr;
+    }
+
+    // The whole frame in one pass into `destination`. Multisampled, the pass
+    // resolves into it, so the readback, capture and swapchain paths see one sample.
+    [[nodiscard]] static bool ReplayFrame(SDL_GPUTexture* destination, bool boneDataReady)
+    {
+        const SDL_GPUColorTargetInfo colorTarget = mu::GetSdlGpuFrameColorTarget(
+            {destination, IsMultisampled() ? s_multisampleColorTexture : nullptr}, s_clearColor);
+        // Nothing reads depth after the pass; skip storing every sample of it.
+        const SDL_GPUDepthStencilTargetInfo depthTarget =
+            MakeDepthTarget(SDL_GPU_LOADOP_CLEAR, IsMultisampled() ? SDL_GPU_STOREOP_DONT_CARE : SDL_GPU_STOREOP_STORE);
+        RenderSunShadowMap(s_renderCmds.size(), boneDataReady);
+        RenderGroundShadowMask(s_renderCmds.size(), boneDataReady);
+        if (!BeginReplayPass(colorTarget, depthTarget))
+        {
+            return false;
+        }
+        ReplayView view = FullFrameView();
+        ReplayCommands(0u, s_renderCmds.size(), boneDataReady, ReplaySelection::AllCommands, view);
+        EndReplayPass();
+        return true;
+    }
+
+    // The commands recorded since the last FlushRenderCommands(), on top of what it drew.
+    [[nodiscard]] bool ContinueFlushedFrame(SDL_GPUTexture* destination, bool boneDataReady)
+    {
+        SDL_GPUColorTargetInfo colorTarget{};
+        colorTarget.texture = destination;
+        colorTarget.load_op = SDL_GPU_LOADOP_LOAD;
+        colorTarget.store_op = SDL_GPU_STOREOP_STORE;
+        SDL_GPUTexture* const depthTexture = SingleSamplePassDepth();
+        SDL_GPUDepthStencilTargetInfo depthTarget{};
+        depthTarget.texture = depthTexture;
+        depthTarget.load_op = SDL_GPU_LOADOP_LOAD;
+        depthTarget.store_op = SDL_GPU_STOREOP_STORE;
+        depthTarget.stencil_load_op = SDL_GPU_LOADOP_DONT_CARE;
+        depthTarget.stencil_store_op = SDL_GPU_STOREOP_DONT_CARE;
+        s_renderPass = SDL_BeginGPURenderPass(s_cmdBuf, &colorTarget, 1, depthTexture ? &depthTarget : nullptr);
+        if (!s_renderPass)
+        {
+            return false;
+        }
+        ReplayCommandRange(s_replayedCmdCount, s_renderCmds.size(), boneDataReady);
+        EndReplayPass();
+        return true;
+    }
+
+    // The depth a single-sample pass at the frame's size uses: the frame's own, unless that one
+    // is multisampled. Null when neither exists.
+    [[nodiscard]] static SDL_GPUTexture* SingleSamplePassDepth()
+    {
+        if (!IsMultisampled())
+        {
+            return s_depthTexture;
+        }
+        if (s_singleSampleDepthTexture && s_singleSampleDepthW == s_swapW && s_singleSampleDepthH == s_swapH)
+        {
+            return s_singleSampleDepthTexture;
+        }
+        ReleaseSingleSampleDepthTexture();
+        SDL_GPUTextureCreateInfo depthInfo{};
+        depthInfo.type = SDL_GPU_TEXTURETYPE_2D;
+        depthInfo.format = mu::SdlGpuDepthFormat;
+        depthInfo.width = s_swapW;
+        depthInfo.height = s_swapH;
+        depthInfo.layer_count_or_depth = 1;
+        depthInfo.num_levels = 1;
+        depthInfo.sample_count = SDL_GPU_SAMPLECOUNT_1;
+        depthInfo.usage = SDL_GPU_TEXTUREUSAGE_DEPTH_STENCIL_TARGET | SDL_GPU_TEXTUREUSAGE_SAMPLER;
+        s_singleSampleDepthTexture = SDL_CreateGPUTexture(s_device, &depthInfo);
+        if (!s_singleSampleDepthTexture)
+        {
+            mu::log::Get("render")->error("SDL_gpu -- single-sample depth creation failed ({}x{}): {}", s_swapW,
+                                          s_swapH, SDL_GetError());
+            return nullptr;
+        }
+        s_singleSampleDepthW = s_swapW;
+        s_singleSampleDepthH = s_swapH;
+        return s_singleSampleDepthTexture;
+    }
+
+    static void ReleaseSingleSampleDepthTexture()
+    {
+        if (s_singleSampleDepthTexture)
+        {
+            SDL_ReleaseGPUTexture(s_device, s_singleSampleDepthTexture);
+            s_singleSampleDepthTexture = nullptr;
+        }
+        s_singleSampleDepthW = 0u;
+        s_singleSampleDepthH = 0u;
+    }
+
+    // The scene's additive draws once more, into the bloom source, tested
+    // against the scene depth; then the bloom chain.
+    static void RenderBloomSources(std::size_t sceneEnd, bool boneDataReady)
+    {
+        constexpr SDL_FColor noLight{0.0f, 0.0f, 0.0f, 0.0f};
+        const SDL_GPUColorTargetInfo colorTarget = CycledTarget(mu::GetSdlGpuFrameColorTarget(
+            {s_postProcessing.GetBloomSourceTexture(), SceneMultisampleTexture()}, noLight));
+        // The UI pass tests against the same depth, so it is kept.
+        if (!BeginReplayPass(colorTarget, MakeDepthTarget(SDL_GPU_LOADOP_LOAD, SDL_GPU_STOREOP_STORE)))
+        {
+            return;
+        }
+        ReplayView view = FullFrameView();
+        ReplayCommands(0u, sceneEnd, boneDataReady, ReplaySelection::BloomSources, view);
+        EndReplayPass();
+        s_postProcessing.RenderBloom(s_cmdBuf, s_postProcessingLook.bloomLevelFalloff);
+    }
+
+    // The multisampled colour target of the scene and bloom-source passes: the HDR one with the HDR
+    // scene; null with one sample.
+    [[nodiscard]] static SDL_GPUTexture* SceneMultisampleTexture()
+    {
+        if (!IsMultisampled())
+        {
+            return nullptr;
+        }
+        return s_hdrScenePass ? s_hdrMultisampleColorTexture : s_multisampleColorTexture;
+    }
+
+    // The scene into the scene texture, its bloom, then the processed scene and
+    // the UI on top of it into `destination`.
+    [[nodiscard]] static bool ReplayPostProcessedFrame(SDL_GPUTexture* destination, std::size_t sceneEnd,
+                                                       bool boneDataReady)
+    {
+        SDL_GPUTexture* const multisampled = IsMultisampled() ? s_multisampleColorTexture : nullptr;
+        ReplayView view = FullFrameView();
+        RenderSunShadowMap(sceneEnd, boneDataReady);
+        RenderGroundShadowMask(sceneEnd, boneDataReady);
+        const bool sceneView = s_postProcessingView == mu::PostProcessingView::Scene;
+        // The scene texture's format says whether this frame's scene is HDR (EnsureTargets).
+        s_hdrScenePass = s_postProcessing.IsHdrScene();
+
+        // Its depth stays for the bloom and UI passes, which test against it as
+        // the UI did when it shared the scene's pass.
+        const SDL_GPUColorTargetInfo sceneTarget = CycledTarget(mu::GetSdlGpuFrameColorTarget(
+            {s_postProcessing.GetSceneTexture(), SceneMultisampleTexture()}, s_clearColor));
+        if (!BeginReplayPass(sceneTarget, MakeDepthTarget(SDL_GPU_LOADOP_CLEAR, SDL_GPU_STOREOP_STORE)))
+        {
+            s_hdrScenePass = false;
+            return false;
+        }
+        ReplayCommands(0u, sceneEnd, boneDataReady, ReplaySelection::AllCommands, view);
+        EndReplayPass();
+
+        if (s_postProcessingLook.bloomStrength > 0.0f && s_postProcessing.EnsureBloomTargets())
+        {
+            RenderBloomSources(sceneEnd, boneDataReady);
+        }
+        s_hdrScenePass = false;
+
+        SDL_GPUTexture* const sceneDepth = s_postProcessingLook.ambientOcclusionStrength > 0.0f && sceneView
+                                               ? RenderSceneDepth(sceneEnd, boneDataReady)
+                                               : nullptr;
+        SDL_GPUTexture* const ambientOcclusion =
+            sceneDepth ? s_ambientOcclusion.Render(s_cmdBuf, sceneDepth, {s_swapW, s_swapH}, s_sceneProjection,
+                                                   s_postProcessingLook.ambientOcclusionRadius)
+                       : nullptr;
+
+        // The composite covers every pixel: the target's old content is not loaded.
+        // A diagnostic view without its image this frame leaves black instead.
+        constexpr SDL_FColor black{0.0f, 0.0f, 0.0f, 1.0f};
+        SDL_GPUColorTargetInfo uiTarget = mu::GetSdlGpuFrameColorTarget({destination, multisampled}, black);
+        if (s_postProcessingView == mu::PostProcessingView::Scene)
+        {
+            uiTarget.load_op = SDL_GPU_LOADOP_DONT_CARE;
+        }
+        if (!BeginReplayPass(uiTarget, MakeDepthTarget(SDL_GPU_LOADOP_LOAD, SDL_GPU_STOREOP_DONT_CARE)))
+        {
+            return false;
+        }
+        s_postProcessing.DrawComposite(s_cmdBuf, s_renderPass, {s_swapW, s_swapH}, s_postProcessingLook,
+                                       s_postProcessingView, ambientOcclusion);
+        ReplayCommands(sceneEnd, s_renderCmds.size(), boneDataReady, ReplaySelection::AllCommands, view);
+        EndReplayPass();
+        return true;
+    }
+
     // -----------------------------------------------------------------------
     // EndFrame: End render pass, flush vertex transfer buffer, and submit.
     // Called once per frame after all draw calls.
     // Replaces SDL_GL_SwapWindow / SwapBuffers in the game loop.
     //
-    // Story 4.3.2 (AC-7): After ending the render pass, unmap the vertex
+    // After ending the render pass, unmap the vertex
     // transfer buffer and issue a single copy pass to flush the frame's
     // accumulated vertex data to the GPU vertex buffer. The next frame's
     // render pass will read from the updated GPU buffer.
     // -----------------------------------------------------------------------
-    void EndFrame() override
+    // Queues the meshes cached since the last call into their block ranges. Those ranges are new, so no
+    // frame reads them yet and the shared blocks are written in place instead of cycled. False keeps them
+    // pending for the next call.
+    [[nodiscard]] static bool StageSkinnedMeshes(std::vector<BufferUpload>& uploads)
     {
-        if (!s_frameActive)
+        if (s_skinnedMeshStaging.size() > std::numeric_limits<Uint32>::max())
         {
-            // Frame was not started (minimized window or error).
-            if (s_cmdBuf)
-            {
-                SDL_CancelGPUCommandBuffer(s_cmdBuf);
-                s_cmdBuf = nullptr;
-            }
-            FailPendingFrameReadback();
-            return;
+            return false;
         }
-        s_frameActive = false;
-
-        // ---------------------------------------------------------------
-        // Phase 1: Grow GPU buffers if needed, then stage recorded CPU vertices.
-        // ---------------------------------------------------------------
-        // ---------------------------------------------------------------
-        // This happens BEFORE the render pass so the GPU reads current-
-        // frame data, eliminating the 1-frame vertex delay that caused
-        // streak artifacts when vertex counts varied between frames.
-        // ---------------------------------------------------------------
-        bool vertexDataReady = s_vtxOffset == 0u;
-        if (s_vtxOffset > 0u && EnsureVertexBufferCapacity(s_vtxOffset))
+        const Uint32 bytes = static_cast<Uint32>(s_skinnedMeshStaging.size());
+        if (s_skinnedMeshTransferCapacity < bytes)
         {
-            void* mapped = SDL_MapGPUTransferBuffer(s_device, s_vtxTransferBuf, true);
-            if (mapped)
+            const Uint32 capacity =
+                std::max({bytes, k_SkinnedMeshBlockUnits * k_SkinnedMeshUnitBytes, s_skinnedMeshTransferCapacity * 2u});
+            SDL_GPUTransferBufferCreateInfo transferInfo{};
+            transferInfo.usage = SDL_GPU_TRANSFERBUFFERUSAGE_UPLOAD;
+            transferInfo.size = capacity;
+            SDL_GPUTransferBuffer* transfer = SDL_CreateGPUTransferBuffer(s_device, &transferInfo);
+            if (!transfer)
             {
-                std::memcpy(mapped, s_vtxScratch.data(), s_vtxOffset);
-                SDL_UnmapGPUTransferBuffer(s_device, s_vtxTransferBuf);
-                vertexDataReady = true;
+                return false;
             }
-            else
+            if (s_skinnedMeshTransferBuf)
             {
-                mu::log::Get("render")->error("SDL_gpu -- failed to map vertex transfer buffer: {}", SDL_GetError());
+                SDL_ReleaseGPUTransferBuffer(s_device, s_skinnedMeshTransferBuf);
             }
+            s_skinnedMeshTransferBuf = transfer;
+            s_skinnedMeshTransferCapacity = capacity;
         }
 
-        Uint32 boneDataSize = 0u;
+        void* mapped = SDL_MapGPUTransferBuffer(s_device, s_skinnedMeshTransferBuf, true);
+        if (!mapped)
+        {
+            return false;
+        }
+        std::memcpy(mapped, s_skinnedMeshStaging.data(), bytes);
+        SDL_UnmapGPUTransferBuffer(s_device, s_skinnedMeshTransferBuf);
+        s_dbgVtxBytesThisFrame += bytes;
+        FrameProfiler::Count(FrameProfiler::Counter::VertexBytes, bytes);
+
+        for (const PendingSkinnedMeshUpload& pending : s_pendingSkinnedMeshUploads)
+        {
+            uploads.push_back({s_skinnedMeshTransferBuf, s_skinnedMeshBlocks[pending.range.block].buffer,
+                               pending.range.firstUnit * k_SkinnedMeshUnitBytes,
+                               pending.range.vertexCount * pending.range.stride, false,
+                               static_cast<Uint32>(pending.stagingFirst)});
+        }
+        s_pendingSkinnedMeshUploads.clear();
+        s_skinnedMeshStaging.clear();
+        return true;
+    }
+
+    // Stages this frame's accumulated CPU-side vertex/bone/strip-index/texture-update scratch
+    // buffers to the GPU via one copy pass. Safe to call more than once per frame (EndFrame and
+    // the post-RmlUi pass both do): scratch data is only ever appended, so a later call sends just
+    // what was recorded since the last one. Returns whether bone data is ready, for
+    // ReplayCommandRange to pass into ReplayDrawCommand.
+    bool StageDeferredGpuData()
+    {
+        // Staged BEFORE the render pass so the GPU reads current-frame data, eliminating the
+        // 1-frame vertex delay that caused streak artifacts when vertex counts varied between frames.
+        std::vector<BufferUpload> bufferUploads;
+
+        if (s_vtxOffset > 0u && EnsureVertexBufferCapacity(s_vtxOffset) &&
+            !StageAppended(s_vtxTransferBuf, s_vtxGpuBuf, s_vtxScratch.data(), s_vtxOffset, s_stagedVertices,
+                           bufferUploads))
+        {
+            mu::log::Get("render")->error("SDL_gpu -- failed to map vertex transfer buffer: {}", SDL_GetError());
+        }
+
         bool boneDataReady = s_boneRowScratch.empty();
         if (!s_boneRowScratch.empty())
         {
             const std::size_t boneBytes = s_boneRowScratch.size() * sizeof(float);
             if (boneBytes <= std::numeric_limits<Uint32>::max())
             {
-                boneDataSize = static_cast<Uint32>(boneBytes);
-                if (EnsureBoneBufferCapacity(boneDataSize))
-                {
-                    void* mapped = SDL_MapGPUTransferBuffer(s_device, s_boneTransferBuf, true);
-                    if (mapped)
-                    {
-                        std::memcpy(mapped, s_boneRowScratch.data(), boneDataSize);
-                        SDL_UnmapGPUTransferBuffer(s_device, s_boneTransferBuf);
-                        boneDataReady = true;
-                    }
-                }
+                const Uint32 boneDataSize = static_cast<Uint32>(boneBytes);
+                boneDataReady = EnsureBoneBufferCapacity(boneDataSize) &&
+                                StageAppended(s_boneTransferBuf, s_boneGpuBuf, s_boneRowScratch.data(), boneDataSize,
+                                              s_stagedBones, bufferUploads);
             }
         }
 
-        bool stripIdxReady = false;
-        if (!s_stripIdxScratch.empty())
+        if (!s_pendingSkinnedMeshUploads.empty() && !StageSkinnedMeshes(bufferUploads))
         {
-            // Ensure GPU-side strip index buffer is large enough BEFORE the copy pass
-            // (EnsureStripIndexBuffer may release/create GPU resources).
-            if (EnsureStripIndexBuffer(static_cast<Uint32>(s_stripIdxScratch.size())))
-            {
-                void* pIdxMapped = SDL_MapGPUTransferBuffer(s_device, s_stripIdxTransfer, true);
-                if (pIdxMapped)
-                {
-                    const Uint32 totalIdxBytes = static_cast<Uint32>(s_stripIdxScratch.size() * sizeof(Uint16));
-                    std::memcpy(pIdxMapped, s_stripIdxScratch.data(), totalIdxBytes);
-                    SDL_UnmapGPUTransferBuffer(s_device, s_stripIdxTransfer);
-                    stripIdxReady = true;
-                }
-            }
+            mu::log::Get("render")->error("SDL_gpu -- failed to stage cached skinned meshes: {}", SDL_GetError());
+            // Their ranges hold nothing yet; skinned draws wait for the retry rather than read them.
+            boneDataReady = false;
+        }
+
+        if (s_terrainHeightUploadPending)
+        {
+            constexpr Uint32 gridBytes = sizeof(Render::TerrainHeightGrid);
+            bufferUploads.push_back({s_terrainHeightTransferBuf, s_terrainHeightGpuBuf, 0u, gridBytes, true});
+            s_terrainHeightUploadPending = false;
+            s_dbgVtxBytesThisFrame += gridBytes;
+            FrameProfiler::Count(FrameProfiler::Counter::VertexBytes, gridBytes);
+        }
+
+        // EnsureStripIndexBuffer may release/create GPU resources, so it runs before the copy pass.
+        if (!s_stripIdxScratch.empty() && EnsureStripIndexBuffer(static_cast<Uint32>(s_stripIdxScratch.size())))
+        {
+            const Uint32 totalIdxBytes = static_cast<Uint32>(s_stripIdxScratch.size() * sizeof(Uint16));
+            StageAppended(s_stripIdxTransfer, s_stripIdxBuf, s_stripIdxScratch.data(), totalIdxBytes,
+                          s_stagedStripIndices, bufferUploads);
         }
 
         // Prepare texture update transfer buffers BEFORE the copy pass.
@@ -1927,55 +3216,23 @@ public:
             }
         }
 
-        if (s_vtxOffset > 0u || boneDataSize > 0u || stripIdxReady || !preparedTexUploads.empty())
+        if (!bufferUploads.empty() || !preparedTexUploads.empty())
         {
             SDL_GPUCopyPass* copyPass = SDL_BeginGPUCopyPass(s_cmdBuf);
             if (copyPass)
             {
-                // Copy vertex data.
-                if (s_vtxOffset > 0u && vertexDataReady)
+                for (const BufferUpload& upload : bufferUploads)
                 {
-                    SDL_GPUTransferBufferLocation vtxSrc{};
-                    vtxSrc.transfer_buffer = s_vtxTransferBuf;
-                    vtxSrc.offset = 0;
+                    SDL_GPUTransferBufferLocation source{};
+                    source.transfer_buffer = upload.transfer;
+                    source.offset = upload.transferOffset;
 
-                    SDL_GPUBufferRegion vtxDst{};
-                    vtxDst.buffer = s_vtxGpuBuf;
-                    vtxDst.offset = 0;
-                    vtxDst.size = s_vtxOffset;
+                    SDL_GPUBufferRegion destination{};
+                    destination.buffer = upload.buffer;
+                    destination.offset = upload.offset;
+                    destination.size = upload.size;
 
-                    SDL_UploadToGPUBuffer(copyPass, &vtxSrc, &vtxDst, true);
-                }
-
-                if (boneDataSize > 0u && boneDataReady)
-                {
-                    SDL_GPUTransferBufferLocation boneSrc{};
-                    boneSrc.transfer_buffer = s_boneTransferBuf;
-                    boneSrc.offset = 0;
-
-                    SDL_GPUBufferRegion boneDst{};
-                    boneDst.buffer = s_boneGpuBuf;
-                    boneDst.offset = 0;
-                    boneDst.size = boneDataSize;
-
-                    SDL_UploadToGPUBuffer(copyPass, &boneSrc, &boneDst, true);
-                }
-
-                // Copy accumulated strip index data (all strips for this frame).
-                if (stripIdxReady)
-                {
-                    const Uint32 totalIdxBytes = static_cast<Uint32>(s_stripIdxScratch.size() * sizeof(Uint16));
-
-                    SDL_GPUTransferBufferLocation idxSrc{};
-                    idxSrc.transfer_buffer = s_stripIdxTransfer;
-                    idxSrc.offset = 0;
-
-                    SDL_GPUBufferRegion idxDst{};
-                    idxDst.buffer = s_stripIdxBuf;
-                    idxDst.offset = 0;
-                    idxDst.size = totalIdxBytes;
-
-                    SDL_UploadToGPUBuffer(copyPass, &idxSrc, &idxDst, true);
+                    SDL_UploadToGPUBuffer(copyPass, &source, &destination, upload.cycle);
                 }
 
                 // Upload queued dynamic texture updates.
@@ -2007,19 +3264,149 @@ public:
         }
         s_textureUpdates.clear();
 
-#ifdef _EDITOR
-        // Phase 2b (editor-only): replay any pending offscreen captures (e.g. Map
-        // Editor object thumbnails) into their own dedicated textures now that the
-        // GPU vertex buffer holds their data, before the main pass below runs.
-        ProcessPendingOffscreenCaptures(boneDataReady);
-#endif
+        return boneDataReady;
+    }
+
+    // Replays s_renderCmds[startIdx, endIdx) into the currently-open s_renderPass. Every render
+    // pass boundary (the main pass, the post-RmlUi pass, and FlushRenderCommands' own pass) starts
+    // its own range with a fresh default full-window viewport/scissor and its own
+    // SdlGpuReplayState -- consistent with how the pre-existing post-RmlUi pass boundary has
+    // always worked, not a new limitation introduced here: a SetViewport/SetScissor command
+    // mid-range still applies correctly: it's only *implicit* state carried over from before the
+    // range (never re-declared) that resets to full-window at each new pass, same as it always has
+    // at the one pre-existing pass boundary.
+    void ReplayCommandRange(std::size_t startIdx, std::size_t endIdx, bool boneDataReady)
+    {
+        // These passes render into single-sample textures (see s_singleSamplePipelines).
+        PushSceneLightingUniforms();
+        BindLitSamplers();
+        s_singleSamplePass = true;
+        ReplayView view = FullFrameView();
+        ReplayCommands(startIdx, endIdx, boneDataReady, ReplaySelection::AllCommands, view);
+        s_singleSamplePass = false;
+    }
+
+    // RmlUi-behind-3D-icons seam: opens a real render pass NOW, mid-recording, instead of waiting
+    // for EndFrame's single one -- lets a caller paint behind a live 3D render despite RmlUi's
+    // main context always compositing last. CLEARs on the first flush of the frame, LOADs on every one after
+    // (including EndFrame's own final one, see its own call to ReplayCommandRange below) --
+    // s_mainColorPassOpenedThisFrame/s_replayedCmdCount track that across calls, reset only in
+    // BeginFrame. A caller (e.g. a second Rml::Context's Render(), or any other content that must
+    // sit behind whatever legacy drawing happens right after this call returns) should follow this
+    // with its own draw calls before the frame's recording continues.
+    //
+    // Same characterization as the pre-existing pre-submit callback's own comment: on a frame that
+    // took the screenshot/readback branch, this always targets s_swapchainTexture directly, not
+    // the substituted readback/capture texture -- content flushed here on such a frame won't
+    // appear in the captured image. Accepted, matching that already-established precedent, not a
+    // new limitation.
+    void FlushRenderCommands() override
+    {
+        if (!s_frameActive || !s_cmdBuf || !s_swapchainTexture)
+        {
+            return; // no frame in progress (minimized window, or called outside Begin/EndFrame)
+        }
+        if (s_renderCmds.size() <= s_replayedCmdCount)
+        {
+            return; // nothing recorded since the last flush -- avoid an empty pass
+        }
+
+        const bool boneDataReady = StageDeferredGpuData();
+
+        SDL_GPUColorTargetInfo colorTarget{};
+        colorTarget.texture = FrameColorTexture();
+        colorTarget.load_op = s_mainColorPassOpenedThisFrame ? SDL_GPU_LOADOP_LOAD : SDL_GPU_LOADOP_CLEAR;
+        if (!s_mainColorPassOpenedThisFrame)
+        {
+            colorTarget.clear_color = s_clearColor;
+        }
+        colorTarget.store_op = SDL_GPU_STOREOP_STORE;
+
+        // One sample even while the frame is multisampled: see s_singleSamplePipelines.
+        SDL_GPUTexture* const depthTexture = SingleSamplePassDepth();
+        SDL_GPUDepthStencilTargetInfo depthTarget{};
+        depthTarget.texture = depthTexture;
+        depthTarget.load_op = s_mainColorPassOpenedThisFrame ? SDL_GPU_LOADOP_LOAD : SDL_GPU_LOADOP_CLEAR;
+        if (!s_mainColorPassOpenedThisFrame)
+        {
+            depthTarget.clear_depth = 1.0f;
+        }
+        depthTarget.store_op = SDL_GPU_STOREOP_STORE;
+        depthTarget.stencil_load_op = SDL_GPU_LOADOP_DONT_CARE;
+        depthTarget.stencil_store_op = SDL_GPU_STOREOP_DONT_CARE;
+
+        s_renderPass = SDL_BeginGPURenderPass(s_cmdBuf, &colorTarget, 1, depthTexture ? &depthTarget : nullptr);
+        if (s_renderPass)
+        {
+            ReplayCommandRange(s_replayedCmdCount, s_renderCmds.size(), boneDataReady);
+            SDL_EndGPURenderPass(s_renderPass);
+            s_renderPass = nullptr;
+        }
+
+        s_mainColorPassOpenedThisFrame = true;
+        s_replayedCmdCount = s_renderCmds.size();
+
+        // Commands recorded after this point must not merge backward into a command from the
+        // pass that just closed -- same reasoning as the post-RmlUi callback's identical reset
+        // below (MergeAdjacentQuadCommand/MergeAdjacentTriangleCommand would otherwise grow an
+        // already-replayed, already-closed command instead of appending a new one).
+        s_previousDrawCommands.fill(kNoDrawCommand);
+    }
+
+    void EndFrame() override
+    {
+        if (!s_frameActive)
+        {
+            // Frame was not started (minimized window or error). BeginFrame
+            // already failed a pending readback on an error; a skipped frame
+            // keeps it for the next one.
+            if (s_cmdBuf)
+            {
+                SDL_CancelGPUCommandBuffer(s_cmdBuf);
+                s_cmdBuf = nullptr;
+            }
+            return;
+        }
+        // Loading screens can submit several renderer frames within one game-loop sample.
+        const float submittedBefore = FrameProfiler::AccumulatorMs(FrameProfiler::Pass::RendererSubmit);
+        // Still recording, and after the last FlushRenderCommands(), so nothing this records has
+        // been replayed yet -- see SetOffscreenRenderCallback (MuRenderer.h).
+        if (s_offscreenRenderCallback)
+        {
+            FRAME_PROFILE(RendererOffscreen);
+            s_offscreenRenderCallback();
+        }
+        s_frameActive = false;
 
         // ---------------------------------------------------------------
-        // Phase 3: Render pass — replay all recorded draw commands.
+        // Stage this frame's remaining accumulated vertex/bone/strip/texture data
+        // (StageDeferredGpuData is safe to call again even if FlushRenderCommands already
+        // called it earlier this same frame -- see its own comment).
+        // ---------------------------------------------------------------
+        bool boneDataReady = false;
+        {
+            FRAME_PROFILE(RendererStage);
+            boneDataReady = StageDeferredGpuData();
+        }
+
+        // Replay pending offscreen captures into their own textures now that the GPU vertex
+        // buffer holds their data: before the main pass below, which must skip them, and before
+        // the UI seams, which sample them.
+        {
+            FRAME_PROFILE(RendererOffscreen);
+            ProcessPendingOffscreenCaptures(boneDataReady);
+        }
+
+        // ---------------------------------------------------------------
+        // Render pass — replay all recorded draw commands.
         // The GPU vertex/index buffers now contain current-frame data.
         // ---------------------------------------------------------------
-        SDL_GPUTextureFormat frameReadbackFormat = SDL_GPU_TEXTUREFORMAT_INVALID;
-        if (s_frameReadbackState.IsPending())
+        // The frame's colour target was chosen in BeginFrame() (ResolveFrameColorTarget); a
+        // request that arrived mid-frame is honoured late. The main pass below always clears its
+        // target and replays every recorded command (multisampled and post-processed frames
+        // have no partial pass to continue), so a late target needs nothing special.
+        SDL_GPUTextureFormat frameReadbackFormat = s_frameReadbackFormat;
+        if (s_frameReadbackState.IsPending() && !s_frameReadbackTexture)
         {
             frameReadbackFormat = SDL_GetGPUSwapchainTextureFormat(s_device, s_window);
             if (!CreateFrameReadbackTexture(frameReadbackFormat))
@@ -2028,7 +3415,7 @@ public:
             }
         }
 
-        SDL_GPUTexture* reconnectCaptureTexture = nullptr;
+        SDL_GPUTexture* reconnectCaptureTexture = s_reconnectCaptureTexture;
         if (s_pendingFrameCaptureTextureId != 0u)
         {
             const auto texture = s_textureMap.find(s_pendingFrameCaptureTextureId);
@@ -2043,106 +3430,173 @@ public:
 
         SDL_GPUTexture* const frameColorTexture = s_frameReadbackTexture    ? s_frameReadbackTexture
                                                   : reconnectCaptureTexture ? reconnectCaptureTexture
+                                                  : s_mainColorTarget       ? s_mainColorTarget
                                                                             : s_swapchainTexture;
+
         bool renderPassCompleted = false;
-        if (IsFrameTimingEnabled())
+        s_renderReplayBeginTime = std::chrono::steady_clock::now();
+        std::optional<FrameProfiler::Scope> replayScope(std::in_place, FrameProfiler::Pass::RendererReplay);
+        const Render::PostProcessing::FrameSplit split =
+            s_sceneBoundary.Split(s_renderCmds.size(), IsPostProcessingActive());
+        // Passes that will not run this frame free their targets, whichever way the frame is drawn.
         {
-            s_renderReplayBeginTime = std::chrono::steady_clock::now();
+            const bool scene = split.postProcessed && s_postProcessingView == mu::PostProcessingView::Scene;
+            if (!scene || s_postProcessingLook.ambientOcclusionStrength <= 0.0f)
+                s_ambientOcclusion.ReleaseTargets();
+            // The bloom views show the bloom too.
+            if (!split.postProcessed || s_postProcessingLook.bloomStrength <= 0.0f)
+                s_postProcessing.ReleaseBloomTargets();
         }
+        if (s_mainColorPassOpenedThisFrame && frameColorTexture == FrameColorTexture())
+        {
+            // FlushRenderCommands already drew part of this frame into its target with one
+            // sample: the rest follows the same way, without multisampling or post-processing.
+            renderPassCompleted = ContinueFlushedFrame(frameColorTexture, boneDataReady);
+        }
+        else if (split.postProcessed &&
+                 s_postProcessing.EnsureTargets({s_swapW, s_swapH},
+                                                UsesHdrScene() ? kHdrSceneFormat : SDL_GPU_TEXTUREFORMAT_INVALID))
+        {
+            renderPassCompleted = ReplayPostProcessedFrame(frameColorTexture, split.sceneEnd, boneDataReady);
+        }
+        else
+        {
+            renderPassCompleted = ReplayFrame(frameColorTexture, boneDataReady);
+        }
+
+        s_mainColorPassOpenedThisFrame = true;
+        s_replayedCmdCount = s_renderCmds.size();
+        replayScope.reset();
+
+        // RmlUi port: fires after this frame's own game content is fully recorded onto s_cmdBuf
+        // but before it's submitted -- see SetPreSubmitCallback's own comment (MuRenderer.h) for
+        // why this exact spot is the only correct one. Both UI seams below render into
+        // frameColorTexture (published through s_frameColorTarget/GetFrameGpuContext()), not the
+        // swapchain directly: on a screenshot/capture frame that is the substitute colour target
+        // whose pixels get read back, so the capture shows the UI the player saw. The blit to the
+        // swapchain and the readback download deliberately come after these seams.
+        s_frameColorTarget = frameColorTexture;
+        if (s_cmdBuf && s_preSubmitCallback)
+        {
+            s_preSubmitCallback();
+        }
+
 #ifdef _EDITOR
-        PreparePendingEditorDrawData(s_cmdBuf);
+        // The editor goes over RmlUi, and the game cursor of the pass below over the editor.
+        RenderEditorOverlayPass(s_cmdBuf, frameColorTexture);
 #endif
+
+        // RmlUi port: content that must sit visually on top of RmlUi (the game cursor, legacy
+        // CUITextInputBox text -- see SetPostRmlUiCallback's own comment, MuRenderer.h). Fires
+        // after RmlUi's own render pass (opened/closed inside s_preSubmitCallback above) has
+        // closed, so this needs its OWN render pass rather than reusing the main one above: the
+        // main pass's replay loop (and the s_renderCmds it consumes) already ran and closed
+        // before s_preSubmitCallback fired, so anything the callback below pushes via the normal
+        // RenderQuad2D-style functions lands at the *tail* of s_renderCmds, past what that loop
+        // already replayed -- it would otherwise sit unreplayed until next frame's BeginFrame()
+        // clears it away unseen (dropped, not delayed). LOAD_OP_LOAD (not CLEAR) on both targets
+        // so this stacks on top of the main pass's content and RmlUi's, rather than erasing them.
+        if (s_cmdBuf && s_postRmlUiCallback)
         {
-            SDL_GPUColorTargetInfo colorTarget{};
-            colorTarget.texture = frameColorTexture;
-            colorTarget.clear_color = s_clearColor;
-            colorTarget.load_op = SDL_GPU_LOADOP_CLEAR;
-            colorTarget.store_op = SDL_GPU_STOREOP_STORE;
+            FRAME_PROFILE(RendererPostUi);
+            const std::size_t postUiCmdStart = s_renderCmds.size();
 
-            SDL_GPUDepthStencilTargetInfo depthTarget{};
-            depthTarget.texture = s_depthTexture;
-            depthTarget.clear_depth = 1.0f;
-            depthTarget.load_op = SDL_GPU_LOADOP_CLEAR;
-            depthTarget.store_op = SDL_GPU_STOREOP_STORE;
-            depthTarget.stencil_load_op = SDL_GPU_LOADOP_DONT_CARE;
-            depthTarget.stencil_store_op = SDL_GPU_STOREOP_DONT_CARE;
-            depthTarget.cycle = true;
+            // RenderQuad2D/RenderTriangles/etc. all early-return on !s_frameActive, which was
+            // set false at the very top of this function -- correct for the normal "recording"
+            // window (BeginFrame..EndFrame's own replay), but this callback runs deep inside
+            // EndFrame, after that window closed. Without this, every draw call the callback
+            // makes (RenderCursor, CLoginWin::RenderTextOnTop) is silently dropped -- no warning,
+            // no crash, just nothing on screen. Restored to false right after: nothing past this
+            // point should still be recording new frame content.
+            // Also reset the per-family "previous draw command" merge tracking (normally only
+            // reset once per frame, in BeginFrame): it's a persistent index into s_renderCmds
+            // that survives across this whole function, unaware of postUiCmdStart above. Without
+            // this, MergeAdjacentQuadCommand/MergeAdjacentTriangleCommand happily merge the
+            // callback's draws (RenderCursor's quad, say) backward into the LAST matching
+            // command from the main pass -- one that was already replayed and closed several
+            // lines up -- growing its vtxCount/idxCount instead of appending a new command here.
+            // That command is never replayed again, so the merged-in geometry silently never
+            // renders: s_renderCmds.size() doesn't even grow, so postUiCmdStart's own "were any
+            // commands pushed" check below sees nothing happened, no crash, no warning.
+            s_previousDrawCommands.fill(kNoDrawCommand);
 
-            s_renderPass = SDL_BeginGPURenderPass(s_cmdBuf, &colorTarget, 1, s_depthTexture ? &depthTarget : nullptr);
-        }
+            s_frameActive = true;
+            s_postRmlUiCallback();
+            s_frameActive = false;
 
-        if (s_renderPass)
-        {
-            // Track explicit state. Pipeline changes re-apply the active scissor because
-            // SDL GPU backends may discard it while binding a new pipeline.
-            SDL_GPUViewport s_currentViewport{0.0f, 0.0f, static_cast<float>(s_swapW), static_cast<float>(s_swapH),
-                                              0.0f, 1.0f};
-            SDL_Rect s_currentScissor{0, 0, static_cast<int>(s_swapW), static_cast<int>(s_swapH)};
-
-            // Replay state and editor commands after texture invalidation, but skip
-            // game draws because their deferred texture pointers may be dangling.
-            Render::SdlGpuReplayState replayState;
-            for (const auto& cmd : s_renderCmds)
+            // Re-stage EVERYTHING the callback above may have recorded, not just vertex data.
+            // UploadVertices()/the bone-row append behind a skinned RenderTriangles call/etc. all
+            // only touch their own CPU-side scratch buffer and advance the matching offset -- none
+            // of that reaches the GPU. The actual transfer-buffer map+memcpy and copy-pass that
+            // moves each one onto its real GPU buffer already ran once, early in this function
+            // (StageDeferredGpuData(), the same call the main pass above makes), using whatever
+            // those offsets were BEFORE this callback grew them further.
+            //
+            // This used to re-stage vertex data only (by hand, duplicating a slice of
+            // StageDeferredGpuData()'s own vertex-handling code) -- correct for this seam's
+            // original 2D-only callers (RenderCursor, CMsgWin/CCharMakeWin's text overlays), but
+            // silently wrong the moment a skinned 3D model entered the picture
+            // (CGenericConfirmDialog's item3D preview, 2026-09-14): a skinned draw command indexes
+            // into s_boneGpuBuf via ReplayDrawCommand's own `boneDataReady` guard, and the
+            // `boneDataReady` computed by the main pass's earlier StageDeferredGpuData() call --
+            // true whenever bone data was empty or fully staged *before* this callback ran --
+            // stayed true even though this callback's own bone rows were never uploaded and
+            // s_boneGpuBuf was never grown to fit them. That combination told ReplayDrawCommand
+            // the (undersized, stale) buffer was safe to bind and index into -- an out-of-bounds
+            // GPU buffer read, which reproduced as exactly what was seen: the item silently not
+            // rendering most frames, and an intermittent crash on whichever frame that
+            // out-of-bounds read landed somewhere the driver didn't tolerate (validation is off,
+            // see the "SDL_gpu -- validation: disabled" startup log line).
+            //
+            // Calling StageDeferredGpuData() again here instead re-stages vertex/bone/strip-index/
+            // texture data together -- it's explicitly documented as safe to call more than once
+            // per frame, the same guarantee FlushRenderCommands already relies on mid-recording --
+            // and returns a boneDataReady that's actually correct for what THIS callback recorded.
+            bool postUiBoneDataReady = false;
             {
-                if (s_texturesInvalidated && IsUnsafeInvalidatedDrawCommand(cmd.type))
-                {
-                    continue;
-                }
-#ifdef _EDITOR
-                if (cmd.consumedByOffscreenCapture)
-                {
-                    continue; // already drawn into its own offscreen texture above
-                }
-#endif
-                ++s_dbgRenderCmdsReplayedThisFrame;
+                FRAME_PROFILE(RendererStage);
+                postUiBoneDataReady = StageDeferredGpuData();
+            }
 
-                switch (cmd.type)
-                {
-                case RenderCmdType::SetViewport:
-                {
-                    s_currentViewport = cmd.viewport;
-                    if (replayState.SelectViewport(s_currentViewport))
-                        SDL_SetGPUViewport(s_renderPass, &s_currentViewport);
-                    break;
-                }
+            if (s_renderCmds.size() > postUiCmdStart)
+            {
+                SDL_GPUColorTargetInfo postUiColorTarget{};
+                postUiColorTarget.texture = frameColorTexture;
+                postUiColorTarget.load_op = SDL_GPU_LOADOP_LOAD;
+                postUiColorTarget.store_op = SDL_GPU_STOREOP_STORE;
 
-                case RenderCmdType::SetScissor:
-                {
-                    s_currentScissor = cmd.scissor;
-                    if (replayState.SelectScissor(s_currentScissor))
-                        SDL_SetGPUScissor(s_renderPass, &s_currentScissor);
-                    break;
-                }
+                // A multisampled frame's depth has the frame's samples; this pass draws with one
+                // (SingleSamplePassDepth), on top of everything, so it starts from a cleared depth.
+                SDL_GPUTexture* const postUiDepth = SingleSamplePassDepth();
+                SDL_GPUDepthStencilTargetInfo postUiDepthTarget{};
+                postUiDepthTarget.texture = postUiDepth;
+                postUiDepthTarget.load_op = postUiDepth == s_depthTexture ? SDL_GPU_LOADOP_LOAD : SDL_GPU_LOADOP_CLEAR;
+                postUiDepthTarget.clear_depth = 1.0f;
+                postUiDepthTarget.store_op = SDL_GPU_STOREOP_DONT_CARE;
+                postUiDepthTarget.stencil_load_op = SDL_GPU_LOADOP_DONT_CARE;
+                postUiDepthTarget.stencil_store_op = SDL_GPU_STOREOP_DONT_CARE;
 
-#ifdef _EDITOR
-                case RenderCmdType::EditorOverlay:
+                // ReplayDrawCommand/BindReplayPipeline (inside ReplayCommandRange) bind against
+                // the global s_renderPass directly, not a parameter -- assign it here (matching
+                // the main pass's own SDL_BeginGPURenderPass call above, which does the same), not
+                // just a local. Assigning only a local here left every SDL_Bind*/SDL_Draw* call
+                // inside them targeting the *already-nulled* s_renderPass from the main pass's own
+                // close (a few lines up) -- SDL_GPU silently no-ops a null render pass rather
+                // than crashing, which is why this had no visible symptom beyond "nothing drawn".
+                s_renderPass =
+                    SDL_BeginGPURenderPass(s_cmdBuf, &postUiColorTarget, 1, postUiDepth ? &postUiDepthTarget : nullptr);
+                if (s_renderPass)
                 {
-                    g_MuEditorCore.RenderDrawData(s_cmdBuf, s_renderPass);
-                    replayState.Invalidate();
-                    if (replayState.SelectViewport(s_currentViewport))
-                        SDL_SetGPUViewport(s_renderPass, &s_currentViewport);
-                    if (replayState.SelectScissor(s_currentScissor))
-                        SDL_SetGPUScissor(s_renderPass, &s_currentScissor);
-                    break;
-                }
-#endif
+                    ReplayCommandRange(postUiCmdStart, s_renderCmds.size(), postUiBoneDataReady);
+                    s_replayedCmdCount = s_renderCmds.size();
 
-                case RenderCmdType::DrawTriangles:
-                case RenderCmdType::DrawSkinnedTriangles:
-                case RenderCmdType::DrawIndexedQuads:
-                case RenderCmdType::DrawIndexedStrip:
-                case RenderCmdType::DrawTriangles2D:
-                {
-                    ReplayDrawCommand(cmd, boneDataReady, s_currentScissor, replayState);
-                    break;
+                    SDL_EndGPURenderPass(s_renderPass);
+                    s_renderPass = nullptr;
                 }
-                } // switch
-            } // for
-
-            SDL_EndGPURenderPass(s_renderPass);
-            s_renderPass = nullptr;
-            renderPassCompleted = true;
+            }
         }
+
+        s_frameColorTarget = nullptr;
 
         if (reconnectCaptureTexture && frameColorTexture != reconnectCaptureTexture)
         {
@@ -2164,6 +3618,7 @@ public:
             BlitTextureToSwapchain(s_cmdBuf, frameColorTexture);
         }
 
+        s_submitTime = std::chrono::steady_clock::now();
         if (s_frameReadbackTexture)
         {
             if (!renderPassCompleted)
@@ -2186,6 +3641,7 @@ public:
 #endif
         if (s_cmdBuf)
         {
+            FRAME_PROFILE(RendererSubmit);
             SDL_SubmitGPUCommandBuffer(s_cmdBuf);
             s_cmdBuf = nullptr;
         }
@@ -2194,12 +3650,18 @@ public:
         ReadBackRequestedTexture();
 #endif
 
-        if (IsFrameTimingEnabled())
-        {
-            s_submitTime = std::chrono::steady_clock::now();
-        }
-
         s_swapchainTexture = nullptr;
+
+        ++s_submittedFrames;
+        std::erase_if(s_deferredSkinnedMeshFrees,
+                      [](const DeferredSkinnedMeshFree& released)
+                      {
+                          if (s_submittedFrames < released.releasedAtFrame + k_SkinnedMeshFreeDelayFrames)
+                              return false;
+                          s_skinnedMeshBlocks[released.range.block].ranges.Free(released.range.firstUnit,
+                                                                                released.range.unitCount);
+                          return true;
+                      });
 
         const auto frameCompletedAt = std::chrono::steady_clock::now();
         s_lastFrameStats.requestedDrawCalls = s_dbgDrawCallsThisFrame;
@@ -2215,14 +3677,12 @@ public:
         s_lastFrameStats.samplerBinds = s_dbgSamplerBindsThisFrame;
         s_lastFrameStats.vertexUniformPushes = s_dbgVertexUniformPushesThisFrame;
         s_lastFrameStats.fragmentUniformPushes = s_dbgFragmentUniformPushesThisFrame;
-        if (IsFrameTimingEnabled())
-        {
-            const auto milliseconds = [](auto begin, auto end)
-            { return std::chrono::duration<double, std::milli>(end - begin).count(); };
-            s_lastFrameStats.frameMilliseconds = milliseconds(s_frameBeginTime, frameCompletedAt);
-            s_lastFrameStats.replayMilliseconds = milliseconds(s_renderReplayBeginTime, s_submitTime);
-            s_lastFrameStats.submitMilliseconds = milliseconds(s_submitTime, frameCompletedAt);
-        }
+        const auto milliseconds = [](auto begin, auto end)
+        { return std::chrono::duration<double, std::milli>(end - begin).count(); };
+        s_lastFrameStats.frameMilliseconds = milliseconds(s_frameBeginTime, frameCompletedAt);
+        s_lastFrameStats.replayMilliseconds = milliseconds(s_renderReplayBeginTime, s_submitTime);
+        s_lastFrameStats.submitMilliseconds =
+            FrameProfiler::AccumulatorMs(FrameProfiler::Pass::RendererSubmit) - submittedBefore;
 
         const bool emitTimingDiagnostics = s_frameTimingEnabled && s_dbgFrameCount % 60 == 0;
         if (emitTimingDiagnostics)
@@ -2268,9 +3728,15 @@ public:
         return true;
     }
 
+    void CancelFramePixels() override
+    {
+        s_frameReadbackState.Reset();
+        ReleaseFrameReadbackTexture();
+    }
+
     // -----------------------------------------------------------------------
     // -----------------------------------------------------------------------
-    // Story 7-9-2 (AC-1): BeginScene — 3D viewport and projection setup.
+    // BeginScene — 3D viewport and projection setup.
     // SDL_gpu backend: sets viewport on the render pass. Projection/camera
     // transforms are handled via uniform buffers (not immediate-mode matrices).
     // -----------------------------------------------------------------------
@@ -2297,7 +3763,7 @@ public:
     }
 
     // -----------------------------------------------------------------------
-    // Story 7-9-2 (AC-1): EndScene — restore state after 3D pass.
+    // EndScene — restore state after 3D pass.
     // SDL_gpu backend: reset viewport to full window.
     // -----------------------------------------------------------------------
     void EndScene() override
@@ -2320,9 +3786,8 @@ public:
     }
 
     // -----------------------------------------------------------------------
-    // UI-embedded 3D previews (CUIPhotoViewer, CharMakeWin, NewUIInGameShop,
-    // NewUIGoldBowmanLena, NewUIRegistrationLuckyCoin, NewUI3DRenderMng) call
-    // SetRenderViewport(...) shrinks the GPU
+    // UI-embedded 3D previews (CUIPhotoViewer, CharMakeWin, UI::Items::ItemCameraTarget)
+    // call SetRenderViewport(...) shrinks the GPU
     // viewport around the preview region, then set a narrow-FOV projection.
     // The classic OpenGL backend honored this via glViewport; without a real
     // override here the base-class no-op leaves the 2D-pass full-swapchain
@@ -2392,7 +3857,7 @@ public:
     }
 
     // -----------------------------------------------------------------------
-    // Story 7-9-2 (AC-2): Begin2DPass — mark 2D mode for pipeline selection.
+    // Begin2DPass — mark 2D mode for pipeline selection.
     // SDL_gpu uses separate 2D pipelines (Vertex2D layout, depth OFF).
     // -----------------------------------------------------------------------
     void Begin2DPass() override
@@ -2418,7 +3883,7 @@ public:
     }
 
     // -----------------------------------------------------------------------
-    // Story 7-9-2 (AC-2): End2DPass — restore 3D mode.
+    // End2DPass — restore 3D mode.
     // -----------------------------------------------------------------------
     void End2DPass() override
     {
@@ -2426,8 +3891,23 @@ public:
         // RenderTriangles/RenderQuadStrip calls.
     }
 
+    void BeginScreenSpaceSampling() override
+    {
+        ++s_screenSpaceSamplingDepth;
+        InvalidateSamplerLookupCaches();
+    }
+
+    void EndScreenSpaceSampling() override
+    {
+        if (s_screenSpaceSamplingDepth > 0)
+        {
+            --s_screenSpaceSamplingDepth;
+            InvalidateSamplerLookupCaches();
+        }
+    }
+
     // -----------------------------------------------------------------------
-    // Story 7-9-2 (AC-7): ClearScreen — no-op on SDL_gpu.
+    // ClearScreen — no-op on SDL_gpu.
     // SDL_gpu clears the swapchain texture at BeginFrame (LOADOP_CLEAR).
     // -----------------------------------------------------------------------
     void ClearScreen() override
@@ -2441,7 +3921,7 @@ public:
     }
 
     // -----------------------------------------------------------------------
-    // Story 7-9-2 (AC-5): RenderLines — line primitive rendering.
+    // RenderLines — line primitive rendering.
     // SDL_gpu backend: emit line primitives using existing 3D pipeline.
     // For now, renders as thin triangles (SDL_gpu line support varies).
     // -----------------------------------------------------------------------
@@ -2563,7 +4043,7 @@ public:
     }
 
     // -----------------------------------------------------------------------
-    // Story 7-9-2 (AC-6): IsFrameActive — frame lifecycle query.
+    // IsFrameActive — frame lifecycle query.
     // Returns true when a render pass is open (between BeginFrame/EndFrame).
     // -----------------------------------------------------------------------
     [[nodiscard]] bool IsFrameActive() const override
@@ -2581,6 +4061,165 @@ public:
         return s_lastFrameStats;
     }
 
+    void SetAntialiasingSamples(int samples) override
+    {
+        s_requestedSampleCount = Render::Antialiasing::RequestedSampleCount(samples);
+        // Before Init this only sets what Init starts with.
+        s_sampleCountChangePending = s_device != nullptr;
+    }
+
+    [[nodiscard]] int GetAntialiasingSamples() const override
+    {
+        return s_sampleCount;
+    }
+
+    [[nodiscard]] std::size_t BeginReorderableDraws() override
+    {
+        s_reorderableDraws = {s_renderCmds.size(), s_replayedCmdCount, s_pendingOffscreenCaptures.size(),
+                              s_offscreenCaptureTextureId};
+        return s_renderCmds.size();
+    }
+
+    void EndReorderableDraws(std::size_t mark) override
+    {
+        const ReorderableDrawsMark& begun = s_reorderableDraws;
+        if (!s_drawReorderingEnabled || mark != begun.firstCommand || mark >= s_renderCmds.size() ||
+            begun.replayedCommands != s_replayedCmdCount ||
+            begun.pendingCaptures != s_pendingOffscreenCaptures.size() ||
+            begun.captureTexture != s_offscreenCaptureTextureId)
+        {
+            return;
+        }
+        const auto reorderable = [](const RenderCmd& command)
+        {
+            return command.type == RenderCmdType::DrawSkinnedTriangles && command.shadowIndex == ~0u &&
+                   !command.blendEnabled && command.depthTestEnabled && command.depthMaskEnabled;
+        };
+        const auto stateKey = [](const RenderCmd& command)
+        {
+            return std::tuple{
+                reinterpret_cast<std::uintptr_t>(command.pipeline), reinterpret_cast<std::uintptr_t>(command.texture),
+                reinterpret_cast<std::uintptr_t>(command.sampler), reinterpret_cast<std::uintptr_t>(command.vtxBuffer)};
+        };
+        Render::GroupReorderableFirst(std::span(s_renderCmds).subspan(mark), reorderable,
+                                      [&](const RenderCmd& left, const RenderCmd& right)
+                                      { return stateKey(left) < stateKey(right); });
+        // A later draw must not merge into a command that moved.
+        s_previousDrawCommands.fill(kNoDrawCommand);
+    }
+
+    void SetDrawReorderingEnabled(bool enabled) override
+    {
+        s_drawReorderingEnabled = enabled;
+    }
+
+    [[nodiscard]] bool IsDrawReorderingEnabled() const override
+    {
+        return s_drawReorderingEnabled;
+    }
+
+    void EndSceneGeometry() override
+    {
+        if (!s_frameActive)
+        {
+            return;
+        }
+        s_sceneBoundary.Mark(s_renderCmds.size());
+    }
+
+    [[nodiscard]] bool SetPostProcessing(bool enabled) override
+    {
+        s_postProcessingEnabled = enabled;
+        return !enabled || s_postProcessing.IsAvailable();
+    }
+
+    void SetPostProcessingLook(const mu::PostProcessingLook& look) override
+    {
+        s_postProcessingLook = look;
+        s_postProcessingLook.bloomStrength = std::max(look.bloomStrength, 0.0f);
+    }
+
+    void SetPostProcessingView(mu::PostProcessingView view) override
+    {
+        s_postProcessingView = view;
+    }
+
+    void BeginBloomExclusion() override
+    {
+        ++s_bloomExclusionDepth;
+    }
+
+    void EndBloomExclusion() override
+    {
+        if (s_bloomExclusionDepth > 0)
+        {
+            --s_bloomExclusionDepth;
+        }
+    }
+
+    void BeginWorldLitGeometry() override
+    {
+        ++s_worldLitGeometryDepth;
+    }
+
+    void EndWorldLitGeometry() override
+    {
+        if (s_worldLitGeometryDepth > 0)
+        {
+            --s_worldLitGeometryDepth;
+        }
+    }
+
+    void BeginNoSunCasters() override
+    {
+        ++s_noSunCasterDepth;
+    }
+
+    void EndNoSunCasters() override
+    {
+        if (s_noSunCasterDepth > 0)
+        {
+            --s_noSunCasterDepth;
+        }
+    }
+
+    void BeginCharacterDraws() override
+    {
+        ++s_characterDrawDepth;
+    }
+
+    void EndCharacterDraws() override
+    {
+        if (s_characterDrawDepth > 0)
+        {
+            --s_characterDrawDepth;
+        }
+    }
+
+    void BeginGroundShadow(GroundShadowSource source) override
+    {
+        ++(source == GroundShadowSource::PointLight ? s_lightShadowDepth : s_groundShadowDepth);
+    }
+
+    void EndGroundShadow(GroundShadowSource source) override
+    {
+        int& depth = source == GroundShadowSource::PointLight ? s_lightShadowDepth : s_groundShadowDepth;
+        if (depth > 0)
+        {
+            --depth;
+        }
+    }
+
+    [[nodiscard]] bool IsBloomExcluded() const override
+    {
+        return s_bloomExclusionDepth > 0;
+    }
+
+    [[nodiscard]] bool SetColorGradingTable(std::span<const std::uint8_t> rgba) override
+    {
+        return s_postProcessing.SetGradingTable(rgba);
+    }
+
     [[nodiscard]] bool SetVSyncEnabled(bool enabled) override
     {
         if (!s_device || !s_window)
@@ -2588,18 +4227,26 @@ public:
             return false;
         }
 
-        const SDL_GPUPresentMode presentMode = enabled ? SDL_GPU_PRESENTMODE_VSYNC : SDL_GPU_PRESENTMODE_IMMEDIATE;
+        const SDL_GPUPresentMode presentMode = enabled ? SDL_GPU_PRESENTMODE_VSYNC : PickUncappedPresentMode();
         if (!SDL_SetGPUSwapchainParameters(s_device, s_window, SDL_GPU_SWAPCHAINCOMPOSITION_SDR, presentMode))
         {
-            mu::log::Get("render")->warn("SDL_gpu -- failed to set {} present mode: {}",
-                                         enabled ? "VSync" : "immediate", SDL_GetError());
+            mu::log::Get("render")->warn("SDL_gpu -- failed to set {} present mode: {}", PresentModeName(presentMode),
+                                         SDL_GetError());
+            // Vulkan keeps the failed mode and has already destroyed the old swapchain, so build one in
+            // VSync, which every driver supports, as the caller now records.
+            if (!enabled &&
+                !SDL_SetGPUSwapchainParameters(s_device, s_window, SDL_GPU_SWAPCHAINCOMPOSITION_SDR,
+                                               SDL_GPU_PRESENTMODE_VSYNC))
+            {
+                mu::log::Get("render")->error("SDL_gpu -- failed to restore VSync present mode: {}", SDL_GetError());
+            }
             return false;
         }
 
         return true;
     }
 
-    // Story 4.4.1 (AC-2, Task 6.2/6.3): GetDevice override — returns s_device.
+    // GetDevice override — returns s_device.
     // Allows GlobalBitmap.cpp to obtain the SDL_GPUDevice* via mu::GetRenderer().GetDevice()
     // without a direct dependency on MuRendererSDLGpu.cpp internals.
     // Logs a warning via mu::log if s_device is nullptr (renderer not initialized).
@@ -2613,30 +4260,67 @@ public:
         return s_device;
     }
 
-    // Story 7.9.8 (AC-2): SDL_ttf text engine accessor.
+    // RmlUi port: SDL_Window* accessor, mirrors GetDevice() above.
+    [[nodiscard]] SDL_Window* GetWindow() override
+    {
+        return s_window;
+    }
+
+    // RmlUi port: current frame's command buffer + swapchain texture, for
+    // RenderInterface_SDL_GPU::BeginFrame(). Null/zero outside BeginFrame()/EndFrame() --
+    // s_cmdBuf and s_swapchainTexture are reset at the top of BeginFrame() and s_cmdBuf is
+    // cleared to nullptr once submitted in EndFrame(), so this naturally reflects that window
+    // without extra bookkeeping here.
+    [[nodiscard]] FrameGpuContext GetFrameGpuContext() override
+    {
+        // Every frame target has the swapchain's format, and the main one exists only when that format can be sampled.
+        return FrameGpuContext{s_cmdBuf, s_frameColorTarget ? s_frameColorTarget : s_swapchainTexture, s_swapW,
+                               s_swapH, s_frameColorTarget != nullptr && s_mainColorTarget != nullptr};
+    }
+
+    // RmlUi port: looks up s_textureMap directly rather than going through ResolveTextureId(),
+    // since RmlUi needs the actual SDL_GPUTexture* to hand to its own vendored backend, not a
+    // resolved logical id.
+    [[nodiscard]] void* GetRawTexture(std::uint32_t textureId) override
+    {
+        auto it = s_textureMap.find(textureId);
+        return it != s_textureMap.end() ? it->second : nullptr;
+    }
+
+    void SetPreSubmitCallback(std::function<void()> callback) override
+    {
+        s_preSubmitCallback = std::move(callback);
+    }
+
+    void SetPostRmlUiCallback(std::function<void()> callback) override
+    {
+        s_postRmlUiCallback = std::move(callback);
+    }
+
+    // SDL_ttf text engine accessor.
     [[nodiscard]] TTF_TextEngine* GetTextEngine() override
     {
         return s_textEngine;
     }
 
-    // Story 7.9.8 (AC-2): Default TTF font accessor.
+    // Default TTF font accessor.
     [[nodiscard]] TTF_Font* GetTtfFont() override
     {
-        return s_ttfFont;
+        return s_ttfFonts.Get(Render::Text::SdlTtfFontRole::Normal);
     }
 
     // F-1 fix: Font variant accessors for bold, big, and fixed-width text.
     [[nodiscard]] TTF_Font* GetTtfFontBold() override
     {
-        return s_ttfFontBold ? s_ttfFontBold : s_ttfFont;
+        return s_ttfFonts.Get(Render::Text::SdlTtfFontRole::Bold);
     }
     [[nodiscard]] TTF_Font* GetTtfFontBig() override
     {
-        return s_ttfFontBig ? s_ttfFontBig : s_ttfFont;
+        return s_ttfFonts.Get(Render::Text::SdlTtfFontRole::Big);
     }
     [[nodiscard]] TTF_Font* GetTtfFontFixed() override
     {
-        return s_ttfFontFixed ? s_ttfFontFixed : s_ttfFont;
+        return s_ttfFonts.Get(Render::Text::SdlTtfFontRole::Fixed);
     }
 
     [[nodiscard]] bool ReloadTtfFonts(std::string_view fontFamily, float normalPointSize, float bigPointSize,
@@ -2659,7 +4343,7 @@ public:
         return s_cachedWinH;
     }
 
-    // Story 7.9.8 (AC-6): Submit text atlas triangles as deferred draw commands.
+    // Submit text atlas triangles as deferred draw commands.
     void SubmitTextTriangles(std::span<const Vertex2D> vertices, void* atlasTexture, void* sampler = nullptr) override
     {
         if (vertices.empty() || !s_frameActive || !atlasTexture)
@@ -2668,7 +4352,7 @@ public:
         }
 
         const Uint32 byteSize = static_cast<Uint32>(vertices.size() * sizeof(Vertex2D));
-        const Uint32 vtxOffset = UploadVertices(vertices.data(), byteSize);
+        const Uint32 vtxOffset = UploadVertices(vertices.data(), byteSize, sizeof(Vertex2D));
         if (vtxOffset == ~0u)
         {
             return;
@@ -2688,6 +4372,7 @@ public:
         cmd.texture = static_cast<SDL_GPUTexture*>(atlasTexture);
         cmd.sampler = sampler ? static_cast<SDL_GPUSampler*>(sampler) : s_defaultSampler;
         cmd.vtxOffset = vtxOffset;
+        cmd.vtxStride = sizeof(Vertex2D);
         cmd.vtxCount = static_cast<Uint32>(vertices.size());
         cmd.fogUniform = m_fogUniform;
         cmd.blendMode = BlendMode::Alpha;
@@ -2697,8 +4382,8 @@ public:
         // positive y-axis is upwards so the signs of the y-coords is reversed").
         // Vertex positions are in Y-up space with the text origin at (0,0).
         // drawX/drawY offset the text to the correct screen position.
-        cmd.vu.mvp =
-            glm::ortho(0.0f, static_cast<float>(s_cachedWinW), 0.0f, static_cast<float>(s_cachedWinH), -1.0f, 1.0f);
+        cmd.vu.mvp = s_offscreen2DProjection.value_or(
+            glm::ortho(0.0f, static_cast<float>(s_cachedWinW), 0.0f, static_cast<float>(s_cachedWinH), -1.0f, 1.0f));
         FrameProfiler::Count(FrameProfiler::Counter::BatchVertices, cmd.vtxCount);
         std::size_t& previousCommand =
             Render::PreviousDrawCommand(s_previousDrawCommands, Render::DrawCommandFamily::TextTriangles2D);
@@ -2739,6 +4424,8 @@ public:
             mu::log::Get("render")->warn("SDL_gpu -- rejecting update for unknown texture {}", textureId);
             return;
         }
+
+        MarkTextureUpdatedAfterCreation(textureId);
 
         const Uint32 dataSize = width * height * 4u; // RGBA8
         TextureUpdateCmd cmd{};
@@ -2812,7 +4499,20 @@ public:
         ReleaseOwnedTextureById(textureId);
     }
 
-#ifdef _EDITOR
+    // Every replay pipeline is built against the swapchain's colour format, and a pass whose
+    // target differs from it is invalid -- so an offscreen target takes that format, not a fixed one.
+    [[nodiscard]] static SDL_GPUTextureFormat OffscreenColorFormat()
+    {
+        constexpr SDL_GPUTextureUsageFlags usage = SDL_GPU_TEXTUREUSAGE_COLOR_TARGET | SDL_GPU_TEXTUREUSAGE_SAMPLER;
+        const SDL_GPUTextureFormat format = SDL_GetGPUSwapchainTextureFormat(s_device, s_window);
+        if (format != SDL_GPU_TEXTUREFORMAT_INVALID &&
+            SDL_GPUTextureSupportsFormat(s_device, format, SDL_GPU_TEXTURETYPE_2D, usage))
+        {
+            return format;
+        }
+        return SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM;
+    }
+
     // Same shape as EnsureTexture, but with COLOR_TARGET usage added so the result
     // can be rendered into (not just sampled) - needed for offscreen captures. The
     // format is the swapchain's (BGRA8 on Metal) because every replayed pipeline
@@ -2841,16 +4541,17 @@ public:
             ReleaseOwnedTextureById(textureId);
         }
 
-        const auto texInfo =
-            GetSdlGpuFrameCaptureTextureInfo(SDL_GetGPUSwapchainTextureFormat(s_device, s_window), width, height);
-        if (!texInfo)
-        {
-            mu::log::Get("render")->warn("SDL_gpu -- offscreen capture texture {}: unsupported swapchain format",
-                                         textureId);
-            return;
-        }
+        SDL_GPUTextureCreateInfo texInfo{};
+        texInfo.type = SDL_GPU_TEXTURETYPE_2D;
+        texInfo.format = OffscreenColorFormat();
+        texInfo.usage = SDL_GPU_TEXTUREUSAGE_COLOR_TARGET | SDL_GPU_TEXTUREUSAGE_SAMPLER;
+        texInfo.width = width;
+        texInfo.height = height;
+        texInfo.layer_count_or_depth = 1;
+        texInfo.num_levels = 1;
+        texInfo.sample_count = SDL_GPU_SAMPLECOUNT_1;
 
-        SDL_GPUTexture* texture = SDL_CreateGPUTexture(s_device, &*texInfo);
+        SDL_GPUTexture* texture = SDL_CreateGPUTexture(s_device, &texInfo);
         if (!texture)
         {
             mu::log::Get("render")->warn("SDL_gpu -- offscreen capture texture {} creation failed ({}x{}): {}",
@@ -2902,11 +4603,12 @@ public:
             return 0u;
         }
 
-        // A capture replays exactly the command range recorded between Begin and
-        // End, so no draw may merge into a command on the other side of either edge.
+        // Neither side of a capture may merge into the other: a draw merged backward into a
+        // command outside the range would land on the wrong target.
         s_previousDrawCommands.fill(kNoDrawCommand);
         s_offscreenCaptureStart = s_renderCmds.size();
         s_offscreenCaptureTextureId = textureId;
+        s_offscreen2DProjection.reset();
         s_offscreenCaptureWidth = width;
         s_offscreenCaptureHeight = height;
         return textureId;
@@ -2923,9 +4625,70 @@ public:
                                               s_offscreenCaptureTextureId, s_offscreenCaptureWidth,
                                               s_offscreenCaptureHeight});
         s_offscreenCaptureTextureId = 0u;
+        s_offscreen2DProjection.reset();
         s_previousDrawCommands.fill(kNoDrawCommand);
     }
 
+    void SetOffscreen2DRect(float left, float top, float width, float height) override
+    {
+        if (s_offscreenCaptureTextureId == 0u || width <= 0.f || height <= 0.f)
+            return;
+        // 2D vertices are window pixels with y up from the bottom edge.
+        const float bottom = static_cast<float>(s_cachedWinH) - (top + height);
+        s_offscreen2DProjection = glm::ortho(left, left + width, bottom, bottom + height, -1.0f, 1.0f);
+    }
+
+    [[nodiscard]] std::uint32_t CreateRenderTarget(std::uint32_t width, std::uint32_t height) override
+    {
+        if (!s_device || width == 0u || height == 0u)
+        {
+            return 0u;
+        }
+        const std::uint32_t textureId = AllocateOwnedDynamicTextureId();
+        if (textureId == 0u)
+        {
+            return 0u;
+        }
+        EnsureOffscreenColorTexture(textureId, width, height);
+        if (!IsTextureRegistered(textureId))
+        {
+            return 0u;
+        }
+
+        SDL_GPUTextureCreateInfo depthInfo{};
+        depthInfo.type = SDL_GPU_TEXTURETYPE_2D;
+        depthInfo.format = SDL_GPU_TEXTUREFORMAT_D32_FLOAT;
+        depthInfo.width = width;
+        depthInfo.height = height;
+        depthInfo.layer_count_or_depth = 1;
+        depthInfo.num_levels = 1;
+        depthInfo.usage = SDL_GPU_TEXTUREUSAGE_DEPTH_STENCIL_TARGET;
+        SDL_GPUTexture* depth = SDL_CreateGPUTexture(s_device, &depthInfo);
+        if (!depth)
+        {
+            mu::log::Get("render")->warn("SDL_gpu -- render target depth creation failed ({}x{}): {}", width,
+                                         height, SDL_GetError());
+            s_pendingRenderTargetReleases.push_back(textureId);
+            return 0u;
+        }
+        s_renderTargetDepth[textureId] = depth;
+        return textureId;
+    }
+
+    void ReleaseRenderTarget(std::uint32_t textureId) override
+    {
+        if (textureId != 0u)
+        {
+            s_pendingRenderTargetReleases.push_back(textureId);
+        }
+    }
+
+    void SetOffscreenRenderCallback(std::function<void()> callback) override
+    {
+        s_offscreenRenderCallback = std::move(callback);
+    }
+
+#ifdef _EDITOR
     [[nodiscard]] void* GetTexturePointer(std::uint32_t textureId) const override
     {
         const auto it = s_textureMap.find(textureId);
@@ -3036,10 +4799,29 @@ public:
         return LookupTexture(textureId) != nullptr;
     }
 
-    // [Story 7-6-7: AC-3] GPU backend driver name for error reporting.
+    // GPU backend driver name for error reporting.
     [[nodiscard]] const char* GetGPUDriverName() const override
     {
         return s_device ? SDL_GetGPUDeviceDriver(s_device) : "unknown";
+    }
+
+    [[nodiscard]] const char* GetGPUDeviceName() const override
+    {
+        if (!s_device)
+        {
+            return "";
+        }
+        return SDL_GetStringProperty(SDL_GetGPUDeviceProperties(s_device), SDL_PROP_GPU_DEVICE_NAME_STRING, "");
+    }
+
+    [[nodiscard]] const char* GetGPUDriverVersion() const override
+    {
+        if (!s_device)
+        {
+            return "";
+        }
+        return SDL_GetStringProperty(SDL_GetGPUDeviceProperties(s_device), SDL_PROP_GPU_DEVICE_DRIVER_VERSION_STRING,
+                                     "");
     }
 
     // -----------------------------------------------------------------------
@@ -3072,13 +4854,13 @@ public:
             ++s_dbgRealTextureDrawsThisFrame;
 
         const Uint32 byteSize = static_cast<Uint32>(vertices.size() * sizeof(Vertex2D));
-        const Uint32 vtxOffset = UploadVertices(vertices.data(), byteSize);
+        const Uint32 vtxOffset = UploadVertices(vertices.data(), byteSize, sizeof(Vertex2D));
         if (vtxOffset == ~0u)
         {
             return;
         }
 
-        // Story 4.3.2 (AC-8): RenderQuad2D uses the 2D pipeline set (Vertex2D layout).
+        // RenderQuad2D uses the 2D pipeline set (Vertex2D layout).
         // Always disable depth test for 2D sprites — they must render on top of 3D
         // geometry regardless of depth buffer state. The 3D pass fills the depth buffer
         // with near values (characters close to camera) that would occlude 2D UI.
@@ -3114,18 +4896,15 @@ public:
         cmd.texture = static_cast<SDL_GPUTexture*>(pTex);
         cmd.sampler = pSampler ? static_cast<SDL_GPUSampler*>(pSampler) : s_defaultSampler;
         cmd.vtxOffset = vtxOffset;
+        cmd.vtxStride = sizeof(Vertex2D);
         cmd.idxCount = drawQuads * 6;
         cmd.fogUniform = m_fogUniform;
-        cmd.blendMode = m_activeBlendMode;
-        cmd.blendEnabled = m_blendEnabled;
-        cmd.depthTestEnabled = m_depthTestEnabled;
-        cmd.depthMaskEnabled = m_depthMaskEnabled;
-        cmd.cullFaceEnabled = m_cullFaceEnabled;
+        RecordDrawState(cmd);
         // 2D ortho MVP: maps [0,W]×[0,H] to NDC, replicating gluOrtho2D.
         // GLM_FORCE_DEPTH_ZERO_TO_ONE → correct Z [0,1] for Metal/Vulkan.
         // fogStart=fogEnd=0 → range=0 → vertex shader sets fogFactor=1.0 (no fog for 2D).
-        cmd.vu.mvp =
-            glm::ortho(0.0f, static_cast<float>(s_cachedWinW), 0.0f, static_cast<float>(s_cachedWinH), -1.0f, 1.0f);
+        cmd.vu.mvp = s_offscreen2DProjection.value_or(
+            glm::ortho(0.0f, static_cast<float>(s_cachedWinW), 0.0f, static_cast<float>(s_cachedWinH), -1.0f, 1.0f));
         FrameProfiler::Count(FrameProfiler::Counter::BatchVertices, drawQuads * 4u);
         std::size_t& previousCommand =
             Render::PreviousDrawCommand(s_previousDrawCommands, Render::DrawCommandFamily::ScreenQuads2D);
@@ -3154,12 +4933,45 @@ public:
     // -----------------------------------------------------------------------
     void RenderTriangles(std::span<const Vertex3D> vertices, std::uint32_t textureId) override
     {
+        RecordTriangles(vertices, {}, textureId);
+    }
+
+    void RenderIndexedTriangles(std::span<const Vertex3D> vertices, std::span<const std::uint16_t> indices,
+                                std::uint32_t textureId) override
+    {
+        if (indices.empty() || !ValidTriangleIndices(vertices.size(), indices))
+        {
+            return;
+        }
+        RecordTriangles(vertices, indices, textureId);
+    }
+
+    // Indices that make whole triangles of vertices that exist.
+    [[nodiscard]] static bool ValidTriangleIndices(std::size_t vertexCount, std::span<const std::uint16_t> indices)
+    {
+        return indices.size() % 3 == 0 && std::all_of(indices.begin(), indices.end(), [vertexCount](std::uint16_t index)
+                                                      { return index < vertexCount; });
+    }
+
+    // Appends `indices` to the frame's strip index scratch and makes `cmd` draw them.
+    static void RecordTriangleIndices(RenderCmd& cmd, std::span<const std::uint16_t> indices)
+    {
+        cmd.trianglesIndexed = true;
+        cmd.idxCount = static_cast<Uint32>(indices.size());
+        cmd.stripIdxOffset = static_cast<Uint32>(s_stripIdxScratch.size() * sizeof(Uint16));
+        s_stripIdxScratch.insert(s_stripIdxScratch.end(), indices.begin(), indices.end());
+    }
+
+    // RenderTriangles, of `indices` into `vertices` when there are indices.
+    void RecordTriangles(std::span<const Vertex3D> vertices, std::span<const std::uint16_t> indices,
+                         std::uint32_t textureId)
+    {
         if (vertices.empty() || !s_frameActive || !m_colorWriteEnabled || m_stencilTestEnabled)
         {
             return;
         }
 
-        if (vertices.size() % 3 != 0)
+        if (indices.empty() && vertices.size() % 3 != 0)
         {
             mu::log::Get("render")->warn("SDL_gpu::RenderTriangles -- vertex count {} not divisible by 3",
                                          vertices.size());
@@ -3179,13 +4991,13 @@ public:
             ++s_dbgRealTextureDrawsThisFrame;
 
         const Uint32 byteSize = static_cast<Uint32>(vertices.size() * sizeof(Vertex3D));
-        const Uint32 vtxOffset = UploadVertices(vertices.data(), byteSize);
+        const Uint32 vtxOffset = UploadVertices(vertices.data(), byteSize, sizeof(Vertex3D));
         if (vtxOffset == ~0u)
         {
             return;
         }
 
-        // Story 4.3.2 (AC-8): RenderTriangles uses the 3D pipeline set (Vertex3D layout).
+        // RenderTriangles uses the 3D pipeline set (Vertex3D layout).
         const int pipelineIdx = GetActivePipelineIndex();
         SDL_GPUGraphicsPipeline* pipeline = GetActive3DPipeline();
         if (!pipeline)
@@ -3198,8 +5010,11 @@ public:
             }
             return;
         }
+        const VertexAlpha vertexAlpha = GetVertexAlpha(vertices);
+        const AlphaCoverageChoice coverage = ChooseAlphaCoverage(pipeline, resolvedTexId, vertexAlpha);
+        pipeline = coverage.pipeline;
 
-        void* pSampler = LookupSampler(resolvedTexId);
+        void* pSampler = LookupWorldSampler(resolvedTexId);
 
         // Record deferred draw command — replayed in EndFrame after vertex data is on the GPU.
         RenderCmd cmd{};
@@ -3208,20 +5023,28 @@ public:
         cmd.texture = static_cast<SDL_GPUTexture*>(pTex);
         cmd.sampler = pSampler ? static_cast<SDL_GPUSampler*>(pSampler) : s_defaultSampler;
         cmd.vtxOffset = vtxOffset;
+        cmd.vtxStride = sizeof(Vertex3D);
         cmd.vtxCount = static_cast<Uint32>(vertices.size());
         cmd.vu.mvp = m_mvpMatrix;
         cmd.vu.fogStart = m_fogUniform.fogStart;
         cmd.vu.fogEnd = m_fogUniform.fogEnd;
         cmd.fogUniform = m_fogUniform;
-        cmd.blendMode = m_activeBlendMode;
-        cmd.blendEnabled = m_blendEnabled;
-        cmd.depthTestEnabled = m_depthTestEnabled;
-        cmd.depthMaskEnabled = m_depthMaskEnabled;
-        cmd.cullFaceEnabled = m_cullFaceEnabled;
+        cmd.fogUniform.alphaToCoverage = coverage.alphaToCoverage ? 1u : 0u;
+        cmd.translucentVertices = vertexAlpha == VertexAlpha::Translucent;
+        RecordDrawState(cmd);
         FrameProfiler::Count(FrameProfiler::Counter::BatchVertices, cmd.vtxCount);
         std::size_t& previousCommand =
             Render::PreviousDrawCommand(s_previousDrawCommands, Render::DrawCommandFamily::Triangles3D);
-        if (!s_disableD3D12TriangleMerging && MergeAdjacentTriangleCommand(cmd, previousCommand, sizeof(Vertex3D)))
+        if (!indices.empty())
+        {
+            // An indexed draw merges with nothing, before or after it.
+            RecordTriangleIndices(cmd, indices);
+            s_renderCmds.push_back(cmd);
+            previousCommand = kNoDrawCommand;
+            FrameProfiler::Count(FrameProfiler::Counter::DrawCalls);
+            FrameProfiler::Count(FrameProfiler::Counter::BatchDraws);
+        }
+        else if (!s_disableD3D12TriangleMerging && MergeAdjacentTriangleCommand(cmd, previousCommand, sizeof(Vertex3D)))
         {
             ++s_dbgMergedDrawsThisFrame;
             FrameProfiler::Count(FrameProfiler::Counter::MergedDraws);
@@ -3277,7 +5100,7 @@ public:
         const Uint32 drawQuads =
             (numQuads <= static_cast<Uint32>(k_MaxQuads)) ? numQuads : static_cast<Uint32>(k_MaxQuads);
         const Uint32 byteSize = drawQuads * 4u * static_cast<Uint32>(sizeof(Vertex3D));
-        const Uint32 vtxOffset = UploadVertices(vertices.data(), byteSize);
+        const Uint32 vtxOffset = UploadVertices(vertices.data(), byteSize, sizeof(Vertex3D));
         if (vtxOffset == ~0u)
         {
             return;
@@ -3296,7 +5119,7 @@ public:
             return;
         }
 
-        void* pSampler = LookupSampler(resolvedTexId);
+        void* pSampler = LookupWorldSampler(resolvedTexId);
 
         RenderCmd cmd{};
         cmd.type = RenderCmdType::DrawIndexedQuads;
@@ -3304,16 +5127,14 @@ public:
         cmd.texture = static_cast<SDL_GPUTexture*>(pTex);
         cmd.sampler = pSampler ? static_cast<SDL_GPUSampler*>(pSampler) : s_defaultSampler;
         cmd.vtxOffset = vtxOffset;
+        cmd.vtxStride = sizeof(Vertex3D);
         cmd.idxCount = drawQuads * 6u;
         cmd.vu.mvp = m_mvpMatrix;
         cmd.vu.fogStart = m_fogUniform.fogStart;
         cmd.vu.fogEnd = m_fogUniform.fogEnd;
         cmd.fogUniform = m_fogUniform;
-        cmd.blendMode = m_activeBlendMode;
-        cmd.blendEnabled = m_blendEnabled;
-        cmd.depthTestEnabled = m_depthTestEnabled;
-        cmd.depthMaskEnabled = m_depthMaskEnabled;
-        cmd.cullFaceEnabled = m_cullFaceEnabled;
+        cmd.translucentVertices = GetVertexAlpha(vertices) == VertexAlpha::Translucent;
+        RecordDrawState(cmd);
         FrameProfiler::Count(FrameProfiler::Counter::BatchVertices, drawQuads * 4u);
         std::size_t& previousCommand =
             Render::PreviousDrawCommand(s_previousDrawCommands, Render::DrawCommandFamily::Quads3D);
@@ -3335,87 +5156,216 @@ public:
         FrameProfiler::Count(FrameProfiler::Counter::VertexBytes, byteSize);
     }
 
-    [[nodiscard]] bool RenderSkinnedTriangles(std::span<const SkinnedVertex3D> vertices, std::uint32_t textureId,
-                                              const SkinningParameters& parameters) override
+    // The frame's point lights are placed in the scene's world; models drawn for the UI (between
+    // BeginScreenSpaceSampling and EndScreenSpaceSampling) have their own view and skip them. The
+    // lights themselves arrive after the frame's draws (SetDynamicLights), so this does not look
+    // at them; without lights the shader's loop is empty.
+    [[nodiscard]] static std::uint32_t EnhancedSkinningLighting()
     {
-        if (vertices.empty() || vertices.size() % 3 != 0 || !s_frameActive || !m_colorWriteEnabled ||
-            m_stencilTestEnabled || parameters.boneMatrices.empty() || parameters.boneMatrices.size() % 12 != 0)
+        return s_screenSpaceSamplingDepth == 0 ? k_SkinningLightingEnhancedDynamic : k_SkinningLightingEnhanced;
+    }
+
+    // World position and normal of Enhanced-lit skinned vertices, for the frame's point lights.
+    void PackVertexToWorldRows(SkinningVertexUniforms& uniforms) const
+    {
+        const glm::mat4 vertexToWorld = m_worldFromViewMatrix * m_modelViewMatrix;
+        for (int row = 0; row < 3; ++row)
+        {
+            for (int column = 0; column < 4; ++column)
+            {
+                uniforms.vertexToWorldRows[row][column] = vertexToWorld[column][row];
+            }
+        }
+    }
+
+    // skinned_lit.frag's normal map for a draw: the draw's map with its scale, or the flat
+    // default with scale 0 (the shader then lights the unperturbed normal).
+    static void BindNormalMap(RenderCmd& cmd, SkinningVertexUniforms& skinningVu, const SkinningParameters& parameters)
+    {
+        cmd.normalTexture = s_flatNormalTexture;
+        cmd.normalSampler = s_defaultSampler;
+        skinningVu.textureCoordinateParameters[3] = 0.0f;
+        if (parameters.normalMapScale == 0.0f || parameters.normalTextureId == 0u)
+        {
+            return;
+        }
+        auto* normalTexture = static_cast<SDL_GPUTexture*>(LookupTextureForDraw(parameters.normalTextureId));
+        if (!normalTexture)
+        {
+            return;
+        }
+        void* normalSampler = LookupWorldSampler(parameters.normalTextureId);
+        cmd.normalTexture = normalTexture;
+        cmd.normalSampler = normalSampler ? static_cast<SDL_GPUSampler*>(normalSampler) : s_defaultSampler;
+        skinningVu.textureCoordinateParameters[3] = parameters.normalMapScale;
+    }
+
+    [[nodiscard]] bool RenderSkinnedTriangles(std::span<const SkinnedVertex3D> vertices, std::uint32_t color,
+                                              std::uint32_t textureId, const SkinningParameters& parameters) override
+    {
+        return RecordSkinnedDraw(vertices.data(), Render::BonesIndexed(vertices), FrameMesh(vertices),
+                                 static_cast<Uint32>(vertices.size()), color, textureId, parameters);
+    }
+
+    [[nodiscard]] bool RenderWeightedSkinnedTriangles(std::span<const SkinnedWeightedVertex3D> vertices,
+                                                      std::uint32_t color, std::uint32_t textureId,
+                                                      const SkinningParameters& parameters) override
+    {
+        return RecordSkinnedDraw(vertices.data(), Render::BonesIndexed(vertices), FrameMesh(vertices),
+                                 static_cast<Uint32>(vertices.size()), color, textureId, parameters);
+    }
+
+    // What RecordSkinnedDraw needs of vertices uploaded with the frame: their count and stride.
+    template <typename Vertex> [[nodiscard]] static CachedSkinnedMesh FrameMesh(std::span<const Vertex> vertices)
+    {
+        return CachedSkinnedMesh{0u, 0u, 0u, static_cast<Uint32>(vertices.size()), sizeof(Vertex)};
+    }
+
+    [[nodiscard]] bool IsSkinnedMeshCached(const void* mesh) const override
+    {
+        return s_skinnedMeshes.contains(mesh);
+    }
+
+    [[nodiscard]] bool CacheSkinnedMesh(const void* mesh, std::span<const SkinnedVertex3D> vertices) override
+    {
+        return CacheMesh(mesh, vertices);
+    }
+
+    [[nodiscard]] bool CacheWeightedSkinnedMesh(const void* mesh,
+                                                std::span<const SkinnedWeightedVertex3D> vertices) override
+    {
+        return CacheMesh(mesh, vertices);
+    }
+
+    template <typename Vertex> [[nodiscard]] bool CacheMesh(const void* mesh, std::span<const Vertex> vertices)
+    {
+        constexpr Uint32 stride = sizeof(Vertex);
+        if (!s_device || vertices.empty() || vertices.size() > std::numeric_limits<Uint32>::max() / stride ||
+            s_skinnedMeshes.contains(mesh))
         {
             return false;
         }
 
-        const std::uint32_t resolvedTexId = ResolveTextureId(textureId);
-        auto* texture = static_cast<SDL_GPUTexture*>(LookupTextureForDraw(resolvedTexId));
-        if (!texture)
+        const Uint32 vertexCount = static_cast<Uint32>(vertices.size());
+        const Uint32 unitCount = vertexCount * (stride / k_SkinnedMeshUnitBytes);
+        const Uint32 bonesUsed = Render::BonesIndexed(vertices);
+        std::optional<CachedSkinnedMesh> range;
+        for (Uint32 block = 0u; block < s_skinnedMeshBlocks.size() && !range; ++block)
+        {
+            if (const auto first = s_skinnedMeshBlocks[block].ranges.Allocate(unitCount))
+                range = CachedSkinnedMesh{block, *first, unitCount, vertexCount, stride, bonesUsed};
+        }
+        if (!range)
+        {
+            // shortcut: blocks are never released before Shutdown, fine while the loaded meshes fit a few blocks;
+            // release empty ones if a long session keeps growing them.
+            const Uint32 blockUnits = std::max(k_SkinnedMeshBlockUnits, unitCount);
+            SDL_GPUBufferCreateInfo bufferInfo{};
+            bufferInfo.usage = SDL_GPU_BUFFERUSAGE_VERTEX;
+            bufferInfo.size = blockUnits * k_SkinnedMeshUnitBytes;
+            SDL_GPUBuffer* buffer = SDL_CreateGPUBuffer(s_device, &bufferInfo);
+            if (!buffer)
+            {
+                mu::log::Get("render")->error("SDL_gpu -- skinned mesh buffer creation failed: {}", SDL_GetError());
+                return false;
+            }
+            s_skinnedMeshBlocks.push_back({buffer, Render::RangeAllocator(blockUnits)});
+            const auto first = s_skinnedMeshBlocks.back().ranges.Allocate(unitCount);
+            range = CachedSkinnedMesh{static_cast<Uint32>(s_skinnedMeshBlocks.size() - 1u),
+                                      *first,
+                                      unitCount,
+                                      vertexCount,
+                                      stride,
+                                      bonesUsed};
+        }
+
+        s_pendingSkinnedMeshUploads.push_back({*range, s_skinnedMeshStaging.size()});
+        const auto bytes = std::as_bytes(vertices);
+        s_skinnedMeshStaging.insert(s_skinnedMeshStaging.end(), bytes.begin(), bytes.end());
+        s_skinnedMeshes.emplace(mesh, *range);
+        return true;
+    }
+
+    [[nodiscard]] bool RenderCachedSkinnedMesh(const void* mesh, std::uint32_t color, std::uint32_t textureId,
+                                               const SkinningParameters& parameters) override
+    {
+        const auto cached = s_skinnedMeshes.find(mesh);
+        if (cached == s_skinnedMeshes.end())
+        {
+            return false;
+        }
+        return RecordSkinnedDraw(nullptr, 0u, cached->second, cached->second.vertexCount, color, textureId, parameters);
+    }
+
+    [[nodiscard]] bool RenderCachedSkinnedShadow(const void* mesh, std::uint32_t color,
+                                                 const SkinningParameters& parameters,
+                                                 const ShadowProjection& projection) override
+    {
+        const auto cached = s_skinnedMeshes.find(mesh);
+        if (cached == s_skinnedMeshes.end())
+        {
+            return false;
+        }
+        return RecordSkinnedDraw(nullptr, 0u, cached->second, cached->second.vertexCount, color, 0u, parameters,
+                                 &projection);
+    }
+
+    // CPU bookkeeping only, so a model released after Shutdown finds an empty cache.
+    void ReleaseSkinnedMesh(const void* mesh) override
+    {
+        const auto cached = s_skinnedMeshes.find(mesh);
+        if (cached == s_skinnedMeshes.end())
+        {
+            return;
+        }
+        s_deferredSkinnedMeshFrees.push_back({cached->second, s_submittedFrames});
+        s_skinnedMeshes.erase(cached);
+    }
+
+    [[nodiscard]] bool SetTerrainHeights(std::span<const float> heights, std::span<const std::uint16_t> walls,
+                                         std::uint32_t version) override
+    {
+        if (s_terrainHeightVersion == version)
+        {
+            return true;
+        }
+        if (!s_device || heights.size() != Render::kTerrainCells || walls.size() != Render::kTerrainCells)
         {
             return false;
         }
 
-        const int pipelineIdx = GetActivePipelineIndex();
-        const bool cullFaceEnabled = m_cullFaceEnabled && !s_disableD3D12Culling;
-        SDL_GPUGraphicsPipeline* pipeline =
-            m_depthTestEnabled
-                ? (m_depthMaskEnabled
-                       ? (cullFaceEnabled ? s_pipelinesSkinned[pipelineIdx] : s_pipelinesSkinnedNoCull[pipelineIdx])
-                       : s_pipelinesSkinnedDepthReadOnly[pipelineIdx])
-                : s_pipelinesSkinnedDepthOff[pipelineIdx];
-        if (!pipeline)
+        if (!s_terrainHeightGpuBuf)
         {
-            return false;
+            SDL_GPUTransferBufferCreateInfo transferInfo{};
+            transferInfo.usage = SDL_GPU_TRANSFERBUFFERUSAGE_UPLOAD;
+            transferInfo.size = sizeof(Render::TerrainHeightGrid);
+            SDL_GPUBufferCreateInfo bufferInfo{};
+            bufferInfo.usage = SDL_GPU_BUFFERUSAGE_GRAPHICS_STORAGE_READ;
+            bufferInfo.size = sizeof(Render::TerrainHeightGrid);
+            s_terrainHeightTransferBuf = SDL_CreateGPUTransferBuffer(s_device, &transferInfo);
+            s_terrainHeightGpuBuf = s_terrainHeightTransferBuf ? SDL_CreateGPUBuffer(s_device, &bufferInfo) : nullptr;
+            if (!s_terrainHeightGpuBuf)
+            {
+                mu::log::Get("render")->error("SDL_gpu -- terrain height buffer creation failed: {}", SDL_GetError());
+                DestroyTerrainHeightBuffers();
+                return false;
+            }
         }
 
-        const Uint32 paletteRowOffset = RecordBonePalette(parameters);
-        if (paletteRowOffset == ~0u)
+        // Cycled, so frames still in flight keep reading the previous heights.
+        auto* grid = static_cast<Render::TerrainHeightGrid*>(
+            SDL_MapGPUTransferBuffer(s_device, s_terrainHeightTransferBuf, true));
+        if (!grid)
         {
+            mu::log::Get("render")->error("SDL_gpu -- failed to map terrain height buffer: {}", SDL_GetError());
             return false;
         }
+        Render::BuildTerrainHeightGrid(heights.data(), walls.data(), *grid);
+        SDL_UnmapGPUTransferBuffer(s_device, s_terrainHeightTransferBuf);
 
-        const Uint32 byteSize = static_cast<Uint32>(vertices.size() * sizeof(SkinnedVertex3D));
-        const Uint32 vtxOffset = UploadVertices(vertices.data(), byteSize);
-        if (vtxOffset == ~0u)
-        {
-            return false;
-        }
-
-        RenderCmd cmd{};
-        cmd.type = RenderCmdType::DrawSkinnedTriangles;
-        cmd.pipeline = pipeline;
-        cmd.texture = texture;
-        void* sampler = LookupSampler(resolvedTexId);
-        cmd.sampler = sampler ? static_cast<SDL_GPUSampler*>(sampler) : s_defaultSampler;
-        cmd.vtxOffset = vtxOffset;
-        cmd.vtxCount = static_cast<Uint32>(vertices.size());
-        cmd.skinningVu.mvp = m_mvpMatrix;
-        cmd.skinningVu.bodyOriginAndScale[0] = parameters.bodyOrigin[0];
-        cmd.skinningVu.bodyOriginAndScale[1] = parameters.bodyOrigin[1];
-        cmd.skinningVu.bodyOriginAndScale[2] = parameters.bodyOrigin[2];
-        cmd.skinningVu.bodyOriginAndScale[3] = parameters.bodyScale;
-        cmd.skinningVu.skinningScales[0] = parameters.boneScale;
-        cmd.skinningVu.skinningScales[1] = parameters.restPoseScale;
-        cmd.skinningVu.palette[0] = paletteRowOffset;
-        cmd.skinningVu.palette[1] = static_cast<std::uint32_t>(parameters.boneMatrices.size() / 12);
-        cmd.skinningVu.palette[2] = parameters.translate ? 1u : 0u;
-        cmd.skinningVu.palette[3] = parameters.lightEnabled ? 1u : 0u;
-        cmd.skinningVu.lightDirection[0] = parameters.lightDirection[0];
-        cmd.skinningVu.lightDirection[1] = parameters.lightDirection[1];
-        cmd.skinningVu.lightDirection[2] = parameters.lightDirection[2];
-        cmd.skinningVu.fogParameters[0] = m_fogUniform.fogStart;
-        cmd.skinningVu.fogParameters[1] = m_fogUniform.fogEnd;
-        cmd.skinningVu.textureCoordinates[0] = static_cast<std::uint32_t>(parameters.textureCoordinates);
-        cmd.skinningVu.chromeParameters[0] = parameters.chromeWave;
-        cmd.skinningVu.chromeParameters[1] = parameters.chromeWave2;
-        cmd.skinningVu.chromeParameters[2] = parameters.chromeLight[0];
-        cmd.skinningVu.chromeParameters[3] = parameters.chromeLight[1];
-        cmd.skinningVu.textureCoordinateParameters[0] = parameters.textureCoordinateOffset[0];
-        cmd.skinningVu.textureCoordinateParameters[1] = parameters.textureCoordinateOffset[1];
-        cmd.skinningVu.textureCoordinateParameters[2] = parameters.chromeTimeTerm;
-        cmd.fogUniform = m_fogUniform;
-        s_renderCmds.push_back(cmd);
-
-        ++s_dbgDrawCallsThisFrame;
-        s_dbgVtxBytesThisFrame += byteSize;
-        FrameProfiler::Count(FrameProfiler::Counter::DrawCalls);
-        FrameProfiler::Count(FrameProfiler::Counter::VertexBytes, byteSize);
+        s_terrainHeightVersion = version;
+        s_terrainHeightUploadPending = true;
+        mu::log::Get("render")->info("SDL_gpu -- terrain heights uploaded (version {})", version);
         return true;
     }
 
@@ -3444,7 +5394,7 @@ public:
             ++s_dbgRealTextureDrawsThisFrame;
 
         const Uint32 byteSize = static_cast<Uint32>(vertices.size() * sizeof(Vertex3D));
-        const Uint32 vtxOffset = UploadVertices(vertices.data(), byteSize);
+        const Uint32 vtxOffset = UploadVertices(vertices.data(), byteSize, sizeof(Vertex3D));
         if (vtxOffset == ~0u)
         {
             return;
@@ -3459,14 +5409,16 @@ public:
 
         const Uint32 numIndices = numQuads * 6;
 
-        // Story 4.3.2 (AC-8): RenderQuadStrip uses the 3D pipeline set (Vertex3D layout).
-        SDL_GPUGraphicsPipeline* pipeline = GetActive3DPipeline();
+        // RenderQuadStrip uses the 3D pipeline set (Vertex3D layout).
+        const VertexAlpha vertexAlpha = GetVertexAlpha(vertices);
+        const AlphaCoverageChoice coverage = ChooseAlphaCoverage(GetActive3DPipeline(), resolvedTexId, vertexAlpha);
+        SDL_GPUGraphicsPipeline* pipeline = coverage.pipeline;
         if (!pipeline)
         {
             return;
         }
 
-        void* pSampler = LookupSampler(resolvedTexId);
+        void* pSampler = LookupWorldSampler(resolvedTexId);
 
         // Accumulate strip indices into the per-frame scratch buffer.
         // Record the byte offset so the replay knows where this strip's indices start.
@@ -3496,12 +5448,16 @@ public:
         cmd.texture = static_cast<SDL_GPUTexture*>(pTex);
         cmd.sampler = pSampler ? static_cast<SDL_GPUSampler*>(pSampler) : s_defaultSampler;
         cmd.vtxOffset = vtxOffset;
+        cmd.vtxStride = sizeof(Vertex3D);
         cmd.idxCount = numIndices;
         cmd.stripIdxOffset = stripIdxByteOffset;
         cmd.vu.mvp = m_mvpMatrix;
         cmd.vu.fogStart = m_fogUniform.fogStart;
         cmd.vu.fogEnd = m_fogUniform.fogEnd;
         cmd.fogUniform = m_fogUniform;
+        cmd.fogUniform.alphaToCoverage = coverage.alphaToCoverage ? 1u : 0u;
+        cmd.translucentVertices = vertexAlpha == VertexAlpha::Translucent;
+        RecordDrawState(cmd);
         s_renderCmds.push_back(cmd);
 
         ++s_dbgDrawCallsThisFrame;
@@ -3541,7 +5497,7 @@ public:
     // -----------------------------------------------------------------------
     // SetFog: Populate FogUniform from FogParams and mark the GPU buffer dirty.
     // The buffer is uploaded in BeginFrame() before the render pass.
-    // Story 4.3.2 (AC-10): Fog uniform buffer support.
+    // Fog uniform buffer support.
     // -----------------------------------------------------------------------
     void SetDepthMask(bool enabled) override
     {
@@ -3551,14 +5507,14 @@ public:
     {
         m_cullFaceEnabled = enabled;
     }
-    // Story 7.9.7: SetColorMask — track color write state.
+    // SetColorMask — track color write state.
     // When all channels are disabled (shadow volume stencil passes), draw calls
     // are skipped entirely since we have no stencil buffer support yet.
     void SetColorMask(bool r, bool g, bool b, bool a) override
     {
         m_colorWriteEnabled = (r || g || b || a);
     }
-    // Story 7.9.7: SetStencilTest — track stencil state.
+    // SetStencilTest — track stencil state.
     // All stencil-dependent rendering (shadow volumes, shadow darkening) is skipped
     // since we have no stencil buffer. Without this, RenderShadowToScreen() draws
     // a full-screen darkening quad that covers the entire scene.
@@ -3569,14 +5525,14 @@ public:
     void SetAlphaTest(bool enabled) override
     {
         m_alphaTestEnabled = enabled;
-        // Story 7.9.7 (AC-5): Propagate alpha test state to the fog uniform
+        // Propagate alpha test state to the fog uniform
         // so the fragment shader's `if (alphaDiscardEnabled && color.a <= alphaThreshold) discard;`
         // actually fires for particle sprites.
         m_fogUniform.alphaDiscardEnabled = enabled ? 1u : 0u;
         s_fogDirty = true;
     }
 
-    // Story 7.9.7 (AC-7): Override SetAlphaFunc to propagate alpha threshold
+    // Override SetAlphaFunc to propagate alpha threshold
     // to the fog uniform. Game code calls SetAlphaFunc(GL_GREATER, 0.25f)
     // via EnableAlphaTest() in ZzzOpenglUtil.cpp.
     void SetAlphaFunc(int /*func*/, float ref) override
@@ -3609,9 +5565,9 @@ public:
         // fogEnabled: true when mode != 0 (mode 0 = no fog / GL_LINEAR from caller).
         // alphaDiscardEnabled / alphaThreshold: not in FogParams; default off.
         m_fogUniform.fogEnabled = m_fogEnabled ? 1u : 0u;
-        // Story 7.9.7: Preserve alpha discard state — SetFog must NOT reset
+        // Preserve alpha discard state — SetFog must NOT reset
         // alphaDiscardEnabled/alphaThreshold set by SetAlphaTest/SetAlphaFunc.
-        m_fogUniform.pad0 = 0.0f;
+        m_fogUniform.alphaToCoverage = 0u;
         m_fogUniform.fogStart = params.start;
         m_fogUniform.fogEnd = params.end;
         m_fogUniform.fogPadding[0] = 0.0f;
@@ -3621,6 +5577,101 @@ public:
         m_fogUniform.fogColor[2] = params.color[2];
         m_fogUniform.fogColor[3] = params.color[3];
         s_fogDirty = true;
+    }
+
+    void SetSceneLighting(const SceneLighting& lighting) override
+    {
+        SceneFog fog{};
+        fog.enabled = m_fogEnabled;
+        fog.start = m_fogUniform.fogStart;
+        fog.end = m_fogUniform.fogEnd;
+        fog.color[0] = m_fogUniform.fogColor[0];
+        fog.color[1] = m_fogUniform.fogColor[1];
+        fog.color[2] = m_fogUniform.fogColor[2];
+        s_sceneLightingUniform = PackSceneLightingUniform(lighting, fog);
+        s_sceneLightingUniform.lightingParameters[1] = s_terrainSunLight ? 1.0f : 0.0f;
+        // The scene sets its lighting right after its camera, so the model-view is the view and the
+        // projection the scene's.
+        m_worldFromViewMatrix = glm::inverse(m_modelViewMatrix);
+        std::memcpy(s_sceneProjection, glm::value_ptr(m_projMatrix), sizeof(s_sceneProjection));
+        const glm::mat4 viewProjection = m_projMatrix * m_modelViewMatrix;
+
+        s_sunShadowMap.Cancel();
+        if (lighting.sunShadowResolution > 0u)
+        {
+            s_sunShadowMap.Want(lighting.sunShadowResolution);
+        }
+        if (lighting.sunShadowDarkness > 0.0f && SunShadowsAvailable())
+        {
+            s_sunShadowMap.Request(lighting.sunShadowResolution);
+            const Uint32 resolution = s_sunShadowMap.Resolution();
+            const glm::vec3 toSun(lighting.sunDirection[0], lighting.sunDirection[1], lighting.sunDirection[2]);
+            const Render::Lighting::SunShadowView sun = Render::Lighting::BuildSunShadowView(
+                toSun, viewProjection, lighting.groundLow, lighting.groundHigh, resolution);
+            s_sunFromScene = sun.sunFromScene;
+            std::memcpy(s_sceneLightingUniform.sunViewProjection, glm::value_ptr(sun.viewProjection),
+                        sizeof(s_sceneLightingUniform.sunViewProjection));
+            const float texel = 1.0f / static_cast<float>(resolution);
+            s_sceneLightingUniform.sunShadowParameters[0] = lighting.sunShadowDarkness;
+            s_sceneLightingUniform.sunShadowParameters[1] = lighting.sunShadowSoftness;
+            s_sceneLightingUniform.sunShadowParameters[2] = texel;
+            s_sceneLightingUniform.sunShadowParameters[3] = sun.box.size * texel;
+        }
+    }
+
+    [[nodiscard]] bool SunShadowsAvailable() const override
+    {
+        return s_enhancedLightingAvailable && s_sunShadowPipelines[0] && s_sunShadowPipelines[1] &&
+               s_sunShadowMap.IsAvailable();
+    }
+
+    void SetTerrainSunLight(std::span<const std::uint8_t> rgba) override
+    {
+        if (rgba.size() != kTerrainSunLightSize * kTerrainSunLightSize * 4u || !s_device)
+        {
+            return;
+        }
+        if (!s_terrainSunLight)
+        {
+            SDL_GPUTextureCreateInfo info{};
+            info.type = SDL_GPU_TEXTURETYPE_2D;
+            info.format = SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM;
+            info.usage = SDL_GPU_TEXTUREUSAGE_SAMPLER;
+            info.width = kTerrainSunLightSize;
+            info.height = kTerrainSunLightSize;
+            info.layer_count_or_depth = 1;
+            info.num_levels = 1;
+            info.sample_count = SDL_GPU_SAMPLECOUNT_1;
+            s_terrainSunLight = SDL_CreateGPUTexture(s_device, &info);
+            if (!s_terrainSunLight)
+            {
+                return;
+            }
+        }
+        DiscardQueuedTextureUpdates(s_terrainSunLight);
+        TextureUpdateCmd cmd{};
+        cmd.gpuTexture = s_terrainSunLight;
+        cmd.pixelsCopy.assign(rgba.begin(), rgba.end());
+        cmd.width = kTerrainSunLightSize;
+        cmd.height = kTerrainSunLightSize;
+        cmd.bytesPerRow = kTerrainSunLightSize * 4u;
+        s_textureUpdates.push_back(std::move(cmd));
+    }
+
+    [[nodiscard]] bool InScreenSpaceSampling() const override
+    {
+        return s_screenSpaceSamplingDepth > 0;
+    }
+
+    void SetDynamicLights(const DynamicLightsUniform& lights) override
+    {
+        s_dynamicLightsUniform = lights;
+    }
+
+    [[nodiscard]] bool SetEnhancedLighting(bool enabled) override
+    {
+        s_enhancedLightingEnabled = enabled;
+        return !enabled || s_enhancedLightingAvailable;
     }
 
     // -----------------------------------------------------------------------
@@ -3724,6 +5775,175 @@ public:
     }
 
 private:
+    // Records one skinned draw. `frameVertices` (indexing `frameBonesUsed` bones) are uploaded with this frame's
+    // vertices; without them the draw reads `cached`, already on the GPU. `cached.stride` names the vertex type.
+    // With `shadow`, it is drawn as that ground shadow.
+    [[nodiscard]] bool RecordSkinnedDraw(const void* frameVertices, Uint32 frameBonesUsed,
+                                         const CachedSkinnedMesh& cached, Uint32 vertexCount, std::uint32_t color,
+                                         std::uint32_t textureId, const SkinningParameters& parameters,
+                                         const ShadowProjection* shadow = nullptr)
+    {
+        if (vertexCount == 0u || vertexCount % 3 != 0 || !s_frameActive || !m_colorWriteEnabled ||
+            m_stencilTestEnabled || parameters.boneMatrices.empty() || parameters.boneMatrices.size() % 12 != 0)
+        {
+            return false;
+        }
+
+        const std::uint32_t resolvedTexId = ResolveTextureId(textureId);
+        auto* texture = static_cast<SDL_GPUTexture*>(LookupTextureForDraw(resolvedTexId));
+        if (!texture)
+        {
+            return false;
+        }
+
+        const int pipelineIdx = GetActivePipelineIndex();
+        const bool cullFaceEnabled = m_cullFaceEnabled && !s_disableD3D12Culling;
+        const bool enhanced = !shadow && UsesEnhancedLighting();
+        const bool enhancedLit = enhanced && parameters.lightEnabled;
+        const bool weighted = cached.stride == sizeof(SkinnedWeightedVertex3D);
+        const WorldPipelines& set =
+            !enhanced     ? (weighted ? s_pipelinesSkinnedWeighted : s_pipelinesSkinned)
+            : enhancedLit ? (weighted ? s_pipelinesSkinnedWeightedLit : s_pipelinesSkinnedLit)
+                          : (weighted ? s_pipelinesSkinnedWeightedEnhancedFog : s_pipelinesSkinnedEnhancedFog);
+        SDL_GPUGraphicsPipeline* pipeline =
+            set.Select(static_cast<std::size_t>(pipelineIdx), m_depthTestEnabled, m_depthMaskEnabled, cullFaceEnabled);
+        // One colour for the whole draw: its alpha is the vertices' alpha.
+        const VertexAlpha vertexAlpha = (color >> 24u) == 0xFFu ? VertexAlpha::Opaque : VertexAlpha::Translucent;
+        const AlphaCoverageChoice coverage =
+            shadow ? AlphaCoverageChoice{pipeline, false} : ChooseAlphaCoverage(pipeline, resolvedTexId, vertexAlpha);
+        pipeline = coverage.pipeline;
+        if (shadow)
+        {
+            // Only the states the CPU shadow is drawn in; the heights must be on the GPU.
+            SDL_GPUGraphicsPipeline* const* depthOn =
+                weighted ? s_pipelinesSkinnedWeightedShadow : s_pipelinesSkinnedShadow;
+            SDL_GPUGraphicsPipeline* const* depthOff =
+                weighted ? s_pipelinesSkinnedWeightedShadowDepthOff : s_pipelinesSkinnedShadowDepthOff;
+            pipeline = !s_terrainHeightVersion ? nullptr
+                       : !m_depthTestEnabled   ? depthOff[pipelineIdx]
+                       : !m_depthMaskEnabled   ? depthOn[pipelineIdx]
+                                               : nullptr;
+        }
+        if (!pipeline)
+        {
+            return false;
+        }
+
+        const Uint32 bonesUsed = frameVertices ? frameBonesUsed : cached.bonesUsed;
+        const std::optional<BonePaletteSlot> palette = RecordBonePalette(parameters, bonesUsed);
+        if (!palette)
+        {
+            return false;
+        }
+
+        Uint32 byteSize = 0u;
+        Uint32 vtxOffset = cached.firstUnit * k_SkinnedMeshUnitBytes;
+        if (frameVertices)
+        {
+            byteSize = vertexCount * cached.stride;
+            vtxOffset = UploadVertices(frameVertices, byteSize, cached.stride);
+            if (vtxOffset == ~0u)
+            {
+                return false;
+            }
+        }
+        const Uint32 colorOffset = UploadVertices(&color, sizeof(color), sizeof(color));
+        if (colorOffset == ~0u)
+        {
+            return false;
+        }
+        byteSize += sizeof(color);
+
+        RenderCmd cmd{};
+        cmd.type = RenderCmdType::DrawSkinnedTriangles;
+        SkinningVertexUniforms& skinningVu = s_skinningUniforms.emplace_back();
+        cmd.skinningIndex = static_cast<Uint32>(s_skinningUniforms.size() - 1u);
+        cmd.pipeline = pipeline;
+        cmd.texture = texture;
+        void* sampler = LookupWorldSampler(resolvedTexId);
+        cmd.sampler = sampler ? static_cast<SDL_GPUSampler*>(sampler) : s_defaultSampler;
+        cmd.vtxBuffer = frameVertices ? nullptr : s_skinnedMeshBlocks[cached.block].buffer;
+        cmd.vtxOffset = vtxOffset;
+        cmd.vtxStride = cached.stride;
+        cmd.colorOffset = colorOffset;
+        cmd.vtxCount = vertexCount;
+        skinningVu.mvp = m_mvpMatrix;
+        skinningVu.bodyOriginAndScale[0] = parameters.bodyOrigin[0];
+        skinningVu.bodyOriginAndScale[1] = parameters.bodyOrigin[1];
+        skinningVu.bodyOriginAndScale[2] = parameters.bodyOrigin[2];
+        skinningVu.bodyOriginAndScale[3] = parameters.bodyScale;
+        skinningVu.skinningScales[0] = parameters.boneScale;
+        skinningVu.skinningScales[1] = parameters.restPoseScale;
+        skinningVu.palette[0] = palette->rowOffset;
+        skinningVu.palette[1] = palette->bones;
+        skinningVu.palette[2] = parameters.translate ? 1u : 0u;
+        skinningVu.palette[3] = enhancedLit               ? EnhancedSkinningLighting()
+                                : parameters.lightEnabled ? k_SkinningLightingClassic
+                                                          : k_SkinningLightingNone;
+        skinningVu.lightDirection[0] = parameters.lightDirection[0];
+        skinningVu.lightDirection[1] = parameters.lightDirection[1];
+        skinningVu.lightDirection[2] = parameters.lightDirection[2];
+        skinningVu.lightDirection[3] = parameters.highlightKnee;
+        skinningVu.fogParameters[0] = m_fogUniform.fogStart;
+        skinningVu.fogParameters[1] = m_fogUniform.fogEnd;
+        skinningVu.textureCoordinates[0] = static_cast<std::uint32_t>(parameters.textureCoordinates);
+        skinningVu.chromeParameters[0] = parameters.chromeWave;
+        skinningVu.chromeParameters[1] = parameters.chromeWave2;
+        skinningVu.chromeParameters[2] = parameters.chromeLight[0];
+        skinningVu.chromeParameters[3] = parameters.chromeLight[1];
+        skinningVu.textureCoordinateParameters[0] = parameters.textureCoordinateOffset[0];
+        skinningVu.textureCoordinateParameters[1] = parameters.textureCoordinateOffset[1];
+        skinningVu.textureCoordinateParameters[2] = parameters.chromeTimeTerm;
+        if (enhancedLit)
+        {
+            BindNormalMap(cmd, skinningVu, parameters);
+            const glm::vec4 eyePosition = glm::inverse(m_modelViewMatrix) * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+            skinningVu.eyePositionAndSpecular[0] = eyePosition.x;
+            skinningVu.eyePositionAndSpecular[1] = eyePosition.y;
+            skinningVu.eyePositionAndSpecular[2] = eyePosition.z;
+            skinningVu.eyePositionAndSpecular[3] = parameters.specularStrength;
+            PackVertexToWorldRows(skinningVu);
+        }
+        if (shadow)
+        {
+            ShadowVertexUniforms& shadowVu = s_shadowUniforms.emplace_back();
+            cmd.shadowIndex = static_cast<Uint32>(s_shadowUniforms.size() - 1u);
+            shadowVu.origin[0] = shadow->origin[0];
+            shadowVu.origin[1] = shadow->origin[1];
+            shadowVu.origin[2] = shadow->origin[2];
+            shadowVu.origin[3] = shadow->specialHeight;
+            shadowVu.projection[0] = shadow->shearX;
+            shadowVu.projection[1] = shadow->shearHeight;
+            shadowVu.projection[2] = shadow->terrain ? 1.0f : 0.0f;
+            shadowVu.projection[3] = shadow->axisAngle;
+        }
+        cmd.fogUniform = m_fogUniform;
+        cmd.fogUniform.alphaToCoverage = coverage.alphaToCoverage ? 1u : 0u;
+        cmd.translucentVertices = vertexAlpha == VertexAlpha::Translucent;
+        RecordDrawState(cmd);
+        s_renderCmds.push_back(cmd);
+
+        if (FrameProfiler::g_CountersEnabled)
+        {
+            // shortcut: a hash of the key, not the key; a collision only undercounts by one.
+            const auto mix = [](std::uint64_t seed, std::uint64_t value)
+            { return seed ^ (value + 0x9e3779b97f4a7c15ull + (seed << 6) + (seed >> 2)); };
+            std::uint64_t key = static_cast<std::uint64_t>(FrameProfiler::CurrentPass());
+            key = mix(key, reinterpret_cast<std::uintptr_t>(cmd.vtxBuffer));
+            key = mix(key, cmd.vtxOffset);
+            key = mix(key, reinterpret_cast<std::uintptr_t>(cmd.texture));
+            key = mix(key, reinterpret_cast<std::uintptr_t>(cmd.pipeline));
+            if (s_skinnedDrawKeys.insert(key).second)
+                FrameProfiler::Count(FrameProfiler::Counter::DistinctSkinnedDraws);
+        }
+
+        ++s_dbgDrawCallsThisFrame;
+        s_dbgVtxBytesThisFrame += byteSize;
+        FrameProfiler::Count(FrameProfiler::Counter::DrawCalls);
+        FrameProfiler::Count(FrameProfiler::Counter::VertexBytes, byteSize);
+        return true;
+    }
+
     glm::mat4& ActiveMatrix()
     {
         return (m_matrixMode == 0x1700) ? m_modelViewMatrix : m_projMatrix;
@@ -3763,7 +5983,7 @@ private:
     float m_screenLineViewportWidth = 0.0f;
     float m_screenLineViewportHeight = 0.0f;
     FogParams m_fogParams{};
-    // Story 4.3.2 (AC-10): CPU-side fog uniform data, uploaded to GPU when dirty.
+    // CPU-side fog uniform data, uploaded to GPU when dirty.
     FogUniform m_fogUniform{};
 
     // Matrix stack for 3D rendering (replaces OpenGL fixed-function matrix stack).
@@ -3771,11 +5991,34 @@ private:
     int m_matrixMode = 0x1700; // GL_MODELVIEW
     glm::mat4 m_projMatrix{1.0f};
     glm::mat4 m_modelViewMatrix{1.0f};
+    // Inverse of the scene's view matrix, captured by SetSceneLighting().
+    glm::mat4 m_worldFromViewMatrix{1.0f};
     glm::mat4 m_projStack[k_MatrixStackDepth]{};
     glm::mat4 m_mvStack[k_MatrixStackDepth]{};
     int m_projStackTop = 0;
     int m_mvStackTop = 0;
     glm::mat4 m_mvpMatrix{1.0f};
+
+    // The blend and depth state a draw was recorded with: batching compares it, and
+    // post-processing picks the draws that feed the bloom by it.
+    void RecordDrawState(RenderCmd& command) const
+    {
+        command.blendMode = m_activeBlendMode;
+        command.blendEnabled = m_blendEnabled;
+        command.depthTestEnabled = m_depthTestEnabled;
+        command.depthMaskEnabled = m_depthMaskEnabled;
+        command.cullFaceEnabled = m_cullFaceEnabled;
+        command.bloomExcluded = s_bloomExclusionDepth > 0;
+        command.lightShadow = s_lightShadowDepth > 0;
+        command.groundShadow = s_groundShadowDepth > 0 || command.lightShadow;
+        command.worldLit = s_worldLitGeometryDepth > 0;
+        command.characterDraw = s_characterDrawDepth > 0;
+        command.noSunCaster = s_noSunCasterDepth > 0;
+        if (command.worldLit)
+        {
+            s_frameHasWorldLit = true;
+        }
+    }
 
     // -----------------------------------------------------------------------
     // GetActivePipelineIndex: Returns pipeline array index for current state.
@@ -3789,19 +6032,80 @@ private:
         return static_cast<int>(m_activeBlendMode);
     }
 
+    [[nodiscard]] static bool UsesEnhancedLighting()
+    {
+        return s_enhancedLightingEnabled && s_enhancedLightingAvailable;
+    }
+
     [[nodiscard]] SDL_GPUGraphicsPipeline* GetActive3DPipeline() const
     {
-        const int pipelineIdx = GetActivePipelineIndex();
-        if (!m_depthTestEnabled)
+        const WorldPipelines& set = !UsesEnhancedLighting()       ? s_pipelines3D
+                                    : s_worldLitGeometryDepth > 0 ? s_pipelinesWorldLit
+                                                                  : s_pipelines3DEnhancedFog;
+        return set.Select(static_cast<std::size_t>(GetActivePipelineIndex()), m_depthTestEnabled, m_depthMaskEnabled,
+                          m_cullFaceEnabled && !s_disableD3D12Culling);
+    }
+
+    // Alpha-to-coverage for an alpha-tested cutout while anti-aliasing is on
+    // (Render::Antialiasing::UsesAlphaToCoverage): the draw uses the opaque
+    // alpha-to-coverage variant of its pipeline and the shader's sharpening.
+    struct AlphaCoverageChoice
+    {
+        SDL_GPUGraphicsPipeline* pipeline;
+        bool alphaToCoverage;
+    };
+
+    enum class VertexAlpha : std::uint8_t
+    {
+        Opaque,
+        Translucent,
+    };
+
+    template <typename Vertex> [[nodiscard]] static VertexAlpha GetVertexAlpha(std::span<const Vertex> vertices)
+    {
+        // Packed ABGR: alpha is the top byte.
+        const bool opaque = std::all_of(vertices.begin(), vertices.end(),
+                                        [](const Vertex& vertex) { return (vertex.color >> 24u) == 0xFFu; });
+        return opaque ? VertexAlpha::Opaque : VertexAlpha::Translucent;
+    }
+
+    [[nodiscard]] AlphaCoverageChoice ChooseAlphaCoverage(SDL_GPUGraphicsPipeline* pipeline, std::uint32_t textureId,
+                                                          VertexAlpha vertexAlpha) const
+    {
+        const AlphaCoverageChoice unchanged{pipeline, false};
+        if (!pipeline || s_sampleCount == Render::Antialiasing::OffSampleCount)
         {
-            return s_pipelines3DDepthOff[pipelineIdx];
+            return unchanged;
         }
-        if (!m_depthMaskEnabled)
+        using Render::Antialiasing::Blending;
+        Render::Antialiasing::CutoutDraw draw{};
+        draw.multisampled = true;
+        draw.alphaTest = m_fogUniform.alphaDiscardEnabled != 0u;
+        draw.depthTest = m_depthTestEnabled;
+        draw.depthWrite = m_depthMaskEnabled;
+        draw.blending = !m_blendEnabled                             ? Blending::Off
+                        : m_activeBlendMode == mu::BlendMode::Alpha ? Blending::Alpha
+                                                                    : Blending::Other;
+        draw.opaqueVertices = vertexAlpha == VertexAlpha::Opaque;
+        draw.enhancedTexture = UsesEnhancedSampler(textureId);
+        if (!Render::Antialiasing::UsesAlphaToCoverage(draw))
         {
-            return s_pipelines3DDepthReadOnly[pipelineIdx];
+            return unchanged;
         }
-        return m_cullFaceEnabled && !s_disableD3D12Culling ? s_pipelines3D[pipelineIdx]
-                                                           : s_pipelines3DNoCull[pipelineIdx];
+        for (const AlphaCoveragePipeline& entry : s_alphaCoveragePipelines)
+        {
+            if ((*entry.opaque == pipeline || *entry.alphaBlend == pipeline) && entry.variant)
+            {
+                if (!s_alphaCoverageDrawLogged)
+                {
+                    s_alphaCoverageDrawLogged = true;
+                    mu::log::Get("render")->info("SDL_gpu -- alpha-to-coverage: first cutout draw (texture {}) at {}x",
+                                                 textureId, s_sampleCount);
+                }
+                return {entry.variant, true};
+            }
+        }
+        return unchanged;
     }
 
     [[nodiscard]] SDL_GPUGraphicsPipeline* GetActiveQuadPipeline(Render::Topology::QuadSpace space) const
@@ -3823,14 +6127,15 @@ private:
     // single copy pass BEFORE beginning the render pass, so draw commands
     // always read current-frame vertex data (no 1-frame latency).
     // -----------------------------------------------------------------------
-    [[nodiscard]] static Uint32 UploadVertices(const void* pData, Uint32 byteSize)
+    [[nodiscard]] static Uint32 UploadVertices(const void* pData, Uint32 byteSize, Uint32 stride)
     {
-        if (!pData || byteSize == 0u)
+        if (!pData || byteSize == 0u || stride == 0u)
         {
             return ~0u;
         }
 
-        const Uint32 alignedOffset = (s_vtxOffset + 3u) & ~3u; // 4-byte alignment
+        // A whole number of strides in, so the replay can address the data by vertex index.
+        const Uint32 alignedOffset = (s_vtxOffset + stride - 1u) / stride * stride;
         if (byteSize > std::numeric_limits<Uint32>::max() - alignedOffset)
         {
             mu::log::Get("render")->error("SDL_gpu -- vertex staging size exceeds Uint32 range");
@@ -3838,39 +6143,56 @@ private:
         }
 
         const Uint32 requiredSize = alignedOffset + byteSize;
-        s_vtxScratch.resize(requiredSize);
+        // Kept at its largest size across frames (s_vtxOffset is the used part): resize() zero-fills
+        // what it adds, which the copy below would overwrite anyway.
+        if (s_vtxScratch.size() < requiredSize)
+            s_vtxScratch.resize(std::max<std::size_t>(requiredSize, s_vtxScratch.size() * 2u));
         std::memcpy(s_vtxScratch.data() + alignedOffset, pData, byteSize);
 
         s_vtxOffset = requiredSize;
         return alignedOffset;
     }
 
-    [[nodiscard]] static Uint32 RecordBonePalette(const SkinningParameters& parameters)
+    struct BonePaletteSlot
     {
-        const auto bones = parameters.boneMatrices;
-        if (bones.empty() || bones.size() % 12 != 0)
+        Uint32 rowOffset;
+        Uint32 bones;
+    };
+
+    // Uploads the bones the draw indexes (`bonesUsed`, 0 when unknown: all of them). Meshes of one
+    // object share the upload while it holds every bone they index.
+    [[nodiscard]] static std::optional<BonePaletteSlot> RecordBonePalette(const SkinningParameters& parameters,
+                                                                          Uint32 bonesUsed)
+    {
+        const auto palette = parameters.boneMatrices;
+        if (palette.empty() || palette.size() % 12 != 0)
         {
-            return ~0u;
+            return std::nullopt;
         }
-        if (bones.data() == s_lastBonePalette && bones.size() == s_lastBonePaletteSize &&
-            parameters.paletteVersion == s_lastBonePaletteVersion)
+        const Uint32 bones = Render::PaletteBonesToUpload(static_cast<Uint32>(palette.size() / 12), bonesUsed);
+        if (palette.data() == s_lastBonePalette && palette.size() == s_lastBonePaletteSize &&
+            parameters.paletteVersion == s_lastBonePaletteVersion && bones <= s_lastBonePaletteBones)
         {
-            return s_lastBonePaletteRowOffset;
+            return BonePaletteSlot{s_lastBonePaletteRowOffset, s_lastBonePaletteBones};
         }
 
+        const std::size_t floats = static_cast<std::size_t>(bones) * 12u;
         const std::size_t rowOffset = s_boneRowScratch.size() / 4;
         if (rowOffset > std::numeric_limits<Uint32>::max() ||
-            bones.size() > std::numeric_limits<Uint32>::max() / sizeof(float) - s_boneRowScratch.size())
+            floats > std::numeric_limits<Uint32>::max() / sizeof(float) - s_boneRowScratch.size())
         {
-            return ~0u;
+            return std::nullopt;
         }
 
-        s_boneRowScratch.insert(s_boneRowScratch.end(), bones.begin(), bones.end());
-        s_lastBonePalette = bones.data();
-        s_lastBonePaletteSize = bones.size();
+        s_boneRowScratch.insert(s_boneRowScratch.end(), palette.begin(), palette.begin() + floats);
+        FrameProfiler::Count(FrameProfiler::Counter::BonePaletteBytes,
+                             static_cast<std::uint32_t>(floats * sizeof(float)));
+        s_lastBonePalette = palette.data();
+        s_lastBonePaletteSize = palette.size();
         s_lastBonePaletteVersion = parameters.paletteVersion;
         s_lastBonePaletteRowOffset = static_cast<Uint32>(rowOffset);
-        return s_lastBonePaletteRowOffset;
+        s_lastBonePaletteBones = bones;
+        return BonePaletteSlot{s_lastBonePaletteRowOffset, bones};
     }
 
     // -----------------------------------------------------------------------
@@ -3878,7 +6200,6 @@ private:
     // -----------------------------------------------------------------------
 
     // -----------------------------------------------------------------------
-    // Story 4.3.2 (AC-2, AC-5): LoadShaders
     // Loads all 6 HLSL shader blobs from MU_SHADER_DIR and creates
     // SDL_GPUShader handles for pipeline creation.
     // driverName: SDL_GetGPUDeviceDriver(s_device) result.
@@ -3949,7 +6270,7 @@ private:
 
         // basic_textured.frag — fatal: required for textured 2D draws.
         // Samplers: t0 (texture), s0 (sampler); Uniform buffers: FogUniforms (pushed per-draw)
-        // Story 7.9.7: Changed from numStorageBuffers=1 to numUniformBuffers=1 so fog/alpha
+        // Changed from numStorageBuffers=1 to numUniformBuffers=1 so fog/alpha
         // data can be pushed per-draw-call via SDL_PushGPUFragmentUniformData (not a GPU buffer).
         s_fragShaderTex = createShader("basic_textured", "frag", SDL_GPU_SHADERSTAGE_FRAGMENT, 1, 0, 1, /*fatal=*/true);
         if (!s_fragShaderTex)
@@ -3962,7 +6283,7 @@ private:
         // basic_colored.vert — non-fatal (colored path degrades gracefully).
         // Inputs: pos(TEXCOORD0), color(TEXCOORD1)
         // Uniform buffers: b0, space1 (ScreenSize)
-        // NOTE (HIGH-4): Shader handles below are loaded as pipeline hooks for
+        // NOTE: Shader handles below are loaded as pipeline hooks for
         //   future IMuRenderer::RenderColoredGeometry() and RenderShadowVolume()
         //   methods. No dedicated pipeline sets exist yet — these shaders are not
         //   assigned to any pipeline in this story. Deferred to a follow-up story.
@@ -3985,13 +6306,65 @@ private:
             ReleaseShaders();
             return false;
         }
+        // glTF geometry: the same resources, plus the joints, weights and tangent of each vertex.
+        s_vertShaderSkinnedWeighted =
+            createShader("skinned_weighted", "vert", SDL_GPU_SHADERSTAGE_VERTEX, 0, 1, 1, /*fatal=*/true);
+        if (!s_vertShaderSkinnedWeighted)
+        {
+            ReleaseShaders();
+            return false;
+        }
+
+        // Body shadows: bone rows and terrain heights, then the skinning and shadow uniforms. Without it,
+        // shadows stay on the CPU.
+        s_vertShaderSkinnedShadow =
+            createShader("skinned_shadow", "vert", SDL_GPU_SHADERSTAGE_VERTEX, 0, 2, 2, /*fatal=*/false);
+        s_vertShaderSkinnedWeightedShadow =
+            createShader("skinned_weighted_shadow", "vert", SDL_GPU_SHADERSTAGE_VERTEX, 0, 2, 2, /*fatal=*/false);
+
+        // Enhanced lighting — non-fatal: without them Enhanced lighting is unavailable.
+        // Uniform buffers: FogUniforms (b0) per draw, SceneLighting (b1) per frame.
+        s_fragShaderTexFog =
+            createShader("basic_textured_fog", "frag", SDL_GPU_SHADERSTAGE_FRAGMENT, 1, 0, 2, /*fatal=*/false);
+        // skinned_lit.frag also reads the frame's point lights, DynamicLights (b2).
+        // skinned_lit.frag samples the texture, the normal map (k_FragmentSamplerSlotNormalMap) and the sun
+        // shadow map (k_FragmentSamplerSlotSunShadow).
+        s_fragShaderLit = createShader("skinned_lit", "frag", SDL_GPU_SHADERSTAGE_FRAGMENT, 3, 0, 3, /*fatal=*/false);
+        // The ground lit per pixel: the Transform (b0) of basic_textured.vert, and the uniforms of skinned_lit.frag.
+        s_vertShaderWorldLit = createShader("world_lit", "vert", SDL_GPU_SHADERSTAGE_VERTEX, 0, 0, 1, /*fatal=*/false);
+        // world_lit.frag also samples the sun shadow map (s1) and the ground shadow mask (s2).
+        s_fragShaderWorldLit =
+            createShader("world_lit", "frag", SDL_GPU_SHADERSTAGE_FRAGMENT, 4, 0, 3, /*fatal=*/false);
+        s_fragShaderShadowMask =
+            createShader("shadow_mask", "frag", SDL_GPU_SHADERSTAGE_FRAGMENT, 0, 0, 0, /*fatal=*/false);
+        // Sun shadows: the draw's texture (t0) for its alpha test, FogUniforms (b0).
+        s_fragShaderSunDepth =
+            createShader("sun_depth", "frag", SDL_GPU_SHADERSTAGE_FRAGMENT, 1, 0, 1, /*fatal=*/false);
+
+        // Post-processing — non-fatal: without them post-processing is unavailable.
+        // Bloom passes: source texture (t0) and BloomUniforms (b0); composite: scene, bloom and
+        // grading textures (t0-t2) and CompositeUniforms (b0).
+        s_vertShaderPostFullscreen =
+            createShader("post_fullscreen", "vert", SDL_GPU_SHADERSTAGE_VERTEX, 0, 0, 0, /*fatal=*/false);
+        s_fragShaderBloomDown =
+            createShader("post_bloom_down", "frag", SDL_GPU_SHADERSTAGE_FRAGMENT, 1, 0, 1, /*fatal=*/false);
+        s_fragShaderBloomUp =
+            createShader("post_bloom_up", "frag", SDL_GPU_SHADERSTAGE_FRAGMENT, 1, 0, 1, /*fatal=*/false);
+        // The composite also reads the ambient occlusion and the bloom source (t3, t4).
+        s_fragShaderComposite =
+            createShader("post_composite", "frag", SDL_GPU_SHADERSTAGE_FRAGMENT, 5, 0, 1, /*fatal=*/false);
+        // Ambient occlusion: the depth (t0), and for the blur the occlusion (t1); AmbientOcclusion (b0).
+        s_fragShaderAmbientOcclusion =
+            createShader("post_ao", "frag", SDL_GPU_SHADERSTAGE_FRAGMENT, 1, 0, 1, /*fatal=*/false);
+        s_fragShaderAmbientOcclusionBlur =
+            createShader("post_ao_blur", "frag", SDL_GPU_SHADERSTAGE_FRAGMENT, 2, 0, 1, /*fatal=*/false);
 
         mu::log::Get("render")->info("SDL_gpu -- shaders loaded for driver: {}", driverName ? driverName : "unknown");
         return true;
     }
 
     // -----------------------------------------------------------------------
-    // Story 4.3.2: ReleaseShaders — release all 6 shader handles.
+    // ReleaseShaders — release all 7 shader handles.
     // Called after CreatePipelines() and during Shutdown() as a safety net.
     // -----------------------------------------------------------------------
     static void ReleaseShaders()
@@ -4026,10 +6399,45 @@ private:
             SDL_ReleaseGPUShader(s_device, s_vertShaderSkinned);
             s_vertShaderSkinned = nullptr;
         }
+        if (s_vertShaderSkinnedWeighted)
+        {
+            SDL_ReleaseGPUShader(s_device, s_vertShaderSkinnedWeighted);
+            s_vertShaderSkinnedWeighted = nullptr;
+        }
+        if (s_vertShaderSkinnedShadow)
+        {
+            SDL_ReleaseGPUShader(s_device, s_vertShaderSkinnedShadow);
+            s_vertShaderSkinnedShadow = nullptr;
+        }
+        if (s_vertShaderSkinnedWeightedShadow)
+        {
+            SDL_ReleaseGPUShader(s_device, s_vertShaderSkinnedWeightedShadow);
+            s_vertShaderSkinnedWeightedShadow = nullptr;
+        }
+        if (s_fragShaderTexFog)
+        {
+            SDL_ReleaseGPUShader(s_device, s_fragShaderTexFog);
+            s_fragShaderTexFog = nullptr;
+        }
+        if (s_fragShaderLit)
+        {
+            SDL_ReleaseGPUShader(s_device, s_fragShaderLit);
+            s_fragShaderLit = nullptr;
+        }
+        for (SDL_GPUShader** shader :
+             {&s_vertShaderWorldLit, &s_fragShaderWorldLit, &s_fragShaderShadowMask, &s_vertShaderPostFullscreen,
+              &s_fragShaderBloomDown, &s_fragShaderBloomUp, &s_fragShaderComposite, &s_fragShaderAmbientOcclusion,
+              &s_fragShaderAmbientOcclusionBlur, &s_fragShaderSunDepth})
+        {
+            if (*shader)
+            {
+                SDL_ReleaseGPUShader(s_device, *shader);
+                *shader = nullptr;
+            }
+        }
     }
 
     // -----------------------------------------------------------------------
-    // Story 4.3.2 (AC-8): BuildBlendPipeline
     // Creates one textured blend/depth/cull variant and captures SDL's immediate
     // error before another pipeline build can overwrite it.
     // -----------------------------------------------------------------------
@@ -4037,7 +6445,21 @@ private:
     {
         TwoDimensional,
         ThreeDimensional,
+        ThreeDimensionalWorldLit, // the 3D layout, with world_lit.vert
         Skinned,
+        SkinnedWeighted,       // SkinnedWeightedVertex3D, with skinned_weighted.vert
+        SkinnedShadow,         // the skinned layout, with skinned_shadow.vert
+        SkinnedWeightedShadow, // the weighted layout, with skinned_weighted_shadow.vert
+    };
+
+    enum class FragmentShader
+    {
+        Textured,
+        TexturedEnhancedFog,
+        SkinnedLit,
+        WorldLit,
+        ShadowMask,
+        SunDepth,
     };
 
     struct PipelineBuildDescription
@@ -4049,7 +6471,135 @@ private:
         bool depthWriteEnabled;
         VertexLayout vertexLayout;
         bool cullFaceEnabled;
+        FragmentShader fragmentShader = FragmentShader::Textured;
+        bool alphaToCoverage = false;
+        // Into the ground shadow mask: one sample, no depth, instead of the frame's targets.
+        bool groundShadowMaskTarget = false;
+        // Into the sun shadow map: depth only, one sample, biased against self-shadowing.
+        bool sunShadowTarget = false;
+        // Into the scene's single-sample depth: depth only, one sample, unbiased.
+        bool sceneDepthTarget = false;
     };
+
+    // The world sets built together, and what a failed pipeline means for them.
+    enum class WorldSetFamily
+    {
+        Classic,          // required: a failed pipeline fails the renderer
+        EnhancedLighting, // optional: Enhanced lighting is available only when every set of it is complete
+    };
+
+    // One world set: the four depth/cull states of 3D or skinned world geometry with one fragment
+    // shader. Its pipelines are named "<name>-culled", "<name>-no-cull", "<name>-depth-off" and
+    // "<name>-depth-read-only", its alpha-to-coverage variants "<name>-culled-alpha-coverage" and
+    // "<name>-no-cull-alpha-coverage".
+    struct WorldPipelineSetSpec
+    {
+        WorldPipelines* set;
+        const char* name;
+        VertexLayout vertexLayout;
+        FragmentShader fragmentShader;
+        WorldSetFamily family;
+    };
+
+    // Every world set. Building, releasing, the replay slots, the alpha-to-coverage variants and the
+    // bloom sources all walk this list, so a new world set is one row here.
+    [[nodiscard]] static std::span<const WorldPipelineSetSpec> WorldPipelineSets()
+    {
+        static constexpr WorldPipelineSetSpec sets[] = {
+            {&s_pipelines3D, "3d", VertexLayout::ThreeDimensional, FragmentShader::Textured, WorldSetFamily::Classic},
+            {&s_pipelinesSkinned, "skinned", VertexLayout::Skinned, FragmentShader::Textured, WorldSetFamily::Classic},
+            {&s_pipelines3DEnhancedFog, "3d-enhanced-fog", VertexLayout::ThreeDimensional,
+             FragmentShader::TexturedEnhancedFog, WorldSetFamily::EnhancedLighting},
+            {&s_pipelinesSkinnedEnhancedFog, "skinned-enhanced-fog", VertexLayout::Skinned,
+             FragmentShader::TexturedEnhancedFog, WorldSetFamily::EnhancedLighting},
+            {&s_pipelinesSkinnedLit, "skinned-lit", VertexLayout::Skinned, FragmentShader::SkinnedLit,
+             WorldSetFamily::EnhancedLighting},
+            {&s_pipelinesSkinnedWeighted, "skinned-weighted", VertexLayout::SkinnedWeighted, FragmentShader::Textured,
+             WorldSetFamily::Classic},
+            {&s_pipelinesSkinnedWeightedEnhancedFog, "skinned-weighted-enhanced-fog", VertexLayout::SkinnedWeighted,
+             FragmentShader::TexturedEnhancedFog, WorldSetFamily::EnhancedLighting},
+            {&s_pipelinesSkinnedWeightedLit, "skinned-weighted-lit", VertexLayout::SkinnedWeighted,
+             FragmentShader::SkinnedLit, WorldSetFamily::EnhancedLighting},
+            {&s_pipelinesWorldLit, "world-lit", VertexLayout::ThreeDimensionalWorldLit, FragmentShader::WorldLit,
+             WorldSetFamily::EnhancedLighting},
+        };
+        return sets;
+    }
+
+    // The depth/cull states of every world set, with their name suffix and pipeline state.
+    struct WorldStateSpec
+    {
+        WorldPipelines::States WorldPipelines::* states;
+        const char* suffix;
+        bool depthTestEnabled;
+        bool depthWriteEnabled;
+        bool cullFaceEnabled;
+    };
+    static constexpr WorldStateSpec kWorldStates[] = {
+        {&WorldPipelines::culled, "culled", true, true, true},
+        {&WorldPipelines::noCull, "no-cull", true, true, false},
+        {&WorldPipelines::depthOff, "depth-off", false, false, false},
+        {&WorldPipelines::depthReadOnly, "depth-read-only", true, false, false},
+    };
+
+    [[nodiscard]] static bool IsWorldFamilyComplete(WorldSetFamily family)
+    {
+        return std::ranges::all_of(WorldPipelineSets(), [family](const WorldPipelineSetSpec& spec)
+                                   { return spec.family != family || spec.set->IsComplete(); });
+    }
+
+    static void ReleaseWorldFamily(WorldSetFamily family)
+    {
+        const auto release = [](SDL_GPUGraphicsPipeline* pipeline)
+        { SDL_ReleaseGPUGraphicsPipeline(s_device, pipeline); };
+        for (const WorldPipelineSetSpec& spec : WorldPipelineSets())
+        {
+            if (spec.family == family)
+            {
+                spec.set->Release(release);
+            }
+        }
+    }
+
+    [[nodiscard]] static SDL_GPUShader* GetFragmentShader(FragmentShader shader)
+    {
+        switch (shader)
+        {
+        case FragmentShader::TexturedEnhancedFog:
+            return s_fragShaderTexFog;
+        case FragmentShader::SkinnedLit:
+            return s_fragShaderLit;
+        case FragmentShader::WorldLit:
+            return s_fragShaderWorldLit;
+        case FragmentShader::ShadowMask:
+            return s_fragShaderShadowMask;
+        case FragmentShader::SunDepth:
+            return s_fragShaderSunDepth;
+        case FragmentShader::Textured:
+            break;
+        }
+        return s_fragShaderTex;
+    }
+
+    [[nodiscard]] static const char* GetFragmentShaderName(FragmentShader shader)
+    {
+        switch (shader)
+        {
+        case FragmentShader::TexturedEnhancedFog:
+            return "basic_textured_fog.frag";
+        case FragmentShader::SkinnedLit:
+            return "skinned_lit.frag";
+        case FragmentShader::WorldLit:
+            return "world_lit.frag";
+        case FragmentShader::ShadowMask:
+            return "shadow_mask.frag";
+        case FragmentShader::SunDepth:
+            return "sun_depth.frag";
+        case FragmentShader::Textured:
+            break;
+        }
+        return "basic_textured.frag";
+    }
 
     struct PipelineBuildResult
     {
@@ -4057,6 +6607,22 @@ private:
         PipelineBuildDescription description;
         std::string error;
     };
+
+    // Every variant compares depth with LESS_OR_EQUAL, as the classic MU OpenGL client set
+    // glDepthFunc(GL_LEQUAL) at the start of each 3D scene (SetDepthFunc, which this backend
+    // doesn't propagate). Depth-read-only and 2D pipelines always did. Depth-writing ones need it
+    // for models drawn in several depth-writing passes over the same mesh, like the Bill of
+    // Balrog's textured body over its chrome body: with LESS the later pass lost every
+    // equal-depth fragment, so only the first pass showed.
+    [[nodiscard]] static SDL_GPUDepthStencilState MakeDepthStencilState(const PipelineBuildDescription& description)
+    {
+        SDL_GPUDepthStencilState depthState{};
+        depthState.enable_depth_test = description.depthTestEnabled;
+        depthState.enable_depth_write = description.depthWriteEnabled;
+        depthState.enable_stencil_test = false;
+        depthState.compare_op = SDL_GPU_COMPAREOP_LESS_OR_EQUAL;
+        return depthState;
+    }
 
     [[nodiscard]] static PipelineBuildResult BuildBlendPipeline(SDL_GPUColorTargetBlendState blendState,
                                                                 const PipelineBuildDescription& description)
@@ -4067,12 +6633,16 @@ private:
         const SDL_GPUTextureFormat swapchainFmt = SDL_GetGPUSwapchainTextureFormat(s_device, s_window);
 
         SDL_GPUColorTargetDescription colorTargetDesc{};
-        colorTargetDesc.format = swapchainFmt;
+        colorTargetDesc.format = description.groundShadowMaskTarget ? SDL_GPU_TEXTUREFORMAT_R8G8_UNORM
+                                 : s_pipelineFormatOverride != SDL_GPU_TEXTUREFORMAT_INVALID ? s_pipelineFormatOverride
+                                                                                             : swapchainFmt;
         colorTargetDesc.blend_state = blendState;
 
-        SDL_GPUVertexAttribute vertexAttribs[6];
+        SDL_GPUVertexAttribute vertexAttribs[9];
         Uint32 numAttribs = 0;
-        SDL_GPUVertexBufferDescription vtxBufDesc{};
+        SDL_GPUVertexBufferDescription vtxBufDescs[2]{};
+        SDL_GPUVertexBufferDescription& vtxBufDesc = vtxBufDescs[0];
+        Uint32 numVtxBufs = 1;
         vtxBufDesc.slot = 0;
         vtxBufDesc.input_rate = SDL_GPU_VERTEXINPUTRATE_VERTEX;
         vtxBufDesc.instance_step_rate = 0;
@@ -4101,7 +6671,8 @@ private:
             vtxBufDesc.pitch = sizeof(Vertex2D);
             numAttribs = 3;
         }
-        else if (description.vertexLayout == VertexLayout::ThreeDimensional)
+        else if (description.vertexLayout == VertexLayout::ThreeDimensional ||
+                 description.vertexLayout == VertexLayout::ThreeDimensionalWorldLit)
         {
             // Vertex3D mapped to the 2D shader's input locations:
             //   location 0 (TEXCOORD0 → pos):   float3 pos  — shader reads float2 (x,y), z dropped
@@ -4128,6 +6699,16 @@ private:
 
             vtxBufDesc.pitch = sizeof(Vertex3D);
             numAttribs = 3;
+            if (description.vertexLayout == VertexLayout::ThreeDimensionalWorldLit)
+            {
+                // The lit ground's normal carries the darkening its vertex colour cannot (world_lit.vert).
+                vertexAttribs[3] = {};
+                vertexAttribs[3].location = 3;
+                vertexAttribs[3].buffer_slot = 0;
+                vertexAttribs[3].format = SDL_GPU_VERTEXELEMENTFORMAT_FLOAT3;
+                vertexAttribs[3].offset = static_cast<Uint32>(offsetof(Vertex3D, nx));
+                numAttribs = 4;
+            }
         }
         else
         {
@@ -4149,11 +6730,17 @@ private:
             vertexAttribs[2].format = SDL_GPU_VERTEXELEMENTFORMAT_FLOAT2;
             vertexAttribs[2].offset = static_cast<Uint32>(offsetof(SkinnedVertex3D, u));
 
+            // One colour per draw, from slot 1: the draw is a single instance that starts at it.
             vertexAttribs[3] = {};
             vertexAttribs[3].location = 3;
-            vertexAttribs[3].buffer_slot = 0;
+            vertexAttribs[3].buffer_slot = 1;
             vertexAttribs[3].format = SDL_GPU_VERTEXELEMENTFORMAT_UBYTE4_NORM;
-            vertexAttribs[3].offset = static_cast<Uint32>(offsetof(SkinnedVertex3D, color));
+            vertexAttribs[3].offset = 0;
+            vtxBufDescs[1].slot = 1;
+            vtxBufDescs[1].pitch = sizeof(std::uint32_t);
+            vtxBufDescs[1].input_rate = SDL_GPU_VERTEXINPUTRATE_INSTANCE;
+            vtxBufDescs[1].instance_step_rate = 0;
+            numVtxBufs = 2;
 
             vertexAttribs[4] = {};
             vertexAttribs[4].location = 4;
@@ -4169,57 +6756,83 @@ private:
 
             vtxBufDesc.pitch = sizeof(SkinnedVertex3D);
             numAttribs = 6;
+
+            // The weighted vertex starts with the same fields.
+            if (description.vertexLayout == VertexLayout::SkinnedWeighted ||
+                description.vertexLayout == VertexLayout::SkinnedWeightedShadow)
+            {
+                vertexAttribs[6] = {};
+                vertexAttribs[6].location = 6;
+                vertexAttribs[6].buffer_slot = 0;
+                vertexAttribs[6].format = SDL_GPU_VERTEXELEMENTFORMAT_UBYTE4;
+                vertexAttribs[6].offset = static_cast<Uint32>(offsetof(SkinnedWeightedVertex3D, joints));
+
+                vertexAttribs[7] = {};
+                vertexAttribs[7].location = 7;
+                vertexAttribs[7].buffer_slot = 0;
+                vertexAttribs[7].format = SDL_GPU_VERTEXELEMENTFORMAT_UBYTE4_NORM;
+                vertexAttribs[7].offset = static_cast<Uint32>(offsetof(SkinnedWeightedVertex3D, weights));
+
+                vertexAttribs[8] = {};
+                vertexAttribs[8].location = 8;
+                vertexAttribs[8].buffer_slot = 0;
+                vertexAttribs[8].format = SDL_GPU_VERTEXELEMENTFORMAT_SHORT4_NORM;
+                vertexAttribs[8].offset = static_cast<Uint32>(offsetof(SkinnedWeightedVertex3D, tangent));
+
+                vtxBufDesc.pitch = sizeof(SkinnedWeightedVertex3D);
+                numAttribs = 9;
+            }
         }
 
         SDL_GPUVertexInputState vtxInputState{};
-        vtxInputState.vertex_buffer_descriptions = &vtxBufDesc;
-        vtxInputState.num_vertex_buffers = 1;
+        vtxInputState.vertex_buffer_descriptions = vtxBufDescs;
+        vtxInputState.num_vertex_buffers = numVtxBufs;
         vtxInputState.vertex_attributes = vertexAttribs;
         vtxInputState.num_vertex_attributes = numAttribs;
 
-        SDL_GPUDepthStencilState depthState{};
-        depthState.enable_depth_test = description.depthTestEnabled;
-        depthState.enable_depth_write = description.depthWriteEnabled;
-        depthState.enable_stencil_test = false;
-        // Depth compare selection:
-        //   LESS for opaque 3D (depth write ON): strict layering, normal opaque z-sort.
-        //   LESS_OR_EQUAL for depth-read-only 3D (write OFF) and all 2D: these are additive/
-        //   glow overlays drawn on top of geometry at the same depth (forge-level sprites,
-        //   weapon chrome/bright mesh passes, terrain texture layering). LESS would reject
-        //   every equal-depth fragment before the blend stage — the classic MU OpenGL client
-        //   ran these passes with GL_LEQUAL effectively by calling SetDepthFunc(GL_LEQUAL)
-        //   before them, which the SDL3 backend doesn't propagate. Using LESS_OR_EQUAL on
-        //   read-only variants recovers the intended behavior uniformly.
-        const bool usesWorldDepth = description.vertexLayout != VertexLayout::TwoDimensional;
-        const bool strictLayering = usesWorldDepth && description.depthWriteEnabled;
-        depthState.compare_op = strictLayering ? SDL_GPU_COMPAREOP_LESS : SDL_GPU_COMPAREOP_LESS_OR_EQUAL;
-
         SDL_GPUGraphicsPipelineTargetInfo targetInfo{};
-        targetInfo.color_target_descriptions = &colorTargetDesc;
-        targetInfo.num_color_targets = 1;
-        // Story 7.9.7 (AC-3): Enable depth-stencil target so pipelines match
+        const bool depthOnly = description.sunShadowTarget || description.sceneDepthTarget;
+        targetInfo.color_target_descriptions = depthOnly ? nullptr : &colorTargetDesc;
+        targetInfo.num_color_targets = depthOnly ? 0u : 1u;
+        // Enable depth-stencil target so pipelines match
         // the render pass that now includes a depth buffer.
-        targetInfo.has_depth_stencil_target = true;
-        targetInfo.depth_stencil_format = k_DepthFormat;
+        targetInfo.has_depth_stencil_target = !description.groundShadowMaskTarget;
+        targetInfo.depth_stencil_format = mu::SdlGpuDepthFormat;
 
-        // Back-face culling: enable for opaque 3D geometry (depth write ON).
-        // Disable for transparent/glow passes (depth write OFF) and all 2D.
+        // Back-face culling as the descriptor asks: on for opaque 3D geometry (depth write ON),
+        // off for transparent/glow passes (depth write OFF) and in every 2D descriptor.
         SDL_GPURasterizerState rasterState{};
         rasterState.fill_mode = SDL_GPU_FILLMODE_FILL;
-        rasterState.cull_mode =
-            (usesWorldDepth && description.cullFaceEnabled) ? SDL_GPU_CULLMODE_BACK : SDL_GPU_CULLMODE_NONE;
+        rasterState.cull_mode = description.cullFaceEnabled ? SDL_GPU_CULLMODE_BACK : SDL_GPU_CULLMODE_NONE;
         rasterState.front_face = SDL_GPU_FRONTFACE_COUNTER_CLOCKWISE;
+        if (description.sunShadowTarget)
+        {
+            rasterState.enable_depth_bias = true;
+            rasterState.depth_bias_constant_factor = 2.0f;
+            rasterState.depth_bias_slope_factor = 2.0f;
+        }
 
         SDL_GPUGraphicsPipelineCreateInfo pipelineInfo{};
         pipelineInfo.vertex_shader =
-            description.vertexLayout == VertexLayout::Skinned ? s_vertShaderSkinned : s_vertShader2D;
-        pipelineInfo.fragment_shader = s_fragShaderTex;
+            description.vertexLayout == VertexLayout::Skinned                    ? s_vertShaderSkinned
+            : description.vertexLayout == VertexLayout::SkinnedWeighted          ? s_vertShaderSkinnedWeighted
+            : description.vertexLayout == VertexLayout::SkinnedShadow            ? s_vertShaderSkinnedShadow
+            : description.vertexLayout == VertexLayout::SkinnedWeightedShadow    ? s_vertShaderSkinnedWeightedShadow
+            : description.vertexLayout == VertexLayout::ThreeDimensionalWorldLit ? s_vertShaderWorldLit
+                                                                                 : s_vertShader2D;
+        pipelineInfo.fragment_shader = GetFragmentShader(description.fragmentShader);
         pipelineInfo.vertex_input_state = vtxInputState;
         pipelineInfo.primitive_type = SDL_GPU_PRIMITIVETYPE_TRIANGLELIST;
         pipelineInfo.rasterizer_state = rasterState;
-        pipelineInfo.depth_stencil_state = depthState;
+        pipelineInfo.depth_stencil_state = MakeDepthStencilState(description);
         pipelineInfo.target_info = targetInfo;
         pipelineInfo.props = 0;
+
+        pipelineInfo.multisample_state.sample_count =
+            description.groundShadowMaskTarget || depthOnly
+                ? SDL_GPU_SAMPLECOUNT_1
+                : mu::GetSdlGpuSampleCount(s_sampleCount).value_or(SDL_GPU_SAMPLECOUNT_1);
+        pipelineInfo.multisample_state.enable_alpha_to_coverage = description.alphaToCoverage;
 
         result.pipeline = SDL_CreateGPUGraphicsPipeline(s_device, &pipelineInfo);
         if (!result.pipeline)
@@ -4236,14 +6849,20 @@ private:
     static void LogPipelineFailure(const char* driverName, const PipelineBuildResult& result, bool required)
     {
         const PipelineBuildDescription& description = result.description;
-        const char* layoutName = description.vertexLayout == VertexLayout::TwoDimensional     ? "2D"
-                                 : description.vertexLayout == VertexLayout::ThreeDimensional ? "3D"
-                                                                                              : "skinned";
+        const char* layoutName = description.vertexLayout == VertexLayout::TwoDimensional ? "2D"
+                                 : description.vertexLayout == VertexLayout::ThreeDimensional ||
+                                         description.vertexLayout == VertexLayout::ThreeDimensionalWorldLit
+                                     ? "3D"
+                                     : "skinned";
         const char* vertexShaderName =
-            description.vertexLayout == VertexLayout::Skinned ? "skinned_textured.vert" : "basic_textured.vert";
-        constexpr const char* fragmentShaderName = "basic_textured.frag";
-        const char* cullMode =
-            description.vertexLayout != VertexLayout::TwoDimensional && description.cullFaceEnabled ? "back" : "none";
+            description.vertexLayout == VertexLayout::Skinned                    ? "skinned_textured.vert"
+            : description.vertexLayout == VertexLayout::SkinnedWeighted          ? "skinned_weighted.vert"
+            : description.vertexLayout == VertexLayout::SkinnedShadow            ? "skinned_shadow.vert"
+            : description.vertexLayout == VertexLayout::SkinnedWeightedShadow    ? "skinned_weighted_shadow.vert"
+            : description.vertexLayout == VertexLayout::ThreeDimensionalWorldLit ? "world_lit.vert"
+                                                                                 : "basic_textured.vert";
+        const char* fragmentShaderName = GetFragmentShaderName(description.fragmentShader);
+        const char* cullMode = description.cullFaceEnabled ? "back" : "none";
         if (required)
         {
             mu::log::Get("render")->error(
@@ -4264,13 +6883,12 @@ private:
     }
 
     // -----------------------------------------------------------------------
-    // Story 4.3.2 (AC-8): CreatePipelines
     // Builds every blend variant. The selected 3D, 2D depth-off, and skinned sets
     // are required; unused 2D depth-on remains optional.
     // -----------------------------------------------------------------------
     [[nodiscard]] static bool CreatePipelines()
     {
-        // Blend mode table from architecture-rendering.md and story dev notes.
+        // Blend mode table matching this renderer's blend pipeline.
         // Indices match BlendMode enum cast to int; index 8 = disabled.
         //
         // SDL_GPUBlendFactor values (INVALID=0, ZERO=1, ONE=2, SRC_COLOR=3,
@@ -4280,17 +6898,24 @@ private:
         // Modes: Alpha=0, Additive=1, Subtract=2, InverseColor=3,
         //        Mixed=4, LightMap=5, Glow=6, Luminance=7, Disabled=8
 
+        // Alpha is coverage, which only an offscreen capture keeps (a render target RmlUi
+        // composites premultiplied): the alpha-style modes accumulate it over, the additive and
+        // multiplying ones leave it, so their colour lands on whatever is behind the image as it
+        // would have on screen.
         struct BlendEntry
         {
             const char* name;
             SDL_GPUBlendFactor src;
             SDL_GPUBlendFactor dst;
             bool enableBlend;
+            SDL_GPUBlendFactor srcAlpha = SDL_GPU_BLENDFACTOR_ZERO;
+            SDL_GPUBlendFactor dstAlpha = SDL_GPU_BLENDFACTOR_ONE;
         };
 
         const BlendEntry table[k_PipelineCount] = {
             // Alpha
-            {"alpha", SDL_GPU_BLENDFACTOR_SRC_ALPHA, SDL_GPU_BLENDFACTOR_ONE_MINUS_SRC_ALPHA, true},
+            {"alpha", SDL_GPU_BLENDFACTOR_SRC_ALPHA, SDL_GPU_BLENDFACTOR_ONE_MINUS_SRC_ALPHA, true,
+             SDL_GPU_BLENDFACTOR_ONE, SDL_GPU_BLENDFACTOR_ONE_MINUS_SRC_ALPHA},
             // Additive
             {"additive", SDL_GPU_BLENDFACTOR_SRC_ALPHA, SDL_GPU_BLENDFACTOR_ONE, true},
             // Subtract
@@ -4298,7 +6923,8 @@ private:
             // InverseColor
             {"inverse-color", SDL_GPU_BLENDFACTOR_ONE_MINUS_DST_COLOR, SDL_GPU_BLENDFACTOR_ZERO, true},
             // Mixed
-            {"mixed", SDL_GPU_BLENDFACTOR_ONE, SDL_GPU_BLENDFACTOR_ONE_MINUS_SRC_ALPHA, true},
+            {"mixed", SDL_GPU_BLENDFACTOR_ONE, SDL_GPU_BLENDFACTOR_ONE_MINUS_SRC_ALPHA, true,
+             SDL_GPU_BLENDFACTOR_ONE, SDL_GPU_BLENDFACTOR_ONE_MINUS_SRC_ALPHA},
             // LightMap
             {"light-map", SDL_GPU_BLENDFACTOR_ZERO, SDL_GPU_BLENDFACTOR_SRC_COLOR, true},
             // Glow
@@ -4306,7 +6932,8 @@ private:
             // Luminance
             {"luminance", SDL_GPU_BLENDFACTOR_ONE_MINUS_SRC_COLOR, SDL_GPU_BLENDFACTOR_ONE, true},
             // Disabled (index 8, no blend)
-            {"disabled", SDL_GPU_BLENDFACTOR_ONE, SDL_GPU_BLENDFACTOR_ZERO, false},
+            {"disabled", SDL_GPU_BLENDFACTOR_ONE, SDL_GPU_BLENDFACTOR_ZERO, false, SDL_GPU_BLENDFACTOR_ONE,
+             SDL_GPU_BLENDFACTOR_ZERO},
         };
 
         const char* deviceDriver = SDL_GetGPUDeviceDriver(s_device);
@@ -4345,14 +6972,47 @@ private:
             }
         };
 
+        // A Classic set is required; an optional family is skipped without its fragment shader.
+        const auto buildWorldSet = [&](const WorldPipelineSetSpec& spec, SDL_GPUColorTargetBlendState blendState,
+                                       int blendIndex, const char* blendName)
+        {
+            const bool required = spec.family == WorldSetFamily::Classic;
+            if (!required && !GetFragmentShader(spec.fragmentShader))
+            {
+                return;
+            }
+            const auto index = static_cast<std::size_t>(blendIndex);
+            for (const WorldStateSpec& state : kWorldStates)
+            {
+                const std::string setName = std::string(spec.name) + "-" + state.suffix;
+                const PipelineBuildDescription description{setName.c_str(),
+                                                           blendName,
+                                                           blendIndex,
+                                                           state.depthTestEnabled,
+                                                           state.depthWriteEnabled,
+                                                           spec.vertexLayout,
+                                                           state.cullFaceEnabled,
+                                                           spec.fragmentShader};
+                SDL_GPUGraphicsPipeline*& destination = (spec.set->*state.states)[index];
+                if (required)
+                {
+                    buildRequiredPipeline(destination, blendState, description);
+                }
+                else
+                {
+                    buildOptionalPipeline(destination, blendState, description);
+                }
+            }
+        };
+
         for (int i = 0; i < k_PipelineCount; ++i)
         {
             SDL_GPUColorTargetBlendState blendState{};
             blendState.src_color_blendfactor = table[i].src;
             blendState.dst_color_blendfactor = table[i].dst;
             blendState.color_blend_op = SDL_GPU_BLENDOP_ADD;
-            blendState.src_alpha_blendfactor = table[i].src;
-            blendState.dst_alpha_blendfactor = table[i].dst;
+            blendState.src_alpha_blendfactor = table[i].srcAlpha;
+            blendState.dst_alpha_blendfactor = table[i].dstAlpha;
             blendState.alpha_blend_op = SDL_GPU_BLENDOP_ADD;
             blendState.enable_blend = table[i].enableBlend;
 
@@ -4361,26 +7021,41 @@ private:
             buildRequiredPipeline(
                 s_pipelines2DDepthOff[i], blendState,
                 {"2d-depth-off", table[i].name, i, false, false, VertexLayout::TwoDimensional, false});
-            buildRequiredPipeline(s_pipelines3D[i], blendState,
-                                  {"3d-culled", table[i].name, i, true, true, VertexLayout::ThreeDimensional, true});
-            buildRequiredPipeline(s_pipelines3DNoCull[i], blendState,
-                                  {"3d-no-cull", table[i].name, i, true, true, VertexLayout::ThreeDimensional, false});
-            buildRequiredPipeline(
-                s_pipelines3DDepthOff[i], blendState,
-                {"3d-depth-off", table[i].name, i, false, false, VertexLayout::ThreeDimensional, false});
-            buildRequiredPipeline(
-                s_pipelines3DDepthReadOnly[i], blendState,
-                {"3d-depth-read-only", table[i].name, i, true, false, VertexLayout::ThreeDimensional, false});
+            for (const WorldPipelineSetSpec& spec : WorldPipelineSets())
+            {
+                buildWorldSet(spec, blendState, i, table[i].name);
+            }
 
-            buildRequiredPipeline(s_pipelinesSkinned[i], blendState,
-                                  {"skinned-culled", table[i].name, i, true, true, VertexLayout::Skinned, true});
-            buildRequiredPipeline(s_pipelinesSkinnedNoCull[i], blendState,
-                                  {"skinned-no-cull", table[i].name, i, true, true, VertexLayout::Skinned, false});
-            buildRequiredPipeline(s_pipelinesSkinnedDepthOff[i], blendState,
-                                  {"skinned-depth-off", table[i].name, i, false, false, VertexLayout::Skinned, false});
-            buildRequiredPipeline(
-                s_pipelinesSkinnedDepthReadOnly[i], blendState,
-                {"skinned-depth-read-only", table[i].name, i, true, false, VertexLayout::Skinned, false});
+            if (s_vertShaderSkinnedShadow)
+            {
+                buildOptionalPipeline(
+                    s_pipelinesSkinnedShadow[i], blendState,
+                    {"skinned-shadow", table[i].name, i, true, false, VertexLayout::SkinnedShadow, false});
+                buildOptionalPipeline(
+                    s_pipelinesSkinnedShadowDepthOff[i], blendState,
+                    {"skinned-shadow-depth-off", table[i].name, i, false, false, VertexLayout::SkinnedShadow, false});
+            }
+            if (s_vertShaderSkinnedWeightedShadow)
+            {
+                buildOptionalPipeline(s_pipelinesSkinnedWeightedShadow[i], blendState,
+                                      {"skinned-weighted-shadow", table[i].name, i, true, false,
+                                       VertexLayout::SkinnedWeightedShadow, false});
+                buildOptionalPipeline(s_pipelinesSkinnedWeightedShadowDepthOff[i], blendState,
+                                      {"skinned-weighted-shadow-depth-off", table[i].name, i, false, false,
+                                       VertexLayout::SkinnedWeightedShadow, false});
+            }
+        }
+
+        s_enhancedLightingAvailable = IsWorldFamilyComplete(WorldSetFamily::EnhancedLighting);
+        if (s_enhancedLightingAvailable)
+        {
+            mu::log::Get("render")->info("SDL_gpu -- Enhanced lighting pipelines ready for driver {}", driverName);
+        }
+        else
+        {
+            mu::log::Get("render")->warn("SDL_gpu -- Enhanced lighting unavailable for driver {}; Classic only",
+                                         driverName);
+            DestroyEnhancedPipelines();
         }
 
         if (requiredFailureCount != 0)
@@ -4393,96 +7068,65 @@ private:
         return true;
     }
 
+    static void DestroyEnhancedPipelines()
+    {
+        ReleaseWorldFamily(WorldSetFamily::EnhancedLighting);
+        s_enhancedLightingAvailable = false;
+    }
+
     static void DestroyPipelines()
     {
-        for (int i = 0; i < k_PipelineCount; ++i)
+        DestroyHdrScenePipelines();
+        DestroySingleSamplePipelines();
+        s_pipelinesMultisampled = false;
+        DestroyEnhancedPipelines();
+        ReleaseWorldFamily(WorldSetFamily::Classic);
+        for (SDL_GPUGraphicsPipeline** set :
+             {s_pipelines2D, s_pipelines2DDepthOff, s_pipelinesSkinnedShadow, s_pipelinesSkinnedShadowDepthOff,
+              s_pipelinesSkinnedWeightedShadow, s_pipelinesSkinnedWeightedShadowDepthOff})
         {
-            if (s_pipelines2D[i])
+            for (int i = 0; i < k_PipelineCount; ++i)
             {
-                SDL_ReleaseGPUGraphicsPipeline(s_device, s_pipelines2D[i]);
-                s_pipelines2D[i] = nullptr;
-            }
-            if (s_pipelines2DDepthOff[i])
-            {
-                SDL_ReleaseGPUGraphicsPipeline(s_device, s_pipelines2DDepthOff[i]);
-                s_pipelines2DDepthOff[i] = nullptr;
-            }
-            if (s_pipelines3D[i])
-            {
-                SDL_ReleaseGPUGraphicsPipeline(s_device, s_pipelines3D[i]);
-                s_pipelines3D[i] = nullptr;
-            }
-            if (s_pipelines3DNoCull[i])
-            {
-                SDL_ReleaseGPUGraphicsPipeline(s_device, s_pipelines3DNoCull[i]);
-                s_pipelines3DNoCull[i] = nullptr;
-            }
-            if (s_pipelines3DDepthOff[i])
-            {
-                SDL_ReleaseGPUGraphicsPipeline(s_device, s_pipelines3DDepthOff[i]);
-                s_pipelines3DDepthOff[i] = nullptr;
-            }
-            if (s_pipelines3DDepthReadOnly[i])
-            {
-                SDL_ReleaseGPUGraphicsPipeline(s_device, s_pipelines3DDepthReadOnly[i]);
-                s_pipelines3DDepthReadOnly[i] = nullptr;
-            }
-            if (s_pipelinesSkinned[i])
-            {
-                SDL_ReleaseGPUGraphicsPipeline(s_device, s_pipelinesSkinned[i]);
-                s_pipelinesSkinned[i] = nullptr;
-            }
-            if (s_pipelinesSkinnedNoCull[i])
-            {
-                SDL_ReleaseGPUGraphicsPipeline(s_device, s_pipelinesSkinnedNoCull[i]);
-                s_pipelinesSkinnedNoCull[i] = nullptr;
-            }
-            if (s_pipelinesSkinnedDepthOff[i])
-            {
-                SDL_ReleaseGPUGraphicsPipeline(s_device, s_pipelinesSkinnedDepthOff[i]);
-                s_pipelinesSkinnedDepthOff[i] = nullptr;
-            }
-            if (s_pipelinesSkinnedDepthReadOnly[i])
-            {
-                SDL_ReleaseGPUGraphicsPipeline(s_device, s_pipelinesSkinnedDepthReadOnly[i]);
-                s_pipelinesSkinnedDepthReadOnly[i] = nullptr;
+                if (set[i])
+                {
+                    SDL_ReleaseGPUGraphicsPipeline(s_device, set[i]);
+                    set[i] = nullptr;
+                }
             }
         }
-#ifdef _EDITOR
-        ReleaseEditorOverlayPipeline();
-#endif
-    }
-
-#ifdef _EDITOR
-    // The editor draws Dear ImGui inside the main pass, but ImGui's own pipeline
-    // declares no depth attachment, which Metal's API validation rejects
-    // (MTL_DEBUG_LAYER=1). This builds ImGui's pipeline again for the main pass's
-    // formats. A failure is logged and not fatal: ImGui then uses its own pipeline.
-    static void CreateEditorOverlayPipeline()
-    {
-        const Render::EditorOverlay::PassTargetFormats formats{SDL_GetGPUSwapchainTextureFormat(s_device, s_window),
-                                                               k_DepthFormat};
-        s_editorOverlayPipeline = Render::EditorOverlay::CreatePipeline(s_device, formats);
-        if (!s_editorOverlayPipeline)
+        for (auto& layouts : s_groundShadowMaskPipelines)
         {
-            mu::log::Get("render")->error("SDL_gpu -- editor overlay pipeline creation failed: {}", SDL_GetError());
+            for (SDL_GPUGraphicsPipeline*& pipeline : layouts)
+            {
+                if (pipeline)
+                {
+                    SDL_ReleaseGPUGraphicsPipeline(s_device, pipeline);
+                    pipeline = nullptr;
+                }
+            }
         }
-    }
-
-    static void ReleaseEditorOverlayPipeline()
-    {
-        if (!s_editorOverlayPipeline)
+        for (SDL_GPUGraphicsPipeline*& pipeline : s_sceneDepthPipelines)
         {
-            return;
+            if (pipeline)
+            {
+                SDL_ReleaseGPUGraphicsPipeline(s_device, pipeline);
+                pipeline = nullptr;
+            }
         }
-
-        SDL_ReleaseGPUGraphicsPipeline(s_device, s_editorOverlayPipeline);
-        s_editorOverlayPipeline = nullptr;
+        for (SDL_GPUGraphicsPipeline*& pipeline : s_sunShadowPipelines)
+        {
+            if (pipeline)
+            {
+                SDL_ReleaseGPUGraphicsPipeline(s_device, pipeline);
+                pipeline = nullptr;
+            }
+        }
+        DestroyAlphaCoveragePipelines();
+        s_postProcessing.DestroyPipelines();
     }
-#endif
+
 
     // -----------------------------------------------------------------------
-    // Story 7.9.7 (AC-3): CreateOrResizeDepthTexture
     // Creates (or recreates on resize) an SDL_GPUTexture with depth format
     // matching the current swapchain dimensions. Called from Init() and
     // BeginFrame() when swapchain size changes.
@@ -4513,15 +7157,15 @@ private:
         }
 
         SDL_GPUTexture* target = Render::HiddenWindow::Target(s_device, s_window, width, height);
-        if (target == nullptr || !CreateOrResizeDepthTexture(width, height))
+        if (target == nullptr)
         {
             return false;
         }
 
+        // BeginFrame goes on with it as it does with a swapchain texture.
         s_swapchainTexture = target;
         s_swapW = width;
         s_swapH = height;
-        s_frameActive = true;
         s_frameOffscreen = true;
         return true;
     }
@@ -4548,8 +7192,9 @@ private:
             return false;
         }
 
-        // Skip if the existing depth texture already matches the requested size.
-        if (s_depthTexture && s_depthW == width && s_depthH == height)
+        // Skip if the existing depth texture already matches the requested size
+        // and the frame's sample count.
+        if (s_depthTexture && s_depthW == width && s_depthH == height && s_depthSampleCount == s_sampleCount)
         {
             return true;
         }
@@ -4561,16 +7206,9 @@ private:
             s_depthTexture = nullptr;
         }
 
-        SDL_GPUTextureCreateInfo depthInfo{};
-        depthInfo.type = SDL_GPU_TEXTURETYPE_2D;
-        depthInfo.format = k_DepthFormat;
-        depthInfo.width = width;
-        depthInfo.height = height;
-        depthInfo.layer_count_or_depth = 1;
-        depthInfo.num_levels = 1;
-        depthInfo.usage = SDL_GPU_TEXTUREUSAGE_DEPTH_STENCIL_TARGET;
-
-        s_depthTexture = SDL_CreateGPUTexture(s_device, &depthInfo);
+        const auto depthInfo = mu::GetSdlGpuDepthTextureInfo(
+            {width, height}, mu::GetSdlGpuSampleCount(s_sampleCount).value_or(SDL_GPU_SAMPLECOUNT_1));
+        s_depthTexture = depthInfo ? SDL_CreateGPUTexture(s_device, &*depthInfo) : nullptr;
         if (!s_depthTexture)
         {
             mu::log::Get("render")->error("SDL_gpu -- depth texture creation failed ({}x{}): {}", width, height,
@@ -4582,11 +7220,678 @@ private:
 
         s_depthW = width;
         s_depthH = height;
+        s_depthSampleCount = s_sampleCount;
         return true;
     }
 
+    // -----------------------------------------------------------------------
+    // Multisample anti-aliasing
+    // -----------------------------------------------------------------------
+
+    // Counts usable for both attachment formats of the main pass.
+    [[nodiscard]] static Render::Antialiasing::SupportedSampleCounts QuerySupportedSampleCounts()
+    {
+        const SDL_GPUTextureFormat colorFormat = SDL_GetGPUSwapchainTextureFormat(s_device, s_window);
+        const auto supports = [colorFormat](SDL_GPUSampleCount sampleCount)
+        {
+            return SDL_GPUTextureSupportsSampleCount(s_device, colorFormat, sampleCount) &&
+                   SDL_GPUTextureSupportsSampleCount(s_device, mu::SdlGpuDepthFormat, sampleCount);
+        };
+        return {supports(SDL_GPU_SAMPLECOUNT_2), supports(SDL_GPU_SAMPLECOUNT_4), supports(SDL_GPU_SAMPLECOUNT_8)};
+    }
+
+    // The sample count the setting gets on this GPU.
+    [[nodiscard]] static int SelectFrameSampleCount()
+    {
 #ifdef _EDITOR
-    // Depth buffer for editor offscreen captures (see BeginOffscreenCapture). Same
+        // The ImGui overlay draws in the main pass and the object thumbnails
+        // replay recorded draws into one-sample targets; both need one-sample
+        // pipelines, so editor builds stay at one sample.
+        return Render::Antialiasing::OffSampleCount;
+#else
+        return Render::Antialiasing::SelectSampleCount(s_requestedSampleCount, s_supportedSampleCounts);
+#endif
+    }
+
+    static void LogSampleCount(const char* when)
+    {
+        const int highest = Render::Antialiasing::HighestSupportedSampleCount(s_supportedSampleCounts);
+        if (s_sampleCount != Render::Antialiasing::OffSampleCount)
+        {
+            mu::log::Get("render")->info(
+                "Anti-aliasing {}: {}x multisampling ({}x requested; this GPU supports up to {}x)", when, s_sampleCount,
+                s_requestedSampleCount, highest);
+            return;
+        }
+        if (s_requestedSampleCount == Render::Antialiasing::OffSampleCount)
+        {
+            mu::log::Get("render")->info("Anti-aliasing {}: off (this GPU supports up to {}x)", when, highest);
+            return;
+        }
+#ifdef _EDITOR
+        constexpr const char* reason = "editor builds render with one sample";
+#else
+        constexpr const char* reason = "multisampling is unavailable";
+#endif
+        mu::log::Get("render")->info("Anti-aliasing {}: off ({}x requested; {})", when, s_requestedSampleCount, reason);
+    }
+
+    // Builds every pipeline for s_sampleCount; when that fails multisampled,
+    // drops to one sample and builds again.
+    [[nodiscard]] static bool CreatePipelinesForSampleCount()
+    {
+        if (!CreatePipelines())
+        {
+            if (s_sampleCount == Render::Antialiasing::OffSampleCount)
+            {
+                return false;
+            }
+
+            mu::log::Get("render")->error("SDL_gpu -- {}x multisampled pipelines failed; anti-aliasing turned off",
+                                          s_sampleCount);
+            DestroyPipelines();
+            s_sampleCount = Render::Antialiasing::OffSampleCount;
+            if (!CreatePipelines())
+            {
+                return false;
+            }
+        }
+        CreateAlphaCoveragePipelines();
+        CreateGroundShadowMaskPipelines();
+        CreateSunShadowPipelines();
+        CreatePostProcessingPipelines();
+        if (!CreateSingleSamplePipelines())
+        {
+            // A half-built twin set would drop or mis-pair draws: run without multisampling
+            // until another sample count is requested.
+            mu::log::Get("render")->error(
+                "SDL_gpu -- single-sample pipelines incomplete at {}x; anti-aliasing turned off", s_sampleCount);
+            DestroyPipelines();
+            s_sampleCount = Render::Antialiasing::OffSampleCount;
+            s_requestedSampleCount = Render::Antialiasing::OffSampleCount;
+            if (!CreatePipelines())
+            {
+                return false;
+            }
+            CreateGroundShadowMaskPipelines();
+            CreateSunShadowPipelines();
+            CreatePostProcessingPipelines();
+        }
+        s_pipelinesMultisampled = s_sampleCount != Render::Antialiasing::OffSampleCount;
+        CreateHdrScenePipelines();
+        return true;
+    }
+
+    // The HDR scene's twins of every pipeline the scene and bloom-source passes replay, built for
+    // kHdrSceneFormat at s_sampleCount (an alpha-to-coverage variant maps to the variant built for its
+    // twin). Optional: without a complete set the scene stays in the swapchain's format.
+    static void CreateHdrScenePipelines()
+    {
+        DestroyHdrScenePipelines();
+        const SDL_GPUTextureUsageFlags usage = SDL_GPU_TEXTUREUSAGE_COLOR_TARGET | SDL_GPU_TEXTUREUSAGE_SAMPLER;
+        const SDL_GPUSampleCount sampleCount = mu::GetSdlGpuSampleCount(s_sampleCount).value_or(SDL_GPU_SAMPLECOUNT_1);
+        if (!SDL_GPUTextureSupportsFormat(s_device, kHdrSceneFormat, SDL_GPU_TEXTURETYPE_2D, usage) ||
+            !SDL_GPUTextureSupportsSampleCount(s_device, kHdrSceneFormat, sampleCount))
+        {
+            mu::log::Get("render")->info("SDL_gpu -- HDR scene unavailable at {}x: format unsupported", s_sampleCount);
+            return;
+        }
+
+        const std::vector<SDL_GPUGraphicsPipeline**> slots = ReplayPipelineSlots();
+        std::vector<SDL_GPUGraphicsPipeline*> frameFormat;
+        frameFormat.reserve(slots.size());
+        for (SDL_GPUGraphicsPipeline** slot : slots)
+        {
+            frameFormat.push_back(*slot);
+            *slot = nullptr;
+        }
+        const bool enhancedLightingAvailable = s_enhancedLightingAvailable;
+        std::vector<AlphaCoveragePipeline> frameFormatCoverage;
+        frameFormatCoverage.swap(s_alphaCoveragePipelines);
+
+        s_pipelineFormatOverride = kHdrSceneFormat;
+        const bool created = CreatePipelines();
+        CreateAlphaCoveragePipelines();
+        s_pipelineFormatOverride = SDL_GPU_TEXTUREFORMAT_INVALID;
+
+        for (std::size_t i = 0; i < slots.size(); ++i)
+        {
+            if (frameFormat[i] && *slots[i])
+            {
+                s_hdrScenePipelines[frameFormat[i]] = *slots[i];
+            }
+            else if (*slots[i])
+            {
+                SDL_ReleaseGPUGraphicsPipeline(s_device, *slots[i]);
+            }
+            *slots[i] = frameFormat[i];
+        }
+        s_enhancedLightingAvailable = enhancedLightingAvailable;
+        // Both coverage lists were built for the same slots in the same order: pair them by slot.
+        for (const AlphaCoveragePipeline& hdr : s_alphaCoveragePipelines)
+        {
+            const auto original = std::ranges::find(frameFormatCoverage, hdr.opaque, &AlphaCoveragePipeline::opaque);
+            if (original != frameFormatCoverage.end())
+            {
+                s_hdrScenePipelines[original->variant] = hdr.variant;
+            }
+            else
+            {
+                SDL_ReleaseGPUGraphicsPipeline(s_device, hdr.variant);
+            }
+        }
+        s_alphaCoveragePipelines.swap(frameFormatCoverage);
+        for (const AlphaCoveragePipeline& entry : s_alphaCoveragePipelines)
+        {
+            frameFormat.push_back(entry.variant);
+        }
+
+        if (!created || !Render::SingleSampleTwinsComplete<SDL_GPUGraphicsPipeline>(frameFormat, s_hdrScenePipelines))
+        {
+            mu::log::Get("render")->warn("SDL_gpu -- HDR scene pipelines incomplete at {}x; HDR scene off",
+                                         s_sampleCount);
+            DestroyHdrScenePipelines();
+            return;
+        }
+        mu::log::Get("render")->info("SDL_gpu -- {} HDR scene pipelines at {}x", s_hdrScenePipelines.size(),
+                                     s_sampleCount);
+    }
+
+    static void DestroyHdrScenePipelines()
+    {
+        std::unordered_set<SDL_GPUGraphicsPipeline*> released;
+        for (const auto& [frameFormat, twin] : s_hdrScenePipelines)
+        {
+            if (twin && released.insert(twin).second)
+            {
+                SDL_ReleaseGPUGraphicsPipeline(s_device, twin);
+            }
+        }
+        s_hdrScenePipelines.clear();
+    }
+
+    // The HDR scene this frame: its pipelines, and with anti-aliasing its multisampled target.
+    [[nodiscard]] static bool UsesHdrScene()
+    {
+        return !s_hdrScenePipelines.empty() && (!IsMultisampled() || EnsureHdrMultisampleColorTexture());
+    }
+
+    [[nodiscard]] static bool EnsureHdrMultisampleColorTexture()
+    {
+        const SDL_GPUSampleCount sampleCount = mu::GetSdlGpuSampleCount(s_sampleCount).value_or(SDL_GPU_SAMPLECOUNT_1);
+        if (s_hdrMultisampleColorTexture && s_hdrMultisampleColorInfo.width == s_swapW &&
+            s_hdrMultisampleColorInfo.height == s_swapH && s_hdrMultisampleColorInfo.sample_count == sampleCount)
+        {
+            return true;
+        }
+        ReleaseHdrMultisampleColorTexture();
+        SDL_GPUTextureCreateInfo info{};
+        info.type = SDL_GPU_TEXTURETYPE_2D;
+        info.format = kHdrSceneFormat;
+        info.usage = SDL_GPU_TEXTUREUSAGE_COLOR_TARGET;
+        info.width = s_swapW;
+        info.height = s_swapH;
+        info.layer_count_or_depth = 1;
+        info.num_levels = 1;
+        info.sample_count = sampleCount;
+        s_hdrMultisampleColorTexture = SDL_CreateGPUTexture(s_device, &info);
+        if (!s_hdrMultisampleColorTexture)
+        {
+            mu::log::Get("render")->error("SDL_gpu -- HDR multisampled colour target creation failed ({}x{}): {}",
+                                          s_swapW, s_swapH, SDL_GetError());
+            return false;
+        }
+        s_hdrMultisampleColorInfo = info;
+        return true;
+    }
+
+    static void ReleaseHdrMultisampleColorTexture()
+    {
+        if (s_hdrMultisampleColorTexture)
+        {
+            SDL_ReleaseGPUTexture(s_device, s_hdrMultisampleColorTexture);
+            s_hdrMultisampleColorTexture = nullptr;
+        }
+        s_hdrMultisampleColorInfo = {};
+    }
+
+    // Every pipeline slot CreatePipelines() fills, in one fixed order.
+    [[nodiscard]] static std::vector<SDL_GPUGraphicsPipeline**> ReplayPipelineSlots()
+    {
+        std::vector<SDL_GPUGraphicsPipeline**> slots;
+        for (SDL_GPUGraphicsPipeline** set :
+             {s_pipelines2D, s_pipelines2DDepthOff, s_pipelinesSkinnedShadow, s_pipelinesSkinnedShadowDepthOff,
+              s_pipelinesSkinnedWeightedShadow, s_pipelinesSkinnedWeightedShadowDepthOff})
+        {
+            for (int i = 0; i < k_PipelineCount; ++i)
+            {
+                slots.push_back(&set[i]);
+            }
+        }
+        for (const WorldPipelineSetSpec& spec : WorldPipelineSets())
+        {
+            for (const WorldStateSpec& state : kWorldStates)
+            {
+                for (SDL_GPUGraphicsPipeline*& pipeline : spec.set->*state.states)
+                {
+                    slots.push_back(&pipeline);
+                }
+            }
+        }
+        return slots;
+    }
+
+    // Builds the single-sample twin of every multisampled pipeline (s_singleSamplePipelines).
+    // False, with no twins left, when any twin failed; true with one sample (none needed).
+    [[nodiscard]] static bool CreateSingleSamplePipelines()
+    {
+        if (s_sampleCount == Render::Antialiasing::OffSampleCount)
+        {
+            return true;
+        }
+
+        const std::vector<SDL_GPUGraphicsPipeline**> slots = ReplayPipelineSlots();
+        std::vector<SDL_GPUGraphicsPipeline*> multisampled;
+        multisampled.reserve(slots.size());
+        for (SDL_GPUGraphicsPipeline** slot : slots)
+        {
+            multisampled.push_back(*slot);
+            *slot = nullptr;
+        }
+        const bool enhancedLightingAvailable = s_enhancedLightingAvailable;
+        const int sampleCount = s_sampleCount;
+
+        s_sampleCount = Render::Antialiasing::OffSampleCount;
+        const bool created = CreatePipelines();
+        s_sampleCount = sampleCount;
+        for (std::size_t i = 0; i < slots.size(); ++i)
+        {
+            if (multisampled[i] && *slots[i])
+            {
+                s_singleSamplePipelines[multisampled[i]] = *slots[i];
+            }
+            else if (*slots[i])
+            {
+                SDL_ReleaseGPUGraphicsPipeline(s_device, *slots[i]);
+            }
+            *slots[i] = multisampled[i];
+        }
+        s_enhancedLightingAvailable = enhancedLightingAvailable;
+
+        for (const AlphaCoveragePipeline& entry : s_alphaCoveragePipelines)
+        {
+            if (!entry.variant)
+            {
+                continue;
+            }
+            multisampled.push_back(entry.variant);
+            const auto twin = s_singleSamplePipelines.find(*entry.opaque);
+            if (twin != s_singleSamplePipelines.end())
+            {
+                s_singleSamplePipelines[entry.variant] = twin->second;
+            }
+        }
+        if (!created ||
+            !Render::SingleSampleTwinsComplete<SDL_GPUGraphicsPipeline>(multisampled, s_singleSamplePipelines))
+        {
+            DestroySingleSamplePipelines();
+            return false;
+        }
+        mu::log::Get("render")->info("SDL_gpu -- {} single-sample pipelines for offscreen and UI passes",
+                                     s_singleSamplePipelines.size());
+        return true;
+    }
+
+    static void DestroySingleSamplePipelines()
+    {
+        std::unordered_set<SDL_GPUGraphicsPipeline*> released;
+        for (const auto& [multisampled, twin] : s_singleSamplePipelines)
+        {
+            if (twin && released.insert(twin).second)
+            {
+                SDL_ReleaseGPUGraphicsPipeline(s_device, twin);
+            }
+        }
+        s_singleSamplePipelines.clear();
+    }
+
+    // Optional: without them every frame stays unprocessed.
+    static void CreatePostProcessingPipelines()
+    {
+        const mu::SdlGpuPostShaders shaders{s_vertShaderPostFullscreen, s_fragShaderBloomDown, s_fragShaderBloomUp,
+                                            s_fragShaderComposite};
+        const bool created =
+            s_postProcessing.CreatePipelines(s_device, shaders, SDL_GetGPUSwapchainTextureFormat(s_device, s_window),
+                                             mu::GetSdlGpuSampleCount(s_sampleCount).value_or(SDL_GPU_SAMPLECOUNT_1));
+        mu::log::Get("render")->info("SDL_gpu -- post-processing {} at {}x", created ? "available" : "unavailable",
+                                     s_sampleCount);
+        (void)s_ambientOcclusion.CreatePipelines(
+            s_device, {s_vertShaderPostFullscreen, s_fragShaderAmbientOcclusion, s_fragShaderAmbientOcclusionBlur});
+    }
+
+    // The pipelines replaying solid draws into the sun shadow map, with its comparison sampler and far
+    // 1x1 map. Optional: without them there are no sun shadows.
+    static void CreateSunShadowPipelines()
+    {
+        if (!s_fragShaderSunDepth)
+        {
+            return;
+        }
+        // Indexed by ShadowPassLayout.
+        const VertexLayout layouts[] = {VertexLayout::ThreeDimensional, VertexLayout::Skinned,
+                                        VertexLayout::SkinnedWeighted};
+        for (std::size_t layout = 0; layout < 3; ++layout)
+        {
+            if (layout == 2 && !s_vertShaderSkinnedWeighted)
+            {
+                continue;
+            }
+            PipelineBuildDescription description{"sun-shadow",    "opaque", k_PipelineDisabled,      true, true,
+                                                 layouts[layout], false,    FragmentShader::SunDepth};
+            description.sunShadowTarget = true;
+            PipelineBuildResult result = BuildBlendPipeline(SDL_GPUColorTargetBlendState{}, description);
+            s_sunShadowPipelines[layout] = result.pipeline;
+            if (result.pipeline)
+            {
+                description.setName = "scene-depth";
+                description.sunShadowTarget = false;
+                description.sceneDepthTarget = true;
+                result = BuildBlendPipeline(SDL_GPUColorTargetBlendState{}, description);
+                s_sceneDepthPipelines[layout] = result.pipeline;
+            }
+            if (!result.pipeline)
+            {
+                const char* driver = SDL_GetGPUDeviceDriver(s_device);
+                LogPipelineFailure(driver ? driver : "unknown", result, false);
+            }
+        }
+        (void)s_sunShadowMap.CreateResources(s_device);
+    }
+
+    static void ReleaseSunShadowResources()
+    {
+        s_sunShadowMap.Release();
+    }
+
+    // The ground shadow mask's pipelines (one sample, whatever s_sampleCount is). Optional: without them
+    // ground shadows draw as recorded.
+    static void CreateGroundShadowMaskPipelines()
+    {
+        const SDL_GPUTextureUsageFlags maskUsage = SDL_GPU_TEXTUREUSAGE_COLOR_TARGET | SDL_GPU_TEXTUREUSAGE_SAMPLER;
+        if (!s_fragShaderShadowMask || !SDL_GPUTextureSupportsFormat(s_device, SDL_GPU_TEXTUREFORMAT_R8G8_UNORM,
+                                                                     SDL_GPU_TEXTURETYPE_2D, maskUsage))
+        {
+            return;
+        }
+        // The darkest shadow wins: overlapping shadows darken a pixel once.
+        SDL_GPUColorTargetBlendState darkest{};
+        darkest.src_color_blendfactor = SDL_GPU_BLENDFACTOR_ONE;
+        darkest.dst_color_blendfactor = SDL_GPU_BLENDFACTOR_ONE;
+        darkest.color_blend_op = SDL_GPU_BLENDOP_MIN;
+        darkest.src_alpha_blendfactor = SDL_GPU_BLENDFACTOR_ONE;
+        darkest.dst_alpha_blendfactor = SDL_GPU_BLENDFACTOR_ONE;
+        darkest.alpha_blend_op = SDL_GPU_BLENDOP_MIN;
+        darkest.enable_blend = true;
+        darkest.enable_color_write_mask = true;
+        const char* deviceDriver = SDL_GetGPUDeviceDriver(s_device);
+        const auto build = [&](int lightShadow, int layout, const char* name)
+        {
+            PipelineBuildDescription description{name,
+                                                 "darkest",
+                                                 k_PipelineDisabled,
+                                                 false,
+                                                 false,
+                                                 layout == 2   ? VertexLayout::SkinnedWeightedShadow
+                                                 : layout == 1 ? VertexLayout::SkinnedShadow
+                                                               : VertexLayout::ThreeDimensional,
+                                                 false,
+                                                 FragmentShader::ShadowMask};
+            description.groundShadowMaskTarget = true;
+            darkest.color_write_mask = lightShadow ? SDL_GPU_COLORCOMPONENT_G : SDL_GPU_COLORCOMPONENT_R;
+            const PipelineBuildResult result = BuildBlendPipeline(darkest, description);
+            s_groundShadowMaskPipelines[lightShadow][layout] = result.pipeline;
+            if (!result.pipeline)
+            {
+                LogPipelineFailure(deviceDriver ? deviceDriver : "unknown", result, false);
+            }
+        };
+        build(0, 0, "ground-shadow-mask-3d");
+        build(1, 0, "ground-light-shadow-mask-3d");
+        if (s_vertShaderSkinnedShadow)
+        {
+            build(0, 1, "ground-shadow-mask-skinned");
+            build(1, 1, "ground-light-shadow-mask-skinned");
+        }
+        if (s_vertShaderSkinnedWeightedShadow)
+        {
+            build(0, 2, "ground-shadow-mask-weighted");
+            build(1, 2, "ground-light-shadow-mask-weighted");
+        }
+        // All or none: once the mask is ready the scene leaves every ground shadow to it, so a shadow
+        // the mask cannot draw would vanish. Without them, ground shadows draw as recorded.
+        const bool skinnedComplete =
+            !s_vertShaderSkinnedShadow || (s_groundShadowMaskPipelines[0][1] && s_groundShadowMaskPipelines[1][1]);
+        const bool weightedComplete = !s_vertShaderSkinnedWeightedShadow ||
+                                      (s_groundShadowMaskPipelines[0][2] && s_groundShadowMaskPipelines[1][2]);
+        if (!s_groundShadowMaskPipelines[0][0] || !s_groundShadowMaskPipelines[1][0] || !skinnedComplete ||
+            !weightedComplete)
+        {
+            for (auto& layouts : s_groundShadowMaskPipelines)
+            {
+                for (SDL_GPUGraphicsPipeline*& pipeline : layouts)
+                {
+                    if (pipeline)
+                    {
+                        SDL_ReleaseGPUGraphicsPipeline(s_device, pipeline);
+                        pipeline = nullptr;
+                    }
+                }
+            }
+        }
+    }
+
+    // Alpha-to-coverage variants for s_sampleCount; none with one sample.
+    // Optional: a variant that fails leaves its draws on the opaque pipeline.
+    static void CreateAlphaCoveragePipelines()
+    {
+        DestroyAlphaCoveragePipelines();
+        if (s_sampleCount == Render::Antialiasing::OffSampleCount)
+        {
+            return;
+        }
+
+        SDL_GPUColorTargetBlendState opaque{};
+        opaque.src_color_blendfactor = SDL_GPU_BLENDFACTOR_ONE;
+        opaque.dst_color_blendfactor = SDL_GPU_BLENDFACTOR_ZERO;
+        opaque.color_blend_op = SDL_GPU_BLENDOP_ADD;
+        opaque.src_alpha_blendfactor = SDL_GPU_BLENDFACTOR_ONE;
+        opaque.dst_alpha_blendfactor = SDL_GPU_BLENDFACTOR_ZERO;
+        opaque.alpha_blend_op = SDL_GPU_BLENDOP_ADD;
+        opaque.enable_blend = false;
+
+        const char* deviceDriver = SDL_GetGPUDeviceDriver(s_device);
+        int built = 0;
+        int wanted = 0;
+        for (const WorldPipelineSetSpec& spec : WorldPipelineSets())
+        {
+            for (const WorldStateSpec& state : kWorldStates)
+            {
+                WorldPipelines::States& states = spec.set->*state.states;
+                // Only the depth-writing states draw cutouts; a set that was not built has nothing to replace.
+                if (!state.depthWriteEnabled || !states[k_PipelineDisabled])
+                {
+                    continue;
+                }
+                ++wanted;
+                const std::string setName = std::string(spec.name) + "-" + state.suffix + "-alpha-coverage";
+                const PipelineBuildResult result =
+                    BuildBlendPipeline(opaque, {setName.c_str(), "disabled", k_PipelineDisabled, state.depthTestEnabled,
+                                                state.depthWriteEnabled, spec.vertexLayout, state.cullFaceEnabled,
+                                                spec.fragmentShader, true});
+                if (!result.pipeline)
+                {
+                    LogPipelineFailure(deviceDriver ? deviceDriver : "unknown", result, false);
+                    continue;
+                }
+                ++built;
+                s_alphaCoveragePipelines.push_back(
+                    {&states[k_PipelineDisabled], &states[k_PipelineAlpha], result.pipeline});
+            }
+        }
+        s_alphaCoverageDrawLogged = false;
+        mu::log::Get("render")->info("SDL_gpu -- alpha-to-coverage: {} of {} pipelines at {}x", built, wanted,
+                                     s_sampleCount);
+    }
+
+    static void DestroyAlphaCoveragePipelines()
+    {
+        for (const AlphaCoveragePipeline& entry : s_alphaCoveragePipelines)
+        {
+            SDL_ReleaseGPUGraphicsPipeline(s_device, entry.variant);
+        }
+        s_alphaCoveragePipelines.clear();
+    }
+
+    static void ReleaseMultisampleColorTexture()
+    {
+        if (s_multisampleColorTexture)
+        {
+            SDL_ReleaseGPUTexture(s_device, s_multisampleColorTexture);
+            s_multisampleColorTexture = nullptr;
+        }
+        s_multisampleColorInfo = {};
+        ReleaseSingleSampleDepthTexture();
+        ReleaseHdrMultisampleColorTexture();
+    }
+
+    // The multisampled colour target for this frame's swapchain format, size
+    // and s_sampleCount; recreated when any of them changed.
+    [[nodiscard]] static bool EnsureMultisampleColorTexture()
+    {
+        const auto info = mu::GetSdlGpuMultisampleColorTextureInfo(
+            SDL_GetGPUSwapchainTextureFormat(s_device, s_window), {s_swapW, s_swapH},
+            mu::GetSdlGpuSampleCount(s_sampleCount).value_or(SDL_GPU_SAMPLECOUNT_1));
+        if (!info)
+        {
+            ReleaseMultisampleColorTexture();
+            return false;
+        }
+        if (s_multisampleColorTexture && s_multisampleColorInfo.format == info->format &&
+            s_multisampleColorInfo.width == info->width && s_multisampleColorInfo.height == info->height &&
+            s_multisampleColorInfo.sample_count == info->sample_count)
+        {
+            return true;
+        }
+
+        ReleaseMultisampleColorTexture();
+        s_multisampleColorTexture = SDL_CreateGPUTexture(s_device, &*info);
+        if (!s_multisampleColorTexture)
+        {
+            mu::log::Get("render")->error("SDL_gpu -- {}x multisampled colour target creation failed ({}x{}): {}",
+                                          s_sampleCount, info->width, info->height, SDL_GetError());
+            return false;
+        }
+        s_multisampleColorInfo = *info;
+        return true;
+    }
+
+    // Rebuilds the pipelines for another sample count. The depth buffer and the
+    // multisampled colour target follow at the next BeginFrame. Releasing
+    // pipelines and textures a submitted frame still uses is safe: SDL defers
+    // their destruction until that frame has finished.
+    static void RebuildForSampleCount(int sampleCount)
+    {
+        const char* driverName = SDL_GetGPUDeviceDriver(s_device);
+        if (!LoadShaders(driverName))
+        {
+            mu::log::Get("render")->error("SDL_gpu -- shader loading failed; anti-aliasing stays at {}x",
+                                          s_sampleCount);
+            ReleaseShaders();
+            return;
+        }
+
+        DestroyPipelines();
+        s_sampleCount = sampleCount;
+        if (!CreatePipelinesForSampleCount())
+        {
+            mu::log::Get("render")->error("SDL_gpu -- pipeline rebuild failed for {}x anti-aliasing", s_sampleCount);
+        }
+        ReleaseShaders();
+        ReleaseMultisampleColorTexture();
+    }
+
+    static void ApplyPendingSampleCount()
+    {
+        if (!s_sampleCountChangePending)
+        {
+            return;
+        }
+        s_sampleCountChangePending = false;
+
+        const int sampleCount = SelectFrameSampleCount();
+        if (sampleCount != s_sampleCount)
+        {
+            RebuildForSampleCount(sampleCount);
+        }
+        LogSampleCount("switched");
+    }
+
+    // Must match the swapchain's format: every replay pipeline is built against it. If that format
+    // can't be sampled, no target is made and frames fall back to the swapchain directly.
+    static bool CreateOrResizeMainColorTarget(Uint32 width, Uint32 height)
+    {
+        if (width == 0 || height == 0)
+        {
+            return false;
+        }
+
+        const SDL_GPUTextureFormat format = SDL_GetGPUSwapchainTextureFormat(s_device, s_window);
+        if (s_mainColorTarget && s_mainColorW == width && s_mainColorH == height && s_mainColorFormat == format)
+        {
+            return true;
+        }
+
+        if (s_mainColorTarget)
+        {
+            SDL_ReleaseGPUTexture(s_device, s_mainColorTarget);
+            s_mainColorTarget = nullptr;
+        }
+        s_mainColorW = 0u;
+        s_mainColorH = 0u;
+        s_mainColorFormat = SDL_GPU_TEXTUREFORMAT_INVALID;
+
+        constexpr SDL_GPUTextureUsageFlags usage = SDL_GPU_TEXTUREUSAGE_COLOR_TARGET | SDL_GPU_TEXTUREUSAGE_SAMPLER;
+        if (format == SDL_GPU_TEXTUREFORMAT_INVALID ||
+            !SDL_GPUTextureSupportsFormat(s_device, format, SDL_GPU_TEXTURETYPE_2D, usage))
+        {
+            return false;
+        }
+
+        SDL_GPUTextureCreateInfo colorInfo{};
+        colorInfo.type = SDL_GPU_TEXTURETYPE_2D;
+        colorInfo.format = format;
+        colorInfo.width = width;
+        colorInfo.height = height;
+        colorInfo.layer_count_or_depth = 1;
+        colorInfo.num_levels = 1;
+        colorInfo.sample_count = SDL_GPU_SAMPLECOUNT_1;
+        colorInfo.usage = usage;
+
+        s_mainColorTarget = SDL_CreateGPUTexture(s_device, &colorInfo);
+        if (!s_mainColorTarget)
+        {
+            mu::log::Get("render")->error("SDL_gpu -- main color target creation failed ({}x{}): {}", width, height,
+                                          SDL_GetError());
+            return false;
+        }
+
+        s_mainColorW = width;
+        s_mainColorH = height;
+        s_mainColorFormat = format;
+        return true;
+    }
+
+    // Depth buffer for one-shot offscreen captures (see BeginOffscreenCapture). Same
     // shape as CreateOrResizeDepthTexture but keeps its own texture, since it's
     // sized for a small thumbnail, not the swapchain.
     static bool EnsureOffscreenDepthTexture(Uint32 width, Uint32 height)
@@ -4607,7 +7912,7 @@ private:
 
         SDL_GPUTextureCreateInfo depthInfo{};
         depthInfo.type = SDL_GPU_TEXTURETYPE_2D;
-        depthInfo.format = k_DepthFormat;
+        depthInfo.format = mu::SdlGpuDepthFormat;
         depthInfo.width = width;
         depthInfo.height = height;
         depthInfo.layer_count_or_depth = 1;
@@ -4653,7 +7958,7 @@ private:
         FramePixels pixels;
         const PixelDownloadResult result = SubmitPixelDownload(
             commandBuffer, static_cast<SDL_GPUTexture*>(texture->second),
-            SDL_GetGPUSwapchainTextureFormat(s_device, s_window), size->second.first, size->second.second, pixels);
+            OffscreenColorFormat(), size->second.first, size->second.second, pixels);
         if (result == PixelDownloadResult::NotSubmitted)
         {
             SDL_SubmitGPUCommandBuffer(commandBuffer);
@@ -4683,19 +7988,29 @@ private:
         for (const auto& capture : s_pendingOffscreenCaptures)
         {
             const auto textureIt = s_textureMap.find(capture.textureId);
-            if (textureIt == s_textureMap.end() || !EnsureOffscreenDepthTexture(capture.width, capture.height))
+            if (textureIt == s_textureMap.end())
+            {
+                continue;
+            }
+            // A render target brings its own depth and clears to transparent, so a document
+            // composites it over its own background; a one-shot capture keeps the shared depth
+            // and the editor's opaque backdrop.
+            const auto targetDepth = s_renderTargetDepth.find(capture.textureId);
+            const bool isRenderTarget = targetDepth != s_renderTargetDepth.end();
+            if (!isRenderTarget && !EnsureOffscreenDepthTexture(capture.width, capture.height))
             {
                 continue;
             }
 
             SDL_GPUColorTargetInfo colorTarget{};
             colorTarget.texture = static_cast<SDL_GPUTexture*>(textureIt->second);
-            colorTarget.clear_color = SDL_FColor{0.10f, 0.10f, 0.12f, 1.0f};
+            colorTarget.clear_color = isRenderTarget ? SDL_FColor{0.0f, 0.0f, 0.0f, 0.0f}
+                                                     : SDL_FColor{0.10f, 0.10f, 0.12f, 1.0f};
             colorTarget.load_op = SDL_GPU_LOADOP_CLEAR;
             colorTarget.store_op = SDL_GPU_STOREOP_STORE;
 
             SDL_GPUDepthStencilTargetInfo depthTarget{};
-            depthTarget.texture = s_offscreenDepthTexture;
+            depthTarget.texture = isRenderTarget ? targetDepth->second : s_offscreenDepthTexture;
             depthTarget.clear_depth = 1.0f;
             depthTarget.load_op = SDL_GPU_LOADOP_CLEAR;
             depthTarget.store_op = SDL_GPU_STOREOP_DONT_CARE;
@@ -4715,7 +8030,10 @@ private:
             SDL_SetGPUViewport(s_renderPass, &viewport);
             const SDL_Rect scissor{0, 0, static_cast<int>(capture.width), static_cast<int>(capture.height)};
             SDL_SetGPUScissor(s_renderPass, &scissor);
+            PushSceneLightingUniforms();
+            BindLitSamplers();
 
+            s_singleSamplePass = true;
             Render::SdlGpuReplayState replayState;
             for (std::size_t i = capture.startCmd; i < capture.endCmd && i < s_renderCmds.size(); ++i)
             {
@@ -4725,13 +8043,16 @@ private:
                                            cmd.type == RenderCmdType::DrawIndexedQuads ||
                                            cmd.type == RenderCmdType::DrawIndexedStrip ||
                                            cmd.type == RenderCmdType::DrawTriangles2D;
+                // Consumed either way: nothing recorded inside a capture belongs on the frame, and a
+                // viewport or scissor left to the main pass would apply to whatever it draws next.
+                cmd.consumedByOffscreenCapture = true;
                 if (!isGeometryDraw)
                 {
-                    continue; // skip SetViewport/SetScissor/EditorOverlay - not relevant to a model capture
+                    continue; // SetViewport/SetScissor - the capture sets its own viewport
                 }
-                ReplayDrawCommand(cmd, boneDataReady, scissor, replayState);
-                cmd.consumedByOffscreenCapture = true;
+                ReplayDrawCommand(cmd, cmd.pipeline, boneDataReady, scissor, replayState);
             }
+            s_singleSamplePass = false;
 
             SDL_EndGPURenderPass(s_renderPass);
             s_renderPass = nullptr;
@@ -4739,10 +8060,8 @@ private:
 
         s_pendingOffscreenCaptures.clear();
     }
-#endif // _EDITOR
 
     // -----------------------------------------------------------------------
-    // Story 4.3.2 (AC-10): CreateFogUniformBuffers
     // Creates the GPU buffer (s_fogUniformBuf) used as a storage buffer in
     // the fragment shader, and its companion transfer buffer (s_fogTransferBuf).
     // Size = sizeof(FogUniform) = 48 bytes.
@@ -4927,6 +8246,41 @@ private:
         s_boneRowScratch.clear();
     }
 
+    static void DestroyTerrainHeightBuffers()
+    {
+        if (s_terrainHeightGpuBuf)
+        {
+            SDL_ReleaseGPUBuffer(s_device, s_terrainHeightGpuBuf);
+            s_terrainHeightGpuBuf = nullptr;
+        }
+        if (s_terrainHeightTransferBuf)
+        {
+            SDL_ReleaseGPUTransferBuffer(s_device, s_terrainHeightTransferBuf);
+            s_terrainHeightTransferBuf = nullptr;
+        }
+        s_terrainHeightVersion.reset();
+        s_terrainHeightUploadPending = false;
+    }
+
+    static void DestroySkinnedMeshCache()
+    {
+        for (const SkinnedMeshBlock& block : s_skinnedMeshBlocks)
+        {
+            SDL_ReleaseGPUBuffer(s_device, block.buffer);
+        }
+        s_skinnedMeshBlocks.clear();
+        s_skinnedMeshes.clear();
+        s_skinnedMeshStaging.clear();
+        s_pendingSkinnedMeshUploads.clear();
+        s_deferredSkinnedMeshFrees.clear();
+        if (s_skinnedMeshTransferBuf)
+        {
+            SDL_ReleaseGPUTransferBuffer(s_device, s_skinnedMeshTransferBuf);
+            s_skinnedMeshTransferBuf = nullptr;
+        }
+        s_skinnedMeshTransferCapacity = 0u;
+    }
+
     [[nodiscard]] static bool CreateQuadIndexBuffer()
     {
         std::vector<Uint16> indices(static_cast<std::size_t>(k_MaxQuads) * 6);
@@ -5060,9 +8414,10 @@ private:
         return true;
     }
 
-    [[nodiscard]] static bool CreateWhiteTexture()
+    // A 1×1 RGBA8 texture of one pixel (`pixel`, little-endian RGBA), uploaded at once; nullptr
+    // (logged) when it cannot be created.
+    [[nodiscard]] static SDL_GPUTexture* CreateSolidTexture(Uint32 pixel, const char* what)
     {
-        // Upload a 1×1 RGBA white pixel as the default fallback texture.
         SDL_GPUTextureCreateInfo texInfo{};
         texInfo.type = SDL_GPU_TEXTURETYPE_2D;
         texInfo.format = SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM;
@@ -5073,15 +8428,13 @@ private:
         texInfo.num_levels = 1;
         texInfo.sample_count = SDL_GPU_SAMPLECOUNT_1;
 
-        s_whiteTexture = SDL_CreateGPUTexture(s_device, &texInfo);
-        if (!s_whiteTexture)
+        SDL_GPUTexture* texture = SDL_CreateGPUTexture(s_device, &texInfo);
+        if (!texture)
         {
-            mu::log::Get("render")->error("SDL_gpu -- white texture creation failed: {}", SDL_GetError());
-            return false;
+            mu::log::Get("render")->error("SDL_gpu -- {} texture creation failed: {}", what, SDL_GetError());
+            return nullptr;
         }
 
-        // Upload white pixel data.
-        constexpr Uint32 kWhitePixel = 0xFFFFFFFFu; // RGBA = 255,255,255,255
         constexpr Uint32 kPixelByteSize = 4u;
 
         SDL_GPUTransferBufferCreateInfo tbInfo{};
@@ -5090,40 +8443,36 @@ private:
         SDL_GPUTransferBuffer* pixelTransfer = SDL_CreateGPUTransferBuffer(s_device, &tbInfo);
         if (!pixelTransfer)
         {
-            mu::log::Get("render")->error("SDL_gpu -- white texture transfer buffer failed: {}", SDL_GetError());
-            SDL_ReleaseGPUTexture(s_device, s_whiteTexture);
-            s_whiteTexture = nullptr;
-            return false;
+            mu::log::Get("render")->error("SDL_gpu -- {} texture transfer buffer failed: {}", what, SDL_GetError());
+            SDL_ReleaseGPUTexture(s_device, texture);
+            return nullptr;
         }
 
         void* pMapped = SDL_MapGPUTransferBuffer(s_device, pixelTransfer, false);
         if (!pMapped)
         {
             SDL_ReleaseGPUTransferBuffer(s_device, pixelTransfer);
-            SDL_ReleaseGPUTexture(s_device, s_whiteTexture);
-            s_whiteTexture = nullptr;
-            return false;
+            SDL_ReleaseGPUTexture(s_device, texture);
+            return nullptr;
         }
-        std::memcpy(pMapped, &kWhitePixel, kPixelByteSize);
+        std::memcpy(pMapped, &pixel, kPixelByteSize);
         SDL_UnmapGPUTransferBuffer(s_device, pixelTransfer);
 
         SDL_GPUCommandBuffer* uploadCmd = SDL_AcquireGPUCommandBuffer(s_device);
         if (!uploadCmd)
         {
             SDL_ReleaseGPUTransferBuffer(s_device, pixelTransfer);
-            SDL_ReleaseGPUTexture(s_device, s_whiteTexture);
-            s_whiteTexture = nullptr;
-            return false;
+            SDL_ReleaseGPUTexture(s_device, texture);
+            return nullptr;
         }
 
         SDL_GPUCopyPass* copyPass = SDL_BeginGPUCopyPass(uploadCmd);
         if (!copyPass)
         {
             SDL_ReleaseGPUTransferBuffer(s_device, pixelTransfer);
-            SDL_ReleaseGPUTexture(s_device, s_whiteTexture);
-            s_whiteTexture = nullptr;
+            SDL_ReleaseGPUTexture(s_device, texture);
             SDL_CancelGPUCommandBuffer(uploadCmd);
-            return false;
+            return nullptr;
         }
 
         SDL_GPUTextureTransferInfo texTransferInfo{};
@@ -5133,7 +8482,7 @@ private:
         texTransferInfo.rows_per_layer = 1;
 
         SDL_GPUTextureRegion texRegion{};
-        texRegion.texture = s_whiteTexture;
+        texRegion.texture = texture;
         texRegion.mip_level = 0;
         texRegion.layer = 0;
         texRegion.x = 0;
@@ -5148,6 +8497,25 @@ private:
         SDL_SubmitGPUCommandBuffer(uploadCmd);
 
         SDL_ReleaseGPUTransferBuffer(s_device, pixelTransfer);
+        return texture;
+    }
+
+    // The default textures: white (textureId 0) and the flat normal map of skinned_lit.frag.
+    [[nodiscard]] static bool CreateWhiteTexture()
+    {
+        constexpr Uint32 kWhitePixel = 0xFFFFFFFFu; // RGBA = 255,255,255,255
+        s_whiteTexture = CreateSolidTexture(kWhitePixel, "white");
+        if (!s_whiteTexture)
+        {
+            return false;
+        }
+        s_flatNormalTexture = CreateSolidTexture(k_FlatNormalPixel, "flat normal map");
+        if (!s_flatNormalTexture)
+        {
+            SDL_ReleaseGPUTexture(s_device, s_whiteTexture);
+            s_whiteTexture = nullptr;
+            return false;
+        }
 
         // Register the white texture as textureId=0 (sentinel for "no texture").
         RegisterTexture(0u, s_whiteTexture);
@@ -5158,30 +8526,54 @@ private:
 
 // ---------------------------------------------------------------------------
 // GetRenderer / InitSDLGpuRenderer / ShutdownSDLGpuRenderer:
-// Story 7.9.3: MU_USE_OPENGL_BACKEND removed — SDL_gpu is the only backend.
+// MU_USE_OPENGL_BACKEND removed — SDL_gpu is the only backend.
 // ---------------------------------------------------------------------------
+
+namespace
+{
+IMuRenderer* s_rendererOverride = nullptr;
+} // namespace
 
 [[nodiscard]] IMuRenderer& GetRenderer()
 {
     static MuRendererSDLGpu s_instance;
+    if (s_rendererOverride)
+        return *s_rendererOverride;
     return s_instance;
 }
 
-// C++ linkage entry points for MuMain.cpp (no class forward declaration needed).
-[[nodiscard]] bool InitSDLGpuRenderer(void* pNativeWindow, std::string_view fontFamily, float normalPointSize,
-                                      float bigPointSize, float fixedPointSize)
+void SetRendererOverride(IMuRenderer* renderer)
 {
-    return MuRendererSDLGpu::Init(pNativeWindow, fontFamily, normalPointSize, bigPointSize, fixedPointSize);
+    s_rendererOverride = renderer;
 }
 
-#ifdef _EDITOR
-SDL_GPUGraphicsPipeline* GetEditorOverlayPipeline()
+Render::Renderer::BitmapGpuResources::Result UploadBitmapPixels(std::span<const std::uint8_t> pixels, int width,
+                                                                int height, SDL_GPUFilter filter,
+                                                                SDL_GPUSamplerAddressMode wrap,
+                                                                std::span<const Render::Textures::MipLevel> mips,
+                                                                bool generateMips)
 {
-    // Without a depth texture the main pass has no depth attachment, which is
-    // what ImGui's own pipeline (returned as nullptr) is built for.
-    return s_depthTexture ? s_editorOverlayPipeline : nullptr;
+    return s_bitmapGpuResources.Upload(pixels, width, height, filter, wrap, mips, generateMips);
 }
-#endif
+
+void ReleaseBitmapTexture(SDL_GPUDevice* device, SDL_GPUTexture* texture)
+{
+    SDL_ReleaseGPUTexture(device, texture);
+}
+
+const char* BitmapUploadDriverName()
+{
+    return s_device ? SDL_GetGPUDeviceDriver(s_device) : "no device";
+}
+
+// C++ linkage entry points for MuMain.cpp (no class forward declaration needed).
+[[nodiscard]] bool InitSDLGpuRenderer(void* pNativeWindow, std::string_view fontFamily,
+                                      std::string_view renderBackend, float normalPointSize,
+                                      float bigPointSize, float fixedPointSize)
+{
+    return MuRendererSDLGpu::Init(pNativeWindow, fontFamily, renderBackend, normalPointSize, bigPointSize,
+                                  fixedPointSize);
+}
 
 void WaitForSDLGpuIdle()
 {

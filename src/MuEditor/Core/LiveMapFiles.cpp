@@ -184,6 +184,7 @@ void Restore(SaveUnit unit, const DecodedFiles& files)
         return;
     case SaveUnit::Height:
         std::memcpy(BackTerrainHeight, files.heights.data(), CELLS * sizeof(float));
+        MarkTerrainHeightsChanged();
         CreateTerrainNormal();
         CreateTerrainLight();
         return;

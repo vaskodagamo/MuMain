@@ -65,10 +65,22 @@ enum REQUEST_REWARD_CLASSIFY
     RRC_REWARD = 2
 };
 
+// What a requirement/reward text line is, so the UI can style it (the original client colored
+// headings green, unmet requirements red, random rewards violet and everything else gold).
+enum REQUEST_REWARD_TEXT_KIND
+{
+    RRTK_HEADING = 0,
+    RRTK_REQUIREMENT = 1,
+    RRTK_REQUIREMENT_UNMET = 2,
+    RRTK_REWARD = 3,
+    RRTK_RANDOM_REWARD = 4
+};
+
 struct SRequestRewardText
 {
     HFONT m_hFont;
-    DWORD m_dwColor;
+    REQUEST_REWARD_TEXT_KIND m_eKind;
+    DWORD m_dwColor; // m_eKind's color, as the native quest-contents list drew it
     wchar_t m_szText[QM_MAX_REQUEST_REWARD_TEXT_LEN];
     REQUEST_REWARD_CLASSIFY m_eRequestReward; //
     DWORD m_dwType;
@@ -108,6 +120,14 @@ public:
 
     void SetNPC(int nNPCIndex);
     int GetNPCIndex();
+#ifdef _EDITOR
+    // The NPC dialogues by NPC number * 0x10000 + dialogue state, for the
+    // editor's monster tools.
+    const NPCDialogueMap& GetNPCDialogues() const
+    {
+        return m_mapNPCDialogue;
+    }
+#endif
     const wchar_t* GetNPCName();
 
     void SetCurQuestProgress(DWORD dwQuestIndex);
@@ -127,12 +147,12 @@ public:
     bool IsEPRequestRewardState(DWORD dwQuestIndex);
     bool IsQuestByEtc(DWORD dwQuestIndex);
 
-    void SetQuestIndexByEtcList(DWORD* adwSrcQuestIndex, int nIndexCount);
+    void SetQuestIndexByEtcList(const DWORD* adwSrcQuestIndex, int nIndexCount);
     bool IsQuestIndexByEtcListEmpty();
     void SendQuestIndexByEtcSelection();
     void DelQuestIndexByEtcList(DWORD dwQuestIndex);
 
-    void SetCurQuestIndexList(DWORD* adwCurQuestIndex, int nIndexCount);
+    void SetCurQuestIndexList(const DWORD* adwCurQuestIndex, int nIndexCount);
     void AddCurQuestIndexList(DWORD dwQuestIndex);
     void RemoveCurQuestIndexList(DWORD dwQuestIndex);
     bool IsIndexInCurQuestIndexList(DWORD dwQuestIndex);

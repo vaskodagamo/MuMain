@@ -15,9 +15,18 @@ BuxConvert key {0xFC, 0xCF, 0xAB} (the key index restarts at every record), and 
 the ITEM_FIELDS_SIMPLE / ITEM_ATTRIBUTE_FIELDS X-macro of ItemFieldDefs.h with natural C alignment
 (no #pragma pack).
 
+Since the upstream merge of 2026-11 the game reads its items from JSON instead (docs/item-data.md):
+
+    Data/Items/Group*.json              the item definitions, one file per group
+
+read_item_data() gives them in the same shape as read_item_table(), with the fields the catalog
+uses, so both sources feed the same code. The repository ships no Item_<lang>.bmd any more; MuEditor
+still exports them (Export as bmd), which the reader above decodes.
+
 Usage:
-    python3 tools/item_editor/item_table.py src/bin/Data/Local/Eng/item_eng.bmd        # summary
-    python3 tools/item_editor/item_table.py src/bin/Data/Local/Eng/item_eng.bmd --json # every named item
+    python3 tools/item_editor/item_table.py src/bin/Data/Items                         # summary
+    python3 tools/item_editor/item_table.py src/bin/Data/Items --json                  # every named item
+    python3 tools/item_editor/item_table.py <exported>/Item_Eng.bmd                    # a legacy table
 """
 
 import argparse
@@ -241,31 +250,98 @@ def read_add_options(data):
     return options
 
 
+# --- the JSON item data (Data/Items/Group*.json) -------------------------------------------------
+
+FORMAT_JSON = 'json'
+ITEM_DATA_FILES = 'Group*.json'
+ITEM_DATA_FORMAT_VERSION = 1
+NAME_LANGUAGE = 'en'
+# ItemSlot (ItemDefinition.h), by the names of ItemEnumNames.cpp; an item without a slot cannot be equipped.
+NO_ITEM_SLOT = 255
+ITEM_SLOTS = {'mainHand': 0, 'offHand': 1, 'helm': 2, 'armor': 3, 'pants': 4, 'gloves': 5, 'boots': 6,
+              'wings': 7, 'pet': 8, 'pendant': 9, 'ring': 10}
+# classRequirements keys in CLASS_KEYS order.
+CLASS_NAMES = ('darkWizard', 'darkKnight', 'fairyElf', 'magicGladiator', 'darkLord', 'summoner', 'rageFighter')
+
+
+def empty_data_item():
+    """The fields of a number without an item, as an all-zero table record gives them."""
+    return {'Name': '', 'Width': 0, 'Height': 0, 'TwoHand': 0, 'Level': 0, 'RequireLevel': 0,
+            'm_byItemSlot': 0, 'RequireClass': [0] * MAX_CLASS}
+
+
+def item_fields(item, where):
+    """One JSON item -> the table fields the catalog reads (read_item_table's names)."""
+    name = item.get('name', '')
+    if isinstance(name, dict):
+        name = name.get(NAME_LANGUAGE, '')
+    slot = item.get('slot')
+    if slot is not None and slot not in ITEM_SLOTS:
+        raise ItemTableError(f'{where}: unknown slot {slot!r}')
+    classes = item.get('classRequirements', {})
+    unknown = sorted(set(classes) - set(CLASS_NAMES))
+    if unknown:
+        raise ItemTableError(f'{where}: unknown class {unknown[0]!r}')
+    return {'Name': name, 'Width': item.get('width', 0), 'Height': item.get('height', 0),
+            'TwoHand': int(bool(item.get('twoHanded', False))), 'Level': item.get('level', 0),
+            'RequireLevel': item.get('requirements', {}).get('level', 0),
+            'm_byItemSlot': ITEM_SLOTS.get(slot, NO_ITEM_SLOT),
+            'RequireClass': [classes.get(name_, 0) for name_ in CLASS_NAMES]}
+
+
+def read_item_data(folder):
+    """Data/Items/Group*.json -> {'format': 'json', 'items': [8192 field dicts]} (see item_fields)."""
+    items = [empty_data_item() for _ in range(MAX_ITEM)]
+    files = sorted(Path(folder).glob(ITEM_DATA_FILES))
+    if not files:
+        raise ItemTableError(f'{folder}: no {ITEM_DATA_FILES}')
+    for path in files:
+        document = json.loads(path.read_text(encoding='utf-8'))
+        if document.get('formatVersion') != ITEM_DATA_FORMAT_VERSION:
+            raise ItemTableError(f'{path.name}: formatVersion {document.get("formatVersion")!r}, '
+                                 f'expected {ITEM_DATA_FORMAT_VERSION}')
+        group = document['group']
+        for item in document['items']:
+            number = item['number']
+            if not (0 <= group < MAX_ITEM_TYPE and 0 <= number < MAX_ITEM_INDEX):
+                raise ItemTableError(f'{path.name}: item {group}-{number} is outside the item types')
+            items[group * MAX_ITEM_INDEX + number] = item_fields(item, f'{path.name}: item {group}-{number}')
+    return {'format': FORMAT_JSON, 'items': items}
+
+
+def read_items(path):
+    """The items of a Data/Items folder or of an Item_<lang>.bmd file."""
+    path = Path(path)
+    return read_item_data(path) if path.is_dir() else read_item_table(path.read_bytes())
+
+
 def named_items(table):
     """(item_type, fields) for every record with a name."""
     return [(item_type, fields) for item_type, fields in enumerate(table['items']) if fields['Name']]
 
 
 def summary(path):
-    table = read_item_table(Path(path).read_bytes())
+    table = read_items(path)
     named = named_items(table)
-    return {'file': str(path), 'format': table['format'], 'checksum': f'{table["checksum"]:#010x}',
-            'named_items': len(named)}
+    result = {'file': str(path), 'format': table['format'], 'named_items': len(named)}
+    if 'checksum' in table:
+        result['checksum'] = f'{table["checksum"]:#010x}'
+    return result
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(description='Decode a client item table (Item_<lang>.bmd).')
-    parser.add_argument('path', help='Item_<lang>.bmd')
+    parser = argparse.ArgumentParser(description='Read the client items (Data/Items, or an Item_<lang>.bmd).')
+    parser.add_argument('path', help='the Data/Items folder, or an Item_<lang>.bmd')
     parser.add_argument('--json', action='store_true', help='print every named item as JSON')
     args = parser.parse_args(argv)
     try:
         if not args.json:
             print(json.dumps(summary(args.path), indent=1))
             return 0
-        table = read_item_table(Path(args.path).read_bytes())
+        table = read_items(args.path)
         rows = {item_key(*split_type(t)): fields for t, fields in named_items(table)}
         print(json.dumps(rows, indent=1, ensure_ascii=False))
-    except (OSError, ItemTableError) as error:
+    except (OSError, ValueError, KeyError, ItemTableError) as error:
         print(f'error: {error}', file=sys.stderr)
         return 1
     return 0

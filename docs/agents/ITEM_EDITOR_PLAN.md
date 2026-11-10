@@ -453,6 +453,27 @@ Status:
     render opaque and armour stands in bind pose. Once I4 lands, in-client renders are better.
   - Checked: 82 tests with a mock server; no real API call yet (the owner sets the key).
 
+- **Upstream merge (2026-11-10).** Upstream replaced `Item_<lang>.bmd` and its table editor by
+  JSON item data (`Data/Items`, `docs/item-data.md`) and item tools, and moved the editor into a
+  window of its own with a **Windows** menu. What that changed here:
+  - The **Stats table** tab, its columns, the 29-byte name limit and the byte-preserving table save
+    (`ItemFileSnapshot`, `editor_item_table_tests`) are gone with the file they were for. The tab
+    is now **Item data**: it opens upstream's item tools on the selected item, the selection is
+    shared both ways (`g_ItemSelection`), and **Save Items** mirrors every file the save wrote into
+    `src/bin/Data` with a backup (`Editor::Files::MirrorSavedItemData`).
+  - The item tools' search ignores case outside A-Z too (`Editor::Text::FoldCase` in
+    `MuEditor::TextSearch`; upstream's three A-Z-only test checks were changed with it).
+  - The Item Editor is a tool window (`###ItemStudio`, **Windows > Item Editor**); in the studio it
+    still fills the game window. Toolbar functions moved to the editor window's menu bar (UI scale,
+    kept; **Windows > Console**, kept; **Windows > Studio full screen**).
+  - `gen_item_models.py` reads the item models from `Data/Items/Models`, `build_item_catalog.py`
+    the items from `Data/Items`; both regenerated. The links to inventory, hand and event models
+    that upstream now keeps in `Render/Items/ItemDisplay.cpp` tables are no longer derived
+    (extra models 66 -> 35).
+  - **Open:** `render_facts.py` reads C++ that upstream turned into data (`renderStyle`, `glow`,
+    `itemEffect`); `render-facts.json` is the pre-merge one and its repository checks are skipped
+    until the tool reads the data.
+
 ## 8. Later options
 
 - **Stats and names in sync with OpenMU**: an "Attributes" save that also writes a patch for the

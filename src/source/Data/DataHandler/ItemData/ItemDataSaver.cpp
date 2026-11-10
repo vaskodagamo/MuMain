@@ -3,7 +3,6 @@
 #ifdef _EDITOR
 
 #include "ItemDataSaver.h"
-#include "ItemFileSnapshot.h"
 #include "Data/GameData/ItemData/ItemStructs.h"
 #include "Core/Globals/_struct.h"
 #include "Core/Globals/_define.h"
@@ -19,9 +18,7 @@
 #include "Data/DataHandler/ItemData/ItemComparisonMetadata.h"
 #include "UI/Console/MuEditorConsoleUI.h"
 #include "Core/Utilities/StringUtils.h"
-
-// External references
-extern ITEM_ATTRIBUTE* ItemAttribute;
+#include "Data/GameData/ItemData/ItemFileFit.h"
 
 // Comparison function - uses field metadata (NO MACROS!)
 static void CompareItems(const ITEM_ATTRIBUTE& oldItem, const ITEM_ATTRIBUTE& newItem,
@@ -50,65 +47,38 @@ static void CompareItems(const ITEM_ATTRIBUTE& oldItem, const ITEM_ATTRIBUTE& ne
                                changes, changed);
 }
 
-// When item `index` is unchanged since the load, copies its loaded bytes over
-// `record`: decoding them again gives the item exactly as the loader did.
-template <typename TFile>
-static void KeepLoadedBytesIfUnchanged(size_t index, const ITEM_ATTRIBUTE& current, BYTE* record)
+constexpr DWORD ItemFileChecksumKey = 0xE2F1;
+
+static void ToFileRecord(ITEM_ATTRIBUTE_FILE& dest, const ITEM_ATTRIBUTE& src)
 {
-    const BYTE* loaded = ItemFileSnapshot::Record(index);
-    if (loaded == nullptr || ItemFileSnapshot::RecordSize() != sizeof(TFile))
-        return;
-
-    TFile loadedRecord;
-    memcpy(&loadedRecord, loaded, sizeof(loadedRecord));
-    ITEM_ATTRIBUTE loadedItem{};
-    CopyItemAttributeFromSource(loadedItem, loadedRecord);
-
-    std::stringstream ignoredChanges;
-    bool changed = false;
-    CompareItems(loadedItem, current, ignoredChanges, changed);
-    if (!changed)
-        memcpy(record, loaded, sizeof(TFile));
+    CopyItemAttributeToDestination(dest, src);
 }
 
-bool ItemDataSaver::Save(wchar_t* fileName, std::string* outChangeLog)
+static void FromFileRecord(ITEM_ATTRIBUTE& dest, const ITEM_ATTRIBUTE_FILE& src)
 {
-    // A file loaded in the legacy layout (30-byte names) is written back in it, so
-    // a save never converts the game's file behind the user's back.
-    if (ItemFileSnapshot::RecordSize() == sizeof(ITEM_ATTRIBUTE_FILE_LEGACY))
-        return SaveAs<ITEM_ATTRIBUTE_FILE_LEGACY>(fileName, outChangeLog);
-    return SaveAs<ITEM_ATTRIBUTE_FILE>(fileName, outChangeLog);
+    CopyItemAttributeFromSource(dest, src);
 }
 
-size_t ItemDataSaver::MaxNameBytes()
+static std::string GetItemNameUtf8(int index, const ITEM_ATTRIBUTE& item)
 {
-    if (ItemFileSnapshot::RecordSize() == sizeof(ITEM_ATTRIBUTE_FILE_LEGACY))
-        return sizeof(ITEM_ATTRIBUTE_FILE_LEGACY::Name) - 1;
-    return sizeof(ITEM_ATTRIBUTE_FILE::Name) - 1;
+    return ChangeTracker::GetNameUtf8(index, item, MAX_ITEM_NAME);
 }
 
-template <typename TFile>
-bool ItemDataSaver::SaveAs(wchar_t* fileName, std::string* outChangeLog)
+bool ItemDataSaver::Save(const wchar_t* fileName, const ITEM_ATTRIBUTE* items, std::string* outChangeLog)
 {
+    if (const std::vector<ItemFileMisfit> misfits = FindItemFileMisfits(items, MAX_ITEM); !misfits.empty())
+    {
+        if (outChangeLog != nullptr)
+        {
+            *outChangeLog += DescribeItemFileMisfits(misfits);
+        }
+        return false;
+    }
+
     // Create standard save config with item-specific parameters
-    auto config = CreateStandardSaveConfig<ITEM_ATTRIBUTE, TFile>(
-        fileName,
-        MAX_ITEM,
-        ItemAttribute,
-        [](TFile& dest, const ITEM_ATTRIBUTE& src) {
-            CopyItemAttributeToDestination(dest, src);
-        },
-        [](ITEM_ATTRIBUTE& dest, const TFile& src) {
-            CopyItemAttributeFromSource(dest, src);
-        },
-        CompareItems,
-        [](int index, const ITEM_ATTRIBUTE& item) {
-            return ChangeTracker::GetNameUtf8(index, item, MAX_ITEM_NAME);
-        },
-        0xE2F1,  // Item-specific checksum key
-        outChangeLog
-    );
-    config.keepLoadedBytes = KeepLoadedBytesIfUnchanged<TFile>;
+    auto config = CreateStandardSaveConfig<ITEM_ATTRIBUTE, ITEM_ATTRIBUTE_FILE>(
+        fileName, MAX_ITEM, items, ToFileRecord, FromFileRecord, CompareItems, GetItemNameUtf8, ItemFileChecksumKey,
+        outChangeLog);
 
     // Add legacy format support for backwards compatibility with old Item.bmd files
     config.legacyFileStructSize = sizeof(ITEM_ATTRIBUTE_FILE_LEGACY);

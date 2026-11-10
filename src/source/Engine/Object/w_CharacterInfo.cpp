@@ -1,11 +1,9 @@
-// w_CharacterInfo.cpp: implementation of the CHARACTER class.
-//////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
 #include "Engine/Object/w_CharacterInfo.h"
 #include "GameLogic/Skills/SkillManager.h"
 
-#include "UI/NewUI/HUD/NewUIGensRanking.h"
+#include "UI/HUD/GensRanking.h"
 
 // cppcheck-suppress uninitMemberVar
 CHARACTER::CHARACTER()
@@ -33,6 +31,11 @@ void CHARACTER::Initialize()
     HideShadow = false;
     m_bIsSelected = false;
     Decoy = false;
+    SoundOncePlayed = false;
+    SoundsDrawnThisFrame = false;
+    ModelTimerLastTicks.fill(0);
+    ModelTimerTicks = 0;
+    ModelTimersAsked = false;
 
     Class = CLASS_WIZARD;
     Skin = 0;
@@ -49,6 +52,7 @@ void CHARACTER::Initialize()
     m_byGensInfluence = 0;
     PK = 0;
     AttackFlag = 0;
+    ReceivedAttackTargetUnknown = false;
     AttackTime = 0;
     LastAttackEffectTime = -1;
     TargetAngle = 0;
@@ -56,6 +60,7 @@ void CHARACTER::Initialize()
     Run = 0;
     Skill = 0;
     SwordCount = 0;
+    AttackRotation = 0;
     byExtensionSkill = 0;
     m_byDieType = 0;
     StormTime = 0;
@@ -162,7 +167,7 @@ unsigned int CHARACTER::PostMoveProcess_GetCurProcessCount()
     return m_pPostMoveProcess->uiProcessingCount_PostMoveEvent;
 }
 
-bool CHARACTER::PostMoveProcess_IsProcessing()
+bool CHARACTER::PostMoveProcess_IsProcessing() const
 {
     if (m_pPostMoveProcess == NULL)
     {

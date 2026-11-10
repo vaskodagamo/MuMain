@@ -1,13 +1,12 @@
 #include "stdafx.h"
 #include "PosixSignalHandlers.h"
 
-// [VS0-QUAL-SIGNAL-HANDLERS]
-// Story 7.1.2: POSIX Signal Handlers for Crash Diagnostics
+// POSIX signal handlers for crash diagnostics.
 //
-// AC-STD-NFR-1: Only async-signal-safe functions called inside the handler:
+// Only async-signal-safe functions are called inside the handler:
 //   write(), backtrace(), backtrace_symbols_fd(), _exit()
-// AC-STD-NFR-2: Previous handlers preserved for chaining (R8 mitigation)
-// AC-STD-5: PLAT: prefix used in install-time log message
+// Previous handlers are preserved for chaining (R8 mitigation). Install-time log
+// messages use a "PLAT:" prefix.
 
 #include <csignal>
 #include <cstdlib>
@@ -30,7 +29,7 @@
 namespace mu::platform
 {
 
-// Previous handlers stored for chaining (AC-STD-NFR-2 — R8 mitigation)
+// Previous handlers stored for chaining (R8 mitigation)
 static struct sigaction s_oldSIGSEGV; // NOLINT
 static struct sigaction s_oldSIGABRT; // NOLINT
 static struct sigaction s_oldSIGBUS;  // NOLINT
@@ -38,6 +37,21 @@ static struct sigaction s_oldSIGBUS;  // NOLINT
 // Async-signal-safe crash handler.
 // Only write(), backtrace_symbols_fd(), and _exit() are called here.
 // spdlog is NOT safe inside a signal handler — do not call it here.
+// write() is async-signal-safe; a handler can only drop what a failed write did not write.
+static void WriteFromSignalHandler(int fd, const char* data, std::size_t size)
+{
+    while (size > 0)
+    {
+        const ssize_t written = write(fd, data, size);
+        if (written <= 0)
+        {
+            return;
+        }
+        data += written;
+        size -= static_cast<std::size_t>(written);
+    }
+}
+
 static void CrashHandler(int signum, siginfo_t* info, void* context)
 {
     // Re-entry guard: .NET runtime uses SIGSEGV internally — if the previous handler
@@ -84,24 +98,23 @@ static void CrashHandler(int signum, siginfo_t* info, void* context)
     static const int prefixLen = static_cast<int>(sizeof(prefix) - 1);
 
     // Write to stderr (always available, async-signal-safe)
-    write(STDERR_FILENO, prefix, prefixLen);
-    write(STDERR_FILENO, name, nameLen);
-    write(STDERR_FILENO, newline, 1);
+    WriteFromSignalHandler(STDERR_FILENO, prefix, prefixLen);
+    WriteFromSignalHandler(STDERR_FILENO, name, nameLen);
+    WriteFromSignalHandler(STDERR_FILENO, newline, 1);
 
     // Write to MuError.log fd if available (async-signal-safe: write() on raw fd)
     int fd = mu::log::g_errorReportFd;
     if (fd >= 0)
     {
-        write(fd, prefix, prefixLen);
-        write(fd, name, nameLen);
-        write(fd, newline, 1);
+        WriteFromSignalHandler(fd, prefix, prefixLen);
+        WriteFromSignalHandler(fd, name, nameLen);
+        WriteFromSignalHandler(fd, newline, 1);
     }
 
 #ifdef MU_HAS_BACKTRACE
-    // FIX M-3: backtrace()/backtrace_symbols_fd() are not strictly POSIX async-signal-safe,
-    // but are documented as signal-safe by glibc and work in practice on macOS.
-    // Risk: may deadlock on macOS if crash occurs inside dyld lock. Accepted trade-off
-    // for diagnostic value. (Story 7.1.2 Dev Notes §Async-Signal-Safety)
+    // backtrace()/backtrace_symbols_fd() are not strictly POSIX async-signal-safe, but are
+    // documented as signal-safe by glibc and work in practice on macOS. Risk: may deadlock on
+    // macOS if crash occurs inside dyld lock. Accepted trade-off for diagnostic value.
     void* frames[32];
     int count = backtrace(frames, 32);
     if (count > 0)
@@ -114,7 +127,7 @@ static void CrashHandler(int signum, siginfo_t* info, void* context)
     }
 #endif
 
-    // Chain to previous handler (AC-STD-NFR-2 — R8 mitigation: preserves .NET AOT handler).
+    // Chain to previous handler (R8 mitigation: preserves .NET AOT handler).
     // .NET Native AOT uses SIGSEGV for null-reference checks and GC write barriers on arm64.
     // Its handler modifies the signal context (ucontext_t) to resume at managed exception code,
     // then returns. We must return as well so the kernel applies the modified context.
@@ -133,7 +146,7 @@ static void CrashHandler(int signum, siginfo_t* info, void* context)
     }
 
     // No previous handler handled the signal — terminate.
-    // AC-3: Call _exit(1) — not exit() (which runs atexit handlers and may deadlock).
+    // Call _exit(1) — not exit() (which runs atexit handlers and may deadlock).
     _exit(1);
 }
 
@@ -142,7 +155,7 @@ void InstallSignalHandlers()
     // FIX H-1: Guard against double-install. A second call would overwrite s_old* with
     // the CrashHandler pointer itself (the handler installed by the first call), causing
     // recursive CrashHandler invocation on signal delivery (stack overflow).
-    // MuPlatform::Initialize() calls this once; the guard makes it safe regardless.
+    // WinMain() (Winmain.cpp) calls this once; the guard makes it safe regardless.
     static bool s_installed = false;
     if (s_installed)
     {
@@ -174,7 +187,7 @@ void InstallSignalHandlers()
     sigaction(SIGBUS, &act, &s_oldSIGBUS);
 
     // Log install confirmation at install time (safe — not inside the handler)
-    // AC-STD-5: PLAT: prefix for platform diagnostic messages
+    // "PLAT:" prefix for platform diagnostic messages
 #ifdef MU_HAS_DOTNET_AOT
     mu::log::Get("platform")->info("PLAT: signal handler -- installed for SIGABRT, SIGBUS (SIGSEGV left to .NET AOT)");
 #else

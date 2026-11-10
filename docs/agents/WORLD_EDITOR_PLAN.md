@@ -440,6 +440,27 @@ Status:
     pass on map 82 (weak points: an empty central meadow, a road that ends in the rim, hard river
     edges). Windows and Linux were not built.
 
+- **Upstream merge (2026-11-10).** Upstream moved the editor into a window of its own beside the
+  game window (ImGui docking and OS windows, a **Windows** menu instead of the toolbar) and added a
+  **Sounds** tab to the Map Editor. What that changed here:
+  - The Map Editor is a dock tab of the MU Editor window (`MuEditor::Layout`); behind another tab
+    or in a minimized editor window it releases the world as if closed (`ReleaseWorld`).
+    `map-tab` / `gate-show` bring its tab to the front. The gizmo, the Outliner, the New map window
+    and the item windows place themselves by the game window's viewport, because ImGui's
+    coordinates are the desktop's while its windows are OS windows.
+    `MU_EDITOR_IN_GAME_WINDOW=1` keeps every editor window inside the game window (what a frame
+    capture or a scripted screenshot of the game window then shows).
+  - Height and wall edits (brush, undo, scripts, revert) call `MarkTerrainHeightsChanged()`, which
+    upstream's sun shadows read; `CreateTerrainLight_Rect` rebuilds cells with upstream's light mood.
+  - The game HUD is RmlUi now: it stays off in the offline world and in clean captures through
+    `CSystem::SyncMainSceneHudVisibility` (editor builds only).
+  - Gone because upstream made them unnecessary: the editor overlay pipeline with a depth
+    attachment (ImGui has a colour-only pass now), the cameras' debug text guard (the text is gone),
+    the audio retry guard and the stream half of the miniaudio patch (upstream has both).
+  - Not checked after the merge: the control socket's `map-*` commands and `mapctl` against a
+    running client, a height/light brush stroke and the gizmo by hand (no input was injected), the
+    hidden-window frames (`HiddenWindowTarget`) with upstream's `WaitForSwapchain`.
+
 ## 4. Regeneration request contract (M4)
 
 One folder per request, so parallel requests never conflict:

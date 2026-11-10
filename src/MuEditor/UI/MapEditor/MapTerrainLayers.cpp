@@ -77,6 +77,8 @@ void CMapTerrainLayers::RelightHeights(const Editor::Editing::CellRect& heights)
     const int maxY = heights.maxY + NORMAL_REACH;
     CreateTerrainNormal_Rect(minX, minY, maxX, maxY);
     CreateTerrainLight_Rect(minX, minY, maxX, maxY);
+    // What the renderer builds from the heights (the sun shadows' height grid) follows.
+    MarkTerrainHeightsChanged();
 }
 
 void CMapTerrainLayers::RelightCells(const Editor::Editing::CellRect& cells)
@@ -92,7 +94,10 @@ void CMapTerrainLayers::Changed(int layer, const Editor::Editing::CellRect& rect
     else if (layer == MAP_LAYER_LIGHT)
         RelightCells(rect);
     else if (layer == MAP_LAYER_WALL)
+    {
         m_wallsChanged = true;
+        MarkTerrainHeightsChanged(); // as after the height: the walls shape that grid too
+    }
 }
 
 bool CMapTerrainLayers::TakeWallsChanged()

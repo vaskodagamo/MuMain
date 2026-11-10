@@ -14,7 +14,7 @@
 #include "Editing/ObjectEditCommand.h"
 #include "Editing/ObjectTransform.h"
 #include "Engine/Object/w_ObjectInfo.h" // class OBJECT
-#include "UI/NewUI/NewUICommon.h"       // CNewKeyInput: the game's keyboard state
+#include "UI/Core/WindowCommon.h"       // CNewKeyInput: the game's keyboard state
 
 #include "imgui.h"
 
@@ -161,16 +161,16 @@ void CMapObjectEditor::WithholdKeysFromGame()
     if (Editor::Shortcuts::IsTypingText())
         return;
     // Reported as held from before, the key never reads as pressed to the game.
-    SEASON3B::CNewKeyInput* gameKeys = SEASON3B::CNewKeyInput::GetInstance();
+    mu::ui::window::CNewKeyInput* gameKeys = mu::ui::window::CNewKeyInput::GetInstance();
     const bool escapeForEditor = m_escapeForEditor || Editor::Shortcuts::IsPopupOpen(); // Esc closes the popup
     if (escapeForEditor && ImGui::IsKeyPressed(ImGuiKey_Escape, false))
-        gameKeys->SetKeyState(VK_ESCAPE, SEASON3B::CNewKeyInput::KEY_REPEAT);
+        gameKeys->SetKeyState(VK_ESCAPE, mu::ui::window::CNewKeyInput::KEY_REPEAT);
     if (!m_gizmoKeysForEditor)
         return;
     for (const GizmoKey& key : GIZMO_KEYS)
     {
         if (ImGui::IsKeyChordPressed(key.key))
-            gameKeys->SetKeyState(key.virtualKey, SEASON3B::CNewKeyInput::KEY_REPEAT);
+            gameKeys->SetKeyState(key.virtualKey, mu::ui::window::CNewKeyInput::KEY_REPEAT);
     }
 }
 

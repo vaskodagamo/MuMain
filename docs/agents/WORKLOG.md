@@ -1432,3 +1432,53 @@ Soul mixed); 529/529 tests and the tools tests.
 - Done: replaced the recessed blade-tip ring with a planar diagonal cap, rebaked reference colour and padding, refreshed all reviews, source and exports, and reinstalled both owned files in the assigned worktree.
 - Verified: 380 triangles, zero non-manifold edges/degenerate faces, all component normals outward; original attachment preserved. Engine and texture validation pass; expected geometry-only compare difference with unchanged skeleton/action. Corrected preview and final atlas inspected offline.
 - Open: owner review of the corrected candidate in the client. Push remains disabled; no PR or merge.
+
+## 2026-11-10 - Upstream merge: sven-n/MuMain main into the fork (Claude Fable 5.2)
+**Goal:** Merge upstream main (4183 commits ahead, 67 conflicting files) into the fork on
+`merge/upstream-2026-11` with every fork feature working on upstream's current code.
+
+**Done:**
+- Upstream's big changes that mattered: the game UI moved to RmlUi with themes (native option window
+  and three-band HUD removed); items, monsters, effects and sounds became JSON data (`Item_<lang>.bmd`,
+  the item table editor and the item loads in `ZzzOpenData.cpp` are gone); the editor became a window
+  of its own with docking and many new tools; the renderer got a main colour target, anti-aliasing,
+  post-processing and sun shadows; draws take game objects read-only; new control-socket commands and
+  an in-game test runner.
+- Player build: kept the 1920x1080 default window. Dropped the fork's Classic bottom HUD option (the
+  HUD it switched no longer exists; upstream's `RmlTheme` replaces it). The class equip rule, the
+  bone-index clamp, the terrain file readers and the object file code stay.
+- Renderer: kept screen-space lines, the texture read-back, the hidden-window frames (now through
+  upstream's frame set-up, and `WaitForSwapchain` skips a hidden window). Dropped the editor overlay
+  pipeline (ImGui has a colour-only pass upstream). `ReloadImage` / `LoadSeparateImage` moved into
+  upstream's `GlobalBitmapLoad.cpp`.
+- Audio: upstream's own "failed track is not retried" replaces the fork's; the miniaudio patch keeps
+  only the data-buffer fix (upstream's patch has the stream fix).
+- Editor shell: upstream's (`MuEditorCore`, `MuEditorUI`, layout) with the fork's parts on top: item
+  studio, persisted UI scale / console / studio full screen, popup mouse guard, model hot reload,
+  concepts job, view captures. Fork windows place themselves by the game window's viewport.
+- Map Editor: the fork's file with upstream's changes applied (tool-window docking, `ReleaseWorld`,
+  `Shortcut`, keyboard selection, `GetServerMap`, the Sounds tab, `MarkTerrainHeightsChanged`).
+- Item Editor: the Stats table went with `Item_<lang>.bmd`; the tab is **Item data** (opens upstream's
+  item tools, shared selection, Save Items mirrored into the checkout). Unicode search ported into
+  upstream's `TextSearch`. `ItemFileSnapshot` and `editor_item_table_tests` removed.
+- Tools: `gen_item_models.py` and `build_item_catalog.py` read the JSON item data; `item_models.json`
+  and `catalog.json` regenerated.
+- New: `MU_EDITOR_IN_GAME_WINDOW=1` keeps the editor inside the game window.
+
+**Verified:** both presets configure and build on the Mac (no new Homebrew packages). ctest:
+`macos-arm64-mueditor` 3242/3242 (2 GPU tests skip by design), `macos-arm64` 2642/2642; item tools
+unittests 143 OK (2 skipped). Offline runs with frame captures: `--editor --world 1` (Lorencia; the
+Map Editor with all tabs, checked with the editor in the game window), `--editor --items` (studio,
+Browse with thumbnails; the 3D preview of the Short Sword checked with a temporary pre-selection),
+the player build to the login scene.
+
+**Open / next:**
+- `render_facts.py` needs a port to upstream's item render data; `render-facts.json` is the
+  pre-merge file and its repository checks are skipped.
+- Extra item models (inventory, hand, event variants) are no longer derived by `gen_item_models.py`.
+- Not exercised: brushes, gizmo and saves by hand; the control socket's `map-*` commands and `mapctl`
+  against a running client; hidden-window frames; Item data's Save Items mirror on a real edit;
+  Windows and Linux builds.
+- Login buttons and the game cursor draw as noise on this Mac, also in an unchanged upstream build.
+- The macOS editor preset does not turn on upstream's in-game tests (`ENABLE_IN_GAME_TESTS`), unlike
+  upstream's Windows and Linux editor presets; `macos-arm64-in-game-tests` exists for them.

@@ -10,6 +10,12 @@ namespace Core::Input
     {
         bool g_leftMouseButtonPressEdge = false;
 
+#ifdef _EDITOR
+        OtherWindowQuery g_otherWindowQuery = nullptr;
+#endif
+
+        } // namespace
+
         // Map a Win32 virtual-key code (or ASCII letter/digit) to an SDL
         // scancode. Returns SDL_SCANCODE_UNKNOWN for keys we don't translate.
         SDL_Scancode VkToScancode(int vk)
@@ -19,6 +25,7 @@ namespace Core::Input
             if (vk >= '1' && vk <= '9') return static_cast<SDL_Scancode>(SDL_SCANCODE_1 + (vk - '1'));
             if (vk == '0') return SDL_SCANCODE_0;
 
+            // clang-format off: a table, one key a line.
             switch (vk)
             {
             case VK_UP:      return SDL_SCANCODE_UP;
@@ -49,10 +56,11 @@ namespace Core::Input
             case VK_F11:     return SDL_SCANCODE_F11;
             case VK_F12:     return SDL_SCANCODE_F12;
             case VK_SNAPSHOT: return SDL_SCANCODE_PRINTSCREEN;
+            case VK_MENU:    return SDL_SCANCODE_LALT;
             default:         return SDL_SCANCODE_UNKNOWN;
             }
+            // clang-format on
         }
-    }
 
     void RecordLeftMouseButtonPressEdge()
     {
@@ -72,6 +80,12 @@ namespace Core::Input
         {
             return true;
         }
+#ifdef _EDITOR
+        if (g_otherWindowQuery != nullptr && g_otherWindowQuery(virtualKey))
+        {
+            return false;
+        }
+#endif
 
         // Poll live input from SDL on every platform. The Win32 path used
         // GetAsyncKeyState because the old child EDIT controls stole keyboard
@@ -98,4 +112,11 @@ namespace Core::Input
         const bool* state = SDL_GetKeyboardState(nullptr);
         return state != nullptr && state[sc];
     }
+
+#ifdef _EDITOR
+    void SetOtherWindowQuery(OtherWindowQuery query)
+    {
+        g_otherWindowQuery = query;
+    }
+#endif
 }

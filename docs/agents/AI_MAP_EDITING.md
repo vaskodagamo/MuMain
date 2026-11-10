@@ -783,7 +783,7 @@ map's unsaved edits, selection and undo history without asking; `mapctl open` ch
 first and refuses while there are unsaved edits (`--discard` opens anyway).
 
 **`map-tab`** `{"tab": "Texture"}`: shows the Map Editor on that tab (Texture, Objects, Height,
-Attribute, Light, Gates, T. Browse, Minimap, O. Browse, Assets; any case). The Gates tab, which
+Attribute, Light, Gates, T. Browse, Minimap, O. Browse, Assets, Sounds; any case). The Gates tab, which
 `gate-show` opens, draws the walkability and the gate areas on the ground, also in clean shots;
 `mapctl tab texture` takes them away again.
 

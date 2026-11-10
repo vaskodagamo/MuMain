@@ -6,11 +6,87 @@ mu_add_test(
 )
 
 mu_add_test(
+    NAME test_byte_order
+    SOURCES
+        test_byte_order.cpp
+    LINK_LIBS
+        MuClient
+)
+
+mu_add_test(
+    NAME test_illusion_temple_result
+    SOURCES
+        test_illusion_temple_result.cpp
+        ${CMAKE_SOURCE_DIR}/src/source/Network/Server/IllusionTempleResult.cpp
+)
+
+mu_add_test(
+    NAME test_transform_viewport_entry
+    SOURCES
+        test_transform_viewport_entry.cpp
+    LINK_LIBS
+        MuClient
+)
+
+mu_add_test(
+    NAME test_transform_appearance
+    SOURCES
+        test_transform_appearance.cpp
+        ${CMAKE_SOURCE_DIR}/src/source/App/Platform/Windows/Winmain.cpp
+    LINK_LIBS MuClient
+)
+target_compile_definitions(test_transform_appearance PRIVATE MU_TEST_DATA_DIR="${CMAKE_SOURCE_DIR}/src/bin/Data")
+
+mu_add_test(
     NAME test_connection_library_load
     SOURCES
         test_connection_library_load.cpp
     LINK_LIBS
         MuClient
+)
+
+mu_add_test(
+    NAME test_endpoint_for_log
+    SOURCES
+        test_endpoint_for_log.cpp
+    LINK_LIBS
+        MuClient
+)
+
+mu_add_test(
+    NAME test_reachability_probe
+    SOURCES
+        test_reachability_probe.cpp
+    LINK_LIBS
+        MuClient
+)
+
+mu_add_test(
+    NAME test_login_scene_reconnect
+    SOURCES
+        test_login_scene_reconnect.cpp
+    LINK_LIBS
+        MuClient
+)
+
+# The game's side of that reconnect reads the login scene's windows, which need
+# the client globals of Winmain.cpp.
+mu_add_test(
+    NAME test_game_login_scene_link
+    SOURCES
+        test_game_login_scene_link.cpp
+        ${CMAKE_SOURCE_DIR}/src/source/App/Platform/Windows/Winmain.cpp
+    LINK_LIBS
+        MuClient
+)
+
+find_package(Threads REQUIRED)
+mu_add_test(
+    NAME test_handle_registry
+    SOURCES
+        test_handle_registry.cpp
+    LINK_LIBS
+        Threads::Threads
 )
 
 # Control socket tests only exist in builds that enable it. Without it, the
@@ -25,10 +101,24 @@ if(ENABLE_CONTROL_SOCKET)
             MuClient
     )
 
+    # The target lookup reads the character table, which needs the client
+    # globals of Winmain.cpp.
+    mu_add_test(
+        NAME test_control_targets
+        SOURCES
+            test_control_targets.cpp
+            ${CMAKE_SOURCE_DIR}/src/source/App/Platform/Windows/Winmain.cpp
+        LINK_LIBS
+            MuClient
+    )
+
+    # The kind names come from the object code, which needs the client
+    # globals of Winmain.cpp.
     mu_add_test(
         NAME test_control_events
         SOURCES
             test_control_events.cpp
+            ${CMAKE_SOURCE_DIR}/src/source/App/Platform/Windows/Winmain.cpp
         LINK_LIBS
             MuClient
     )
@@ -55,12 +145,9 @@ mu_add_test(
 )
 
 if(DOTNET_EXECUTABLE)
-    add_test(
-        NAME login_diagnostics_contract
-        COMMAND "${CMAKE_COMMAND}"
-            "-DMU_LOGIN_SOURCE=${CMAKE_SOURCE_DIR}/ClientLibrary/ConnectionManager.ClientToServer.Custom.cs"
-            -P "${CMAKE_CURRENT_SOURCE_DIR}/test_login_diagnostics.cmake"
-    )
+    # Each build folder builds the self-checks into its own folder: two build folders testing at once would
+    # otherwise write the same bin/ and obj/ next to the projects.
+    set(MU_DOTNET_SELF_CHECK_ARTIFACTS "${CMAKE_CURRENT_BINARY_DIR}/dotnet-self-checks")
 
     add_test(
         NAME dotnet_binding_generator
@@ -68,6 +155,7 @@ if(DOTNET_EXECUTABLE)
             "${DOTNET_EXECUTABLE}" run
             --project ${CMAKE_CURRENT_SOURCE_DIR}/binding_generator_self_check/BindingGeneratorSelfCheck.csproj
             --configuration Release
+            --artifacts-path ${MU_DOTNET_SELF_CHECK_ARTIFACTS}
             -- ${CMAKE_SOURCE_DIR}/ClientLibrary/GenerateBindingsHeader.xslt
                ${CMAKE_SOURCE_DIR}/ClientLibrary/GenerateFunctions.xslt
                ${CMAKE_SOURCE_DIR}/src/source/Dotnet
@@ -79,8 +167,19 @@ if(DOTNET_EXECUTABLE)
             "${DOTNET_EXECUTABLE}" run
             --project ${CMAKE_CURRENT_SOURCE_DIR}/managed_log_self_check/ManagedLogSelfCheck.csproj
             --configuration Release
+            --artifacts-path ${MU_DOTNET_SELF_CHECK_ARTIFACTS}
     )
     set_tests_properties(managed_log_callback PROPERTIES TIMEOUT 30)
+
+    add_test(
+        NAME connect_failure_description
+        COMMAND "${CMAKE_COMMAND}" -E env --unset=Platform
+            "${DOTNET_EXECUTABLE}" run
+            --project ${CMAKE_CURRENT_SOURCE_DIR}/connect_failure_self_check/ConnectFailureSelfCheck.csproj
+            --configuration Release
+            --artifacts-path ${MU_DOTNET_SELF_CHECK_ARTIFACTS}
+    )
+    set_tests_properties(connect_failure_description PROPERTIES TIMEOUT 30)
 
     add_test(
         NAME outbound_flush_loop
@@ -88,6 +187,7 @@ if(DOTNET_EXECUTABLE)
             "${DOTNET_EXECUTABLE}" run
             --project ${CMAKE_CURRENT_SOURCE_DIR}/outbound_sender_self_check/OutboundSenderSelfCheck.csproj
             --configuration Release
+            --artifacts-path ${MU_DOTNET_SELF_CHECK_ARTIFACTS}
     )
     set_tests_properties(outbound_flush_loop PROPERTIES TIMEOUT 30)
 endif()

@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 """Generate tools/item_editor/item_models.json: which model files the client loads for each item.
 
-The client has no data file for this; the mapping is C++ code. This script runs that code
-symbolically (cpp_source.py / cpp_runner.py) and writes the result:
+The item models themselves are data: src/bin/Data/Items/Models/Group*.json names each item's
+model file and texture folders, directly (`file`, `textureFolders`) or through a shared model
+(`model`, an entry of SharedModels.json); see docs/item-data.md, "Item models". The models that
+are not items (bodies, per-class armour replacements, hand models) are still loaded by C++ code,
+which this script runs symbolically (cpp_source.py / cpp_runner.py):
 
 - OpenPlayers, OpenPlayerTextures, OpenItems, OpenItemTextures (Engine/Object/ZzzOpenData.cpp, in
   the order OpenBasicData calls them), including the member calls they make
@@ -44,6 +47,9 @@ OUTPUT = HERE / 'item_models.json'
 SCHEMA = 'mu-item-models/1'
 
 GLOBAL_HEADERS = ('Core/Globals/_define.h', 'Core/Globals/_enum.h')
+ITEM_MODEL_DATA = 'Data/Items/Models'
+ITEM_MODEL_FILES = 'Group*.json'
+SHARED_MODEL_FILE = 'SharedModels.json'
 OPEN_DATA = 'Engine/Object/ZzzOpenData.cpp'
 LOAD_FUNCTIONS = ('OpenPlayers', 'OpenPlayerTextures', 'OpenItems', 'OpenItemTextures')
 SOCKET_FILE = 'Network/Server/SocketSystem.cpp'
@@ -152,6 +158,30 @@ class Generator:
                 if folder not in model['texture_dirs']:
                     model['texture_dirs'].append(folder)
         return models
+
+    def add_item_data_models(self, models):
+        """Adds the item models of Data/Items/Models (see the module text) to `models`."""
+        folder = self.data_parent / ITEM_MODEL_DATA
+        shared_document = json.loads((folder / SHARED_MODEL_FILE).read_text(encoding='utf-8'))
+        shared = {entry['name']: entry for entry in shared_document['models']}
+        for path in sorted(folder.glob(ITEM_MODEL_FILES)):
+            document = json.loads(path.read_text(encoding='utf-8'))
+            source = f'{ITEM_MODEL_DATA}/{path.name}'
+            for entry in document['models']:
+                key = f'{document["group"]}-{entry["number"]}'
+                loaded_by, files = source, entry
+                if 'model' in entry:
+                    if entry['model'] not in shared:
+                        raise Unresolved(f'{source}: item {key} names the shared model {entry["model"]!r}, '
+                                         f'which {SHARED_MODEL_FILE} does not have')
+                    loaded_by, files = f'{source} -> {SHARED_MODEL_FILE} ({entry["model"]})', shared[entry['model']]
+                if 'file' not in files:
+                    continue
+                model_type = self.model_item + document['group'] * self.max_index + entry['number']
+                load = {'referenced': files['file'].replace('\\', '/'), 'loaded_by': loaded_by}
+                texture_dirs = [DATA_PREFIX + folder_name.replace('\\', '/').strip('/')
+                                for folder_name in files.get('textureFolders', [])]
+                models[model_type] = {'load': load, 'earlier': [], 'texture_dirs': texture_dirs}
 
     def model_file(self, call):
         directory, name = call.args[1], call.args[2]
@@ -289,6 +319,7 @@ class Generator:
     def build(self):
         runner = self.run_loads()
         models = self.collect_models(runner)
+        self.add_item_data_models(models)
         items, other = {}, {}
         for model_type, model in models.items():
             if model['load'] is None:
@@ -326,7 +357,8 @@ class Generator:
         return {
             'schema': SCHEMA,
             'generated_by': 'tools/item_editor/gen_item_models.py',
-            'sources': sorted({f'src/source/{p}' for p in list(self.sources) + list(GLOBAL_HEADERS)}),
+            'sources': sorted({f'src/source/{p}' for p in list(self.sources) + list(GLOBAL_HEADERS)}
+                              | {f'src/bin/{ITEM_MODEL_DATA}'}),
             'macros': dict(sorted(self.consulted.items())),
             'counts': {'items': len(items), 'extra_models': sum(len(i['extra_models']) for i in items.values()),
                        'other_models': len(other_models), 'missing_files': len(missing)},

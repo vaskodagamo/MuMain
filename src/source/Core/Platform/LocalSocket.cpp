@@ -1,5 +1,7 @@
 #include "Core/Platform/LocalSocket.h"
 
+#include "Core/Platform/NonBlockingSocket.h"
+
 #include <cstring>
 
 #ifdef _WIN32
@@ -28,12 +30,6 @@ constexpr int SendFlags = 0;
 constexpr int SendFlags = MSG_NOSIGNAL;
 #endif
 
-bool SetNonBlocking(SOCKET handle)
-{
-    u_long nonBlocking = 1;
-    return ioctlsocket(handle, FIONBIO, &nonBlocking) != SOCKET_ERROR;
-}
-
 // macOS: older kernels ignore MSG_NOSIGNAL, so the accepted socket also
 // carries the per-socket option Apple's stack has always honoured; and a local
 // stream socket starts there with 8 KiB of send buffer, which lets a large
@@ -57,15 +53,6 @@ bool ConnectPending(int error)
     return error == WSAEWOULDBLOCK || error == WSAEINPROGRESS;
 #else
     return error == EINPROGRESS || error == EAGAIN || error == EWOULDBLOCK;
-#endif
-}
-
-bool WouldBlock(int error)
-{
-#ifdef _WIN32
-    return error == WSAEWOULDBLOCK;
-#else
-    return error == EWOULDBLOCK || error == EAGAIN || error == EINTR;
 #endif
 }
 
@@ -187,7 +174,7 @@ bool LocalSocketConnection::ReadAvailable()
             return true;
         }
 
-        if (WouldBlock(WSAGetLastError()))
+        if (NonBlockingSocket::WouldBlock(WSAGetLastError()))
         {
             return true;
         }
@@ -278,7 +265,7 @@ bool LocalSocketConnection::Flush()
             continue;
         }
 
-        if (sent < 0 && WouldBlock(WSAGetLastError()))
+        if (sent < 0 && NonBlockingSocket::WouldBlock(WSAGetLastError()))
         {
             // Peer is not reading yet; the rest goes out on a later poll.
             return true;
@@ -411,7 +398,7 @@ bool SomethingIsListening(const std::string& path)
     // very case this probe detects. If the mode cannot be changed the probe
     // is abandoned rather than run blocking: not detecting a second client is
     // better than refusing to start.
-    if (!SetNonBlocking(probe))
+    if (!NonBlockingSocket::Enable(probe))
     {
         closesocket(probe);
         return true;
@@ -545,7 +532,7 @@ bool LocalSocketListener::Listen(const std::string& path, std::string& error)
 
     ApplyOwnerOnlyMode(handle, path);
 
-    if (!SetNonBlocking(handle))
+    if (!NonBlockingSocket::Enable(handle))
     {
         error = "setting the control socket non-blocking failed: " + DescribeLastSocketError();
         closesocket(handle);
@@ -588,7 +575,7 @@ std::unique_ptr<LocalSocketConnection> LocalSocketListener::Accept()
         return nullptr;
     }
 
-    if (!SetNonBlocking(accepted))
+    if (!NonBlockingSocket::Enable(accepted))
     {
         closesocket(accepted);
         return nullptr;
