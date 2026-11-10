@@ -14,8 +14,8 @@ agent should know before touching the code again:
 
 - **Items are data.** `Data/Items/*.json` and `Data/Items/Models/*.json` replace `Item_<lang>.bmd`
   and the item loads in `ZzzOpenData.cpp` ([docs/item-data.md](../item-data.md)); monsters, effects,
-  sounds and maps' object sounds are data too. The fork's item tools read that data now; only
-  `render_facts.py` is still to be ported (see `ITEM_EDITOR_PLAN.md`, Status).
+  sounds and maps' object sounds are data too. The fork's item tools read that data now,
+  `render_facts.py` and the extra item models included (see `ITEM_EDITOR_PLAN.md`, Status).
 - **The game UI is RmlUi** with themes (`[UI] RmlTheme`, Options > Interface): the native option
   window and the three-band bottom HUD are gone, and with them the fork's **Classic bottom HUD**
   option. `RmlTheme=classic` is upstream's classic interface.

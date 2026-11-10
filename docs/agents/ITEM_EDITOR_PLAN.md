@@ -467,12 +467,31 @@ Status:
     still fills the game window. Toolbar functions moved to the editor window's menu bar (UI scale,
     kept; **Windows > Console**, kept; **Windows > Studio full screen**).
   - `gen_item_models.py` reads the item models from `Data/Items/Models`, `build_item_catalog.py`
-    the items from `Data/Items`; both regenerated. The links to inventory, hand and event models
-    that upstream now keeps in `Render/Items/ItemDisplay.cpp` tables are no longer derived
-    (extra models 66 -> 35).
-  - **Open:** `render_facts.py` reads C++ that upstream turned into data (`renderStyle`, `glow`,
-    `itemEffect`); `render-facts.json` is the pre-merge one and its repository checks are skipped
-    until the tool reads the data.
+    the items from `Data/Items`; both regenerated.
+  - **Extra models (ported 2026-11-10).** `gen_item_models.py` follows the functions `OpenItems`
+    calls (`OpenItemEffectModels`: event models, the Rage Fighter parts), reads the inventory
+    models from `Render/Items/ItemDisplay.cpp` (`ArmorInventoryModels`; `FindInventoryModel`
+    evaluated for every item at every level) and the unequipped body parts from
+    `Engine/Object/PlayerBodyModels` (the original Season 6 set). All 66 extra model links and
+    all 106 other models of the pre-merge table are back; seven inventory conditions now name
+    their levels, and the Storm Hard Glove hand models gained upstream's second texture folder.
+  - **Render facts (ported 2026-11-10).** `render_facts.py` reads each item's model data
+    (`renderStyle`, `itemEffect`, `glow`, `noneBlendMeshes`), the render styles that are data
+    (`Data/Effects/RenderStyles.json`, layer by layer as `DrawRenderStyle` draws them) and what
+    is still code: `ItemObjectAttribute`, the named render styles and item effects of
+    `Render/Items` (with their local variables and `HideSkin` decided per context),
+    `ApplyEventModelEffect`, `RenderModelWithoutStyle`, the worn and held effects.
+    `render-facts.json` is regenerated and its repository checks run again. Against the
+    pre-merge file: 846 of 889 items have the same per-mesh modes; 42 differ because the new
+    reading decides what the old one left `unverified` or missed (armour that shows fewer meshes
+    or an inventory texture where the skin is hidden, the lucky helms), one through the
+    catalog. 851 items are `from-code`, 15 `verified-in-client` (checked before the merge, not
+    repeated), 23 `unverified` (17 pets and mounts, ammunition, level variants).
+  - **Open:** the client checks of the 15 verified items were made before the merge; the
+    level-variant event models are still listed for the inventory only, though the ground draws
+    them too (`Engine::Items::Drops::DrawnModel`); the two event models of (14,12)
+    (`GetDrawnModel`) and items without a model entry (Wizard's Ring, Weapon of Archangel) are not
+    in the catalog.
 
 ## 8. Later options
 

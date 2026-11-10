@@ -2,15 +2,21 @@
 
 This is a port of the engine's rules, not a renderer. It answers, for one mesh of an item model and
 one render call of the client's item code, whether the mesh is drawn, with which blend state and
-with which texture. render_facts.py feeds it the calls it finds in the C++ (render_code.py) and the
-mesh facts from the BMD; the result is the per-mesh draw mode in render-facts.json.
+with which texture. render_facts.py feeds it the calls it finds in the C++ (render_code.py) and in
+the render styles that are data (Data/Effects/RenderStyles.json), and the mesh facts from the BMD;
+the result is the per-mesh draw mode in render-facts.json.
 
 Sources (line numbers are resolved at build time from the anchors in render_facts.py):
 - texture name flags: TextureScriptParsing::parsingTScriptA (Render/Sprites/TextureScript.cpp),
-  applied per mesh by BMD::Open2 (Render/Models/ZzzBMD.cpp) and honoured by BMD::RenderBody;
+  applied per mesh by BMD::Open2 (Render/Models/ZzzBMD.cpp) and honoured by BMD::RenderBody
+  (IsMeshHidden, RenderScriptedMesh);
+- which material a draw gets: ResolveMaterial and BMD::DrawMesh (Render/Models/ZzzBMD.cpp); which
+  mesh is drawn at all: BMD::DrawnMesh (a hidden texture never; skin and hair not with HideSkin,
+  judged by the texture the draw binds);
 - file kinds: CLoadData::OpenTexture (Data/DataHandler/LoadData.cpp): a name starting with "hid" is
-  never loaded (BITMAP_HIDE), "ski"/"level" marks skin and "hair" marks hair; a .tga is decoded with
-  4 components (CGlobalBitmap::OpenTga), a .jpg with 3 (CGlobalBitmap::OpenJpegTurbo);
+  never loaded (BITMAP_HIDE, Data::Items::IsHiddenTexture), "ski"/"level" marks skin and "hair"
+  marks hair (MarkSkinAndHair); a .tga is decoded with 4 components (CGlobalBitmap::LoadTgaFile), a
+  .jpg with 3 (CGlobalBitmap::LoadJpegFile);
 - blend states: EnableAlphaBlend (GL_ONE, GL_ONE: additive, no depth write), EnableAlphaTest
   (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA with texels at alpha <= 0.25 discarded, depth write on),
   DisableAlphaBlend (opaque), EnableAlphaBlendMinus (subtractive) in
@@ -177,7 +183,11 @@ class DrawCall:
     mesh: int = None
     alpha: Value = field(default_factory=lambda: Value(1.0))
     hidden: Value = field(default_factory=lambda: Value(-1))
-    texture: str = ''        # an engine BITMAP_* the call binds instead of the mesh's own texture
+    texture: str = ''        # an engine BITMAP_* or a texture file the call binds instead of the mesh's own
+    # Whether the bound texture has an alpha channel, when the call binds a texture file (a render
+    # style layer); None: not known, the mesh's own texture decides as before.
+    texture_has_alpha: bool = None
+    explicit_texture: bool = False  # the call binds a texture of its own, known or not
     uv_animated: bool = False
     line: int = 0
     unknown: tuple = ()      # argument texts the evaluator could not read
@@ -193,6 +203,9 @@ class Pass:
     rule: str         # which BMD::RenderMesh branch decided it
     note: str = ''
     conditional: bool = False  # the call runs only under a runtime condition
+    # The pass binds a texture other than the mesh's own whose file is not known: whether it is
+    # opaque or cut out by its alpha was taken from the mesh's own texture and may be wrong.
+    unsure: bool = False
 
 
 def _has(flags, name):
@@ -210,6 +223,13 @@ def _texture_of(call, chrome=False):
     return OWN_TEXTURE
 
 
+def _has_alpha(call, mesh):
+    """Whether the texture the call draws the mesh with has an alpha channel (4 components)."""
+    if call.texture and call.texture_has_alpha is not None:
+        return call.texture_has_alpha
+    return mesh.has_alpha
+
+
 def _alpha_mode(call, mesh):
     """EnableAlphaTest when the call's alpha is below 1 or the texture has alpha, else opaque. A call
     alpha below 1 (or one that changes over time) makes the whole mesh see-through: blended-alpha;
@@ -217,7 +237,7 @@ def _alpha_mode(call, mesh):
     partial = call.alpha.known and call.alpha.number < FULL_ALPHA
     if partial or not call.alpha.known:
         return ALPHA_BLEND
-    if mesh.has_alpha:
+    if _has_alpha(call, mesh):
         return ALPHA_TEST
     return OPAQUE
 
@@ -227,7 +247,9 @@ def classify(call, mesh, blend, hide_skin):
     for a bright mesh), following BMD::RenderMesh branch by branch. None when the mesh is not drawn."""
     if mesh.never_drawn:
         return None
-    if hide_skin and mesh.skin_or_hair:
+    # BMD::DrawnMesh judges skin and hair by the texture the draw binds: a call with a texture of
+    # its own draws the mesh also where the skin is hidden.
+    if hide_skin and mesh.skin_or_hair and not (call.texture or call.explicit_texture):
         return None
     flags = call.flags
     blend_matches = blend.known and (blend.number <= -2 or blend.number == mesh.texture_slot)
@@ -259,9 +281,11 @@ def classify(call, mesh, blend, hide_skin):
             mode = SUBTRACT
         else:
             mode = _alpha_mode(call, mesh)
-        return Pass(mesh.index, mode, _texture_of(call), call.line, 'textured pass')
+        unsure = bool(call.texture or call.explicit_texture) and call.texture_has_alpha is None \
+            and mode in (OPAQUE, ALPHA_TEST)
+        return Pass(mesh.index, mode, _texture_of(call), call.line, 'textured pass', unsure=unsure)
     if _has(flags, RENDER_BRIGHT):
-        if mesh.has_alpha:
+        if _has_alpha(call, mesh):
             return None
         return Pass(mesh.index, ADDITIVE, 'none', call.line, 'bright pass (untextured)')
     return Pass(mesh.index, UNKNOWN, _texture_of(call), call.line, 'no RENDER_TEXTURE flag')

@@ -21,11 +21,11 @@ The tools that build these files live in [`tools/item_editor/`](../../tools/item
 
 | Tool | Writes | What it does |
 |------|--------|--------------|
-| `gen_item_models.py` | `tools/item_editor/item_models.json` | Runs the client's C++ model-loading code (`OpenPlayers`, `OpenItems`, their texture functions and the member loaders they call) symbolically and records, per item, the BMD file, the folders its textures come from and the extra models the engine swaps in. |
+| `gen_item_models.py` | `tools/item_editor/item_models.json` | Reads the item model data (`src/bin/Data/Items/Models`), runs the client's C++ model-loading code (`OpenPlayers`, `OpenItems`, their texture functions and the functions and member loaders they call) symbolically and records, per item, the BMD file, the folders its textures come from and the extra models the engine swaps in: class variants, the Rage Fighter hand models, and the inventory models of `Render/Items/ItemDisplay.cpp` (`ArmorInventoryModels`, and `FindInventoryModel` evaluated for every item and level). |
 | `item_table.py` | - | Decodes `Item_<lang>.bmd` (legacy 30-byte and current 50-byte names, BuxConvert XOR, checksum), `ItemSetType.bmd` and `ItemAddOption.bmd`. |
 | `export_openmu_items.py` | `openmu-items.json` | Reads OpenMU's item definitions from the admin backup or the local database container. |
 | `build_item_catalog.py` | `catalog.json` | Joins all of the above with `bmdconv info` of every model and the git history, and computes tiers (`tiers.py`). |
-| `render_facts.py` | `render-facts.json` | Reads the client's item render code (`render_code.py`), applies `BMD::RenderMesh`'s rules (`render_rules.py`) to every mesh of every catalog model and merges the facts checked by hand (`render_notes.py`); see "How the game draws items". |
+| `render_facts.py` | `render-facts.json` | Reads each item's model data (`renderStyle`, `itemEffect`, `glow`), the render styles that are data (`src/bin/Data/Effects/RenderStyles.json`) and what is still code (`render_code.py`), applies `BMD::RenderMesh`'s rules (`render_rules.py`) to every mesh of every catalog model and merges the facts checked by hand (`render_notes.py`); see "How the game draws items". |
 | `concepts.py` | `concepts/<key>/` (picks), `out/item-concepts/` | Concept images through the OpenAI Images API, with reference renders, cost caps and a contact sheet; see [`concepts/README.md`](concepts/README.md). |
 
 ## Rebuilding
@@ -36,7 +36,8 @@ Run on `main` after pulling, from the repository root. `bmdconv` comes from the 
 `$MU_BMDCONV` or under `out/build/*/tools/bmdconv/*/`.
 
 ```bash
-# 1. only after a change to the C++ load code (ZzzOpenData.cpp and friends) or to the Data folders
+# 1. only after a change to the item model data (src/bin/Data/Items/Models), the C++ load code
+#    (ZzzOpenData.cpp and friends), Render/Items/ItemDisplay.cpp or to the Data folders
 python3 tools/item_editor/gen_item_models.py
 # 2. optional: refresh the server facts (read-only; the OpenMU database container must be running)
 python3 tools/item_editor/export_openmu_items.py --postgres database
@@ -44,8 +45,9 @@ python3 tools/item_editor/export_openmu_items.py --postgres database
 python3 tools/item_editor/export_openmu_items.py --backup ~/Downloads/openmu-backup.zip
 # 3. the catalog
 python3 tools/item_editor/build_item_catalog.py --bmdconv out/build/macos-arm64/tools/bmdconv/Release/bmdconv
-# 4. how the game draws the items (after the catalog; after a change to the item render code in
-#    ZzzObject.cpp / ZzzCharacter.cpp, to render_notes.py or to a model)
+# 4. how the game draws the items (after the catalog; after a change to the item model data, to
+#    Data/Effects/RenderStyles.json, to the item render code in Render/Items, ZzzObject.cpp or
+#    ZzzCharacter.cpp, to render_notes.py or to a model)
 python3 tools/item_editor/render_facts.py
 # check only (exit 1 when a file is out of date)
 python3 tools/item_editor/gen_item_models.py --check
@@ -82,11 +84,14 @@ it as the **Drawn** line of an item's details.
 
 What makes a mesh blended, in the engine's order:
 
-1. **The item's own code.** `ItemObjectAttribute` gives some types a blend mesh (`BlendMesh 0`:
-   Wings of Elf, Wings of Spirits, Small Wings of Elf; `BlendMesh 1`: Lighting Sword, the Serpent,
-   Bronze and Dragon shields, ...; `-2`: every mesh, e.g. the Staff of Resurrection, Chaos Nature
-   Bow, Saint Crossbow). The per-type branches of `RenderPartObjectBody` draw single meshes with
-   `RENDER_BRIGHT` (additive) or at partial alpha (the 3rd wings, Flameberge, Elemental Shield, ...).
+1. **The item's own look.** `ItemObjectAttribute` (still code) gives some types a blend mesh
+   (`BlendMesh 0`: Wings of Elf, Wings of Spirits, Small Wings of Elf; `BlendMesh 1`: Lighting
+   Sword, the Serpent, Bronze and Dragon shields, ...; `-2`: every mesh, e.g. the Staff of
+   Resurrection, Chaos Nature Bow, Saint Crossbow). The item's **render style** (`renderStyle` in
+   `src/bin/Data/Items/Models`, see [`docs/item-data.md`](../../docs/item-data.md)) draws single
+   meshes glowing (additive) or at partial opacity (the 3rd wings, Flameberge, Elemental Shield,
+   ...): a style is layers in `src/bin/Data/Effects/RenderStyles.json`, or a function of
+   `Render/Items/ItemRenderStyles.cpp` for the looks that have not moved to data yet.
 2. **The texture name.** In the default draw (`RenderBody`) an `_R` mesh is its own blend mesh,
    i.e. additive (`NEWW_R.jpg` of the Wings of Soul). The flags are read after the **first**
    underscore, at most four capital letters, and all of them must be flags (`R` bright, `H`
@@ -133,14 +138,19 @@ request under `constraints.render.<key>.effects`):
   of an attack, cloth capes and the wing animation.
 
 Sprites, particles and joints are world effects: the inventory does not show them (not checked in
-the game client). `render_facts.py` reads these from `ItemObjectAttribute`,
-`RenderPartObjectEffect`, `RenderPartObjectBody`, `RenderPartObjectBodyColor`, `RenderLinkObject`
-and the held-weapon code of `RenderCharacter`; an item with none of them says "No item-specific
-effect in the scanned code". Each item has a `status`: `verified-in-client` (checked in the Item
-Editor preview, see `verified`), `from-code` (read from the code by the rules above) or
-`unverified` (the reading hit a condition it cannot decide: the list under `unverified` says
-where; pets and mounts, some armour and event items). Where facts and the game disagree, the game
-wins: fix `render_notes.py` and rebuild.
+the game client). `render_facts.py` reads these from the item's model data (`renderStyle`,
+`itemEffect`, `glow`), the render styles in `RenderStyles.json`, and the code that is left:
+`ItemObjectAttribute`, the named render styles and item effects of `Render/Items`,
+`ApplyEventModelEffect`, `RenderPartObjectBody`, `SpawnLinkedPartEffects` and the held-weapon code
+of `SpawnHeldWeaponGlow`; an item with none of them says "No item-specific effect in the scanned
+code". A mesh that a context draws with another texture than its own (the inventory texture of
+some armour, a reflection instead of the texture) is listed as a `texture` effect, and that
+context does not count for its `must_keep` lines. Each item has a `status`: `verified-in-client`
+(checked in the Item Editor preview, see `verified`; those checks were made before the upstream
+merge of 2026-11 and have not been repeated on the data-driven looks), `from-code` (read from the
+data and the code by the rules above) or `unverified` (the reading hit a condition it cannot
+decide: the list under `unverified` says where; pets and mounts, ammunition, level variants and
+event items). Where facts and the game disagree, the game wins: fix `render_notes.py` and rebuild.
 
 ## Concept images
 

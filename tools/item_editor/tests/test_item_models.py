@@ -85,6 +85,22 @@ class Interpreter(unittest.TestCase):
         self.assertEqual(loads(runner), [(1000, 'Item\\')])
         self.assertEqual(len(runner.skipped), 2)
 
+    def test_plain_calls_are_followed_and_string_arrays_are_read(self):
+        symbols = SymbolTable()
+        symbols.add_header(HEADER)
+        bodies = {'OpenMore': r'gLoadData.AccessModel(MODEL_AXE, L"Data\\Item\\", L"More");'}
+        runner = Runner(symbols, ('AccessModel', 'OpenTexture'),
+                        resolve_function=lambda name: (name, bodies[name], 1) if name in bodies else None)
+        runner.run('Test', strip_comments(r"""
+            OpenMore();
+            Unknown();
+            const std::wstring folders[] = {L"Item\\", L"Player\\"};
+            gLoadData.OpenTexture(MODEL_SWORD, folders);
+        """), 1)
+        self.assertEqual(loads(runner), [(1512, 'Data\\Item\\', 'More'), (1000, ['Item\\', 'Player\\'])])
+        self.assertEqual(runner.calls[0].function, 'OpenMore')
+        self.assertEqual(runner.skipped, [])
+
     def test_conditionals_follow_defined_macros(self):
         consulted = {}
         text = resolve_conditionals('#ifdef ON\nA();\n#else\nB();\n#endif\n#if defined(OFF) || ON\nC();\n#endif',
@@ -140,6 +156,41 @@ class CheckedInTable(unittest.TestCase):
         self.assertIn(('class-variant', 'sum'), roles)
         self.assertIn('0-26', self.checked_in['socket_items'])
         self.assertEqual(self.checked_in['skipped_statements'], [])
+
+    def extras(self, key, role):
+        return [(extra['model'], Path(extra['file']['path']).name, extra.get('condition'))
+                for extra in self.checked_in['items'][key]['extra_models'] if extra['role'] == role]
+
+    def test_inventory_models_come_from_the_display_code(self):
+        # The Rage Fighter armour's inventory model, and level variants drawn with event models.
+        self.assertEqual(self.extras('8-59', 'inventory'),
+                         [('MODEL_ARMORINVEN_60', 'Armor_inventory60.bmd', 'Type == ITEM_SACRED_ARMOR')])
+        luck = self.extras('14-11', 'inventory')
+        self.assertIn(('MODEL_EVENT + 10', 'MagicBox08.bmd', 'Type == ITEM_BOX_OF_LUCK && 8 <= Level && Level <= 12'), luck)
+        self.assertIn(('MODEL_EVENT + 5', 'MagicBox03.bmd', 'Type == ITEM_BOX_OF_LUCK && Level == 2'), luck)
+        self.assertIn(('MODEL_EVENT + 5', 'MagicBox03.bmd', 'Type == ITEM_BOX_OF_LUCK && 14 <= Level && Level <= 15'), luck)
+        self.assertEqual(len(luck), 8)
+        self.assertEqual(self.extras('14-47', 'inventory'),
+                         [('MODEL_JACK_OLANTERN_BLESSINGS', 'hellowinscroll.bmd',
+                           'Type >= ITEM_JACK_OLANTERN_BLESSINGS && Type <= ITEM_JACK_OLANTERN_CRY')])
+        self.assertEqual(self.extras('14-46', 'inventory'), [])  # its own model
+
+    def test_hand_models_and_body_parts_are_loaded(self):
+        self.assertEqual(self.extras('0-32', 'left-hand'), [('MODEL_SWORD_32_LEFT', 'SwordL33.bmd', None)])
+        self.assertEqual(self.extras('0-35', 'right-hand'), [('MODEL_SWORD_35_RIGHT', 'Sword36R.bmd', None)])
+        others = {other['model']: other['file']['path'] for other in self.checked_in['other_models']}
+        self.assertEqual(others['MODEL_BODY_HELM'], 'src/bin/Data/Player/HelmClass01.bmd')
+        self.assertEqual(others['MODEL_BODY_ARMOR + 7'], 'src/bin/Data/Player/ArmorClass201.bmd')
+        self.assertEqual(others['MODEL_BODY_BOOTS + 20'], 'src/bin/Data/Player/BootClass307.bmd')
+        self.assertNotIn('MODEL_BODY_HELM + 10', others)  # the Magic Gladiator has no second form
+
+    def test_inventory_statements_are_read_or_refused(self):
+        statements = gen_item_models.inventory_statements(
+            'if (level == 1)\n    return drawn(MODEL_A);\nreturn level == 0 ? levelMinusOne(MODEL_B) : nothing;\nbreak;')
+        self.assertEqual(statements, [('level == 1', ' (MODEL_A)'), (None, ' level == 0 ? (MODEL_B) : nothing'), (None, None)])
+        with self.assertRaises(Unresolved):
+            gen_item_models.inventory_statements('model = MODEL_A;')
+        self.assertEqual(gen_item_models.level_runs([2, 8, 9, 10, 14, 15]), [(2, 2), (8, 10), (14, 15)])
 
 
 if __name__ == '__main__':
