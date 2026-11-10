@@ -8,17 +8,26 @@ are not items (bodies, per-class armour replacements, hand models) are still loa
 which this script runs symbolically (cpp_source.py / cpp_runner.py):
 
 - OpenPlayers, OpenPlayerTextures, OpenItems, OpenItemTextures (Engine/Object/ZzzOpenData.cpp, in
-  the order OpenBasicData calls them), including the member calls they make
-  (g_ChangeRingMgr->LoadItemModel(), g_CMonkSystem.LoadModelItem(), ...). Every
+  the order OpenBasicData calls them), including the functions of that file they call
+  (OpenItemEffectModels(), OpenItemEffectModelTextures(): the event models and the Rage Fighter
+  parts) and the member calls they make (g_CMonkSystem.LoadModelItem(), ...). Every
   gLoadData.AccessModel(type, dir, name, i) names the file dir + name + NN + ".bmd" exactly like
   CLoadData::AccessModel (LoadData.cpp): i == -1 -> "<name>.bmd", i < 10 -> "<name>0<i>.bmd", else
   "<name><i>.bmd". A later load of the same model type replaces an earlier one. Every
   gLoadData.OpenTexture(type, subfolder) adds Data/<subfolder> as a folder the model's textures are
   read from.
+- The unequipped body parts (MODEL_BODY_HELM ... MODEL_BODY_BOOTS, one per class form) are opened by
+  Engine/Object/PlayerBodyModels.cpp from a table of file prefixes; body_models() follows its rules
+  (checked against the code's own lines) for the original Season 6 files in Data/Player, the default
+  ("S6 player models" on; docs/player-base-models.md). The improved set in Data/Player/Updated that
+  replaces them when that option is off is not listed.
 - Types MODEL_ITEM .. MODEL_ITEM + MAX_ITEM - 1 are items (type - MODEL_ITEM = group * 512 + index).
 - Models outside that range are linked to an item where the engine swaps them in (per-class
   armour replacements, Rage Fighter hand models, inventory models; see class_variant_links,
   hand_model_links and inventory_links); the rest are listed under other_models.
+- The inventory models come from Render/Items/ItemDisplay.cpp: the ArmorInventoryModels table (the
+  Rage Fighter armour) and FindInventoryModel, which is evaluated for every item at every level
+  0..15 (level variants drawn with event models or with another item's model).
 - The hard-coded socket item list of CSocketItemMgr::IsSocketItem(int) (SocketSystem.cpp).
 
 Paths are matched against src/bin/Data case-insensitively and written with the on-disk spelling;
@@ -39,6 +48,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
 from cpp_runner import Runner  # noqa: E402
+import render_code  # noqa: E402
 from cpp_source import (SymbolTable, Unresolved, defined_macros, evaluate, function_body,  # noqa: E402
                         read_source, strip_comments, tokenize)
 
@@ -56,13 +66,51 @@ SOCKET_FILE = 'Network/Server/SocketSystem.cpp'
 SOCKET_FUNCTION = re.compile(r'IsSocketItem\s*\(\s*int\s+\w+\s*\)\s*\{')
 MONK_FILE = 'GameLogic/Social/MonkSystem.cpp'
 SET_MODEL_TYPE = re.compile(r'SetModelType\s*\(([^;]*)\)\s*;')
-INVENTORY_FILE = 'Engine/Object/ZzzInventory.cpp'
-INVENTORY_FUNCTION = 'RenderItem3D'
-RENDER_SCREEN = re.compile(r'RenderObjectScreen\s*\(\s*([^,]+),')
-CONDITION = re.compile(r'\b(?:else\s+)?if\s*\((.*)\)\s*$')
-TYPE_EQUALS = re.compile(r'Type\s*==\s*([A-Za-z_]\w*(?:\s*\+\s*\d+)?)')
-TYPE_RANGE = re.compile(r'Type\s*>=\s*([A-Za-z_]\w*(?:\s*\+\s*\d+)?)\s*&&\s*Type\s*<=\s*([A-Za-z_]\w*(?:\s*\+\s*\d+)?)')
-DEFAULT_INVENTORY_MODEL = 'Type + MODEL_ITEM'
+# Render/Items/ItemDisplay.cpp: which model the inventory draws for an item at a level.
+INVENTORY_FILE = 'Render/Items/ItemDisplay.cpp'
+INVENTORY_FUNCTION = 'FindInventoryModel'
+INVENTORY_SWITCH = 'switch (itemType)'
+ARMOR_INVENTORY_TABLE = re.compile(r'ArmorInventoryModels\s*\[\s*\]\s*=\s*\{(.*?)\}\s*;', re.S)
+ARMOR_INVENTORY_ENTRY = re.compile(r'\{\s*([A-Za-z_]\w*(?:\s*\+\s*\d+)?)\s*,\s*([A-Za-z_]\w*(?:\s*\+\s*\d+)?)\s*\}')
+# The function's own words, rewritten to an expression the evaluator reads: both lambdas return
+# their model, `nothing` is no model, ToModelSlot is MODEL_ITEM + item type (ItemModelSlots.h).
+INVENTORY_LAMBDAS = ('drawn', 'levelMinusOne')
+INVENTORY_LAMBDA = re.compile(r'const\s+auto\s+(\w+)\s*=\s*\[[^\]]*\]\s*\(int\s+modelType\)\s*'
+                              r'\{\s*return\s+std::optional<InventoryModel>\(InventoryModel\{modelType,')
+INVENTORY_NOTHING = 'nothing'
+INVENTORY_NO_MODEL = -1
+INVENTORY_REWRITES = (('Data::Items::ToModelSlot(itemType)', '(MODEL_ITEM + itemType)'),
+                      ('GetInventoryModel(itemType)', 'inventoryModel'))
+INVENTORY_FALLBACK = 'return drawn(GetInventoryModel(itemType));'
+INVENTORY_IF = re.compile(r'if\s*\(')
+INVENTORY_RETURN = re.compile(r'return\b(.*)$', re.S)
+ITEM_TYPE_WORD = re.compile(r'\bitemType\b')
+ITEM_LEVELS = range(16)  # item levels +0..+15
+
+# Engine/Object/PlayerBodyModels: the unequipped body parts of every class form.
+BODY_HEADER = 'Engine/Object/PlayerBodyModels.h'
+BODY_FILE = 'Engine/Object/PlayerBodyModels.cpp'
+BODY_PARTS = re.compile(r'PlayerBodyParts\s*\{\{(.*?)\}\}\s*;', re.S)
+BODY_PART = re.compile(r'\{\s*(MODEL_\w+)\s*,\s*L"(\w+)"\s*\}')
+BODY_FOLDER = re.compile(r'OriginalPlayerModelFolder\s*=\s*L"((?:[^"\\]|\\.)*)"')
+BODY_TEXTURE_FOLDER = re.compile(r'const\s+std::wstring\s+textureSubfolder\s*=\s*L"((?:[^"\\]|\\.)*)"')
+BODY_LOADER = 'OpenPlayerBodyParts'
+# The lines body_models() follows; a changed one stops the run instead of leaving a stale rule.
+BODY_RULES = (
+    (BODY_FILE, 'const int classOffset = stage * MAX_CLASS + baseClass;'),
+    (BODY_FILE, 'OpenBodyPart(part.firstSlot + classOffset, PlayerBodyFileName(stage, part, baseClass), useS6PlayerModels);'),
+    (BODY_FILE, 'if (stage > 0) name += std::to_wstring(stage + 1);'),
+    (BODY_FILE, "const int number = baseClass + 1; if (number < 10) name += L'0'; return name + std::to_wstring(number);"),
+    (BODY_FILE, 'return stage != 1 || (baseClass != CLASS_DARK && baseClass != CLASS_DARK_LORD && '
+                'baseClass != CLASS_RAGEFIGHTER);'),
+    (BODY_FILE, 'for (int stage = 0; stage < MAX_CLASS_STAGES; ++stage) { if (HasPlayerBodyForm(stage, baseClass)) '
+                'OpenPlayerBodyParts(stage, baseClass, useS6PlayerModels); }'),
+    (BODY_FILE, 'gLoadData.AccessModel(slot, Engine::Object::OriginalPlayerModelFolder, fileName.c_str());'),
+    (OPEN_DATA, 'for (int i = 0; i < MAX_CLASS; ++i) { Engine::Object::OpenPlayerClassBodyParts(i, useS6); }'),
+    (OPEN_DATA, 'if (Engine::Object::HasPlayerBodyForm(j, i)) Engine::Object::OpenPlayerBodyTextures(j, i);'),
+)
+SECOND_STAGE = 1
+SINGLE_DIGITS = 10
 
 ACCESS_MODEL = 'AccessModel'
 OPEN_TEXTURE = 'OpenTexture'
@@ -133,10 +181,15 @@ class Generator:
         body, line = function_body(self.text(relative), qualified)
         return (qualified, body, line) if body is not None else None
 
+    def resolve_function(self, name):
+        """A plain function of the load file that a load function calls (OpenItemEffectModels)."""
+        body, line = function_body(self.text(OPEN_DATA), name)
+        return (name, body, line) if body is not None else None
+
     # --- running the load code -----------------------------------------------------------
 
     def run_loads(self):
-        runner = Runner(self.symbols, (ACCESS_MODEL, OPEN_TEXTURE), self.resolve_method)
+        runner = Runner(self.symbols, (ACCESS_MODEL, OPEN_TEXTURE), self.resolve_method, self.resolve_function)
         for function in LOAD_FUNCTIONS:
             body, line = function_body(self.text(OPEN_DATA), function)
             if body is None:
@@ -154,9 +207,12 @@ class Generator:
                     model['earlier'].append(model['load'])
                 model['load'] = self.model_file(call)
             else:
-                folder = DATA_PREFIX + call.args[1].replace('\\', '/')
-                if folder not in model['texture_dirs']:
-                    model['texture_dirs'].append(folder)
+                # One folder, or the folders of a std::wstring array, in the order they are searched.
+                folders = call.args[1] if isinstance(call.args[1], list) else [call.args[1]]
+                for name in folders:
+                    folder = DATA_PREFIX + name.replace('\\', '/')
+                    if folder not in model['texture_dirs']:
+                        model['texture_dirs'].append(folder)
         return models
 
     def add_item_data_models(self, models):
@@ -182,6 +238,31 @@ class Generator:
                 texture_dirs = [DATA_PREFIX + folder_name.replace('\\', '/').strip('/')
                                 for folder_name in files.get('textureFolders', [])]
                 models[model_type] = {'load': load, 'earlier': [], 'texture_dirs': texture_dirs}
+
+    def body_models(self, models):
+        """Adds the unequipped body parts of every class form (see the module text) to `models`."""
+        for file, line in BODY_RULES:
+            if line not in ' '.join(self.text(file).split()):
+                raise Unresolved(f'{file}: the body part rule {line!r} is not there any more')
+        header, code = self.text(BODY_HEADER), self.text(BODY_FILE)
+        parts, folder, textures = BODY_PARTS.search(header), BODY_FOLDER.search(header), BODY_TEXTURE_FOLDER.search(code)
+        if not (parts and folder and textures):
+            raise Unresolved(f'{BODY_HEADER}: the body part table, its folder or its texture folder was not found')
+        value = self.symbols.value
+        classes, without_second = value('MAX_CLASS'), {value(name) for name in ('CLASS_DARK', 'CLASS_DARK_LORD',
+                                                                                'CLASS_RAGEFIGHTER')}
+        directory = folder.group(1).replace('\\\\', '/')
+        texture_dir = DATA_PREFIX + textures.group(1).replace('\\\\', '/').strip('/')
+        for base_class in range(classes):
+            for stage in range(value('MAX_CLASS_STAGES')):
+                if stage == SECOND_STAGE and base_class in without_second:
+                    continue
+                for slot, prefix in BODY_PART.findall(parts.group(1)):
+                    number = base_class + 1
+                    name = prefix + (str(stage + 1) if stage > 0 else '') + ('0' if number < SINGLE_DIGITS else '') + str(number)
+                    load = {'referenced': f'{directory}{name}.bmd', 'loaded_by': BODY_LOADER}
+                    models[value(slot) + stage * classes + base_class] = {'load': load, 'earlier': [],
+                                                                         'texture_dirs': [texture_dir]}
 
     def model_file(self, call):
         directory, name = call.args[1], call.args[2]
@@ -281,31 +362,79 @@ class Generator:
         return links
 
     def inventory_links(self):
-        """RenderItem3D (ZzzInventory.cpp): items drawn in the inventory with another model."""
-        body, _ = function_body(self.text(INVENTORY_FILE), INVENTORY_FUNCTION)
-        links, type_condition, inner_condition = [], None, None
-        for line in body.split('\n'):
-            found = CONDITION.search(line.strip())
-            if found and 'Type' in found.group(1):
-                type_condition, inner_condition = found.group(1).strip(), None
-            elif found:
-                inner_condition = found.group(1).strip()
-            screen = RENDER_SCREEN.search(line)
-            if not screen or type_condition is None or screen.group(1).strip() == DEFAULT_INVENTORY_MODEL:
-                continue
-            condition = type_condition if inner_condition is None else f'{type_condition}; {inner_condition}'
-            model = evaluate(tokenize(screen.group(1)), self.symbols.value)
-            for item_type in self.condition_items(type_condition):
-                if model != self.model_item + item_type:
+        """Items the inventory draws with another model than their own (ItemDisplay.cpp): the Rage
+        Fighter armour's inventory models, and FindInventoryModel's level variants. One link per model
+        and run of levels; the condition is written like the C++ one."""
+        text = self.text(INVENTORY_FILE)
+        armour = self.armour_inventory_models(text)
+        variants = self.inventory_variants(text)
+        links = []
+        for item_type in sorted(self.item_types):
+            own = self.model_item + item_type
+            armour_item, inventory_model = armour.get(item_type, (None, own))
+            type_condition, by_level = (f'Type == {armour_item}' if armour_item else None), {}
+            for level in ITEM_LEVELS:
+                model, condition = variants(item_type, level, inventory_model)
+                by_level[level] = model
+                type_condition = condition or type_condition
+            for model in sorted(set(by_level.values()) - {own, INVENTORY_NO_MODEL}):
+                levels = [level for level in ITEM_LEVELS if by_level[level] == model]
+                for first, last in level_runs(levels):
+                    whole = (first, last) == (ITEM_LEVELS[0], ITEM_LEVELS[-1])
+                    if type_condition is None:
+                        raise Unresolved(f'{INVENTORY_FILE}: no condition on the item type for item {item_type}')
+                    condition = type_condition if whole else f'{type_condition} && {level_condition(first, last)}'
                     links.append((item_type, model, 'inventory', condition))
         return links
 
-    def condition_items(self, condition):
-        value = lambda text: evaluate(tokenize(text), self.symbols.value)  # noqa: E731
-        ranged = TYPE_RANGE.search(condition)
-        if ranged:
-            return list(range(value(ranged.group(1)), value(ranged.group(2)) + 1))
-        return [value(match.group(1)) for match in TYPE_EQUALS.finditer(condition)]
+    def armour_inventory_models(self, text):
+        """ArmorInventoryModels: item type -> (item name, inventory model type)."""
+        table = ARMOR_INVENTORY_TABLE.search(text)
+        if table is None:
+            raise Unresolved(f'{INVENTORY_FILE}: the ArmorInventoryModels table was not found')
+        value = lambda name: evaluate(tokenize(name), self.symbols.value)  # noqa: E731
+        return {value(item): (item, value(model)) for item, model in ARMOR_INVENTORY_ENTRY.findall(table.group(1))}
+
+    def inventory_variants(self, text):
+        """FindInventoryModel as a function (item type, level, inventory model) -> (model type or
+        INVENTORY_NO_MODEL, the C++ condition on the item type that chose it). The function is a
+        switch over the item type whose cases are `if (...) return ...;`, `return ...;` and `break;`;
+        anything else raises instead of being guessed."""
+        body, _ = function_body(text, INVENTORY_FUNCTION)
+        if body is None or INVENTORY_SWITCH not in body:
+            raise Unresolved(f'{INVENTORY_FILE}: {INVENTORY_FUNCTION} with {INVENTORY_SWITCH!r} was not found')
+        if sorted(INVENTORY_LAMBDA.findall(body)) != sorted(INVENTORY_LAMBDAS):
+            raise Unresolved(f'{INVENTORY_FILE}: {INVENTORY_FUNCTION} no longer has the lambdas {INVENTORY_LAMBDAS}')
+        groups, end = render_code.parse_switch(body, body.index(INVENTORY_SWITCH), 1)
+        if ' '.join(body[end:].split()) != INVENTORY_FALLBACK:
+            raise Unresolved(f'{INVENTORY_FILE}: {INVENTORY_FUNCTION} does not end with {INVENTORY_FALLBACK!r}')
+        cases, default = {}, []
+        for labels, _, case_body, _ in groups:
+            statements = inventory_statements(case_body)
+            for label in labels:
+                if label == 'default':
+                    default = statements
+                else:
+                    cases[evaluate(tokenize(label), self.symbols.value)] = (label, statements)
+
+        def variant(item_type, level, inventory_model):
+            names = {'itemType': item_type, 'level': level, 'inventoryModel': inventory_model,
+                     INVENTORY_NOTHING: INVENTORY_NO_MODEL}
+            lookup = lambda name: names[name] if name in names else self.symbols.value(name)  # noqa: E731
+            label, statements = cases.get(item_type, (None, default))
+            for condition, result in statements:
+                if condition is not None and not evaluate(tokenize(condition), lookup):
+                    continue
+                if result is None:
+                    break
+                chosen = None
+                if label is not None:
+                    chosen = f'Type == {label}'
+                elif condition is not None and ITEM_TYPE_WORD.search(condition):
+                    chosen = ITEM_TYPE_WORD.sub('Type', ' '.join(condition.split()))
+                return evaluate(tokenize(result), lookup), chosen
+            return inventory_model, None
+        return variant
 
     def socket_items(self):
         text = self.text(SOCKET_FILE)
@@ -319,6 +448,7 @@ class Generator:
     def build(self):
         runner = self.run_loads()
         models = self.collect_models(runner)
+        self.body_models(models)
         self.add_item_data_models(models)
         items, other = {}, {}
         for model_type, model in models.items():
@@ -329,6 +459,7 @@ class Generator:
                 items[key] = dict(self.model_record(model), group=group, index=index, extra_models=[])
             else:
                 other[model_type] = model
+        self.item_types = {item['group'] * self.max_index + item['index'] for item in items.values()}
         linked = set()
         for item_type, model_type, role, detail in (self.class_variant_links() + self.hand_model_links()
                                                     + self.inventory_links()):
@@ -368,6 +499,69 @@ class Generator:
             'missing_files': [{'item': key, 'path': path} for key, path in missing],
             'skipped_statements': runner.skipped,
         }
+
+
+def inventory_statements(case_body):
+    """The statements of one case of FindInventoryModel as (condition or None, result expression or
+    None for `break`), in order."""
+    statements = []
+    for raw in split_statements(case_body):
+        text, condition = raw.strip(), None
+        if not text:
+            continue
+        if INVENTORY_IF.match(text):
+            open_paren = text.index('(')
+            close_paren = render_code.matching(text, open_paren, '(', ')')
+            condition, text = text[open_paren + 1:close_paren - 1], text[close_paren:].strip()
+        returned = INVENTORY_RETURN.match(text)
+        if returned:
+            statements.append((condition, inventory_expression(returned.group(1))))
+        elif text == 'break' and condition is None:
+            statements.append((None, None))
+        else:
+            raise Unresolved(f'{INVENTORY_FILE}: {INVENTORY_FUNCTION} has a statement this tool does not read: '
+                             f'{raw.strip()!r}')
+    return statements
+
+
+def split_statements(text):
+    """`text` cut at every ';' outside brackets."""
+    parts, depth, current = [], 0, []
+    for char in text:
+        if char in '([{':
+            depth += 1
+        elif char in ')]}':
+            depth -= 1
+        if char == ';' and depth == 0:
+            parts.append(''.join(current))
+            current = []
+        else:
+            current.append(char)
+    parts.append(''.join(current))
+    return parts
+
+
+def inventory_expression(text):
+    for old, new in INVENTORY_REWRITES:
+        text = text.replace(old, new)
+    for name in INVENTORY_LAMBDAS:
+        text = re.sub(rf'\b{name}\s*\(', '(', text)
+    return text
+
+
+def level_runs(levels):
+    """Sorted levels as (first, last) runs of consecutive levels."""
+    runs = []
+    for level in levels:
+        if runs and runs[-1][1] == level - 1:
+            runs[-1] = (runs[-1][0], level)
+        else:
+            runs.append((level, level))
+    return runs
+
+
+def level_condition(first, last):
+    return f'Level == {first}' if first == last else f'{first} <= Level && Level <= {last}'
 
 
 def render(document):

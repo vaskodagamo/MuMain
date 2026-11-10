@@ -3,7 +3,8 @@
 Supported: blocks, `for (init; cond; step)`, `if/else`, `continue`, `break`, local declarations of
 ints and wide-string buffers or arrays, `x++`, `x += n`, `x = expr`, `mu_swprintf(buffer, fmt, ...)`
 (%ls, %s, %hs, %d with width), calls to the watched functions, and argument-less member calls
-(`g_CMonkSystem.LoadModelItem()`) whose definition is found and itself mentions a watched call.
+(`g_CMonkSystem.LoadModelItem()`) and argument-less plain calls (`OpenItemEffectModels()`) whose
+definition is found and itself mentions a watched call, and `std::wstring` arrays of string literals.
 Everything else (LoadBitmap, Models[...] = ..., new ...) is skipped; a skipped statement that
 mentions a watched call is recorded in `skipped`.
 """
@@ -15,6 +16,8 @@ from cpp_source import Unresolved, evaluate, split_top_level, tokenize, TYPE_WOR
 MAX_LOOP_ITERATIONS = 100000
 MAX_CALL_DEPTH = 4
 FORMAT_SPEC = re.compile(r'%(0?\d*)(ls|hs|s|d|i)')
+STRING_NAMESPACE = 'std'
+STRING_TYPES = ('wstring', 'wstring_view')
 
 
 class LoopSignal(Exception):
@@ -60,11 +63,13 @@ class Call:
 
 
 class Runner:
-    def __init__(self, symbols, watched, resolve_method=None):
-        """watched: names of calls to record; resolve_method(name) -> (qualified name, body, first line) or None."""
+    def __init__(self, symbols, watched, resolve_method=None, resolve_function=None):
+        """watched: names of calls to record; resolve_method(name) and resolve_function(name) ->
+        (qualified name, body, first line) or None, for member calls and for plain calls."""
         self.symbols = symbols
         self.watched = set(watched)
         self.resolve_method = resolve_method
+        self.resolve_function = resolve_function
         self.calls = []
         self.skipped = []
         self.depth = 0
@@ -248,7 +253,8 @@ class _Frame:
 
     def declare(self, tokens):
         index = 0
-        while index < len(tokens) and (tokens[index].value in TYPE_WORDS or tokens[index].value in ('*', '&')):
+        while index < len(tokens) and (tokens[index].value in TYPE_WORDS or tokens[index].value in ('*', '&')
+                                       or self.is_string_type(tokens, index)):
             index += 1
         if index >= len(tokens) or tokens[index].kind != 'id':
             raise Unresolved('declaration without a name')
@@ -263,6 +269,16 @@ class _Frame:
             self.locals[name] = self.initial_value(tokens[index + 1:], dimensions)
         elif dimensions:
             self.locals[name] = ''
+
+    @staticmethod
+    def is_string_type(tokens, index):
+        """`std`, `::` or `wstring` of a `std::wstring` in a declaration's type."""
+        value = tokens[index].value
+        if value == STRING_NAMESPACE:
+            return index + 1 < len(tokens) and tokens[index + 1].value == '::'
+        if value == '::':
+            return index > 0 and tokens[index - 1].value == STRING_NAMESPACE
+        return value in STRING_TYPES and index > 0 and tokens[index - 1].value == '::'
 
     def initial_value(self, tokens, dimensions):
         if not (tokens and tokens[0].value == '{'):
@@ -294,7 +310,9 @@ class _Frame:
         elif name in ('mu_swprintf', 'swprintf', 'wsprintf'):
             self.format_into(arguments)
         elif not arguments and open_at >= 2 and tokens[open_at - 2].value in ('.', '->'):
-            self.follow(name)
+            self.follow(name, self.runner.resolve_method)
+        elif not arguments and open_at == 1:
+            self.follow(name, self.runner.resolve_function)
         elif self.mentions_watched(tokens):
             raise Unresolved(f'call {name} is not understood')
 
@@ -305,9 +323,9 @@ class _Frame:
         fmt = self.value_of(arguments[1])
         self.locals[target] = c_format(fmt, [self.value_of(argument) for argument in arguments[2:]])
 
-    def follow(self, method):
+    def follow(self, name, resolve):
         runner = self.runner
-        found = runner.resolve_method(method) if runner.resolve_method else None
+        found = resolve(name) if resolve else None
         if found is None:
             return
         qualified, body, first_line = found

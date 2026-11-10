@@ -1,9 +1,9 @@
 {
  "counts": {
-  "extra_models": 35,
+  "extra_models": 66,
   "items": 889,
   "missing_files": 0,
-  "other_models": 3
+  "other_models": 106
  },
  "generated_by": "tools/item_editor/gen_item_models.py",
  "items": {
@@ -320,7 +320,32 @@
    ]
   },
   "0-32": {
-   "extra_models": [],
+   "extra_models": [
+    {
+     "file": {
+      "exists": true,
+      "loaded_by": "CMonkSystem::LoadModelItem",
+      "path": "src/bin/Data/Item/SwordL33.bmd"
+     },
+     "model": "MODEL_SWORD_32_LEFT",
+     "role": "left-hand",
+     "texture_dirs": [
+      "src/bin/Data/Player"
+     ]
+    },
+    {
+     "file": {
+      "exists": true,
+      "loaded_by": "CMonkSystem::LoadModelItem",
+      "path": "src/bin/Data/Item/SwordR33.bmd"
+     },
+     "model": "MODEL_SWORD_32_RIGHT",
+     "role": "right-hand",
+     "texture_dirs": [
+      "src/bin/Data/Player"
+     ]
+    }
+   ],
    "file": {
     "exists": true,
     "loaded_by": "Data/Items/Models/Group00_Sword.json",
@@ -333,7 +358,34 @@
    ]
   },
   "0-33": {
-   "extra_models": [],
+   "extra_models": [
+    {
+     "file": {
+      "exists": true,
+      "loaded_by": "CMonkSystem::LoadModelItem",
+      "path": "src/bin/Data/Item/SwordL34.bmd"
+     },
+     "model": "MODEL_SWORD_33_LEFT",
+     "role": "left-hand",
+     "texture_dirs": [
+      "src/bin/Data/Item",
+      "src/bin/Data/Player"
+     ]
+    },
+    {
+     "file": {
+      "exists": true,
+      "loaded_by": "CMonkSystem::LoadModelItem",
+      "path": "src/bin/Data/Item/SwordR34.bmd"
+     },
+     "model": "MODEL_SWORD_33_RIGHT",
+     "role": "right-hand",
+     "texture_dirs": [
+      "src/bin/Data/Item",
+      "src/bin/Data/Player"
+     ]
+    }
+   ],
    "file": {
     "exists": true,
     "loaded_by": "Data/Items/Models/Group00_Sword.json",
@@ -347,7 +399,32 @@
    ]
   },
   "0-34": {
-   "extra_models": [],
+   "extra_models": [
+    {
+     "file": {
+      "exists": true,
+      "loaded_by": "CMonkSystem::LoadModelItem",
+      "path": "src/bin/Data/Item/SwordL35.bmd"
+     },
+     "model": "MODEL_SWORD_34_LEFT",
+     "role": "left-hand",
+     "texture_dirs": [
+      "src/bin/Data/Player"
+     ]
+    },
+    {
+     "file": {
+      "exists": true,
+      "loaded_by": "CMonkSystem::LoadModelItem",
+      "path": "src/bin/Data/Item/SwordR35.bmd"
+     },
+     "model": "MODEL_SWORD_34_RIGHT",
+     "role": "right-hand",
+     "texture_dirs": [
+      "src/bin/Data/Player"
+     ]
+    }
+   ],
    "file": {
     "exists": true,
     "loaded_by": "Data/Items/Models/Group00_Sword.json",
@@ -360,7 +437,32 @@
    ]
   },
   "0-35": {
-   "extra_models": [],
+   "extra_models": [
+    {
+     "file": {
+      "exists": true,
+      "loaded_by": "CMonkSystem::LoadModelItem",
+      "path": "src/bin/Data/Item/Sword36L.bmd"
+     },
+     "model": "MODEL_SWORD_35_LEFT",
+     "role": "left-hand",
+     "texture_dirs": [
+      "src/bin/Data/Player"
+     ]
+    },
+    {
+     "file": {
+      "exists": true,
+      "loaded_by": "CMonkSystem::LoadModelItem",
+      "path": "src/bin/Data/Item/Sword36R.bmd"
+     },
+     "model": "MODEL_SWORD_35_RIGHT",
+     "role": "right-hand",
+     "texture_dirs": [
+      "src/bin/Data/Player"
+     ]
+    }
+   ],
    "file": {
     "exists": true,
     "loaded_by": "Data/Items/Models/Group00_Sword.json",
@@ -3926,7 +4028,21 @@
    ]
   },
   "13-11": {
-   "extra_models": [],
+   "extra_models": [
+    {
+     "condition": "Type == ITEM_LIFE_STONE_ITEM && Level == 1",
+     "file": {
+      "exists": true,
+      "loaded_by": "OpenItemEffectModels",
+      "path": "src/bin/Data/Item/LifestoneItem.bmd"
+     },
+     "model": "MODEL_EVENT + 18",
+     "role": "inventory",
+     "texture_dirs": [
+      "src/bin/Data/Monster"
+     ]
+    }
+   ],
    "file": {
     "exists": true,
     "loaded_by": "Data/Items/Models/Group13_Helper.json",
@@ -4212,7 +4328,21 @@
    ]
   },
   "13-14": {
-   "extra_models": [],
+   "extra_models": [
+    {
+     "condition": "Type == ITEM_LOCHS_FEATHER && Level == 1",
+     "file": {
+      "exists": true,
+      "loaded_by": "OpenItemEffectModels",
+      "path": "src/bin/Data/Item/DarkLordSleeve.bmd"
+     },
+     "model": "MODEL_EVENT + 16",
+     "role": "inventory",
+     "texture_dirs": [
+      "src/bin/Data/Item"
+     ]
+    }
+   ],
    "file": {
     "exists": true,
     "loaded_by": "Data/Items/Models/Group13_Helper.json",
@@ -5556,7 +5686,112 @@
    ]
   },
   "14-11": {
-   "extra_models": [],
+   "extra_models": [
+    {
+     "condition": "Type == ITEM_BOX_OF_LUCK && Level == 1",
+     "file": {
+      "exists": true,
+      "loaded_by": "OpenItemEffectModels",
+      "path": "src/bin/Data/Item/MagicBox02.bmd"
+     },
+     "model": "MODEL_EVENT + 4",
+     "role": "inventory",
+     "texture_dirs": [
+      "src/bin/Data/Item"
+     ]
+    },
+    {
+     "condition": "Type == ITEM_BOX_OF_LUCK && 14 <= Level && Level <= 15",
+     "file": {
+      "exists": true,
+      "loaded_by": "OpenItemEffectModels",
+      "path": "src/bin/Data/Item/MagicBox03.bmd"
+     },
+     "model": "MODEL_EVENT + 5",
+     "role": "inventory",
+     "texture_dirs": [
+      "src/bin/Data/Item"
+     ]
+    },
+    {
+     "condition": "Type == ITEM_BOX_OF_LUCK && Level == 2",
+     "file": {
+      "exists": true,
+      "loaded_by": "OpenItemEffectModels",
+      "path": "src/bin/Data/Item/MagicBox03.bmd"
+     },
+     "model": "MODEL_EVENT + 5",
+     "role": "inventory",
+     "texture_dirs": [
+      "src/bin/Data/Item"
+     ]
+    },
+    {
+     "condition": "Type == ITEM_BOX_OF_LUCK && Level == 13",
+     "file": {
+      "exists": true,
+      "loaded_by": "OpenItemEffectModels",
+      "path": "src/bin/Data/Item/MagicBox05.bmd"
+     },
+     "model": "MODEL_EVENT + 6",
+     "role": "inventory",
+     "texture_dirs": [
+      "src/bin/Data/Item"
+     ]
+    },
+    {
+     "condition": "Type == ITEM_BOX_OF_LUCK && Level == 3",
+     "file": {
+      "exists": true,
+      "loaded_by": "OpenItemEffectModels",
+      "path": "src/bin/Data/Item/MagicBox05.bmd"
+     },
+     "model": "MODEL_EVENT + 6",
+     "role": "inventory",
+     "texture_dirs": [
+      "src/bin/Data/Item"
+     ]
+    },
+    {
+     "condition": "Type == ITEM_BOX_OF_LUCK && Level == 5",
+     "file": {
+      "exists": true,
+      "loaded_by": "OpenItemEffectModels",
+      "path": "src/bin/Data/Item/MagicBox06.bmd"
+     },
+     "model": "MODEL_EVENT + 8",
+     "role": "inventory",
+     "texture_dirs": [
+      "src/bin/Data/Item"
+     ]
+    },
+    {
+     "condition": "Type == ITEM_BOX_OF_LUCK && Level == 6",
+     "file": {
+      "exists": true,
+      "loaded_by": "OpenItemEffectModels",
+      "path": "src/bin/Data/Item/MagicBox07.bmd"
+     },
+     "model": "MODEL_EVENT + 9",
+     "role": "inventory",
+     "texture_dirs": [
+      "src/bin/Data/Item"
+     ]
+    },
+    {
+     "condition": "Type == ITEM_BOX_OF_LUCK && 8 <= Level && Level <= 12",
+     "file": {
+      "exists": true,
+      "loaded_by": "OpenItemEffectModels",
+      "path": "src/bin/Data/Item/MagicBox08.bmd"
+     },
+     "model": "MODEL_EVENT + 10",
+     "role": "inventory",
+     "texture_dirs": [
+      "src/bin/Data/Item"
+     ]
+    }
+   ],
    "file": {
     "exists": true,
     "loaded_by": "Data/Items/Models/Group14_Potion.json",
@@ -6246,7 +6481,21 @@
    ]
   },
   "14-21": {
-   "extra_models": [],
+   "extra_models": [
+    {
+     "condition": "Type == ITEM_RENA && 1 <= Level && Level <= 2",
+     "file": {
+      "exists": true,
+      "loaded_by": "OpenItemEffectModels",
+      "path": "src/bin/Data/Item/EventBloodCastle03.bmd"
+     },
+     "model": "MODEL_EVENT + 11",
+     "role": "inventory",
+     "texture_dirs": [
+      "src/bin/Data/Item"
+     ]
+    }
+   ],
    "file": {
     "exists": true,
     "loaded_by": "Data/Items/Models/Group14_Potion.json",
@@ -6272,7 +6521,21 @@
    ]
   },
   "14-23": {
-   "extra_models": [],
+   "extra_models": [
+    {
+     "condition": "Type == ITEM_SCROLL_OF_EMPEROR_RING_OF_HONOR && Level == 1",
+     "file": {
+      "exists": true,
+      "loaded_by": "OpenItemEffectModels",
+      "path": "src/bin/Data/Item/QuestItem3rd00.bmd"
+     },
+     "model": "MODEL_EVENT + 12",
+     "role": "inventory",
+     "texture_dirs": [
+      "src/bin/Data/Item"
+     ]
+    }
+   ],
    "file": {
     "exists": true,
     "loaded_by": "Data/Items/Models/Group14_Potion.json",
@@ -6285,7 +6548,21 @@
    ]
   },
   "14-24": {
-   "extra_models": [],
+   "extra_models": [
+    {
+     "condition": "Type == ITEM_BROKEN_SWORD_DARK_STONE && Level == 1",
+     "file": {
+      "exists": true,
+      "loaded_by": "OpenItemEffectModels",
+      "path": "src/bin/Data/Item/QuestItem3rd01.bmd"
+     },
+     "model": "MODEL_EVENT + 13",
+     "role": "inventory",
+     "texture_dirs": [
+      "src/bin/Data/Item"
+     ]
+    }
+   ],
    "file": {
     "exists": true,
     "loaded_by": "Data/Items/Models/Group14_Potion.json",
@@ -6389,7 +6666,21 @@
    ]
   },
   "14-32": {
-   "extra_models": [],
+   "extra_models": [
+    {
+     "condition": "Type == ITEM_PINK_CHOCOLATE_BOX && Level == 1",
+     "file": {
+      "exists": true,
+      "loaded_by": "OpenItemEffectModels",
+      "path": "src/bin/Data/Item/p03box.bmd"
+     },
+     "model": "MODEL_EVENT + 21",
+     "role": "inventory",
+     "texture_dirs": [
+      "src/bin/Data/Item"
+     ]
+    }
+   ],
    "file": {
     "exists": true,
     "loaded_by": "Data/Items/Models/Group14_Potion.json",
@@ -6402,7 +6693,21 @@
    ]
   },
   "14-33": {
-   "extra_models": [],
+   "extra_models": [
+    {
+     "condition": "Type == ITEM_RED_CHOCOLATE_BOX && Level == 1",
+     "file": {
+      "exists": true,
+      "loaded_by": "OpenItemEffectModels",
+      "path": "src/bin/Data/Item/obox02.bmd"
+     },
+     "model": "MODEL_EVENT + 22",
+     "role": "inventory",
+     "texture_dirs": [
+      "src/bin/Data/Item"
+     ]
+    }
+   ],
    "file": {
     "exists": true,
     "loaded_by": "Data/Items/Models/Group14_Potion.json",
@@ -6415,7 +6720,21 @@
    ]
   },
   "14-34": {
-   "extra_models": [],
+   "extra_models": [
+    {
+     "condition": "Type == ITEM_BLUE_CHOCOLATE_BOX && Level == 1",
+     "file": {
+      "exists": true,
+      "loaded_by": "OpenItemEffectModels",
+      "path": "src/bin/Data/Item/blue01.bmd"
+     },
+     "model": "MODEL_EVENT + 23",
+     "role": "inventory",
+     "texture_dirs": [
+      "src/bin/Data/Item"
+     ]
+    }
+   ],
    "file": {
     "exists": true,
     "loaded_by": "Data/Items/Models/Group14_Potion.json",
@@ -6597,7 +6916,21 @@
    ]
   },
   "14-47": {
-   "extra_models": [],
+   "extra_models": [
+    {
+     "condition": "Type >= ITEM_JACK_OLANTERN_BLESSINGS && Type <= ITEM_JACK_OLANTERN_CRY",
+     "file": {
+      "exists": true,
+      "loaded_by": "Data/Items/Models/Group14_Potion.json -> SharedModels.json (jackOLanternScroll)",
+      "path": "src/bin/Data/Item/hellowinscroll.bmd"
+     },
+     "model": "MODEL_JACK_OLANTERN_BLESSINGS",
+     "role": "inventory",
+     "texture_dirs": [
+      "src/bin/Data/Item"
+     ]
+    }
+   ],
    "file": {
     "exists": true,
     "loaded_by": "Data/Items/Models/Group14_Potion.json -> SharedModels.json (jackOLanternScroll)",
@@ -6610,7 +6943,21 @@
    ]
   },
   "14-48": {
-   "extra_models": [],
+   "extra_models": [
+    {
+     "condition": "Type >= ITEM_JACK_OLANTERN_BLESSINGS && Type <= ITEM_JACK_OLANTERN_CRY",
+     "file": {
+      "exists": true,
+      "loaded_by": "Data/Items/Models/Group14_Potion.json -> SharedModels.json (jackOLanternScroll)",
+      "path": "src/bin/Data/Item/hellowinscroll.bmd"
+     },
+     "model": "MODEL_JACK_OLANTERN_BLESSINGS",
+     "role": "inventory",
+     "texture_dirs": [
+      "src/bin/Data/Item"
+     ]
+    }
+   ],
    "file": {
     "exists": true,
     "loaded_by": "Data/Items/Models/Group14_Potion.json -> SharedModels.json (jackOLanternScroll)",
@@ -7157,7 +7504,21 @@
    ]
   },
   "14-9": {
-   "extra_models": [],
+   "extra_models": [
+    {
+     "condition": "Type == ITEM_ALE && Level == 1",
+     "file": {
+      "exists": true,
+      "loaded_by": "OpenItemEffectModels",
+      "path": "src/bin/Data/Item/Beer02.bmd"
+     },
+     "model": "MODEL_EVENT + 7",
+     "role": "inventory",
+     "texture_dirs": [
+      "src/bin/Data/Item"
+     ]
+    }
+   ],
    "file": {
     "exists": true,
     "loaded_by": "Data/Items/Models/Group14_Potion.json",
@@ -10822,7 +11183,21 @@
    ]
   },
   "8-59": {
-   "extra_models": [],
+   "extra_models": [
+    {
+     "condition": "Type == ITEM_SACRED_ARMOR",
+     "file": {
+      "exists": true,
+      "loaded_by": "CMonkSystem::LoadModelItem",
+      "path": "src/bin/Data/Player/Armor_inventory60.bmd"
+     },
+     "model": "MODEL_ARMORINVEN_60",
+     "role": "inventory",
+     "texture_dirs": [
+      "src/bin/Data/Player"
+     ]
+    }
+   ],
    "file": {
     "exists": true,
     "loaded_by": "Data/Items/Models/Group08_Armor.json",
@@ -10862,7 +11237,21 @@
    ]
   },
   "8-60": {
-   "extra_models": [],
+   "extra_models": [
+    {
+     "condition": "Type == ITEM_STORM_HARD_ARMOR",
+     "file": {
+      "exists": true,
+      "loaded_by": "CMonkSystem::LoadModelItem",
+      "path": "src/bin/Data/Player/ArmorMale61_inventory.bmd"
+     },
+     "model": "MODEL_ARMORINVEN_61",
+     "role": "inventory",
+     "texture_dirs": [
+      "src/bin/Data/Player"
+     ]
+    }
+   ],
    "file": {
     "exists": true,
     "loaded_by": "Data/Items/Models/Group08_Armor.json",
@@ -10875,7 +11264,21 @@
    ]
   },
   "8-61": {
-   "extra_models": [],
+   "extra_models": [
+    {
+     "condition": "Type == ITEM_PIERCING_ARMOR",
+     "file": {
+      "exists": true,
+      "loaded_by": "CMonkSystem::LoadModelItem",
+      "path": "src/bin/Data/Player/ArmorMale62_inventory.bmd"
+     },
+     "model": "MODEL_ARMORINVEN_62",
+     "role": "inventory",
+     "texture_dirs": [
+      "src/bin/Data/Player"
+     ]
+    }
+   ],
    "file": {
     "exists": true,
     "loaded_by": "Data/Items/Models/Group08_Armor.json",
@@ -11044,7 +11447,21 @@
    ]
   },
   "8-73": {
-   "extra_models": [],
+   "extra_models": [
+    {
+     "condition": "Type == ITEM_PHOENIX_SOUL_ARMOR",
+     "file": {
+      "exists": true,
+      "loaded_by": "CMonkSystem::LoadModelItem",
+      "path": "src/bin/Data/Player/ArmorMale74_inven.bmd"
+     },
+     "model": "MODEL_ARMORINVEN_74",
+     "role": "inventory",
+     "texture_dirs": [
+      "src/bin/Data/Player"
+     ]
+    }
+   ],
    "file": {
     "exists": true,
     "loaded_by": "Data/Items/Models/Group08_Armor.json",
@@ -12100,15 +12517,11 @@
   "ASG_ADD_MAP_KARUTAN": true,
   "DUEL_SYSTEM": true,
   "KJH_ADD_INGAMESHOP_UI_SYSTEM": true,
-  "LJH_ADD_ITEMS_EQUIPPED_FROM_INVENTORY_SYSTEM": false,
   "LJH_ADD_ITEMS_EQUIPPED_FROM_INVENTORY_SYSTEM_PART_2": false,
-  "LJH_ADD_SYSTEM_OF_EQUIPPING_ITEM_FROM_INVENTORY": false,
-  "LJH_MOD_CHANGED_GOLDEN_OAK_CHARM_STAT": false,
-  "PBG_ADD_ITEMRESIZE": true,
   "PJH_ADD_PANDA_CHANGERING": true,
   "SEND_POSITION_TO_SERVER": true,
   "YDG_ADD_SKILL_RIDING_ANIMATIONS": false,
-  "_PVP_ADD_MOVE_SCROLL": false
+  "_EDITOR": false
  },
  "missing_files": [],
  "other_models": [
@@ -12121,6 +12534,105 @@
    "model": "MODEL_GM_CHARACTER",
    "texture_dirs": [
     "src/bin/Data/Skill"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenItemEffectModels",
+    "path": "src/bin/Data/Item/class15_armleft.bmd"
+   },
+   "model": "MODEL_15GRADE_ARMOR_OBJ_ARMLEFT",
+   "texture_dirs": [
+    "src/bin/Data/Item"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenItemEffectModels",
+    "path": "src/bin/Data/Item/class15_armright.bmd"
+   },
+   "model": "MODEL_15GRADE_ARMOR_OBJ_ARMRIGHT",
+   "texture_dirs": [
+    "src/bin/Data/Item"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenItemEffectModels",
+    "path": "src/bin/Data/Item/class15_bodyleft.bmd"
+   },
+   "model": "MODEL_15GRADE_ARMOR_OBJ_BODYLEFT",
+   "texture_dirs": [
+    "src/bin/Data/Item"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenItemEffectModels",
+    "path": "src/bin/Data/Item/class15_bodyright.bmd"
+   },
+   "model": "MODEL_15GRADE_ARMOR_OBJ_BODYRIGHT",
+   "texture_dirs": [
+    "src/bin/Data/Item"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenItemEffectModels",
+    "path": "src/bin/Data/Item/class15_bootleft.bmd"
+   },
+   "model": "MODEL_15GRADE_ARMOR_OBJ_BOOTLEFT",
+   "texture_dirs": [
+    "src/bin/Data/Item"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenItemEffectModels",
+    "path": "src/bin/Data/Item/class15_bootright.bmd"
+   },
+   "model": "MODEL_15GRADE_ARMOR_OBJ_BOOTRIGHT",
+   "texture_dirs": [
+    "src/bin/Data/Item"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenItemEffectModels",
+    "path": "src/bin/Data/Item/class15_head.bmd"
+   },
+   "model": "MODEL_15GRADE_ARMOR_OBJ_HEAD",
+   "texture_dirs": [
+    "src/bin/Data/Item"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenItemEffectModels",
+    "path": "src/bin/Data/Item/class15_pantleft.bmd"
+   },
+   "model": "MODEL_15GRADE_ARMOR_OBJ_PANTLEFT",
+   "texture_dirs": [
+    "src/bin/Data/Item"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenItemEffectModels",
+    "path": "src/bin/Data/Item/class15_pantright.bmd"
+   },
+   "model": "MODEL_15GRADE_ARMOR_OBJ_PANTRIGHT",
+   "texture_dirs": [
+    "src/bin/Data/Item"
    ]
   },
   {
@@ -12141,6 +12653,1040 @@
    "model": "MODEL_SHADOW_BODY",
    "texture_dirs": [
     "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/HelmClass01.bmd"
+   },
+   "model": "MODEL_BODY_HELM",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/HelmClass02.bmd"
+   },
+   "model": "MODEL_BODY_HELM + 1",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/HelmClass03.bmd"
+   },
+   "model": "MODEL_BODY_HELM + 2",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/HelmClass04.bmd"
+   },
+   "model": "MODEL_BODY_HELM + 3",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/HelmClass05.bmd"
+   },
+   "model": "MODEL_BODY_HELM + 4",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/HelmClass06.bmd"
+   },
+   "model": "MODEL_BODY_HELM + 5",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/HelmClass07.bmd"
+   },
+   "model": "MODEL_BODY_HELM + 6",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/HelmClass201.bmd"
+   },
+   "model": "MODEL_BODY_HELM + 7",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/HelmClass202.bmd"
+   },
+   "model": "MODEL_BODY_HELM + 8",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/HelmClass203.bmd"
+   },
+   "model": "MODEL_BODY_HELM + 9",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/HelmClass206.bmd"
+   },
+   "model": "MODEL_BODY_HELM + 12",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/HelmClass301.bmd"
+   },
+   "model": "MODEL_BODY_HELM + 14",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/HelmClass302.bmd"
+   },
+   "model": "MODEL_BODY_HELM + 15",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/HelmClass303.bmd"
+   },
+   "model": "MODEL_BODY_HELM + 16",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/HelmClass304.bmd"
+   },
+   "model": "MODEL_BODY_HELM + 17",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/HelmClass305.bmd"
+   },
+   "model": "MODEL_BODY_HELM + 18",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/HelmClass306.bmd"
+   },
+   "model": "MODEL_BODY_HELM + 19",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/HelmClass307.bmd"
+   },
+   "model": "MODEL_BODY_HELM + 20",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/ArmorClass01.bmd"
+   },
+   "model": "MODEL_BODY_ARMOR",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/ArmorClass02.bmd"
+   },
+   "model": "MODEL_BODY_ARMOR + 1",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/ArmorClass03.bmd"
+   },
+   "model": "MODEL_BODY_ARMOR + 2",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/ArmorClass04.bmd"
+   },
+   "model": "MODEL_BODY_ARMOR + 3",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/ArmorClass05.bmd"
+   },
+   "model": "MODEL_BODY_ARMOR + 4",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/ArmorClass06.bmd"
+   },
+   "model": "MODEL_BODY_ARMOR + 5",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/ArmorClass07.bmd"
+   },
+   "model": "MODEL_BODY_ARMOR + 6",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/ArmorClass201.bmd"
+   },
+   "model": "MODEL_BODY_ARMOR + 7",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/ArmorClass202.bmd"
+   },
+   "model": "MODEL_BODY_ARMOR + 8",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/ArmorClass203.bmd"
+   },
+   "model": "MODEL_BODY_ARMOR + 9",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/ArmorClass206.bmd"
+   },
+   "model": "MODEL_BODY_ARMOR + 12",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/ArmorClass301.bmd"
+   },
+   "model": "MODEL_BODY_ARMOR + 14",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/ArmorClass302.bmd"
+   },
+   "model": "MODEL_BODY_ARMOR + 15",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/ArmorClass303.bmd"
+   },
+   "model": "MODEL_BODY_ARMOR + 16",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/ArmorClass304.bmd"
+   },
+   "model": "MODEL_BODY_ARMOR + 17",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/ArmorClass305.bmd"
+   },
+   "model": "MODEL_BODY_ARMOR + 18",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/ArmorClass306.bmd"
+   },
+   "model": "MODEL_BODY_ARMOR + 19",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/ArmorClass307.bmd"
+   },
+   "model": "MODEL_BODY_ARMOR + 20",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/PantClass01.bmd"
+   },
+   "model": "MODEL_BODY_PANTS",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/PantClass02.bmd"
+   },
+   "model": "MODEL_BODY_PANTS + 1",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/PantClass03.bmd"
+   },
+   "model": "MODEL_BODY_PANTS + 2",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/PantClass04.bmd"
+   },
+   "model": "MODEL_BODY_PANTS + 3",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/PantClass05.bmd"
+   },
+   "model": "MODEL_BODY_PANTS + 4",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/PantClass06.bmd"
+   },
+   "model": "MODEL_BODY_PANTS + 5",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/PantClass07.bmd"
+   },
+   "model": "MODEL_BODY_PANTS + 6",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/PantClass201.bmd"
+   },
+   "model": "MODEL_BODY_PANTS + 7",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/PantClass202.bmd"
+   },
+   "model": "MODEL_BODY_PANTS + 8",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/PantClass203.bmd"
+   },
+   "model": "MODEL_BODY_PANTS + 9",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/PantClass206.bmd"
+   },
+   "model": "MODEL_BODY_PANTS + 12",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/PantClass301.bmd"
+   },
+   "model": "MODEL_BODY_PANTS + 14",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/PantClass302.bmd"
+   },
+   "model": "MODEL_BODY_PANTS + 15",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/PantClass303.bmd"
+   },
+   "model": "MODEL_BODY_PANTS + 16",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/PantClass304.bmd"
+   },
+   "model": "MODEL_BODY_PANTS + 17",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/PantClass305.bmd"
+   },
+   "model": "MODEL_BODY_PANTS + 18",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/PantClass306.bmd"
+   },
+   "model": "MODEL_BODY_PANTS + 19",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/PantClass307.bmd"
+   },
+   "model": "MODEL_BODY_PANTS + 20",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/GloveClass01.bmd"
+   },
+   "model": "MODEL_BODY_GLOVES",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/GloveClass02.bmd"
+   },
+   "model": "MODEL_BODY_GLOVES + 1",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/GloveClass03.bmd"
+   },
+   "model": "MODEL_BODY_GLOVES + 2",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/GloveClass04.bmd"
+   },
+   "model": "MODEL_BODY_GLOVES + 3",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/GloveClass05.bmd"
+   },
+   "model": "MODEL_BODY_GLOVES + 4",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/GloveClass06.bmd"
+   },
+   "model": "MODEL_BODY_GLOVES + 5",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/GloveClass07.bmd"
+   },
+   "model": "MODEL_BODY_GLOVES + 6",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/GloveClass201.bmd"
+   },
+   "model": "MODEL_BODY_GLOVES + 7",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/GloveClass202.bmd"
+   },
+   "model": "MODEL_BODY_GLOVES + 8",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/GloveClass203.bmd"
+   },
+   "model": "MODEL_BODY_GLOVES + 9",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/GloveClass206.bmd"
+   },
+   "model": "MODEL_BODY_GLOVES + 12",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/GloveClass301.bmd"
+   },
+   "model": "MODEL_BODY_GLOVES + 14",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/GloveClass302.bmd"
+   },
+   "model": "MODEL_BODY_GLOVES + 15",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/GloveClass303.bmd"
+   },
+   "model": "MODEL_BODY_GLOVES + 16",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/GloveClass304.bmd"
+   },
+   "model": "MODEL_BODY_GLOVES + 17",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/GloveClass305.bmd"
+   },
+   "model": "MODEL_BODY_GLOVES + 18",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/GloveClass306.bmd"
+   },
+   "model": "MODEL_BODY_GLOVES + 19",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/GloveClass307.bmd"
+   },
+   "model": "MODEL_BODY_GLOVES + 20",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/BootClass01.bmd"
+   },
+   "model": "MODEL_BODY_BOOTS",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/BootClass02.bmd"
+   },
+   "model": "MODEL_BODY_BOOTS + 1",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/BootClass03.bmd"
+   },
+   "model": "MODEL_BODY_BOOTS + 2",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/BootClass04.bmd"
+   },
+   "model": "MODEL_BODY_BOOTS + 3",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/BootClass05.bmd"
+   },
+   "model": "MODEL_BODY_BOOTS + 4",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/BootClass06.bmd"
+   },
+   "model": "MODEL_BODY_BOOTS + 5",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/BootClass07.bmd"
+   },
+   "model": "MODEL_BODY_BOOTS + 6",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/BootClass201.bmd"
+   },
+   "model": "MODEL_BODY_BOOTS + 7",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/BootClass202.bmd"
+   },
+   "model": "MODEL_BODY_BOOTS + 8",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/BootClass203.bmd"
+   },
+   "model": "MODEL_BODY_BOOTS + 9",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/BootClass206.bmd"
+   },
+   "model": "MODEL_BODY_BOOTS + 12",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/BootClass301.bmd"
+   },
+   "model": "MODEL_BODY_BOOTS + 14",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/BootClass302.bmd"
+   },
+   "model": "MODEL_BODY_BOOTS + 15",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/BootClass303.bmd"
+   },
+   "model": "MODEL_BODY_BOOTS + 16",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/BootClass304.bmd"
+   },
+   "model": "MODEL_BODY_BOOTS + 17",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/BootClass305.bmd"
+   },
+   "model": "MODEL_BODY_BOOTS + 18",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/BootClass306.bmd"
+   },
+   "model": "MODEL_BODY_BOOTS + 19",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenPlayerBodyParts",
+    "path": "src/bin/Data/Player/BootClass307.bmd"
+   },
+   "model": "MODEL_BODY_BOOTS + 20",
+   "texture_dirs": [
+    "src/bin/Data/Player"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenItemEffectModels",
+    "path": "src/bin/Data/Item/Event02.bmd"
+   },
+   "model": "MODEL_EVENT",
+   "texture_dirs": [
+    "src/bin/Data/Item"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenItemEffectModels",
+    "path": "src/bin/Data/Item/Event03.bmd"
+   },
+   "model": "MODEL_EVENT + 1",
+   "texture_dirs": [
+    "src/bin/Data/Item"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenItemEffectModels",
+    "path": "src/bin/Data/Item/RingOfLordEvent00.bmd"
+   },
+   "model": "MODEL_EVENT + 14",
+   "texture_dirs": [
+    "src/bin/Data/Item"
+   ]
+  },
+  {
+   "file": {
+    "exists": true,
+    "loaded_by": "OpenItemEffectModels",
+    "path": "src/bin/Data/Item/MagicRing00.bmd"
+   },
+   "model": "MODEL_EVENT + 15",
+   "texture_dirs": [
+    "src/bin/Data/Item"
    ]
   }
  ],
@@ -12210,8 +13756,10 @@
   "src/bin/Data/Items/Models",
   "src/source/Core/Globals/_define.h",
   "src/source/Core/Globals/_enum.h",
-  "src/source/Engine/Object/ZzzInventory.cpp",
+  "src/source/Engine/Object/PlayerBodyModels.cpp",
+  "src/source/Engine/Object/PlayerBodyModels.h",
   "src/source/Engine/Object/ZzzOpenData.cpp",
-  "src/source/GameLogic/Social/MonkSystem.cpp"
+  "src/source/GameLogic/Social/MonkSystem.cpp",
+  "src/source/Render/Items/ItemDisplay.cpp"
  ]
 }

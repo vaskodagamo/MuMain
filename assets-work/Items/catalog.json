@@ -30,7 +30,7 @@
   "items": 889,
   "missing_models": 0,
   "missing_textures": 0,
-  "models": 908,
+  "models": 939,
   "owner_tiers": 0,
   "requests": 5,
   "table_items_without_model": 33,
@@ -2703,6 +2703,9 @@
    },
    "requests": [],
    "shared_with": {
+    "src/bin/Data/Item/RingPenOfLordEvent.OZJ": [
+     "other:MODEL_EVENT + 14"
+    ],
     "src/bin/Data/Item/a_2.OZJ": [
      "5-5",
      "5-19",
@@ -3360,6 +3363,98 @@
       "SFbody.jpg": "src/bin/Data/Player/SFbody.OZJ",
       "SPweapon.jpg": "src/bin/Data/Player/SPweapon.OZJ"
      }
+    },
+    {
+     "bmd": "src/bin/Data/Item/SwordL33.bmd",
+     "exists": true,
+     "folder": "src/bin/Data/Item",
+     "loaded_by": "CMonkSystem::LoadModelItem",
+     "model": "MODEL_SWORD_32_LEFT",
+     "original": {
+      "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
+      "sha256": "2108ad9a11239dd472403b3a583c057c1b752db3a68798cba9d1f716d33384b8"
+     },
+     "role": "left-hand",
+     "structure": {
+      "action_keys": [
+       1
+      ],
+      "actions": 1,
+      "bones": 51,
+      "bounds": {
+       "max": [
+        51.64,
+        16.2,
+        144.24
+       ],
+       "min": [
+        23.05,
+        -17.62,
+        67.34
+       ]
+      },
+      "mesh_textures": [
+       "SFbody.jpg",
+       "SPweapon.jpg"
+      ],
+      "meshes": 2,
+      "triangles": 283,
+      "version": 12
+     },
+     "texture_dirs": [
+      "src/bin/Data/Player"
+     ],
+     "texture_status": {},
+     "textures": {
+      "SFbody.jpg": "src/bin/Data/Player/SFbody.OZJ",
+      "SPweapon.jpg": "src/bin/Data/Player/SPweapon.OZJ"
+     }
+    },
+    {
+     "bmd": "src/bin/Data/Item/SwordR33.bmd",
+     "exists": true,
+     "folder": "src/bin/Data/Item",
+     "loaded_by": "CMonkSystem::LoadModelItem",
+     "model": "MODEL_SWORD_32_RIGHT",
+     "original": {
+      "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
+      "sha256": "3942b90e994a7bfddfe0320fd8ca52c320eefbf71ce52810afeef30d0184ee1d"
+     },
+     "role": "right-hand",
+     "structure": {
+      "action_keys": [
+       1
+      ],
+      "actions": 1,
+      "bones": 51,
+      "bounds": {
+       "max": [
+        -23.05,
+        16.2,
+        144.24
+       ],
+       "min": [
+        -51.64,
+        -17.62,
+        67.34
+       ]
+      },
+      "mesh_textures": [
+       "SFbody.jpg",
+       "SPweapon.jpg"
+      ],
+      "meshes": 2,
+      "triangles": 283,
+      "version": 12
+     },
+     "texture_dirs": [
+      "src/bin/Data/Player"
+     ],
+     "texture_status": {},
+     "textures": {
+      "SFbody.jpg": "src/bin/Data/Player/SFbody.OZJ",
+      "SPweapon.jpg": "src/bin/Data/Player/SPweapon.OZJ"
+     }
     }
    ],
    "name": "Sacred Glove",
@@ -3475,6 +3570,104 @@
         -29.99,
         -43.55,
         -28.45
+       ]
+      },
+      "mesh_textures": [
+       "Item762_Sword.jpg",
+       "Item762_Armor.jpg",
+       "Item762_Helm.jpg"
+      ],
+      "meshes": 3,
+      "triangles": 359,
+      "version": 12
+     },
+     "texture_dirs": [
+      "src/bin/Data/Item",
+      "src/bin/Data/Player"
+     ],
+     "texture_status": {},
+     "textures": {
+      "Item762_Armor.jpg": "src/bin/Data/Player/Item762_Armor.OZJ",
+      "Item762_Helm.jpg": "src/bin/Data/Player/Item762_Helm.OZJ",
+      "Item762_Sword.jpg": "src/bin/Data/Item/Item762_Sword.OZJ"
+     }
+    },
+    {
+     "bmd": "src/bin/Data/Item/SwordL34.bmd",
+     "exists": true,
+     "folder": "src/bin/Data/Item",
+     "loaded_by": "CMonkSystem::LoadModelItem",
+     "model": "MODEL_SWORD_33_LEFT",
+     "original": {
+      "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
+      "sha256": "7f9a592eccf7bb86735ca18ef1d4d772dc4efaf824b1c3bf798ff5856a7be101"
+     },
+     "role": "left-hand",
+     "structure": {
+      "action_keys": [
+       1
+      ],
+      "actions": 1,
+      "bones": 51,
+      "bounds": {
+       "max": [
+        77.23,
+        29.99,
+        144.16
+       ],
+       "min": [
+        20.34,
+        -29.99,
+        57.07
+       ]
+      },
+      "mesh_textures": [
+       "Item762_Sword.jpg",
+       "Item762_Armor.jpg",
+       "Item762_Helm.jpg"
+      ],
+      "meshes": 3,
+      "triangles": 359,
+      "version": 12
+     },
+     "texture_dirs": [
+      "src/bin/Data/Item",
+      "src/bin/Data/Player"
+     ],
+     "texture_status": {},
+     "textures": {
+      "Item762_Armor.jpg": "src/bin/Data/Player/Item762_Armor.OZJ",
+      "Item762_Helm.jpg": "src/bin/Data/Player/Item762_Helm.OZJ",
+      "Item762_Sword.jpg": "src/bin/Data/Item/Item762_Sword.OZJ"
+     }
+    },
+    {
+     "bmd": "src/bin/Data/Item/SwordR34.bmd",
+     "exists": true,
+     "folder": "src/bin/Data/Item",
+     "loaded_by": "CMonkSystem::LoadModelItem",
+     "model": "MODEL_SWORD_33_RIGHT",
+     "original": {
+      "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
+      "sha256": "b7669e621110320e94dd55eb897a7b1dcb4425774fcacd57e9374d4a793527d6"
+     },
+     "role": "right-hand",
+     "structure": {
+      "action_keys": [
+       1
+      ],
+      "actions": 1,
+      "bones": 51,
+      "bounds": {
+       "max": [
+        -20.34,
+        29.99,
+        144.16
+       ],
+       "min": [
+        -77.23,
+        -29.99,
+        57.07
        ]
       },
       "mesh_textures": [
@@ -3633,6 +3826,94 @@
      "textures": {
       "Item761_Sword.jpg": "src/bin/Data/Player/Item761_Sword.OZJ"
      }
+    },
+    {
+     "bmd": "src/bin/Data/Item/SwordL35.bmd",
+     "exists": true,
+     "folder": "src/bin/Data/Item",
+     "loaded_by": "CMonkSystem::LoadModelItem",
+     "model": "MODEL_SWORD_34_LEFT",
+     "original": {
+      "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
+      "sha256": "121202b04c8d78634ba5e575af55cb7e916544caca417abe02ed9ec2befaddd0"
+     },
+     "role": "left-hand",
+     "structure": {
+      "action_keys": [
+       1
+      ],
+      "actions": 1,
+      "bones": 51,
+      "bounds": {
+       "max": [
+        68.8,
+        37.64,
+        149.02
+       ],
+       "min": [
+        22.65,
+        -37.64,
+        63.41
+       ]
+      },
+      "mesh_textures": [
+       "Item761_Sword.jpg"
+      ],
+      "meshes": 1,
+      "triangles": 584,
+      "version": 12
+     },
+     "texture_dirs": [
+      "src/bin/Data/Player"
+     ],
+     "texture_status": {},
+     "textures": {
+      "Item761_Sword.jpg": "src/bin/Data/Player/Item761_Sword.OZJ"
+     }
+    },
+    {
+     "bmd": "src/bin/Data/Item/SwordR35.bmd",
+     "exists": true,
+     "folder": "src/bin/Data/Item",
+     "loaded_by": "CMonkSystem::LoadModelItem",
+     "model": "MODEL_SWORD_34_RIGHT",
+     "original": {
+      "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
+      "sha256": "be7b2da37cc369ec9b60fddd6e8d6bb5cb93062b220f460db1a7b562f0f4f750"
+     },
+     "role": "right-hand",
+     "structure": {
+      "action_keys": [
+       1
+      ],
+      "actions": 1,
+      "bones": 51,
+      "bounds": {
+       "max": [
+        -22.65,
+        37.64,
+        149.02
+       ],
+       "min": [
+        -68.8,
+        -37.64,
+        63.41
+       ]
+      },
+      "mesh_textures": [
+       "Item761_Sword.jpg"
+      ],
+      "meshes": 1,
+      "triangles": 584,
+      "version": 12
+     },
+     "texture_dirs": [
+      "src/bin/Data/Player"
+     ],
+     "texture_status": {},
+     "textures": {
+      "Item761_Sword.jpg": "src/bin/Data/Player/Item761_Sword.OZJ"
+     }
     }
    ],
    "name": "Piercing Blade Glove",
@@ -3766,6 +4047,94 @@
      "textures": {
       "PhoenixSoul.jpg": "src/bin/Data/Player/PhoenixSoul.OZJ",
       "gra.jpg": "src/bin/Data/Effect/gra.OZJ"
+     }
+    },
+    {
+     "bmd": "src/bin/Data/Item/Sword36L.bmd",
+     "exists": true,
+     "folder": "src/bin/Data/Item",
+     "loaded_by": "CMonkSystem::LoadModelItem",
+     "model": "MODEL_SWORD_35_LEFT",
+     "original": {
+      "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
+      "sha256": "9b0ba2eb2bbc7f13539788e0403f7bf366dbcb17393f68108d309c2458cfd149"
+     },
+     "role": "left-hand",
+     "structure": {
+      "action_keys": [
+       1
+      ],
+      "actions": 1,
+      "bones": 51,
+      "bounds": {
+       "max": [
+        60.2,
+        20.94,
+        141.2
+       ],
+       "min": [
+        20.54,
+        -22.16,
+        53.83
+       ]
+      },
+      "mesh_textures": [
+       "PhoenixSoul.jpg"
+      ],
+      "meshes": 1,
+      "triangles": 308,
+      "version": 12
+     },
+     "texture_dirs": [
+      "src/bin/Data/Player"
+     ],
+     "texture_status": {},
+     "textures": {
+      "PhoenixSoul.jpg": "src/bin/Data/Player/PhoenixSoul.OZJ"
+     }
+    },
+    {
+     "bmd": "src/bin/Data/Item/Sword36R.bmd",
+     "exists": true,
+     "folder": "src/bin/Data/Item",
+     "loaded_by": "CMonkSystem::LoadModelItem",
+     "model": "MODEL_SWORD_35_RIGHT",
+     "original": {
+      "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
+      "sha256": "efadd2d32860acbd035ed33cdbad869590f55c9e205a1e48d37687eaeb1f1081"
+     },
+     "role": "right-hand",
+     "structure": {
+      "action_keys": [
+       1
+      ],
+      "actions": 1,
+      "bones": 51,
+      "bounds": {
+       "max": [
+        -20.54,
+        20.94,
+        141.2
+       ],
+       "min": [
+        -60.2,
+        -22.16,
+        53.83
+       ]
+      },
+      "mesh_textures": [
+       "PhoenixSoul.jpg"
+      ],
+      "meshes": 1,
+      "triangles": 308,
+      "version": 12
+     },
+     "texture_dirs": [
+      "src/bin/Data/Player"
+     ],
+     "texture_status": {},
+     "textures": {
+      "PhoenixSoul.jpg": "src/bin/Data/Player/PhoenixSoul.OZJ"
      }
     }
    ],
@@ -40680,7 +41049,8 @@
      "13-39",
      "13-40",
      "13-41",
-     "13-42"
+     "13-42",
+     "other:MODEL_EVENT + 15"
     ]
    },
    "table": {
@@ -41472,6 +41842,53 @@
      "textures": {
       "Cove_bow.jpg": "src/bin/Data/Item/Cove_bow.OZJ",
       "Sumbk.jpg": "src/bin/Data/Item/Sumbk.OZJ"
+     }
+    },
+    {
+     "bmd": "src/bin/Data/Item/LifestoneItem.bmd",
+     "condition": "Type == ITEM_LIFE_STONE_ITEM && Level == 1",
+     "exists": true,
+     "folder": "src/bin/Data/Item",
+     "loaded_by": "OpenItemEffectModels",
+     "model": "MODEL_EVENT + 18",
+     "original": {
+      "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
+      "sha256": "532c58329e8534a25c4a1a70a72d9c941a60ca32d2c9f4e4dee1fdf7b3bf45cb"
+     },
+     "role": "inventory",
+     "structure": {
+      "action_keys": [
+       1
+      ],
+      "actions": 1,
+      "bones": 1,
+      "bounds": {
+       "max": [
+        25.13,
+        3.78,
+        25.13
+       ],
+       "min": [
+        -25.13,
+        -3.78,
+        -25.13
+       ]
+      },
+      "mesh_textures": [
+       "Monster81.jpg",
+       "Monster81_R2.jpg"
+      ],
+      "meshes": 2,
+      "triangles": 32,
+      "version": 12
+     },
+     "texture_dirs": [
+      "src/bin/Data/Monster"
+     ],
+     "texture_status": {},
+     "textures": {
+      "Monster81.jpg": "src/bin/Data/Monster/Monster81.OZJ",
+      "Monster81_R2.jpg": "src/bin/Data/Monster/Monster81_R2.OZJ"
      }
     }
    ],
@@ -42460,7 +42877,8 @@
      "13-39",
      "13-40",
      "13-41",
-     "13-42"
+     "13-42",
+     "other:MODEL_EVENT + 15"
     ]
    },
    "table": {
@@ -43397,7 +43815,8 @@
      "13-39",
      "13-40",
      "13-41",
-     "13-42"
+     "13-42",
+     "other:MODEL_EVENT + 15"
     ]
    },
    "table": {
@@ -44030,6 +44449,51 @@
      "texture_status": {},
      "textures": {
       "rok.tga": "src/bin/Data/Item/rok.OZT"
+     }
+    },
+    {
+     "bmd": "src/bin/Data/Item/DarkLordSleeve.bmd",
+     "condition": "Type == ITEM_LOCHS_FEATHER && Level == 1",
+     "exists": true,
+     "folder": "src/bin/Data/Item",
+     "loaded_by": "OpenItemEffectModels",
+     "model": "MODEL_EVENT + 16",
+     "original": {
+      "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
+      "sha256": "326578f93f7f04280060f329841a2880863e44e4ba67433df7a729b7130a8e49"
+     },
+     "role": "inventory",
+     "structure": {
+      "action_keys": [
+       1
+      ],
+      "actions": 1,
+      "bones": 1,
+      "bounds": {
+       "max": [
+        13.94,
+        3.17,
+        70.38
+       ],
+       "min": [
+        -13.94,
+        -4.06,
+        -1.06
+       ]
+      },
+      "mesh_textures": [
+       "DarkLordSleeve.tga"
+      ],
+      "meshes": 1,
+      "triangles": 6,
+      "version": 12
+     },
+     "texture_dirs": [
+      "src/bin/Data/Item"
+     ],
+     "texture_status": {},
+     "textures": {
+      "DarkLordSleeve.tga": "src/bin/Data/Item/DarkLordSleeve.OZT"
      }
     }
    ],
@@ -45962,7 +46426,8 @@
      "13-39",
      "13-40",
      "13-41",
-     "13-42"
+     "13-42",
+     "other:MODEL_EVENT + 15"
     ]
    },
    "table": {
@@ -46122,7 +46587,8 @@
      "13-39",
      "13-40",
      "13-41",
-     "13-42"
+     "13-42",
+     "other:MODEL_EVENT + 15"
     ]
    },
    "table": {
@@ -46282,7 +46748,8 @@
      "13-39",
      "13-40",
      "13-41",
-     "13-42"
+     "13-42",
+     "other:MODEL_EVENT + 15"
     ],
     "src/bin/Data/Item/waternecklace.OZJ": [
      "0-28",
@@ -46449,7 +46916,8 @@
      "13-39",
      "13-40",
      "13-41",
-     "13-42"
+     "13-42",
+     "other:MODEL_EVENT + 15"
     ]
    },
    "table": {
@@ -47959,7 +48427,8 @@
      "13-28",
      "13-40",
      "13-41",
-     "13-42"
+     "13-42",
+     "other:MODEL_EVENT + 15"
     ]
    },
    "table": {
@@ -48233,7 +48702,8 @@
      "13-28",
      "13-39",
      "13-41",
-     "13-42"
+     "13-42",
+     "other:MODEL_EVENT + 15"
     ]
    },
    "table": {
@@ -48383,7 +48853,8 @@
      "13-28",
      "13-39",
      "13-40",
-     "13-42"
+     "13-42",
+     "other:MODEL_EVENT + 15"
     ]
    },
    "table": {
@@ -48533,7 +49004,8 @@
      "13-28",
      "13-39",
      "13-40",
-     "13-41"
+     "13-41",
+     "other:MODEL_EVENT + 15"
     ]
    },
    "table": {
@@ -52823,7 +53295,8 @@
      "13-39",
      "13-40",
      "13-41",
-     "13-42"
+     "13-42",
+     "other:MODEL_EVENT + 15"
     ]
    },
    "table": {
@@ -54154,7 +54627,8 @@
      "13-39",
      "13-40",
      "13-41",
-     "13-42"
+     "13-42",
+     "other:MODEL_EVENT + 15"
     ]
    },
    "table": {
@@ -56593,6 +57067,370 @@
      "textures": {
       "box.jpg": "src/bin/Data/Item/box.OZJ"
      }
+    },
+    {
+     "bmd": "src/bin/Data/Item/MagicBox02.bmd",
+     "condition": "Type == ITEM_BOX_OF_LUCK && Level == 1",
+     "exists": true,
+     "folder": "src/bin/Data/Item",
+     "loaded_by": "OpenItemEffectModels",
+     "model": "MODEL_EVENT + 4",
+     "original": {
+      "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
+      "sha256": "fac7b74f4011f714303d36a8e430d574be9846af76a760dca4d604aa1244b809"
+     },
+     "role": "inventory",
+     "structure": {
+      "action_keys": [
+       1
+      ],
+      "actions": 1,
+      "bones": 1,
+      "bounds": {
+       "max": [
+        17.24,
+        5.61,
+        40.05
+       ],
+       "min": [
+        -17.24,
+        -5.61,
+        0.24
+       ]
+      },
+      "mesh_textures": [
+       "star.jpg"
+      ],
+      "meshes": 1,
+      "triangles": 24,
+      "version": 10
+     },
+     "texture_dirs": [
+      "src/bin/Data/Item"
+     ],
+     "texture_status": {},
+     "textures": {
+      "star.jpg": "src/bin/Data/Item/star.OZJ"
+     }
+    },
+    {
+     "bmd": "src/bin/Data/Item/MagicBox03.bmd",
+     "condition": "Type == ITEM_BOX_OF_LUCK && 14 <= Level && Level <= 15",
+     "exists": true,
+     "folder": "src/bin/Data/Item",
+     "loaded_by": "OpenItemEffectModels",
+     "model": "MODEL_EVENT + 5",
+     "original": {
+      "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
+      "sha256": "99540a8c64ec6329658c732932d302dc95cc8eb5e3f9abc13cf6a0c481ae441a"
+     },
+     "role": "inventory",
+     "structure": {
+      "action_keys": [
+       1
+      ],
+      "actions": 1,
+      "bones": 1,
+      "bounds": {
+       "max": [
+        14.83,
+        12.89,
+        57.09
+       ],
+       "min": [
+        -14.85,
+        -12.81,
+        -0.17
+       ]
+      },
+      "mesh_textures": [
+       "firecracker.jpg"
+      ],
+      "meshes": 1,
+      "triangles": 24,
+      "version": 10
+     },
+     "texture_dirs": [
+      "src/bin/Data/Item"
+     ],
+     "texture_status": {},
+     "textures": {
+      "firecracker.jpg": "src/bin/Data/Item/firecracker.OZJ"
+     }
+    },
+    {
+     "bmd": "src/bin/Data/Item/MagicBox03.bmd",
+     "condition": "Type == ITEM_BOX_OF_LUCK && Level == 2",
+     "exists": true,
+     "folder": "src/bin/Data/Item",
+     "loaded_by": "OpenItemEffectModels",
+     "model": "MODEL_EVENT + 5",
+     "original": {
+      "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
+      "sha256": "99540a8c64ec6329658c732932d302dc95cc8eb5e3f9abc13cf6a0c481ae441a"
+     },
+     "role": "inventory",
+     "structure": {
+      "action_keys": [
+       1
+      ],
+      "actions": 1,
+      "bones": 1,
+      "bounds": {
+       "max": [
+        14.83,
+        12.89,
+        57.09
+       ],
+       "min": [
+        -14.85,
+        -12.81,
+        -0.17
+       ]
+      },
+      "mesh_textures": [
+       "firecracker.jpg"
+      ],
+      "meshes": 1,
+      "triangles": 24,
+      "version": 10
+     },
+     "texture_dirs": [
+      "src/bin/Data/Item"
+     ],
+     "texture_status": {},
+     "textures": {
+      "firecracker.jpg": "src/bin/Data/Item/firecracker.OZJ"
+     }
+    },
+    {
+     "bmd": "src/bin/Data/Item/MagicBox05.bmd",
+     "condition": "Type == ITEM_BOX_OF_LUCK && Level == 13",
+     "exists": true,
+     "folder": "src/bin/Data/Item",
+     "loaded_by": "OpenItemEffectModels",
+     "model": "MODEL_EVENT + 6",
+     "original": {
+      "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
+      "sha256": "e4967046d08015d78897043f00cc2cd134539db1812158ed7c22103848019005"
+     },
+     "role": "inventory",
+     "structure": {
+      "action_keys": [
+       8
+      ],
+      "actions": 1,
+      "bones": 6,
+      "bounds": {
+       "max": [
+        5.24,
+        12.37,
+        12.64
+       ],
+       "min": [
+        -3.45,
+        -12.64,
+        -14.91
+       ]
+      },
+      "mesh_textures": [
+       "hhj.jpg"
+      ],
+      "meshes": 1,
+      "triangles": 80,
+      "version": 10
+     },
+     "texture_dirs": [
+      "src/bin/Data/Item"
+     ],
+     "texture_status": {},
+     "textures": {
+      "hhj.jpg": "src/bin/Data/Item/hhj.OZJ"
+     }
+    },
+    {
+     "bmd": "src/bin/Data/Item/MagicBox05.bmd",
+     "condition": "Type == ITEM_BOX_OF_LUCK && Level == 3",
+     "exists": true,
+     "folder": "src/bin/Data/Item",
+     "loaded_by": "OpenItemEffectModels",
+     "model": "MODEL_EVENT + 6",
+     "original": {
+      "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
+      "sha256": "e4967046d08015d78897043f00cc2cd134539db1812158ed7c22103848019005"
+     },
+     "role": "inventory",
+     "structure": {
+      "action_keys": [
+       8
+      ],
+      "actions": 1,
+      "bones": 6,
+      "bounds": {
+       "max": [
+        5.24,
+        12.37,
+        12.64
+       ],
+       "min": [
+        -3.45,
+        -12.64,
+        -14.91
+       ]
+      },
+      "mesh_textures": [
+       "hhj.jpg"
+      ],
+      "meshes": 1,
+      "triangles": 80,
+      "version": 10
+     },
+     "texture_dirs": [
+      "src/bin/Data/Item"
+     ],
+     "texture_status": {},
+     "textures": {
+      "hhj.jpg": "src/bin/Data/Item/hhj.OZJ"
+     }
+    },
+    {
+     "bmd": "src/bin/Data/Item/MagicBox06.bmd",
+     "condition": "Type == ITEM_BOX_OF_LUCK && Level == 5",
+     "exists": true,
+     "folder": "src/bin/Data/Item",
+     "loaded_by": "OpenItemEffectModels",
+     "model": "MODEL_EVENT + 8",
+     "original": {
+      "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
+      "sha256": "07586aec7ffdf782dada3103f6ac0ccd376a34b18d39fbe9f3975bb0953ef877"
+     },
+     "role": "inventory",
+     "structure": {
+      "action_keys": [
+       1
+      ],
+      "actions": 1,
+      "bones": 1,
+      "bounds": {
+       "max": [
+        17.62,
+        4.33,
+        70.71
+       ],
+       "min": [
+        -17.62,
+        -4.63,
+        -0.33
+       ]
+      },
+      "mesh_textures": [
+       "medal2.jpg",
+       "medal1.jpg"
+      ],
+      "meshes": 2,
+      "triangles": 76,
+      "version": 10
+     },
+     "texture_dirs": [
+      "src/bin/Data/Item"
+     ],
+     "texture_status": {},
+     "textures": {
+      "medal1.jpg": "src/bin/Data/Item/medal1.OZJ",
+      "medal2.jpg": "src/bin/Data/Item/medal2.OZJ"
+     }
+    },
+    {
+     "bmd": "src/bin/Data/Item/MagicBox07.bmd",
+     "condition": "Type == ITEM_BOX_OF_LUCK && Level == 6",
+     "exists": true,
+     "folder": "src/bin/Data/Item",
+     "loaded_by": "OpenItemEffectModels",
+     "model": "MODEL_EVENT + 9",
+     "original": {
+      "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
+      "sha256": "8ad86dff30c8037346daa58f04888ce67f9d25315bbf021cd88cc3117a91a727"
+     },
+     "role": "inventory",
+     "structure": {
+      "action_keys": [
+       1
+      ],
+      "actions": 1,
+      "bones": 1,
+      "bounds": {
+       "max": [
+        17.62,
+        4.33,
+        70.71
+       ],
+       "min": [
+        -17.62,
+        -4.63,
+        -0.33
+       ]
+      },
+      "mesh_textures": [
+       "medal2.jpg",
+       "medal1.jpg"
+      ],
+      "meshes": 2,
+      "triangles": 76,
+      "version": 10
+     },
+     "texture_dirs": [
+      "src/bin/Data/Item"
+     ],
+     "texture_status": {},
+     "textures": {
+      "medal1.jpg": "src/bin/Data/Item/medal1.OZJ",
+      "medal2.jpg": "src/bin/Data/Item/medal2.OZJ"
+     }
+    },
+    {
+     "bmd": "src/bin/Data/Item/MagicBox08.bmd",
+     "condition": "Type == ITEM_BOX_OF_LUCK && 8 <= Level && Level <= 12",
+     "exists": true,
+     "folder": "src/bin/Data/Item",
+     "loaded_by": "OpenItemEffectModels",
+     "model": "MODEL_EVENT + 10",
+     "original": {
+      "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
+      "sha256": "058bbf05e3462daae6411466b0f074cf3f756e8db78ad0bac9ba614d6f4f33c1"
+     },
+     "role": "inventory",
+     "structure": {
+      "action_keys": [
+       1
+      ],
+      "actions": 1,
+      "bones": 1,
+      "bounds": {
+       "max": [
+        58.65,
+        63.76,
+        110.06
+       ],
+       "min": [
+        -59.1,
+        -63.88,
+        0.55
+       ]
+      },
+      "mesh_textures": [
+       "Eldobox.jpg"
+      ],
+      "meshes": 1,
+      "triangles": 44,
+      "version": 10
+     },
+     "texture_dirs": [
+      "src/bin/Data/Item"
+     ],
+     "texture_status": {},
+     "textures": {
+      "Eldobox.jpg": "src/bin/Data/Item/Eldobox.OZJ"
+     }
     }
    ],
    "name": "Box of Luck",
@@ -56617,7 +57455,14 @@
     "sha256": "d3f6fd2a6c6ddab21d9f457033e10b5bb6b98f20bb202b06f721a8dc662cf4d0"
    },
    "requests": [],
-   "shared_with": {},
+   "shared_with": {
+    "src/bin/Data/Item/hhj.OZJ": [
+     "14-12"
+    ],
+    "src/bin/Data/Item/star.OZJ": [
+     "14-51"
+    ]
+   },
    "table": {
     "classes": {
      "dk": 0,
@@ -57824,7 +58669,11 @@
     "sha256": "5e245f13b942b6231f13f0860783cfe18add796b10dd66d94574cce21bc8e7bd"
    },
    "requests": [],
-   "shared_with": {},
+   "shared_with": {
+    "src/bin/Data/Item/hhj.OZJ": [
+     "14-11"
+    ]
+   },
    "table": {
     "classes": {
      "dk": 0,
@@ -62534,6 +63383,51 @@
      "textures": {
       "chip.jpg": "src/bin/Data/Item/chip.OZJ"
      }
+    },
+    {
+     "bmd": "src/bin/Data/Item/EventBloodCastle03.bmd",
+     "condition": "Type == ITEM_RENA && 1 <= Level && Level <= 2",
+     "exists": true,
+     "folder": "src/bin/Data/Item",
+     "loaded_by": "OpenItemEffectModels",
+     "model": "MODEL_EVENT + 11",
+     "original": {
+      "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
+      "sha256": "290013d085bcc5939f9391f93042e40042e8b0c01d21ad8baaa8011536ff274c"
+     },
+     "role": "inventory",
+     "structure": {
+      "action_keys": [
+       1
+      ],
+      "actions": 1,
+      "bones": 1,
+      "bounds": {
+       "max": [
+        21.8,
+        15.67,
+        77.89
+       ],
+       "min": [
+        -22.09,
+        -15.67,
+        1.5
+       ]
+      },
+      "mesh_textures": [
+       "stone02.JPG"
+      ],
+      "meshes": 1,
+      "triangles": 20,
+      "version": 10
+     },
+     "texture_dirs": [
+      "src/bin/Data/Item"
+     ],
+     "texture_status": {},
+     "textures": {
+      "stone02.JPG": "src/bin/Data/Item/stone02.OZJ"
+     }
     }
    ],
    "name": "Rena",
@@ -62764,6 +63658,51 @@
      "textures": {
       "Ktext.jpg": "src/bin/Data/Item/Ktext.OZJ"
      }
+    },
+    {
+     "bmd": "src/bin/Data/Item/QuestItem3rd00.bmd",
+     "condition": "Type == ITEM_SCROLL_OF_EMPEROR_RING_OF_HONOR && Level == 1",
+     "exists": true,
+     "folder": "src/bin/Data/Item",
+     "loaded_by": "OpenItemEffectModels",
+     "model": "MODEL_EVENT + 12",
+     "original": {
+      "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
+      "sha256": "056c2ff7a324b17cc5db6ca2c81974b6ba7a416efd6952566452667d7aeef0bf"
+     },
+     "role": "inventory",
+     "structure": {
+      "action_keys": [
+       1
+      ],
+      "actions": 1,
+      "bones": 2,
+      "bounds": {
+       "max": [
+        31.58,
+        17.58,
+        70.09
+       ],
+       "min": [
+        -29.82,
+        -17.62,
+        0.78
+       ]
+      },
+      "mesh_textures": [
+       "gloryring.JPG"
+      ],
+      "meshes": 1,
+      "triangles": 64,
+      "version": 10
+     },
+     "texture_dirs": [
+      "src/bin/Data/Item"
+     ],
+     "texture_status": {},
+     "textures": {
+      "gloryring.JPG": "src/bin/Data/Item/gloryring.OZJ"
+     }
     }
    ],
    "name": "Scroll of the Emperor",
@@ -62879,6 +63818,53 @@
      "texture_status": {},
      "textures": {
       "Ksword.jpg": "src/bin/Data/Item/Ksword.OZJ"
+     }
+    },
+    {
+     "bmd": "src/bin/Data/Item/QuestItem3rd01.bmd",
+     "condition": "Type == ITEM_BROKEN_SWORD_DARK_STONE && Level == 1",
+     "exists": true,
+     "folder": "src/bin/Data/Item",
+     "loaded_by": "OpenItemEffectModels",
+     "model": "MODEL_EVENT + 13",
+     "original": {
+      "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
+      "sha256": "bacd891100cff9f3d4142d17d6e3c27b42cb4994c8267866dbd0033494a81adc"
+     },
+     "role": "inventory",
+     "structure": {
+      "action_keys": [
+       1
+      ],
+      "actions": 1,
+      "bones": 3,
+      "bounds": {
+       "max": [
+        19.23,
+        16.28,
+        68.66
+       ],
+       "min": [
+        -19.3,
+        -16.28,
+        0.36
+       ]
+      },
+      "mesh_textures": [
+       "darkstonered.jpg",
+       "darkstone8.JPG"
+      ],
+      "meshes": 2,
+      "triangles": 88,
+      "version": 10
+     },
+     "texture_dirs": [
+      "src/bin/Data/Item"
+     ],
+     "texture_status": {},
+     "textures": {
+      "darkstone8.JPG": "src/bin/Data/Item/darkstone8.OZJ",
+      "darkstonered.jpg": "src/bin/Data/Item/darkstonered.OZJ"
      }
     }
    ],
@@ -63842,6 +64828,55 @@
       "whitedayrose.tga": "src/bin/Data/Item/whitedayrose.OZT",
       "whitedaytrap.tga": "src/bin/Data/Item/whitedaytrap.OZT"
      }
+    },
+    {
+     "bmd": "src/bin/Data/Item/p03box.bmd",
+     "condition": "Type == ITEM_PINK_CHOCOLATE_BOX && Level == 1",
+     "exists": true,
+     "folder": "src/bin/Data/Item",
+     "loaded_by": "OpenItemEffectModels",
+     "model": "MODEL_EVENT + 21",
+     "original": {
+      "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
+      "sha256": "dd306e720b2aa8771be39fdd40ecae78bad7526ddac5f598a2693d4064eafd83"
+     },
+     "role": "inventory",
+     "structure": {
+      "action_keys": [
+       1
+      ],
+      "actions": 1,
+      "bones": 5,
+      "bounds": {
+       "max": [
+        33.41,
+        13.4,
+        27.55
+       ],
+       "min": [
+        -22.2,
+        -34.6,
+        0.06
+       ]
+      },
+      "mesh_textures": [
+       "whitedayrose.tga",
+       "whitedayribon02.jpg",
+       "whitedaybox04.jpg"
+      ],
+      "meshes": 3,
+      "triangles": 218,
+      "version": 12
+     },
+     "texture_dirs": [
+      "src/bin/Data/Item"
+     ],
+     "texture_status": {},
+     "textures": {
+      "whitedaybox04.jpg": "src/bin/Data/Item/whitedaybox04.OZJ",
+      "whitedayribon02.jpg": "src/bin/Data/Item/whitedayribon02.OZJ",
+      "whitedayrose.tga": "src/bin/Data/Item/whitedayrose.OZT"
+     }
     }
    ],
    "name": "Pink Chocolate Box",
@@ -63867,6 +64902,10 @@
    },
    "requests": [],
    "shared_with": {
+    "src/bin/Data/Item/whitedayrose.OZT": [
+     "14-33",
+     "14-34"
+    ],
     "src/bin/Data/Item/whitedaytrap.OZT": [
      "14-33",
      "14-34"
@@ -63967,6 +65006,55 @@
       "whitedayribon01.jpg": "src/bin/Data/Item/whitedayribon01.OZJ",
       "whitedaytrap.tga": "src/bin/Data/Item/whitedaytrap.OZT"
      }
+    },
+    {
+     "bmd": "src/bin/Data/Item/obox02.bmd",
+     "condition": "Type == ITEM_RED_CHOCOLATE_BOX && Level == 1",
+     "exists": true,
+     "folder": "src/bin/Data/Item",
+     "loaded_by": "OpenItemEffectModels",
+     "model": "MODEL_EVENT + 22",
+     "original": {
+      "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
+      "sha256": "bbf6b835853efecd3c5a7d1590f16ece0925b72601f0a01b4720344cba0572bc"
+     },
+     "role": "inventory",
+     "structure": {
+      "action_keys": [
+       1
+      ],
+      "actions": 1,
+      "bones": 5,
+      "bounds": {
+       "max": [
+        29.7,
+        20.96,
+        27.52
+       ],
+       "min": [
+        -26.4,
+        -27.04,
+        0.03
+       ]
+      },
+      "mesh_textures": [
+       "whitedaybox02_w.jpg",
+       "whitedayrose.tga",
+       "whitedayribon01_w.jpg"
+      ],
+      "meshes": 3,
+      "triangles": 218,
+      "version": 12
+     },
+     "texture_dirs": [
+      "src/bin/Data/Item"
+     ],
+     "texture_status": {},
+     "textures": {
+      "whitedaybox02_w.jpg": "src/bin/Data/Item/whitedaybox02_w.OZJ",
+      "whitedayribon01_w.jpg": "src/bin/Data/Item/whitedayribon01_w.OZJ",
+      "whitedayrose.tga": "src/bin/Data/Item/whitedayrose.OZT"
+     }
     }
    ],
    "name": "Red Chocolate Box",
@@ -63992,6 +65080,10 @@
    },
    "requests": [],
    "shared_with": {
+    "src/bin/Data/Item/whitedayrose.OZT": [
+     "14-32",
+     "14-34"
+    ],
     "src/bin/Data/Item/whitedaytrap.OZT": [
      "14-32",
      "14-34"
@@ -64094,6 +65186,55 @@
       "whitedayrose02.tga": "src/bin/Data/Item/whitedayrose02.OZT",
       "whitedaytrap.tga": "src/bin/Data/Item/whitedaytrap.OZT"
      }
+    },
+    {
+     "bmd": "src/bin/Data/Item/blue01.bmd",
+     "condition": "Type == ITEM_BLUE_CHOCOLATE_BOX && Level == 1",
+     "exists": true,
+     "folder": "src/bin/Data/Item",
+     "loaded_by": "OpenItemEffectModels",
+     "model": "MODEL_EVENT + 23",
+     "original": {
+      "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
+      "sha256": "88a546c4dd9e0100ea8c5fe7dd9095670191a7d7d487d6e71634e9fde4308ea5"
+     },
+     "role": "inventory",
+     "structure": {
+      "action_keys": [
+       1
+      ],
+      "actions": 1,
+      "bones": 4,
+      "bounds": {
+       "max": [
+        29.78,
+        20.75,
+        27.46
+       ],
+       "min": [
+        -26.32,
+        -27.25,
+        -0.03
+       ]
+      },
+      "mesh_textures": [
+       "whitedayribon.jpg",
+       "whitedaybox_b01.jpg",
+       "whitedayrose.tga"
+      ],
+      "meshes": 3,
+      "triangles": 218,
+      "version": 12
+     },
+     "texture_dirs": [
+      "src/bin/Data/Item"
+     ],
+     "texture_status": {},
+     "textures": {
+      "whitedaybox_b01.jpg": "src/bin/Data/Item/whitedaybox_b01.OZJ",
+      "whitedayribon.jpg": "src/bin/Data/Item/whitedayribon.OZJ",
+      "whitedayrose.tga": "src/bin/Data/Item/whitedayrose.OZT"
+     }
     }
    ],
    "name": "Blue Chocolate Box",
@@ -64119,6 +65260,10 @@
    },
    "requests": [],
    "shared_with": {
+    "src/bin/Data/Item/whitedayrose.OZT": [
+     "14-32",
+     "14-33"
+    ],
     "src/bin/Data/Item/whitedaytrap.OZT": [
      "14-32",
      "14-33"
@@ -65875,6 +67020,51 @@
      "textures": {
       "scroolc.jpg": "src/bin/Data/Item/scroolc.OZJ"
      }
+    },
+    {
+     "bmd": "src/bin/Data/Item/hellowinscroll.bmd",
+     "condition": "Type >= ITEM_JACK_OLANTERN_BLESSINGS && Type <= ITEM_JACK_OLANTERN_CRY",
+     "exists": true,
+     "folder": "src/bin/Data/Item",
+     "loaded_by": "Data/Items/Models/Group14_Potion.json -> SharedModels.json (jackOLanternScroll)",
+     "model": "MODEL_JACK_OLANTERN_BLESSINGS",
+     "original": {
+      "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
+      "sha256": "fde5fd282d1f76fa004b467ecd693d43f81245979bcb5c9703c9e5a36513284e"
+     },
+     "role": "inventory",
+     "structure": {
+      "action_keys": [
+       1
+      ],
+      "actions": 1,
+      "bones": 2,
+      "bounds": {
+       "max": [
+        13.47,
+        13.2,
+        53.08
+       ],
+       "min": [
+        -12.87,
+        -13.15,
+        -52.94
+       ]
+      },
+      "mesh_textures": [
+       "scroolc.jpg"
+      ],
+      "meshes": 1,
+      "triangles": 176,
+      "version": 12
+     },
+     "texture_dirs": [
+      "src/bin/Data/Item"
+     ],
+     "texture_status": {},
+     "textures": {
+      "scroolc.jpg": "src/bin/Data/Item/scroolc.OZJ"
+     }
     }
    ],
    "name": "Jack O'Lantern Wrath",
@@ -65971,6 +67161,51 @@
       "sha256": "fde5fd282d1f76fa004b467ecd693d43f81245979bcb5c9703c9e5a36513284e"
      },
      "role": "item",
+     "structure": {
+      "action_keys": [
+       1
+      ],
+      "actions": 1,
+      "bones": 2,
+      "bounds": {
+       "max": [
+        13.47,
+        13.2,
+        53.08
+       ],
+       "min": [
+        -12.87,
+        -13.15,
+        -52.94
+       ]
+      },
+      "mesh_textures": [
+       "scroolc.jpg"
+      ],
+      "meshes": 1,
+      "triangles": 176,
+      "version": 12
+     },
+     "texture_dirs": [
+      "src/bin/Data/Item"
+     ],
+     "texture_status": {},
+     "textures": {
+      "scroolc.jpg": "src/bin/Data/Item/scroolc.OZJ"
+     }
+    },
+    {
+     "bmd": "src/bin/Data/Item/hellowinscroll.bmd",
+     "condition": "Type >= ITEM_JACK_OLANTERN_BLESSINGS && Type <= ITEM_JACK_OLANTERN_CRY",
+     "exists": true,
+     "folder": "src/bin/Data/Item",
+     "loaded_by": "Data/Items/Models/Group14_Potion.json -> SharedModels.json (jackOLanternScroll)",
+     "model": "MODEL_JACK_OLANTERN_BLESSINGS",
+     "original": {
+      "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
+      "sha256": "fde5fd282d1f76fa004b467ecd693d43f81245979bcb5c9703c9e5a36513284e"
+     },
+     "role": "inventory",
      "structure": {
       "action_keys": [
        1
@@ -66535,7 +67770,11 @@
     "sha256": "fac7b74f4011f714303d36a8e430d574be9846af76a760dca4d604aa1244b809"
    },
    "requests": [],
-   "shared_with": {},
+   "shared_with": {
+    "src/bin/Data/Item/star.OZJ": [
+     "14-11"
+    ]
+   },
    "table": {
     "classes": {
      "dk": 0,
@@ -70903,6 +72142,51 @@
      "texture_status": {},
      "textures": {
       "bottle.tga": "src/bin/Data/Item/bottle.ozt"
+     }
+    },
+    {
+     "bmd": "src/bin/Data/Item/Beer02.bmd",
+     "condition": "Type == ITEM_ALE && Level == 1",
+     "exists": true,
+     "folder": "src/bin/Data/Item",
+     "loaded_by": "OpenItemEffectModels",
+     "model": "MODEL_EVENT + 7",
+     "original": {
+      "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
+      "sha256": "a11fd6cde60f4bca290ad5e53e17ab1aee1e8e34c442a72bdf9b8da2a2818e74"
+     },
+     "role": "inventory",
+     "structure": {
+      "action_keys": [
+       1
+      ],
+      "actions": 1,
+      "bones": 1,
+      "bounds": {
+       "max": [
+        24.2,
+        11.91,
+        58.09
+       ],
+       "min": [
+        -30.36,
+        -11.91,
+        -14.17
+       ]
+      },
+      "mesh_textures": [
+       "olive.jpg"
+      ],
+      "meshes": 1,
+      "triangles": 138,
+      "version": 10
+     },
+     "texture_dirs": [
+      "src/bin/Data/Item"
+     ],
+     "texture_status": {},
+     "textures": {
+      "olive.jpg": "src/bin/Data/Item/olive.OZJ"
      }
     }
    ],
@@ -91840,7 +93124,9 @@
      "7-28",
      "7-33",
      "7-38",
-     "7-51"
+     "7-51",
+     "other:MODEL_BODY_HELM + 18",
+     "other:MODEL_BODY_HELM + 4"
     ],
     "src/bin/Data/Player/level_man02.OZJ": [
      "7-5",
@@ -91850,7 +93136,12 @@
      "7-27",
      "7-28",
      "7-33",
-     "7-38"
+     "7-38",
+     "other:MODEL_BODY_ARMOR + 4",
+     "other:MODEL_BODY_BOOTS + 4",
+     "other:MODEL_BODY_GLOVES + 4",
+     "other:MODEL_BODY_HELM + 4",
+     "other:MODEL_BODY_PANTS + 4"
     ]
    },
    "table": {
@@ -92011,7 +93302,12 @@
      "7-8",
      "8-0",
      "8-2",
-     "8-5"
+     "8-5",
+     "other:MODEL_BODY_ARMOR",
+     "other:MODEL_BODY_BOOTS",
+     "other:MODEL_BODY_GLOVES",
+     "other:MODEL_BODY_HELM",
+     "other:MODEL_BODY_PANTS"
     ]
    },
    "table": {
@@ -92767,7 +94063,12 @@
      "8-14",
      "9-10",
      "9-11",
-     "9-12"
+     "9-12",
+     "other:MODEL_BODY_ARMOR + 2",
+     "other:MODEL_BODY_BOOTS + 2",
+     "other:MODEL_BODY_GLOVES + 2",
+     "other:MODEL_BODY_HELM + 2",
+     "other:MODEL_BODY_PANTS + 2"
     ]
    },
    "table": {
@@ -92919,7 +94220,12 @@
      "7-17",
      "7-21",
      "8-24",
-     "9-24"
+     "9-24",
+     "other:MODEL_BODY_ARMOR + 8",
+     "other:MODEL_BODY_BOOTS + 8",
+     "other:MODEL_BODY_GLOVES + 8",
+     "other:MODEL_BODY_HELM + 8",
+     "other:MODEL_BODY_PANTS + 8"
     ]
    },
    "table": {
@@ -93071,7 +94377,12 @@
      "7-16",
      "7-21",
      "8-24",
-     "9-24"
+     "9-24",
+     "other:MODEL_BODY_ARMOR + 8",
+     "other:MODEL_BODY_BOOTS + 8",
+     "other:MODEL_BODY_GLOVES + 8",
+     "other:MODEL_BODY_HELM + 8",
+     "other:MODEL_BODY_PANTS + 8"
     ]
    },
    "table": {
@@ -93220,7 +94531,12 @@
    "requests": [],
    "shared_with": {
     "src/bin/Data/Player/level_man022.OZJ": [
-     "7-22"
+     "7-22",
+     "other:MODEL_BODY_ARMOR + 7",
+     "other:MODEL_BODY_BOOTS + 7",
+     "other:MODEL_BODY_GLOVES + 7",
+     "other:MODEL_BODY_HELM + 7",
+     "other:MODEL_BODY_PANTS + 7"
     ]
    },
    "table": {
@@ -93375,7 +94691,12 @@
      "7-31",
      "7-36",
      "8-19",
-     "9-19"
+     "9-19",
+     "other:MODEL_BODY_ARMOR + 9",
+     "other:MODEL_BODY_BOOTS + 9",
+     "other:MODEL_BODY_GLOVES + 9",
+     "other:MODEL_BODY_HELM + 9",
+     "other:MODEL_BODY_PANTS + 9"
     ],
     "src/bin/Data/Player/lowerTest_R.OZJ": [
      "10-19",
@@ -93701,7 +95022,12 @@
      "7-16",
      "7-17",
      "8-24",
-     "9-24"
+     "9-24",
+     "other:MODEL_BODY_ARMOR + 8",
+     "other:MODEL_BODY_BOOTS + 8",
+     "other:MODEL_BODY_GLOVES + 8",
+     "other:MODEL_BODY_HELM + 8",
+     "other:MODEL_BODY_PANTS + 8"
     ]
    },
    "table": {
@@ -93852,7 +95178,12 @@
    "requests": [],
    "shared_with": {
     "src/bin/Data/Player/level_man022.OZJ": [
-     "7-18"
+     "7-18",
+     "other:MODEL_BODY_ARMOR + 7",
+     "other:MODEL_BODY_BOOTS + 7",
+     "other:MODEL_BODY_GLOVES + 7",
+     "other:MODEL_BODY_HELM + 7",
+     "other:MODEL_BODY_PANTS + 7"
     ]
    },
    "table": {
@@ -94014,7 +95345,12 @@
      "7-31",
      "7-36",
      "8-19",
-     "9-19"
+     "9-19",
+     "other:MODEL_BODY_ARMOR + 9",
+     "other:MODEL_BODY_BOOTS + 9",
+     "other:MODEL_BODY_GLOVES + 9",
+     "other:MODEL_BODY_HELM + 9",
+     "other:MODEL_BODY_PANTS + 9"
     ]
    },
    "table": {
@@ -94172,7 +95508,9 @@
      "7-28",
      "7-33",
      "7-38",
-     "7-51"
+     "7-51",
+     "other:MODEL_BODY_HELM + 18",
+     "other:MODEL_BODY_HELM + 4"
     ],
     "src/bin/Data/Player/level_man02.OZJ": [
      "7-0",
@@ -94182,7 +95520,12 @@
      "7-27",
      "7-28",
      "7-33",
-     "7-38"
+     "7-38",
+     "other:MODEL_BODY_ARMOR + 4",
+     "other:MODEL_BODY_BOOTS + 4",
+     "other:MODEL_BODY_GLOVES + 4",
+     "other:MODEL_BODY_HELM + 4",
+     "other:MODEL_BODY_PANTS + 4"
     ]
    },
    "table": {
@@ -94345,7 +95688,9 @@
      "7-28",
      "7-33",
      "7-38",
-     "7-51"
+     "7-51",
+     "other:MODEL_BODY_HELM + 18",
+     "other:MODEL_BODY_HELM + 4"
     ],
     "src/bin/Data/Player/level_man02.OZJ": [
      "7-0",
@@ -94355,7 +95700,12 @@
      "7-27",
      "7-28",
      "7-33",
-     "7-38"
+     "7-38",
+     "other:MODEL_BODY_ARMOR + 4",
+     "other:MODEL_BODY_BOOTS + 4",
+     "other:MODEL_BODY_GLOVES + 4",
+     "other:MODEL_BODY_HELM + 4",
+     "other:MODEL_BODY_PANTS + 4"
     ]
    },
    "table": {
@@ -94513,7 +95863,9 @@
      "7-28",
      "7-33",
      "7-38",
-     "7-51"
+     "7-51",
+     "other:MODEL_BODY_HELM + 18",
+     "other:MODEL_BODY_HELM + 4"
     ],
     "src/bin/Data/Player/level_man02.OZJ": [
      "7-0",
@@ -94523,7 +95875,12 @@
      "7-26",
      "7-28",
      "7-33",
-     "7-38"
+     "7-38",
+     "other:MODEL_BODY_ARMOR + 4",
+     "other:MODEL_BODY_BOOTS + 4",
+     "other:MODEL_BODY_GLOVES + 4",
+     "other:MODEL_BODY_HELM + 4",
+     "other:MODEL_BODY_PANTS + 4"
     ]
    },
    "table": {
@@ -94681,7 +96038,9 @@
      "7-27",
      "7-33",
      "7-38",
-     "7-51"
+     "7-51",
+     "other:MODEL_BODY_HELM + 18",
+     "other:MODEL_BODY_HELM + 4"
     ],
     "src/bin/Data/Player/level_man02.OZJ": [
      "7-0",
@@ -94691,7 +96050,12 @@
      "7-26",
      "7-27",
      "7-33",
-     "7-38"
+     "7-38",
+     "other:MODEL_BODY_ARMOR + 4",
+     "other:MODEL_BODY_BOOTS + 4",
+     "other:MODEL_BODY_GLOVES + 4",
+     "other:MODEL_BODY_HELM + 4",
+     "other:MODEL_BODY_PANTS + 4"
     ]
    },
    "table": {
@@ -95006,7 +96370,12 @@
      "8-14",
      "9-10",
      "9-11",
-     "9-12"
+     "9-12",
+     "other:MODEL_BODY_ARMOR + 2",
+     "other:MODEL_BODY_BOOTS + 2",
+     "other:MODEL_BODY_GLOVES + 2",
+     "other:MODEL_BODY_HELM + 2",
+     "other:MODEL_BODY_PANTS + 2"
     ]
    },
    "table": {
@@ -95320,7 +96689,12 @@
      "7-24",
      "7-36",
      "8-19",
-     "9-19"
+     "9-19",
+     "other:MODEL_BODY_ARMOR + 9",
+     "other:MODEL_BODY_BOOTS + 9",
+     "other:MODEL_BODY_GLOVES + 9",
+     "other:MODEL_BODY_HELM + 9",
+     "other:MODEL_BODY_PANTS + 9"
     ]
    },
    "table": {
@@ -95486,7 +96860,9 @@
      "7-27",
      "7-28",
      "7-38",
-     "7-51"
+     "7-51",
+     "other:MODEL_BODY_HELM + 18",
+     "other:MODEL_BODY_HELM + 4"
     ],
     "src/bin/Data/Player/level_man02.OZJ": [
      "7-0",
@@ -95496,7 +96872,12 @@
      "7-26",
      "7-27",
      "7-28",
-     "7-38"
+     "7-38",
+     "other:MODEL_BODY_ARMOR + 4",
+     "other:MODEL_BODY_BOOTS + 4",
+     "other:MODEL_BODY_GLOVES + 4",
+     "other:MODEL_BODY_HELM + 4",
+     "other:MODEL_BODY_PANTS + 4"
     ]
    },
    "table": {
@@ -95941,7 +97322,12 @@
      "7-24",
      "7-31",
      "8-19",
-     "9-19"
+     "9-19",
+     "other:MODEL_BODY_ARMOR + 9",
+     "other:MODEL_BODY_BOOTS + 9",
+     "other:MODEL_BODY_GLOVES + 9",
+     "other:MODEL_BODY_HELM + 9",
+     "other:MODEL_BODY_PANTS + 9"
     ]
    },
    "table": {
@@ -96099,7 +97485,9 @@
      "7-27",
      "7-28",
      "7-33",
-     "7-51"
+     "7-51",
+     "other:MODEL_BODY_HELM + 18",
+     "other:MODEL_BODY_HELM + 4"
     ],
     "src/bin/Data/Player/level_man02.OZJ": [
      "7-0",
@@ -96109,7 +97497,12 @@
      "7-26",
      "7-27",
      "7-28",
-     "7-33"
+     "7-33",
+     "other:MODEL_BODY_ARMOR + 4",
+     "other:MODEL_BODY_BOOTS + 4",
+     "other:MODEL_BODY_GLOVES + 4",
+     "other:MODEL_BODY_HELM + 4",
+     "other:MODEL_BODY_PANTS + 4"
     ]
    },
    "table": {
@@ -96425,7 +97818,12 @@
      "8-14",
      "9-10",
      "9-11",
-     "9-12"
+     "9-12",
+     "other:MODEL_BODY_ARMOR + 2",
+     "other:MODEL_BODY_BOOTS + 2",
+     "other:MODEL_BODY_GLOVES + 2",
+     "other:MODEL_BODY_HELM + 2",
+     "other:MODEL_BODY_PANTS + 2"
     ]
    },
    "table": {
@@ -97327,7 +98725,12 @@
    "requests": [],
    "shared_with": {
     "src/bin/Data/Player/SkinClass301.OZJ": [
-     "7-46"
+     "7-46",
+     "other:MODEL_BODY_ARMOR + 15",
+     "other:MODEL_BODY_BOOTS + 15",
+     "other:MODEL_BODY_GLOVES + 15",
+     "other:MODEL_BODY_HELM + 15",
+     "other:MODEL_BODY_PANTS + 15"
     ]
    },
    "table": {
@@ -97487,7 +98890,12 @@
      "11-46"
     ],
     "src/bin/Data/Player/SkinClass301.OZJ": [
-     "7-45"
+     "7-45",
+     "other:MODEL_BODY_ARMOR + 15",
+     "other:MODEL_BODY_BOOTS + 15",
+     "other:MODEL_BODY_GLOVES + 15",
+     "other:MODEL_BODY_HELM + 15",
+     "other:MODEL_BODY_PANTS + 15"
     ]
    },
    "table": {
@@ -97911,7 +99319,12 @@
     "src/bin/Data/Player/LevelClass107.OZJ": [
      "7-6",
      "7-8",
-     "8-5"
+     "8-5",
+     "other:MODEL_BODY_ARMOR + 6",
+     "other:MODEL_BODY_BOOTS + 6",
+     "other:MODEL_BODY_GLOVES + 6",
+     "other:MODEL_BODY_HELM + 6",
+     "other:MODEL_BODY_PANTS + 6"
     ],
     "src/bin/Data/Player/hair_R.OZJ": [
      "7-0",
@@ -97922,7 +99335,9 @@
      "7-28",
      "7-33",
      "7-38",
-     "7-51"
+     "7-51",
+     "other:MODEL_BODY_HELM + 18",
+     "other:MODEL_BODY_HELM + 4"
     ],
     "src/bin/Data/Player/level_man02.OZJ": [
      "7-0",
@@ -97932,7 +99347,12 @@
      "7-27",
      "7-28",
      "7-33",
-     "7-38"
+     "7-38",
+     "other:MODEL_BODY_ARMOR + 4",
+     "other:MODEL_BODY_BOOTS + 4",
+     "other:MODEL_BODY_GLOVES + 4",
+     "other:MODEL_BODY_HELM + 4",
+     "other:MODEL_BODY_PANTS + 4"
     ],
     "src/bin/Data/Player/skin_barbarian_01.OZJ": [
      "7-1",
@@ -97941,7 +99361,12 @@
      "7-8",
      "8-0",
      "8-2",
-     "8-5"
+     "8-5",
+     "other:MODEL_BODY_ARMOR",
+     "other:MODEL_BODY_BOOTS",
+     "other:MODEL_BODY_GLOVES",
+     "other:MODEL_BODY_HELM",
+     "other:MODEL_BODY_PANTS"
     ]
    },
    "table": {
@@ -98245,6 +99670,13 @@
    },
    "requests": [],
    "shared_with": {
+    "src/bin/Data/Player/SkinClass305.OZJ": [
+     "other:MODEL_BODY_ARMOR + 18",
+     "other:MODEL_BODY_BOOTS + 18",
+     "other:MODEL_BODY_GLOVES + 18",
+     "other:MODEL_BODY_HELM + 18",
+     "other:MODEL_BODY_PANTS + 18"
+    ],
     "src/bin/Data/Player/hair_R.OZJ": [
      "7-0",
      "7-5",
@@ -98254,7 +99686,9 @@
      "7-27",
      "7-28",
      "7-33",
-     "7-38"
+     "7-38",
+     "other:MODEL_BODY_HELM + 18",
+     "other:MODEL_BODY_HELM + 4"
     ]
    },
    "table": {
@@ -98405,7 +99839,15 @@
     "sha256": "4d17ebe197342fb15cfb28c6f1dbc0694909b8f2745b310db25af9d6dcc535d4"
    },
    "requests": [],
-   "shared_with": {},
+   "shared_with": {
+    "src/bin/Data/Player/SkinClass302.OZJ": [
+     "other:MODEL_BODY_ARMOR + 14",
+     "other:MODEL_BODY_BOOTS + 14",
+     "other:MODEL_BODY_GLOVES + 14",
+     "other:MODEL_BODY_HELM + 14",
+     "other:MODEL_BODY_PANTS + 14"
+    ]
+   },
    "table": {
     "classes": {
      "dk": 0,
@@ -98945,7 +100387,12 @@
     "src/bin/Data/Player/LevelClass107.OZJ": [
      "7-5",
      "7-8",
-     "8-5"
+     "8-5",
+     "other:MODEL_BODY_ARMOR + 6",
+     "other:MODEL_BODY_BOOTS + 6",
+     "other:MODEL_BODY_GLOVES + 6",
+     "other:MODEL_BODY_HELM + 6",
+     "other:MODEL_BODY_PANTS + 6"
     ],
     "src/bin/Data/Player/hair_R.OZJ": [
      "7-0",
@@ -98956,7 +100403,9 @@
      "7-28",
      "7-33",
      "7-38",
-     "7-51"
+     "7-51",
+     "other:MODEL_BODY_HELM + 18",
+     "other:MODEL_BODY_HELM + 4"
     ],
     "src/bin/Data/Player/level_man02.OZJ": [
      "7-0",
@@ -98966,7 +100415,12 @@
      "7-27",
      "7-28",
      "7-33",
-     "7-38"
+     "7-38",
+     "other:MODEL_BODY_ARMOR + 4",
+     "other:MODEL_BODY_BOOTS + 4",
+     "other:MODEL_BODY_GLOVES + 4",
+     "other:MODEL_BODY_HELM + 4",
+     "other:MODEL_BODY_PANTS + 4"
     ],
     "src/bin/Data/Player/skin_barbarian_01.OZJ": [
      "7-1",
@@ -98975,7 +100429,12 @@
      "7-8",
      "8-0",
      "8-2",
-     "8-5"
+     "8-5",
+     "other:MODEL_BODY_ARMOR",
+     "other:MODEL_BODY_BOOTS",
+     "other:MODEL_BODY_GLOVES",
+     "other:MODEL_BODY_HELM",
+     "other:MODEL_BODY_PANTS"
     ]
    },
    "table": {
@@ -100395,7 +101854,12 @@
      "7-8",
      "8-0",
      "8-2",
-     "8-5"
+     "8-5",
+     "other:MODEL_BODY_ARMOR",
+     "other:MODEL_BODY_BOOTS",
+     "other:MODEL_BODY_GLOVES",
+     "other:MODEL_BODY_HELM",
+     "other:MODEL_BODY_PANTS"
     ]
    },
    "table": {
@@ -101013,7 +102477,12 @@
     "src/bin/Data/Player/LevelClass107.OZJ": [
      "7-5",
      "7-6",
-     "8-5"
+     "8-5",
+     "other:MODEL_BODY_ARMOR + 6",
+     "other:MODEL_BODY_BOOTS + 6",
+     "other:MODEL_BODY_GLOVES + 6",
+     "other:MODEL_BODY_HELM + 6",
+     "other:MODEL_BODY_PANTS + 6"
     ],
     "src/bin/Data/Player/skin_barbarian_01.OZJ": [
      "7-1",
@@ -101022,7 +102491,12 @@
      "7-7",
      "8-0",
      "8-2",
-     "8-5"
+     "8-5",
+     "other:MODEL_BODY_ARMOR",
+     "other:MODEL_BODY_BOOTS",
+     "other:MODEL_BODY_GLOVES",
+     "other:MODEL_BODY_HELM",
+     "other:MODEL_BODY_PANTS"
     ]
    },
    "table": {
@@ -101399,7 +102873,12 @@
      "7-7",
      "7-8",
      "8-2",
-     "8-5"
+     "8-5",
+     "other:MODEL_BODY_ARMOR",
+     "other:MODEL_BODY_BOOTS",
+     "other:MODEL_BODY_GLOVES",
+     "other:MODEL_BODY_HELM",
+     "other:MODEL_BODY_PANTS"
     ]
    },
    "table": {
@@ -101722,7 +103201,12 @@
      "8-14",
      "9-10",
      "9-11",
-     "9-12"
+     "9-12",
+     "other:MODEL_BODY_ARMOR + 2",
+     "other:MODEL_BODY_BOOTS + 2",
+     "other:MODEL_BODY_GLOVES + 2",
+     "other:MODEL_BODY_HELM + 2",
+     "other:MODEL_BODY_PANTS + 2"
     ]
    },
    "table": {
@@ -101889,7 +103373,12 @@
      "8-14",
      "9-10",
      "9-11",
-     "9-12"
+     "9-12",
+     "other:MODEL_BODY_ARMOR + 2",
+     "other:MODEL_BODY_BOOTS + 2",
+     "other:MODEL_BODY_GLOVES + 2",
+     "other:MODEL_BODY_HELM + 2",
+     "other:MODEL_BODY_PANTS + 2"
     ]
    },
    "table": {
@@ -102056,7 +103545,12 @@
      "8-14",
      "9-10",
      "9-11",
-     "9-12"
+     "9-12",
+     "other:MODEL_BODY_ARMOR + 2",
+     "other:MODEL_BODY_BOOTS + 2",
+     "other:MODEL_BODY_GLOVES + 2",
+     "other:MODEL_BODY_HELM + 2",
+     "other:MODEL_BODY_PANTS + 2"
     ]
    },
    "table": {
@@ -102229,7 +103723,12 @@
      "8-14",
      "9-10",
      "9-11",
-     "9-12"
+     "9-12",
+     "other:MODEL_BODY_ARMOR + 2",
+     "other:MODEL_BODY_BOOTS + 2",
+     "other:MODEL_BODY_GLOVES + 2",
+     "other:MODEL_BODY_HELM + 2",
+     "other:MODEL_BODY_PANTS + 2"
     ]
    },
    "table": {
@@ -102397,7 +103896,12 @@
      "8-13",
      "9-10",
      "9-11",
-     "9-12"
+     "9-12",
+     "other:MODEL_BODY_ARMOR + 2",
+     "other:MODEL_BODY_BOOTS + 2",
+     "other:MODEL_BODY_GLOVES + 2",
+     "other:MODEL_BODY_HELM + 2",
+     "other:MODEL_BODY_PANTS + 2"
     ]
    },
    "table": {
@@ -103150,7 +104654,12 @@
      "7-24",
      "7-31",
      "7-36",
-     "9-19"
+     "9-19",
+     "other:MODEL_BODY_ARMOR + 9",
+     "other:MODEL_BODY_BOOTS + 9",
+     "other:MODEL_BODY_GLOVES + 9",
+     "other:MODEL_BODY_HELM + 9",
+     "other:MODEL_BODY_PANTS + 9"
     ]
    },
    "table": {
@@ -103331,7 +104840,12 @@
      "7-7",
      "7-8",
      "8-0",
-     "8-5"
+     "8-5",
+     "other:MODEL_BODY_ARMOR",
+     "other:MODEL_BODY_BOOTS",
+     "other:MODEL_BODY_GLOVES",
+     "other:MODEL_BODY_HELM",
+     "other:MODEL_BODY_PANTS"
     ]
    },
    "table": {
@@ -104076,7 +105590,12 @@
      "7-16",
      "7-17",
      "7-21",
-     "9-24"
+     "9-24",
+     "other:MODEL_BODY_ARMOR + 8",
+     "other:MODEL_BODY_BOOTS + 8",
+     "other:MODEL_BODY_GLOVES + 8",
+     "other:MODEL_BODY_HELM + 8",
+     "other:MODEL_BODY_PANTS + 8"
     ]
    },
    "table": {
@@ -108369,7 +109888,12 @@
     "src/bin/Data/Player/LevelClass107.OZJ": [
      "7-5",
      "7-6",
-     "7-8"
+     "7-8",
+     "other:MODEL_BODY_ARMOR + 6",
+     "other:MODEL_BODY_BOOTS + 6",
+     "other:MODEL_BODY_GLOVES + 6",
+     "other:MODEL_BODY_HELM + 6",
+     "other:MODEL_BODY_PANTS + 6"
     ],
     "src/bin/Data/Player/skin_barbarian_01.OZJ": [
      "7-1",
@@ -108378,7 +109902,12 @@
      "7-7",
      "7-8",
      "8-0",
-     "8-2"
+     "8-2",
+     "other:MODEL_BODY_ARMOR",
+     "other:MODEL_BODY_BOOTS",
+     "other:MODEL_BODY_GLOVES",
+     "other:MODEL_BODY_HELM",
+     "other:MODEL_BODY_PANTS"
     ]
    },
    "table": {
@@ -109037,6 +110566,53 @@
       "SFarmor.jpg": "src/bin/Data/Player/SFarmor.OZJ",
       "SFbody.jpg": "src/bin/Data/Player/SFbody.OZJ"
      }
+    },
+    {
+     "bmd": "src/bin/Data/Player/Armor_inventory60.bmd",
+     "condition": "Type == ITEM_SACRED_ARMOR",
+     "exists": true,
+     "folder": "src/bin/Data/Player",
+     "loaded_by": "CMonkSystem::LoadModelItem",
+     "model": "MODEL_ARMORINVEN_60",
+     "original": {
+      "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
+      "sha256": "bae9f555c328108b1f0dcad100abe7ace5a99fd966dce39cdb8edfa8c1da848e"
+     },
+     "role": "inventory",
+     "structure": {
+      "action_keys": [
+       1
+      ],
+      "actions": 1,
+      "bones": 1,
+      "bounds": {
+       "max": [
+        64.08,
+        43.72,
+        23.79
+       ],
+       "min": [
+        -64.08,
+        -30.67,
+        -23.79
+       ]
+      },
+      "mesh_textures": [
+       "SFarmor.jpg",
+       "SFbody.jpg"
+      ],
+      "meshes": 2,
+      "triangles": 1002,
+      "version": 12
+     },
+     "texture_dirs": [
+      "src/bin/Data/Player"
+     ],
+     "texture_status": {},
+     "textures": {
+      "SFarmor.jpg": "src/bin/Data/Player/SFarmor.OZJ",
+      "SFbody.jpg": "src/bin/Data/Player/SFbody.OZJ"
+     }
     }
    ],
    "name": "Sacred Fire Armor",
@@ -109400,6 +110976,53 @@
       "Item762_Armor.jpg": "src/bin/Data/Player/Item762_Armor.OZJ",
       "Item762_Helm.jpg": "src/bin/Data/Player/Item762_Helm.OZJ"
      }
+    },
+    {
+     "bmd": "src/bin/Data/Player/ArmorMale61_inventory.bmd",
+     "condition": "Type == ITEM_STORM_HARD_ARMOR",
+     "exists": true,
+     "folder": "src/bin/Data/Player",
+     "loaded_by": "CMonkSystem::LoadModelItem",
+     "model": "MODEL_ARMORINVEN_61",
+     "original": {
+      "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
+      "sha256": "a03fa8c67bdec50580f2b5cd90aa092d67c63de4d7b995d113b1b0563a804869"
+     },
+     "role": "inventory",
+     "structure": {
+      "action_keys": [
+       1
+      ],
+      "actions": 1,
+      "bones": 1,
+      "bounds": {
+       "max": [
+        59.81,
+        40.38,
+        24.39
+       ],
+       "min": [
+        -59.81,
+        -40.38,
+        -24.39
+       ]
+      },
+      "mesh_textures": [
+       "Item762_Armor.jpg",
+       "Item762_Helm.jpg"
+      ],
+      "meshes": 2,
+      "triangles": 964,
+      "version": 12
+     },
+     "texture_dirs": [
+      "src/bin/Data/Player"
+     ],
+     "texture_status": {},
+     "textures": {
+      "Item762_Armor.jpg": "src/bin/Data/Player/Item762_Armor.OZJ",
+      "Item762_Helm.jpg": "src/bin/Data/Player/Item762_Helm.OZJ"
+     }
     }
    ],
    "name": "Storm Jahad Armor",
@@ -109555,6 +111178,51 @@
      "textures": {
       "Item761_Armor.JPG": "src/bin/Data/Player/Item761_Armor.OZJ",
       "Item761_Helm.jpg": "src/bin/Data/Player/Item761_Helm.OZJ"
+     }
+    },
+    {
+     "bmd": "src/bin/Data/Player/ArmorMale62_inventory.bmd",
+     "condition": "Type == ITEM_PIERCING_ARMOR",
+     "exists": true,
+     "folder": "src/bin/Data/Player",
+     "loaded_by": "CMonkSystem::LoadModelItem",
+     "model": "MODEL_ARMORINVEN_62",
+     "original": {
+      "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
+      "sha256": "a1c7f2dcf0a5c3f2c82fe749cb80030740d18d4768863243d26a6bbbb0f50d01"
+     },
+     "role": "inventory",
+     "structure": {
+      "action_keys": [
+       1
+      ],
+      "actions": 1,
+      "bones": 1,
+      "bounds": {
+       "max": [
+        56.09,
+        37.93,
+        26.08
+       ],
+       "min": [
+        -56.09,
+        -37.93,
+        -26.08
+       ]
+      },
+      "mesh_textures": [
+       "Item761_Armor.JPG"
+      ],
+      "meshes": 1,
+      "triangles": 1014,
+      "version": 12
+     },
+     "texture_dirs": [
+      "src/bin/Data/Player"
+     ],
+     "texture_status": {},
+     "textures": {
+      "Item761_Armor.JPG": "src/bin/Data/Player/Item761_Armor.OZJ"
      }
     }
    ],
@@ -111181,6 +112849,53 @@
       "Upper74.jpg": "src/bin/Data/Player/Upper74.OZJ",
       "ssal74.jpg": "src/bin/Data/Player/ssal74.OZJ"
      }
+    },
+    {
+     "bmd": "src/bin/Data/Player/ArmorMale74_inven.bmd",
+     "condition": "Type == ITEM_PHOENIX_SOUL_ARMOR",
+     "exists": true,
+     "folder": "src/bin/Data/Player",
+     "loaded_by": "CMonkSystem::LoadModelItem",
+     "model": "MODEL_ARMORINVEN_74",
+     "original": {
+      "revision": "3d73f363f5755491d93a145fd85599c780f11d26",
+      "sha256": "382609a79bd038d45c1e32cd310cd76a52c6bcf49568a3f6f4452edbddffaf3c"
+     },
+     "role": "inventory",
+     "structure": {
+      "action_keys": [
+       1
+      ],
+      "actions": 1,
+      "bones": 3,
+      "bounds": {
+       "max": [
+        65.92,
+        68.75,
+        25.76
+       ],
+       "min": [
+        -65.92,
+        -8.15,
+        -25.76
+       ]
+      },
+      "mesh_textures": [
+       "Upper74.jpg",
+       "Horn.jpg"
+      ],
+      "meshes": 2,
+      "triangles": 1384,
+      "version": 12
+     },
+     "texture_dirs": [
+      "src/bin/Data/Player"
+     ],
+     "texture_status": {},
+     "textures": {
+      "Horn.jpg": "src/bin/Data/Player/Horn.OZJ",
+      "Upper74.jpg": "src/bin/Data/Player/Upper74.OZJ"
+     }
     }
    ],
    "name": "Phoenix Soul Armor",
@@ -112126,7 +113841,12 @@
      "8-13",
      "8-14",
      "9-11",
-     "9-12"
+     "9-12",
+     "other:MODEL_BODY_ARMOR + 2",
+     "other:MODEL_BODY_BOOTS + 2",
+     "other:MODEL_BODY_GLOVES + 2",
+     "other:MODEL_BODY_HELM + 2",
+     "other:MODEL_BODY_PANTS + 2"
     ]
    },
    "table": {
@@ -112296,7 +114016,12 @@
      "8-13",
      "8-14",
      "9-10",
-     "9-12"
+     "9-12",
+     "other:MODEL_BODY_ARMOR + 2",
+     "other:MODEL_BODY_BOOTS + 2",
+     "other:MODEL_BODY_GLOVES + 2",
+     "other:MODEL_BODY_HELM + 2",
+     "other:MODEL_BODY_PANTS + 2"
     ]
    },
    "table": {
@@ -112466,7 +114191,12 @@
      "8-13",
      "8-14",
      "9-10",
-     "9-11"
+     "9-11",
+     "other:MODEL_BODY_ARMOR + 2",
+     "other:MODEL_BODY_BOOTS + 2",
+     "other:MODEL_BODY_GLOVES + 2",
+     "other:MODEL_BODY_HELM + 2",
+     "other:MODEL_BODY_PANTS + 2"
     ]
    },
    "table": {
@@ -113526,7 +115256,12 @@
      "7-24",
      "7-31",
      "7-36",
-     "8-19"
+     "8-19",
+     "other:MODEL_BODY_ARMOR + 9",
+     "other:MODEL_BODY_BOOTS + 9",
+     "other:MODEL_BODY_GLOVES + 9",
+     "other:MODEL_BODY_HELM + 9",
+     "other:MODEL_BODY_PANTS + 9"
     ]
    },
    "table": {
@@ -114447,7 +116182,12 @@
      "7-16",
      "7-17",
      "7-21",
-     "8-24"
+     "8-24",
+     "other:MODEL_BODY_ARMOR + 8",
+     "other:MODEL_BODY_BOOTS + 8",
+     "other:MODEL_BODY_GLOVES + 8",
+     "other:MODEL_BODY_HELM + 8",
+     "other:MODEL_BODY_PANTS + 8"
     ]
    },
    "table": {
