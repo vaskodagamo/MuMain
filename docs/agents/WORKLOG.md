@@ -1482,3 +1482,53 @@ the player build to the login scene.
 - Login buttons and the game cursor draw as noise on this Mac, also in an unchanged upstream build.
 - The macOS editor preset does not turn on upstream's in-game tests (`ENABLE_IN_GAME_TESTS`), unlike
   upstream's Windows and Linux editor presets; `macos-arm64-in-game-tests` exists for them.
+
+## 2026-11-10 - Item tools after the upstream merge: render facts and extra models (Claude Fable 5.2)
+**Goal:** port `render_facts.py` and the extra model links of `gen_item_models.py` to where upstream
+now keeps them, regenerate `render-facts.json`, `item_models.json` and `catalog.json`, and compare
+with the pre-merge files (`b819f5348`).
+
+**Done:**
+- `gen_item_models.py`: follows the functions `OpenItems` / `OpenItemTextures` call
+  (`OpenItemEffectModels`: event models, Rage Fighter parts; `cpp_runner.py` runs plain calls and
+  reads `std::wstring` folder arrays), reads the inventory models from
+  `Render/Items/ItemDisplay.cpp` (`ArmorInventoryModels`; `FindInventoryModel` evaluated for every
+  item at levels 0..15, one link per model and run of levels) and the unequipped body parts from
+  `Engine/Object/PlayerBodyModels` (original Season 6 set; its rules are checked against the code's
+  lines). Extra models 35 -> 66, other models 3 -> 106: every pre-merge link and model is back.
+- `render_facts.py`: reads the item model data (`renderStyle`, `itemEffect`, `glow`,
+  `noneBlendMeshes`), the 96 render styles that are data (`Data/Effects/RenderStyles.json`, each
+  layer as the calls `DrawRenderStyle` makes), and the code that is left: `ItemObjectAttribute`,
+  the 44 render styles and 25 item effects that are functions (`Render/Items`), with their local
+  variables, `HideSkin` and type conditions decided per drawing, `ApplyEventModelEffect`,
+  `RenderModelWithoutStyle`, `SpawnLinkedPartEffects`, `SpawnHeldWeaponGlow`. Engine textures are
+  named with the file `LoadBitmap` gives them, so a mesh drawn with another texture is judged by
+  that file and listed as a `texture` effect (it does not count for `must_keep`). Schema unchanged
+  (`mu-item-render-facts/1`; more `rules` and `regions` lines, one more effect kind).
+- `render_notes.py` anchors moved to the new code; the client checks say they predate the merge.
+- Docs: `assets-work/Items/README.md`, `requests/README.md`, `ITEM_EDITOR.md`, `HANDOFF.md`,
+  `ITEM_EDITOR_PLAN.md` (Status).
+
+**Verified:** item tools unittests 166 OK (2 skipped: no `bmdconv` in this worktree, no shipped item
+table; 1 skipped with `MU_BMDCONV`), Python 3.9 and 3.12; the three `--check` runs pass; the open
+pad set request and the withdrawn ones validate against the new files. Against the pre-merge
+`render-facts.json`: 846 of 889 items have the same mode for every mesh and context; of the 43
+others, 42 are armour whose style shows fewer meshes or an inventory texture where the skin is
+hidden (36 were `unverified` before; the 6 lucky parts were read as plain because the old reader
+could not see `Check_LuckyItem`), 1 follows the catalog (5-32 has no item data, so it is not worn).
+Status: 851 from-code, 15 verified-in-client, 23 unverified (61 before). No C++ changed, no build,
+no client run.
+
+**Open / next:**
+- Upstream's data differs from the old code in three places (not a porting gap): the two nameless
+  spheres `12-73`/`12-74` (`MODEL_SPHERE_4`/`_5`) and the Illusion Sorcerer Covenant `13-50` have no
+  `glow.level` 0, so they now glow by their level like other items.
+- Still `unverified`: worn pets and mounts (17), Bolt and Arrow (Infinity Arrow buff), Contract and
+  Siege Potion (mesh by level), Box of Luck (event models by level), `14-27` (meshes by level).
+- The 15 client checks were made before the merge and not repeated on the data-driven looks.
+- Level-variant event models are listed for the inventory only (the ground draws them too); the
+  event models of (14,12) and items without a model entry are not in the catalog; the improved
+  body set (`Data/Player/Updated`) is not listed.
+- The delivered request `2026-09-24-0-1-rebuild-short-sword-clean` does not validate (its
+  `base_commit` is not in this clone and the installed model differs from the catalog's original);
+  it did not before this change either.

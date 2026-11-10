@@ -130,8 +130,9 @@ and effects. A request copies both:
   `Blended meshes of Wing01.bmd (mesh 0): the game draws them additively - paint on black (black is fully transparent, brightness becomes glow); no opaque background, no baked dark outlines`.
 
 While the request is live the validator requires `constraints.render` and these lines to equal
-`render-facts.json`; rebuild it with `python3 tools/item_editor/render_facts.py` when the engine's
-item render code or a model changes.
+`render-facts.json`; rebuild it with `python3 tools/item_editor/render_facts.py` when the item
+model data (`renderStyle`, `itemEffect`, `glow`), a render style, the engine's item render code or
+a model changes.
 
 ## How the editor fills a request
 

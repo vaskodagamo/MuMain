@@ -1,5 +1,5 @@
 """render_rules.py (the engine's mesh draw rules), render_code.py (reading the item render code) and
-render_facts.py (render-facts.json) on small inputs and on the repository's own code and models."""
+render_facts.py (render-facts.json) on small inputs and on the repository's own data, code and models."""
 
 from pathlib import Path
 import json
@@ -107,6 +107,15 @@ class MeshRules(unittest.TestCase):
         drawn = rules.classify(chrome, mesh(0, 'x.jpg'), chrome.blend, False)
         self.assertEqual((drawn.mode, drawn.texture), (rules.ADDITIVE, 'engine:BITMAP_CHROME'))
 
+    def test_a_bound_texture_decides_the_alpha_and_shows_hidden_skin(self):
+        plain = rules.DrawCall(frozenset(TEXTURE), rules.Value(-1), mesh=0, texture='BITMAP_X', explicit_texture=True)
+        drawn = rules.classify(plain, mesh(0, 'skin_arm.jpg'), plain.blend, hide_skin=True)
+        self.assertEqual((drawn.mode, drawn.unsure), (rules.OPAQUE, True))  # the file of BITMAP_X is not known
+        plain.texture_has_alpha = True
+        drawn = rules.classify(plain, mesh(0, 'skin_arm.jpg'), plain.blend, hide_skin=True)
+        self.assertEqual((drawn.mode, drawn.unsure), (rules.ALPHA_TEST, False))
+        self.assertIsNone(rules.classify(call(TEXTURE, mesh_index=0), mesh(0, 'skin_arm.jpg'), rules.Value(-1), True))
+
     def test_the_base_look_is_the_first_pass_with_the_own_texture(self):
         passes = rules.passes_of(call({'RENDER_CHROME', rules.RENDER_BRIGHT}), [mesh(0, 'wing.tga')], False)
         passes += rules.passes_of(call(TEXTURE), [mesh(0, 'wing.tga')], False)
@@ -159,20 +168,98 @@ class CodeReading(SymbolsFixture):
         self.assertEqual(guards, [True, False, True, False, None])
 
 
+class LookFunctions(SymbolsFixture):
+    """Functions of named looks: tables of names, rows of ifs, loops over the meshes, switches."""
+
+    def test_a_table_of_names(self):
+        text = ('const RenderStyle RenderStyles[] = {\n    {"stormCrow", RenderStormCrow},\n'
+                '    {"sealOfWealth", RenderSeal, BITMAP_SEAL, &SealShine},\n};\n')
+        rows = render_code.name_table(text, 'const RenderStyle RenderStyles[] = {')
+        self.assertEqual(rows, [('stormCrow', ['RenderStormCrow'], 2),
+                                ('sealOfWealth', ['RenderSeal', 'BITMAP_SEAL', '&SealShine'], 3)])
+
+    def test_ifs_in_a_row_are_branches(self):
+        text = ('static Result Apply(BMD* b, int Type, int Level)\n{\n'
+                '    if (Type == MODEL_A && Level == 9)\n    {\n        b->RenderBody(RENDER_TEXTURE, 1.f, -1);\n'
+                '        return Result::Drawn;\n    }\n'
+                '    if (Type == MODEL_B)\n    {\n        look.blendMesh = 1;\n        return Result::Applied;\n    }\n'
+                '    return Result::None;\n}\n')
+        branches = render_code.sequence_branches('Apply', text, 1, 'Apply', self.symbols)
+        self.assertEqual([(branch.types, branch.qualifiers) for branch in branches], [([1001], ['Level == 9']), ([1002], [])])
+        self.assertEqual([(a.target, a.value) for a in branches[1].assignments], [('BlendMesh', '1')])
+        self.assertEqual(render_code.RETURN_VALUE.findall(branches[0].body), ['Result::Drawn'])
+
+    def test_guards_decide_conditions_mesh_loops_and_type_switches(self):
+        body = ('{ if (b->HideSkin) { b->RenderMesh(0, RENDER_TEXTURE, 1.f, -1);\n'
+                '    for (int i = 1; i < b->NumMeshs; ++i) b->RenderMesh(i, RENDER_TEXTURE, 1.f, -1); }\n'
+                '  else b->RenderBody(RENDER_TEXTURE, 1.f, -1);\n'
+                '  switch (Type) { case MODEL_A: nTexture = 1; break; default: return false; }\n'
+                '  for (int j = 0; j < 3; ++j) b->RenderMesh(j, RENDER_TEXTURE, 1.f, -1); }')
+        calls, _, _, _ = render_code.body_facts(body, 1)
+
+        def guards(hide_skin, value):
+            decide = lambda condition: hide_skin if condition == 'b->HideSkin' else None  # noqa: E731
+            found = [render_code.guard(body, call.position, decide, value, self.symbols) for call in calls]
+            returned = render_code.guard(body, body.index('return false'), decide, value, self.symbols)
+            return found, returned
+        self.assertEqual(guards(True, 1001), ([True, True, False, None], False))
+        self.assertEqual(guards(False, 1002), ([False, False, True, None], True))
+        self.assertEqual(render_code.mesh_loop(body, calls[1].position), ('i', 1))
+        self.assertIsNone(render_code.mesh_loop(body, calls[3].position))
+        self.assertEqual(render_code.enclosing_condition(body, calls[0].position), 'b->HideSkin')
+
+
+class RenderStyleLayers(unittest.TestCase):
+    """A render style that is data: its layers as the calls DrawRenderStyle makes of them."""
+
+    def state(self, blend=-1, hidden=-1):
+        return render_facts.ObjectState(rules.Value(blend), rules.Value(hidden))
+
+    def layer(self, layer, state=None):
+        calls, left_out = render_facts.layer_calls(layer, state or self.state(), frozenset(TEXTURE))
+        return calls, left_out
+
+    def test_every_mesh_keeps_the_items_values(self):
+        (found,), _ = self.layer({'kind': 'texture'}, self.state(blend=0, hidden=2))
+        self.assertEqual((found.mesh, found.flags, found.blend.number, found.hidden.number, found.alpha.number),
+                         (None, frozenset(TEXTURE), 0, 2, 1.0))
+        (found,), _ = self.layer({'kind': 'texture', 'meshes': 'allEvenHidden', 'opacity': 'drawing'}, self.state(hidden=2))
+        self.assertEqual(found.hidden.number, -1)
+
+    def test_listed_meshes_glow_and_reflections(self):
+        calls, _ = self.layer({'kind': 'reflection', 'blend': 'glow', 'meshes': [1, 2], 'glowMesh': 'none',
+                               'texture': 'Effect/Chrome01.jpg', 'scrollV': {'shape': 'scroll', 'perSecond': 0.3}})
+        self.assertEqual([found.mesh for found in calls], [1, 2])
+        self.assertEqual(calls[0].flags, frozenset({'RENDER_CHROME', rules.RENDER_BRIGHT}))
+        self.assertEqual((calls[0].blend.number, calls[0].texture, calls[0].texture_has_alpha, calls[0].uv_animated),
+                         (-1, 'Effect/Chrome01.jpg', False, True))
+        (found,), _ = self.layer({'kind': 'reflection', 'motion': 'swirl', 'glowMesh': 'all', 'opacity': 0.5})
+        self.assertEqual((found.flags, found.blend.number, found.alpha.number), (frozenset({'RENDER_CHROME4'}), -2, 0.5))
+
+    def test_all_but_and_the_drawings_own_blend(self):
+        (found,), left_out = self.layer({'kind': 'texture', 'meshes': {'allBut': [2]}}, self.state(hidden=0))
+        self.assertEqual((found.hidden.number, left_out), (2, ()))
+        (found,), left_out = self.layer({'kind': 'texture', 'meshes': {'allBut': [1, 2]}})
+        self.assertEqual((found.hidden.number, left_out), (-1, (1, 2)))
+        (found,), _ = self.layer({'kind': 'reflection', 'blend': 'asDrawing'})
+        self.assertEqual(found.flags, frozenset(TEXTURE))
+
+    def test_a_changing_opacity_is_see_through_and_unknown_words_stop(self):
+        (found,), _ = self.layer({'kind': 'texture', 'opacity': {'shape': 'wave', 'from': 0, 'to': 1, 'seconds': 2}})
+        self.assertFalse(found.alpha.known)
+        self.assertEqual(rules.classify(found, mesh(0, 'a.jpg'), found.blend, False).mode, rules.ALPHA_BLEND)
+        for layer in ({'kind': 'paint'}, {'kind': 'reflection', 'motion': 'wobble'}, {'kind': 'texture', 'meshes': 'some'},
+                      {'kind': 'texture', 'glowMesh': 'most'}):
+            with self.subTest(layer=layer), self.assertRaises(render_facts.DataError):
+                self.layer(layer)
+
+
 class RepositoryFacts(unittest.TestCase):
     """render-facts.json of the repository: the facts checked in the client stay what they were."""
 
     @classmethod
     def setUpClass(cls):
-        # OPEN since the upstream merge of 2026-11 (docs/agents/WORKLOG.md): upstream moved how items
-        # are drawn out of the C++ this reads (RenderPartObject's per-item branches) into data
-        # (Data/Items/Models: renderStyle, glow, itemEffect; Data/Effects/RenderStyles.json), so the
-        # code it looks for is gone. Until render_facts.py reads that data, render-facts.json stays as
-        # generated before the merge and these checks cannot run.
-        try:
-            cls.builder = render_facts.Builder(ROOT)
-        except render_code.CodeError as error:
-            raise unittest.SkipTest(f'render_facts.py needs porting to upstream\'s item render data: {error}')
+        cls.builder = render_facts.Builder(ROOT)
         cls.catalog = render_facts.load_catalog(ROOT)
 
     def item(self, key):
@@ -206,6 +293,52 @@ class RepositoryFacts(unittest.TestCase):
 
     def test_a_potion_is_not_worn(self):
         self.assertEqual(self.item('14-0')['models'][0]['meshes'][0]['worn'], None)
+
+    def test_first_wings_and_shields(self):
+        # Wings of Spirits like the Wings of Elf; Heaven and Satan cut out; the plain shields opaque.
+        self.assertEqual(self.modes('12-3'), [(rules.ADDITIVE,) * 3])
+        self.assertEqual(self.modes('12-2'), [(rules.ALPHA_TEST,) * 3])
+        for key in ('6-0', '6-1', '6-4'):
+            with self.subTest(key=key):
+                self.assertEqual(set(self.modes(key)), {(rules.OPAQUE,) * 3})
+                self.assertEqual(self.item(key)['request']['must_keep'], [])
+
+    def test_a_render_style_that_is_data(self):
+        # Wings of Darkness: a glowing reflection with Effect/bab2.jpg under the cut-out wing.
+        item = self.item('12-6')
+        self.assertEqual(self.modes('12-6'), [(rules.ALPHA_TEST,) * 3])
+        self.assertIn('Mesh 0 is drawn again, blended-additive, with Effect/bab2.jpg',
+                      [effect['summary'] for effect in item['effects']])
+        self.assertEqual(item['level_glow']['kind'], 'none')
+        evidence = item['models'][0]['meshes'][0]['evidence']
+        self.assertTrue(any('renderStyle "wingsOfDarkness"' in line for line in evidence), evidence)
+
+    def test_a_render_style_in_code_follows_its_conditions(self):
+        # The Violent Wind Helm draws only its helmet mesh where the skin is hidden (anMesh[Type - ...]).
+        self.assertEqual(self.modes('7-39'), [(rules.OPAQUE, rules.HIDDEN, rules.HIDDEN),
+                                              (rules.ALPHA_TEST, rules.HIDDEN, rules.HIDDEN), (rules.OPAQUE,) * 3])
+        self.assertEqual(self.item('7-39')['status'], render_facts.STATUS_CODE)
+        # The lucky Violent Wind Armor: in the inventory and on the ground mesh 0 has a texture of its own.
+        armor = self.item('8-65')
+        self.assertEqual(self.modes('8-65'), [(rules.OPAQUE, rules.ALPHA_TEST, rules.ALPHA_TEST)])
+        self.assertEqual(armor['request']['must_keep'], [])
+        self.assertIn('Mesh 0 is drawn with BITMAP_INVEN_ARMOR + 6 (Player/LuckyItem/65/InvenArmorMale40_luck.tga) '
+                      'instead of its own texture (dropped, inventory)', armor['request']['effects'])
+
+    def test_what_the_reading_cannot_decide_is_unverified(self):
+        # Ammunition is drawn differently under the Infinity Arrow buff; a pet is drawn by its own code.
+        for key in ('4-7', '13-0'):
+            with self.subTest(key=key):
+                item = self.item(key)
+                self.assertEqual(item['status'], render_facts.STATUS_UNVERIFIED)
+                self.assertTrue(item['unverified'])
+
+    def test_every_render_style_and_item_effect_of_the_data_is_known(self):
+        looks = self.builder.looks
+        styles = {entry.style for entry in looks.entries.values() if entry.style}
+        effects = {entry.effect for entry in looks.entries.values() if entry.effect}
+        self.assertEqual(styles - set(looks.styles) - set(looks.style_code), set())
+        self.assertEqual(effects - set(looks.effects), set())
 
     def test_render_facts_json_is_current(self):
         self.assertEqual(render_facts.main(['--check']), 0,

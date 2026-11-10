@@ -552,11 +552,13 @@ executable instead and nothing of an item save is copied; Browse has no catalog;
 
 ### Gotchas
 
-- **The item tools' generated files:** `catalog.json` and `tools/item_editor/item_models.json` are
-  built from the JSON item data now (`build_item_catalog.py`, `gen_item_models.py`).
-  `render-facts.json` (**Drawn**, the request's must-keep lines) is still the one generated before
-  the upstream merge: `render_facts.py` read how items are drawn from C++ that upstream turned into
-  data (`renderStyle`, `glow`, `itemEffect` in `Data/Items/Models`), and has not been ported yet.
+- **The item tools' generated files:** `catalog.json`, `tools/item_editor/item_models.json` and
+  `render-facts.json` (**Drawn**, the request's must-keep lines) are built from the JSON item data
+  (`build_item_catalog.py`, `gen_item_models.py`, `render_facts.py`): the item models and their
+  `renderStyle`, `glow` and `itemEffect` in `Data/Items/Models`, the render styles in
+  `Data/Effects/RenderStyles.json`, and the looks and model tables that are still code
+  (`Render/Items`). Rebuild them after a change to that data or code
+  ([`assets-work/Items/README.md`](../../../../assets-work/Items/README.md), "Rebuilding").
 - **Browse reads the catalog once per start.** After rebuilding `catalog.json`, restart the editor
   (requests and verdicts are read live);
   **Rescan files** only hashes the model files again.

@@ -1,7 +1,8 @@
 """Render facts read or checked by hand, merged into render-facts.json by render_facts.py.
 
-The automatic reading (render_code.py + render_rules.py) covers the RenderMesh / RenderBody calls of
-the per-type render branches. This table adds what it cannot see or gets wrong, always with the code
+The automatic reading (render_facts.py with render_code.py and render_rules.py) covers the item
+model data, the render styles that are data and the RenderMesh / RenderBody calls of the render
+code. This table adds what it cannot see or gets wrong, always with the code
 lines (anchors) that show it: capes that are drawn as cloth when worn, draws that depend on a
 condition, effects outside the scanned branches (weapon swing trails), and what was checked in the
 running client. Keys are catalog item keys ("<group>-<index>").
@@ -20,6 +21,8 @@ from render_code import Anchor
 OBJECT = 'Engine/Object/ZzzObject.cpp'
 CHARACTER = 'Engine/Object/ZzzCharacter.cpp'
 OPEN_DATA = 'Engine/Object/ZzzOpenData.cpp'
+STYLES = 'Render/Items/ItemRenderStyles.cpp'
+CLOAK_CLOTH = 'void UpdateCloakCloth('  # where the capes' cloth is made
 WORN, DROPPED, INVENTORY = 'worn', 'dropped', 'inventory'
 
 # Effects that come from code outside the per-type branches and apply to a whole group of items:
@@ -34,26 +37,30 @@ GENERIC_EFFECTS = (
      [Anchor(CHARACTER, ('void CreateWeaponBlur(', 'int BlurType = 0;'), 'CreateWeaponBlur')]),
     (BACK_GROUPS, ('back',), 'animation', (WORN,),
      'Worn wings and capes play their own animation (slow while standing, faster while flying)',
-     [Anchor(CHARACTER, ('PART_t* w = &c->Wing;', 'w->PlaySpeed = 0.25f;'), 'RenderCharacter: wing play speed')]),
+     [Anchor(CHARACTER, ('w->LinkBone = IsLinkedCape(w->Type) ? 19 : 47;', 'w->PlaySpeed = IsFlying(o)'),
+             'wing play speed')]),
 )
 
-# How the client checks were made (render-facts.json "verified").
-PREVIEW = 'Item Editor preview 2026-09-24 (turntable, inventory, equipped, ground)'
+# How the client checks were made (render-facts.json "verified"). They were made before the upstream
+# merge of 2026-11 moved the item looks into data; the looks have not been checked in the client since.
+PREVIEW = 'Item Editor preview 2026-09-24, before the upstream merge of 2026-11 (turntable, inventory, equipped, ground)'
 
 # Code lines shared by several notes.
-LINK_SKIPS_CAPES = Anchor(CHARACTER, ('void RenderLinkObject(', 'if (Type != MODEL_CAPE_OF_LORD'),
+LINK_SKIPS_CAPES = Anchor(CHARACTER, ('vec34_t* RenderLinkObject(', 'if (Type != MODEL_CAPE_OF_LORD'),
                           'RenderLinkObject: the Cape of Lord, Cape of Fighter and both small capes are not drawn as a model when worn')
-CLOTH_RENDER = Anchor(CHARACTER, ('void RenderCharacter(CHARACTER* c', 'if (bCloak)', 'pCloth[i].Render(&CloakLight);'),
+CLOTH_RENDER = Anchor(CHARACTER, ('void RenderCharacter(const CHARACTER* c', 'pCloth[i].Render(&cloak.light);'),
                       'RenderCharacter: the cloth pieces are drawn')
 CLOTH_ALPHA = Anchor('Engine/Physics/PhysicsManager.cpp', ('case PCT_MASK_ALPHA:', 'EnableAlphaTest();'),
                      'cloth with PCT_MASK_ALPHA is alpha-tested')
-LORD_CAPE_CLOTH = Anchor(CHARACTER, ('void RenderCharacter(CHARACTER* c', 'if (bCloak)', 'else\n                {',
+LORD_CAPE_CLOTH = Anchor(CHARACTER, (CLOAK_CLOTH, 'else if (c->Wing.Type == MODEL_SMALL_CAPE_OF_LORD)', 'else',
                                      'BITMAP_ROBE + 7, BITMAP_ROBE + 7'),
                          'the Dark Lord cape cloth uses BITMAP_ROBE + 7')
 ROBE_7 = Anchor(OPEN_DATA, ('BITMAP_ROBE + 7);',), 'BITMAP_ROBE + 7 = Player/DarklordRobe.tga')
-BODY_LIGHT_WHITE = Anchor(OBJECT, ('void RenderPartObjectBody(BMD* b', 'else if (Type == MODEL_CAPE_OF_EMPEROR)',
+BODY_LIGHT_WHITE = Anchor(STYLES, ('bool RenderCapeOfEmperor(',
                                    'if (b->BodyLight[0] == 1 && b->BodyLight[1] == 1 && b->BodyLight[2] == 1)'),
-                          'Cape of Emperor: all meshes only when the light is exactly white, else mesh 0')
+                          'render style capeOfEmperor: all meshes only when the light is exactly white, else mesh 0')
+SMALL_CAPE_WHITE = Anchor(STYLES, ('bool RenderSmallCapeOfLord(', 'if (b->BodyLight[0] == 1'),
+                          'render style smallCapeOfLord: drawn only when the light is exactly white')
 
 ITEM_NOTES = {
     '12-0': {
@@ -83,17 +90,17 @@ ITEM_NOTES = {
                    'the code sets every frame.',
     },
     '12-5': {
-        'verified': 'Item Editor preview 2026-09-24 (turntable, inventory, equipped, ground)',
+        'verified': PREVIEW,
         'summary': ('Wings of Dragon: mesh 0 opaque, mesh 1 (NDW_R.jpg, _R) additive with a slowly pulsing '
                     'brightness.'),
     },
     '12-6': {
         'summary': 'Wings of Darkness: the .tga mesh is drawn twice, first as an additive chrome layer '
-                   '(BITMAP_CHROME + 1), then cut out by its alpha; blue flare sprites and thunder/spirit beams run '
+                   '(Effect/bab2.jpg), then cut out by its alpha; blue flare sprites and thunder/spirit beams run '
                    'between the wing bones. In a safe zone the worn wings use action 1.',
         'effects': [('animation', (WORN,), 'In a safe zone the worn wings switch to action 1',
-                     [Anchor(CHARACTER, ('void RenderLinkObject(', 'MODEL_WINGS_OF_DARKNESS) && c->SafeZone)'),
-                             'RenderLinkObject')])],
+                     [Anchor(CHARACTER, ('unsigned short LinkedPartAction(', 'MODEL_WINGS_OF_DARKNESS) && c->SafeZone)'),
+                             'LinkedPartAction')])],
     },
     '12-36': {
         'verified': (PREVIEW + '; the red light sprites show on the character'),
@@ -114,8 +121,7 @@ ITEM_NOTES = {
                    'mesh 1 opaque plus an additive layer with msword01_r.jpg; chrome-energy particles. Worn by a '
                    'Magic Gladiator it also has a cloth cape with msword03.tga.',
         'effects': [('cloth', (WORN,), 'A cloth cape with Item/msword03.tga (alpha-tested) when a Magic Gladiator wears it',
-                     [Anchor(CHARACTER, ('void RenderCharacter(CHARACTER* c', 'if (bCloak)',
-                                         'if (c->Wing.Type == MODEL_WING_OF_RUIN)', 'BITMAP_ROBE + 8'), 'cloth'),
+                     [Anchor(CHARACTER, (CLOAK_CLOTH, 'if (c->Wing.Type == MODEL_WING_OF_RUIN)', 'BITMAP_ROBE + 8'), 'cloth'),
                       Anchor(OPEN_DATA, ('BITMAP_ROBE + 8);',), 'BITMAP_ROBE + 8 = Item/msword03.tga'),
                       CLOTH_ALPHA])],
     },
@@ -137,10 +143,8 @@ ITEM_NOTES = {
         },
         'effects': [('cloth', (WORN,), 'Worn: cloth cape with Item/dl_redwings02.tga and two cloth ribbons with '
                      'Item/dl_redwings03.tga (alpha-tested), the same files as meshes 2 and 1',
-                     [Anchor(CHARACTER, ('void RenderCharacter(CHARACTER* c', 'if (bCloak)',
-                                         'BITMAP_ROBE + 9, BITMAP_ROBE + 9'), 'cloth'),
-                      Anchor(CHARACTER, ('void RenderCharacter(CHARACTER* c', 'if (bCloak)',
-                                         'BITMAP_ROBE + 10, BITMAP_ROBE + 10'), 'ribbons'),
+                     [Anchor(CHARACTER, (CLOAK_CLOTH, 'BITMAP_ROBE + 9, BITMAP_ROBE + 9'), 'cloth'),
+                      Anchor(CHARACTER, (CLOAK_CLOTH, 'BITMAP_ROBE + 10, BITMAP_ROBE + 10'), 'ribbons'),
                       Anchor(OPEN_DATA, ('BITMAP_ROBE + 9);',), 'Item/dl_redwings02.tga'),
                       Anchor(OPEN_DATA, ('BITMAP_ROBE + 10);',), 'Item/dl_redwings03.tga'),
                       CLOTH_ALPHA])],
@@ -159,7 +163,7 @@ ITEM_NOTES = {
                    'Rage Fighter the model is not drawn; the cape is cloth with the same file, Item/NCcape.tga.',
         'meshes': {(0, 0): {WORN: ('hidden', 'not drawn as a model when worn; the cape is cloth', [LINK_SKIPS_CAPES])}},
         'effects': [('cloth', (WORN,), 'Worn: a cloth cape with Item/NCcape.tga (alpha-tested), the model\'s own texture',
-                     [Anchor(CHARACTER, ('void RenderCharacter(CHARACTER* c', 'if (bCloak)', 'else\n                {',
+                     [Anchor(CHARACTER, (CLOAK_CLOTH, 'else if (c->Wing.Type == MODEL_LITTLE_WARRIORS_CLOAK)', 'else',
                                          'BITMAP_NCCAPE, BITMAP_NCCAPE'), 'cloth'),
                       Anchor(OPEN_DATA, ('BITMAP_NCCAPE,',), 'Item/NCcape.tga'), CLOTH_ALPHA, CLOTH_RENDER])],
     },
@@ -171,16 +175,14 @@ ITEM_NOTES = {
                    'monke_manto.TGA (cape) and monk_manto01.TGA (two strips).',
         'meshes': {
             (0, 1): {WORN: ('hidden', 'the model draws mesh 1 only under a white light; the worn cape is cloth',
-                            [Anchor(OBJECT, ('void RenderPartObjectBody(BMD* b', 'else if (Type == MODEL_CAPE_OF_OVERRULE)',
-                                             'if (b->BodyLight[0] == 1'), 'white light only')])},
+                            [BODY_LIGHT_WHITE])},
             (0, 2): {WORN: ('hidden', 'the model draws mesh 2 only under a white light; the worn cape is cloth',
-                            [Anchor(OBJECT, ('void RenderPartObjectBody(BMD* b', 'else if (Type == MODEL_CAPE_OF_OVERRULE)',
-                                             'if (b->BodyLight[0] == 1'), 'white light only')])},
+                            [BODY_LIGHT_WHITE])},
         },
         'effects': [('cloth', (WORN,), 'Worn: a cloth cape with Item/monke_manto.TGA and two cloth strips with '
                      'Item/monk_manto01.TGA (alpha-tested), the files of meshes 2 and 1',
-                     [Anchor(CHARACTER, ('void RenderCharacter(CHARACTER* c', 'if (bCloak)', 'BITMAP_MANTOE, BITMAP_MANTOE'), 'cape'),
-                      Anchor(CHARACTER, ('void RenderCharacter(CHARACTER* c', 'if (bCloak)', 'BITMAP_MANTO01, BITMAP_MANTO01'), 'strips'),
+                     [Anchor(CHARACTER, (CLOAK_CLOTH, 'BITMAP_MANTOE, BITMAP_MANTOE'), 'cape'),
+                      Anchor(CHARACTER, (CLOAK_CLOTH, 'BITMAP_MANTO01, BITMAP_MANTO01'), 'strips'),
                       Anchor(OBJECT, ('void RenderDroppedItem(', 'else if (o->Type == MODEL_CAPE_OF_OVERRULE)'),
                              'on the ground the light is forced to white'),
                       CLOTH_ALPHA])],
@@ -203,11 +205,10 @@ ITEM_NOTES = {
                    'cape is a smaller cloth with Player/DarklordRobe.tga.',
         'meshes': {(0, 0): {WORN: ('hidden', 'not drawn as a model when worn; the cape is cloth', [LINK_SKIPS_CAPES]),
                             DROPPED: ('hidden', 'the model draws only under an exactly white light; the ground light is not',
-                                      [Anchor(OBJECT, ('void RenderPartObjectBody(BMD* b', 'else if (o->Type == MODEL_WING + 130)',
-                                                       'if (b->BodyLight[0] == 1'), 'white light only')])}},
+                                      [SMALL_CAPE_WHITE])}},
         'effects': [('cloth', (WORN,), 'Worn: a small cloth cape with Player/DarklordRobe.tga (alpha-tested)',
-                     [Anchor(CHARACTER, ('void RenderCharacter(CHARACTER* c', 'if (bCloak)',
-                                         'else if (c->Wing.Type == MODEL_WING + 130)', 'BITMAP_ROBE + 7'), 'cloth'),
+                     [Anchor(CHARACTER, (CLOAK_CLOTH, 'else if (c->Wing.Type == MODEL_SMALL_CAPE_OF_LORD)', 'BITMAP_ROBE + 7'),
+                             'cloth'),
                       ROBE_7, CLOTH_ALPHA])],
         'resolved': ('a draw call under a runtime condition',),
     },
@@ -216,8 +217,8 @@ ITEM_NOTES = {
                    'with Item/NCcape.tga.',
         'meshes': {(0, 0): {WORN: ('hidden', 'not drawn as a model when worn; the cape is cloth', [LINK_SKIPS_CAPES])}},
         'effects': [('cloth', (WORN,), 'Worn: a cloth cape with Item/NCcape.tga (alpha-tested)',
-                     [Anchor(CHARACTER, ('void RenderCharacter(CHARACTER* c', 'if (bCloak)',
-                                         'else if (c->Wing.Type == MODEL_WING + 135)', 'BITMAP_NCCAPE'), 'cloth'),
+                     [Anchor(CHARACTER, (CLOAK_CLOTH, 'else if (c->Wing.Type == MODEL_LITTLE_WARRIORS_CLOAK)', 'BITMAP_NCCAPE'),
+                             'cloth'),
                       CLOTH_ALPHA])],
     },
     '12-41': {
@@ -236,7 +237,7 @@ ITEM_NOTES = {
                     'flip-book of the flame; mesh 1 gets an extra chrome pass.'),
     },
     '6-16': {
-        'verified': 'Item Editor preview 2026-09-24 (turntable, inventory, equipped, ground)',
+        'verified': PREVIEW,
         'summary': ('Elemental Shield: mesh 0 (.tga) cut out by alpha, meshes 1 and 3 see-through (alpha 0.8 and '
                     '0.5), mesh 2 additive with a scrolling texture, mesh 3 again additive with a random offset.'),
     },
